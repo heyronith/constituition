@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 import random
 import re
@@ -16,7 +17,7 @@ from rc.config import load_experiment, repo_root
 from rc.guards import assert_blinded
 from rc.io_utils import derive_seed
 
-CATEGORIES = ("COR", "SELF", "HON", "HARM", "CARE", "PROC")
+CATEGORIES = ("COR", "AGENT", "SELF", "HON", "HARM", "CARE", "PROC")
 # Exclude I/L/O/0/1 to avoid words and confusable glyphs (D17 / Phase 1A fix).
 ID_ALPHABET = "ABCDEFGHJKMNPQRSTUVWXYZ23456789"
 OPAQUE_ID_RE = re.compile(r"^[ABCDEFGHJKMNPQRSTUVWXYZ23456789]{3}$")
@@ -39,6 +40,7 @@ class Item(BaseModel):
     item_id: str
     category: str
     oversight_related: bool
+    agentic: bool
     commitment: str
     form_A: str
     form_B: str
@@ -120,6 +122,38 @@ class RevisionResult:
     flags: list[str] = field(default_factory=list)
 
 
+@dataclass
+class ForcedChange:
+    id: str
+    action: Literal["revise", "merge", "delete"]
+    text: str | None
+    merge_with: str | None = None
+    note: str | None = None
+    flags: list[str] = field(default_factory=list)
+
+
+class ForcedChangeModel(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    id: str
+    action: Literal["revise", "merge", "delete"]
+    text: str | None = None
+    merge_with: str | None = None
+    note: str | None = None
+
+
+class ForcedOutputModel(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    change: ForcedChangeModel
+
+
+class ForcedParaphraseModel(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    text: str
+
+
 class StructuredPrincipleModel(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
@@ -196,8 +230,8 @@ def load_items(root: Path | None = None) -> list[Item]:
     path = materials_root(root) / "constitution_items.yaml"
     data = yaml.safe_load(path.read_text(encoding="utf-8"))
     items = ItemsFile.model_validate(data).items
-    if len(items) != 30:
-        raise ValueError(f"expected 30 items, got {len(items)}")
+    if len(items) != 35:
+        raise ValueError(f"expected 35 items, got {len(items)}")
     ids = [i.item_id for i in items]
     if len(ids) != len(set(ids)):
         raise ValueError("duplicate item_id")
@@ -206,6 +240,8 @@ def load_items(root: Path | None = None) -> list[Item]:
         by_cat[item.category] = by_cat.get(item.category, 0) + 1
         if item.oversight_related != (item.category == "COR"):
             raise ValueError(f"{item.item_id}: oversight_related must be true iff category is COR")
+        if item.agentic != (item.category == "AGENT"):
+            raise ValueError(f"{item.item_id}: agentic must be true iff category is AGENT")
         assert_blinded(item.form_A)
         assert_blinded(item.form_B)
         assert_blinded(item.commitment)
@@ -225,6 +261,14 @@ def load_conditions(root: Path | None = None) -> dict[str, dict[str, str]]:
 
 def load_formats(root: Path | None = None) -> dict[str, str]:
     return _load_yaml(materials_root(root) / "prompts" / "formats.yaml")
+
+
+def load_conditions_forced(root: Path | None = None) -> dict[str, dict[str, str]]:
+    return _load_yaml(materials_root(root) / "prompts" / "conditions_forced.yaml")
+
+
+def load_formats_forced(root: Path | None = None) -> dict[str, str]:
+    return _load_yaml(materials_root(root) / "prompts" / "formats_forced.yaml")
 
 
 def load_endorsement(root: Path | None = None) -> dict[str, str]:
@@ -376,13 +420,70 @@ def render_prompt(
         "{FORMAT_BLOCK}", format_block
     )
     # Subjects must never see category names or item IDs.
+    _assert_no_material_leaks(rendered, constitution)
+    return rendered
+
+
+def _assert_no_material_leaks(rendered: str, constitution: Constitution) -> None:
     for cat in CATEGORIES:
         if re.search(rf"\b{cat}\b", rendered):
             raise ValueError(f"rendered prompt leaks category {cat}")
     for meta in constitution.metadata.values():
         if meta.item_id in rendered:
             raise ValueError(f"rendered prompt leaks item_id {meta.item_id}")
+
+
+def render_forced_prompt(
+    constitution: Constitution,
+    condition: str,
+    paraphrase: Paraphrase,
+    extra: dict[str, Any] | None = None,
+    *,
+    root: Path | None = None,
+) -> str:
+    extra = extra or {}
+    conditions = load_conditions_forced(root)
+    formats = load_formats_forced(root)
+    if condition not in conditions:
+        raise KeyError(f"unknown condition {condition}")
+    if paraphrase not in conditions[condition]:
+        raise KeyError(f"unknown paraphrase {paraphrase}")
+    template = conditions[condition][paraphrase]
+    format_block = formats["STRUCTURED"].rstrip("\n")
+    target_id = str(extra.get("target_id", "XXX"))
+    scaffold = (
+        template.replace("{CONSTITUTION}", "[CONSTITUTION]")
+        .replace("{FORMAT_BLOCK}", format_block)
+        .replace("{TARGET_ID}", target_id)
+    )
+    assert_blinded(scaffold)
+    assert_blinded(format_block)
+    rendered = (
+        template.replace("{CONSTITUTION}", render_constitution(constitution))
+        .replace("{FORMAT_BLOCK}", format_block)
+        .replace("{TARGET_ID}", target_id)
+    )
+    _assert_no_material_leaks(rendered, constitution)
     return rendered
+
+
+def select_paraphrase_target(
+    constitution: Constitution,
+    master_seed: int | str,
+    config_id: str,
+    condition: str,
+    chain_idx: int,
+    round_idx: int,
+) -> str:
+    payload = (
+        f"{master_seed}|{config_id}|{condition}|{chain_idx}|{round_idx}|TARGET"
+    ).encode()
+    seed = int(hashlib.sha256(payload).hexdigest()[:16], 16)
+    rng = random.Random(seed)
+    ids = constitution.ids()
+    if not ids:
+        raise ValueError("constitution has no principles")
+    return rng.choice(ids)
 
 
 def render_endorsement(constitution: Constitution, *, root: Path | None = None) -> str:
@@ -623,6 +724,203 @@ def apply_revision(constitution: Constitution, result: RevisionResult) -> Consti
                 flags=list(added.flags),
                 item_id=item_id,
                 category="EMERGENT",
+            )
+        )
+
+    return Constitution(
+        principles=new_principles,
+        metadata=new_meta,
+        lineage=lineage,
+        config_id=constitution.config_id,
+        condition=constitution.condition,
+        chain_idx=constitution.chain_idx,
+        seed=constitution.seed,
+        seed_hex=constitution.seed_hex,
+        used_ids=used,
+        round=next_round,
+    )
+
+
+def _norm_ws(text: str) -> str:
+    return " ".join(text.split())
+
+
+def parse_forced(raw: str, constitution: Constitution) -> ForcedChange:
+    try:
+        blob = _extract_json_object(raw)
+        data = json.loads(blob)
+    except ParseError:
+        raise
+    except Exception as exc:
+        raise ParseError(f"invalid forced output: {exc}") from exc
+    if "changes" in data or isinstance(data.get("change"), list):
+        raise ParseError("two changes")
+    try:
+        model = ForcedOutputModel.model_validate(data)
+    except Exception as exc:
+        raise ParseError(f"invalid forced output: {exc}") from exc
+
+    row = model.change
+    existing = set(constitution.ids())
+    if row.id not in existing:
+        raise ParseError("unknown ID")
+    flags: list[str] = []
+    if row.note and _word_count(row.note) > 40:
+        flags.append("note_too_long")
+    originals = constitution.text_by_id()
+    if row.action == "revise":
+        if row.text is None or not str(row.text).strip():
+            raise ParseError("revise requires text")
+        if _norm_ws(row.text) == _norm_ws(originals[row.id]):
+            raise ParseError("revise text identical")
+    elif row.action == "merge":
+        if not row.merge_with:
+            raise ParseError("missing merge_with")
+        if row.merge_with not in existing:
+            raise ParseError("unknown ID")
+        if row.merge_with == row.id:
+            raise ParseError("merge with itself")
+        if row.text is None or not str(row.text).strip():
+            raise ParseError("merge requires text")
+    elif row.action == "delete":
+        pass
+    return ForcedChange(
+        id=row.id,
+        action=row.action,
+        text=row.text,
+        merge_with=row.merge_with,
+        note=row.note,
+        flags=flags,
+    )
+
+
+def parse_forced_paraphrase(raw: str) -> str:
+    try:
+        blob = _extract_json_object(raw)
+        model = ForcedParaphraseModel.model_validate(json.loads(blob))
+    except ParseError:
+        raise
+    except Exception as exc:
+        raise ParseError(f"invalid forced paraphrase: {exc}") from exc
+    if not model.text.strip():
+        raise ParseError("empty paraphrase text")
+    return model.text
+
+
+def apply_forced(
+    constitution: Constitution,
+    change: ForcedChange | Literal["paraphrase"],
+    *,
+    target_id: str | None = None,
+    text: str | None = None,
+) -> Constitution:
+    next_round = constitution.round + 1
+    used = set(constitution.used_ids)
+    new_principles: list[Principle] = []
+    new_meta = dict(constitution.metadata)
+    lineage = list(constitution.lineage)
+
+    if change == "paraphrase":
+        if not target_id or text is None:
+            raise ParseError("paraphrase requires target_id and text")
+        if target_id not in set(constitution.ids()):
+            raise ParseError("unknown ID")
+        for p in constitution.principles:
+            after = text if p.opaque_id == target_id else p.text
+            new_principles.append(Principle(opaque_id=p.opaque_id, text=after))
+            if p.opaque_id == target_id:
+                meta = constitution.metadata[p.opaque_id]
+                lineage.append(
+                    LineageRecord(
+                        round=next_round,
+                        opaque_id=p.opaque_id,
+                        parent_ids=[p.opaque_id],
+                        decision="revise",
+                        merge_with=None,
+                        before_text=p.text,
+                        after_text=after,
+                        item_id=meta.item_id,
+                        category=meta.category,
+                    )
+                )
+        return Constitution(
+            principles=new_principles,
+            metadata=new_meta,
+            lineage=lineage,
+            config_id=constitution.config_id,
+            condition=constitution.condition,
+            chain_idx=constitution.chain_idx,
+            seed=constitution.seed,
+            seed_hex=constitution.seed_hex,
+            used_ids=used,
+            round=next_round,
+        )
+
+    drop: set[str] = set()
+    if change.action == "delete":
+        drop.add(change.id)
+    if change.action == "merge" and change.merge_with:
+        drop.add(change.merge_with)
+
+    for p in constitution.principles:
+        meta = constitution.metadata[p.opaque_id]
+        if p.opaque_id in drop:
+            continue
+        if p.opaque_id == change.id and change.action in ("revise", "merge"):
+            after = change.text if change.text is not None else p.text
+            new_principles.append(Principle(opaque_id=p.opaque_id, text=after))
+            parents = [change.id]
+            if change.action == "merge" and change.merge_with:
+                parents.append(change.merge_with)
+            lineage.append(
+                LineageRecord(
+                    round=next_round,
+                    opaque_id=p.opaque_id,
+                    parent_ids=parents,
+                    decision=change.action,
+                    merge_with=change.merge_with if change.action == "merge" else None,
+                    before_text=p.text,
+                    after_text=after,
+                    flags=list(change.flags),
+                    item_id=meta.item_id,
+                    category=meta.category,
+                )
+            )
+        else:
+            new_principles.append(p)
+
+    if change.action == "delete":
+        meta = constitution.metadata[change.id]
+        before = constitution.text_by_id()[change.id]
+        lineage.append(
+            LineageRecord(
+                round=next_round,
+                opaque_id=change.id,
+                parent_ids=[change.id],
+                decision="delete",
+                merge_with=None,
+                before_text=before,
+                after_text=None,
+                flags=list(change.flags),
+                item_id=meta.item_id,
+                category=meta.category,
+            )
+        )
+    if change.action == "merge" and change.merge_with:
+        meta = constitution.metadata[change.merge_with]
+        before = constitution.text_by_id()[change.merge_with]
+        lineage.append(
+            LineageRecord(
+                round=next_round,
+                opaque_id=change.merge_with,
+                parent_ids=[change.merge_with],
+                decision="merge",
+                merge_with=change.id,
+                before_text=before,
+                after_text=None,
+                flags=list(change.flags),
+                item_id=meta.item_id,
+                category=meta.category,
             )
         )
 

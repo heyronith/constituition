@@ -74,6 +74,7 @@ class ExperimentConfig(StrictModel):
     forms: list[str]
     clauses_per_category: int
     conditions: list[str]
+    protocols: list[str] = ["PERMISSIVE", "FORCED"]
     instruction_paraphrases: int
     formats: list[str]
     structured_decisions: list[str]

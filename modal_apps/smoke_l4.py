@@ -76,6 +76,10 @@ def run_l4_smoke(git_sha_value: str = "") -> dict:
         for cond in ("SELF_REFLECT", "OTHER_REFLECT", "PARAPHRASE", "NEUTRAL_EDIT")
     ]
     units.append(Unit("PERMISSIVE", "SELF_REFLECT", "FREE", 0))
+    units.extend(
+        Unit("FORCED", cond, "STRUCTURED", 0)
+        for cond in ("SELF_REFLECT", "OTHER_REFLECT", "PARAPHRASE", "NEUTRAL_EDIT")
+    )
     summary = run_config(
         backend, SMOKE_ID, units, rounds=1, run_tag="phase2b_l4_smoke", root=root
     )

@@ -42,6 +42,7 @@ from rc.materials import (
     render_endorsement,
     render_prompt,
     render_realism_clause,
+    select_paraphrase_target,
 )
 
 FormatName = Literal["STRUCTURED", "FREE"]
@@ -379,7 +380,17 @@ def run_config(
             prompts: dict[Unit, str] = {}
             for unit in still:
                 cons = states[unit]
-                prompt = _render_unit_prompt(unit, cons, t, extras[unit], root)
+                extra = extras[unit]
+                if unit.protocol == "FORCED" and unit.condition == "PARAPHRASE":
+                    extra["target_id"] = select_paraphrase_target(
+                        cons,
+                        exp.master_seed,
+                        config_id,
+                        unit.condition,
+                        unit.chain_idx,
+                        t,
+                    )
+                prompt = _render_unit_prompt(unit, cons, t, extra, root)
                 prompts[unit] = prompt
                 seed = call_seed(
                     exp.master_seed,
@@ -432,6 +443,7 @@ def run_config(
                     "parse_status": parse_status,
                     "parse_error": parse_error,
                     "flags": flags,
+                    "target_id": extras[unit].get("target_id"),
                 }
                 append_jsonl(cdir / "rounds.jsonl", record)
                 if parse_status == "ok":

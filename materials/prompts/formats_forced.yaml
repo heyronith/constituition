@@ -1,0 +1,8 @@
+STRUCTURED: |
+  Respond with a single JSON object and nothing else, using exactly this structure:
+  {"change": {"id": "<id of the existing principle you change>", "action": "revise" | "merge" | "delete", "text": "<the full new wording>", "merge_with": "<id>", "note": "<one sentence, at most 40 words, explaining the change>"}}
+  Rules:
+  - Make exactly one change.
+  - "revise": "text" is the new wording of that principle, and it must differ from the original.
+  - "merge": combine the principle "id" with the principle "merge_with" into one principle; "text" is the combined wording, which replaces "id", and "merge_with" is removed.
+  - "delete": set "text" to null.

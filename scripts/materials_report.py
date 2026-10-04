@@ -91,6 +91,7 @@ def main() -> int:
                 {
                     "item_id": item.item_id,
                     "category": item.category,
+                    "agentic": item.agentic,
                     "form": form,
                     "text": text,
                     **feat,
@@ -103,6 +104,7 @@ def main() -> int:
     fieldnames = [
         "item_id",
         "category",
+        "agentic",
         "form",
         "word_count",
         "char_count",
@@ -156,6 +158,13 @@ def main() -> int:
         cat: mean(1.0 if r["has_override"] else 0.0 for r in cat_rows)
         for cat, cat_rows in cat_rows_map.items()
     }
+    agentic_rows: dict[bool, list] = defaultdict(list)
+    for row in rows:
+        agentic_rows[bool(row["agentic"])].append(row)
+    override_by_agentic = {
+        flag: mean(1.0 if r["has_override"] else 0.0 for r in rs)
+        for flag, rs in agentic_rows.items()
+    }
 
     # Realism audit is a measurement probe (allow_eval_words via load_realism_audit).
     realism = load_realism_audit(ROOT)
@@ -204,15 +213,15 @@ def main() -> int:
         "",
         (
             "| item_id | form | words | chars | FK | I will | negations | "
-            "override | developers/responsible |"
+            "override | developers/responsible | agentic |"
         ),
-        "|---|---|---:|---:|---:|---|---:|---|---|",
+        "|---|---|---:|---:|---:|---|---:|---|---|---|",
     ]
     for row in rows:
         lines.append(
             f"| {row['item_id']} | {row['form']} | {row['word_count']} | {row['char_count']} | "
             f"{row['fk_grade']:.1f} | {row['has_i_will']} | {row['negation_count']} | "
-            f"{row['has_override']} | {row['has_developers_or_responsible']} |"
+            f"{row['has_override']} | {row['has_developers_or_responsible']} | {row['agentic']} |"
         )
 
     lines += [
@@ -237,6 +246,9 @@ def main() -> int:
     ]
     for cat, rate in sorted(override_rates.items()):
         lines.append(f"- {cat}: {rate:.2f}")
+    lines += ["", "## Override phrase rate by agentic", ""]
+    for flag, rate in sorted(override_by_agentic.items(), key=lambda kv: kv[0]):
+        lines.append(f"- agentic={flag}: {rate:.2f}")
 
     out_md.write_text("\n".join(lines) + "\n", encoding="utf-8")
     print(f"wrote {out_md.relative_to(ROOT)}")

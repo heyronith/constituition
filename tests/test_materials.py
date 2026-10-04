@@ -14,6 +14,7 @@ from rc.materials import (
     ParseError,
     _new_opaque_id,
     _opaque_id_ok,
+    apply_forced,
     apply_revision,
     build_initial_constitution,
     load_eval_awareness,
@@ -22,26 +23,32 @@ from rc.materials import (
     paraphrase_for_chain,
     parse_endorsement,
     parse_eval_probe,
+    parse_forced,
+    parse_forced_paraphrase,
     parse_free,
     parse_realism,
     parse_structured,
+    render_forced_prompt,
     render_prompt,
     render_realism_clause,
+    select_paraphrase_target,
     trace_lineage,
 )
 
 
 def test_load_items_invariants() -> None:
     items = load_items()
-    assert len(items) == 30
-    assert len({i.item_id for i in items}) == 30
+    assert len(items) == 35
+    assert len({i.item_id for i in items}) == 35
     by_cat = {c: 0 for c in CATEGORIES}
     for item in items:
         by_cat[item.category] += 1
         assert item.oversight_related is (item.category == "COR")
+        assert item.agentic is (item.category == "AGENT")
         assert_blinded(item.form_A)
         assert_blinded(item.form_B)
     assert by_cat == {c: 5 for c in CATEGORIES}
+    assert CATEGORIES == ("COR", "AGENT", "SELF", "HON", "HARM", "CARE", "PROC")
 
 
 def test_build_deterministic_and_varies() -> None:
@@ -90,7 +97,7 @@ def test_no_id_collisions_over_1000_chains() -> None:
     for idx in range(1000):
         cons = build_initial_constitution("gemma4_12b", "PARAPHRASE", idx)
         ids = cons.ids()
-        assert len(ids) == len(set(ids)) == 30
+        assert len(ids) == len(set(ids)) == 35
         assert all(_opaque_id_ok(i) for i in ids)
 
 
@@ -267,7 +274,7 @@ def test_parse_structured_cases() -> None:
     # 9. code-fenced JSON OK
     payload = _all_keep_payload(cons)
     result = parse_structured(f"```json\n{payload}\n```", cons)
-    assert len(result.principles) == 30
+    assert len(result.principles) == 35
 
     # 10. trailing prose error
     with pytest.raises(ParseError, match="trailing"):
@@ -288,7 +295,7 @@ def test_parse_structured_cases() -> None:
         cons,
     )
     nxt = apply_revision(cons, result)
-    assert len(nxt.principles) == 31
+    assert len(nxt.principles) == 36
     new_ids = [p.opaque_id for p in nxt.principles if p.opaque_id not in set(ids)]
     assert len(new_ids) == 1
     assert nxt.metadata[new_ids[0]].category == "EMERGENT"
@@ -386,7 +393,7 @@ def test_parse_free_and_endorsement() -> None:
         "ratings": [{"id": i, "rating": 4} for i in cons.ids()],
     }
     ratings = parse_endorsement(json.dumps(payload), cons.ids())
-    assert len(ratings) == 30
+    assert len(ratings) == 35
     with pytest.raises(ParseError):
         parse_endorsement(json.dumps({"ratings": payload["ratings"][:-1]}), cons.ids())
     with pytest.raises(ParseError):
@@ -434,3 +441,168 @@ def test_probe_files_allow_eval_words_only() -> None:
     # Direct call without the exception still raises on probe text.
     with pytest.raises(BlindingError):
         assert_blinded(realism)
+
+
+def test_parse_forced_valid_and_errors() -> None:
+    cons = build_initial_constitution("qwen38_27b_nothink", "SELF_REFLECT", 0)
+    a, b = cons.ids()[0], cons.ids()[1]
+    orig_a = cons.text_by_id()[a]
+
+    revised = parse_forced(
+        json.dumps(
+            {
+                "change": {
+                    "id": a,
+                    "action": "revise",
+                    "text": "I will rewrite this principle in different words.",
+                    "note": "one change",
+                }
+            }
+        ),
+        cons,
+    )
+    assert revised.action == "revise"
+    nxt = apply_forced(cons, revised)
+    assert nxt.text_by_id()[a] != orig_a
+    assert len(nxt.principles) == 35
+
+    merged = parse_forced(
+        json.dumps(
+            {
+                "change": {
+                    "id": a,
+                    "action": "merge",
+                    "text": "I will combine two commitments into one sentence.",
+                    "merge_with": b,
+                    "note": "merged",
+                }
+            }
+        ),
+        cons,
+    )
+    nxt = apply_forced(cons, merged)
+    assert b not in nxt.ids()
+    assert a in nxt.ids()
+    parents = [r.parent_ids for r in nxt.lineage if r.round == nxt.round and r.opaque_id == a][0]
+    assert a in parents and b in parents
+
+    deleted = parse_forced(
+        json.dumps({"change": {"id": a, "action": "delete", "text": None, "note": "drop"}}),
+        cons,
+    )
+    nxt = apply_forced(cons, deleted)
+    assert a not in nxt.ids()
+    assert len(nxt.principles) == 34
+
+    two = {
+        "changes": [
+            {"id": a, "action": "delete", "text": None},
+            {"id": b, "action": "delete", "text": None},
+        ]
+    }
+    with pytest.raises(ParseError, match="two changes"):
+        parse_forced(json.dumps(two), cons)
+
+    with pytest.raises(ParseError, match="unknown"):
+        parse_forced(
+            json.dumps({"change": {"id": "ZZZ", "action": "delete", "text": None}}),
+            cons,
+        )
+
+    with pytest.raises(ParseError, match="identical"):
+        parse_forced(
+            json.dumps({"change": {"id": a, "action": "revise", "text": orig_a}}),
+            cons,
+        )
+    with pytest.raises(ParseError, match="identical"):
+        padded = "  " + orig_a.replace(" ", "  ") + " "
+        parse_forced(
+            json.dumps({"change": {"id": a, "action": "revise", "text": padded}}),
+            cons,
+        )
+
+    with pytest.raises(ParseError, match="itself"):
+        parse_forced(
+            json.dumps(
+                {
+                    "change": {
+                        "id": a,
+                        "action": "merge",
+                        "text": "combined wording here",
+                        "merge_with": a,
+                    }
+                }
+            ),
+            cons,
+        )
+
+    with pytest.raises(ParseError, match="missing merge_with"):
+        parse_forced(
+            json.dumps({"change": {"id": a, "action": "merge", "text": "combined wording here"}}),
+            cons,
+        )
+
+    new_text = parse_forced_paraphrase(
+        json.dumps({"text": "I will say the same thing differently."})
+    )
+    nxt = apply_forced(cons, "paraphrase", target_id=a, text=new_text)
+    assert nxt.text_by_id()[a] == "I will say the same thing differently."
+
+
+def test_paraphrase_target_deterministic_and_uniform() -> None:
+    cons = build_initial_constitution("gemma4_12b", "PARAPHRASE", 0)
+    ids = cons.ids()
+    a = select_paraphrase_target(cons, 20261004, "gemma4_12b", "PARAPHRASE", 0, 3)
+    b = select_paraphrase_target(cons, 20261004, "gemma4_12b", "PARAPHRASE", 0, 3)
+    assert a == b
+    assert a in ids
+    other = select_paraphrase_target(cons, 20261004, "gemma4_12b", "PARAPHRASE", 0, 4)
+    assert other in ids
+
+    from collections import Counter
+
+    counts = Counter()
+    n = 10_000
+    for round_idx in range(n):
+        tid = select_paraphrase_target(
+            cons, 20261004, "gemma4_12b", "PARAPHRASE", 0, round_idx
+        )
+        counts[tid] += 1
+    expected = n / len(ids)
+    chi2 = sum((counts[i] - expected) ** 2 / expected for i in ids)
+    # df = 34; chi-square 0.001 critical value is about 65.2
+    assert chi2 < 65.2, f"chi2={chi2:.2f} rejects uniformity"
+
+
+def test_forced_prompts_blinded_and_no_leaks() -> None:
+    conditions = ["SELF_REFLECT", "OTHER_REFLECT", "PARAPHRASE", "NEUTRAL_EDIT"]
+    cons = build_initial_constitution("qwen38_27b_nothink", "SELF_REFLECT", 0)
+    target = cons.ids()[0]
+    for condition in conditions:
+        for paraphrase in ("p1", "p2"):
+            text = render_forced_prompt(
+                cons, condition, paraphrase, {"target_id": target}  # type: ignore[arg-type]
+            )
+            assert_blinded(text)
+            for cat in CATEGORIES:
+                assert not re.search(rf"\b{cat}\b", text)
+            for meta in cons.metadata.values():
+                assert meta.item_id not in text
+            if condition == "OTHER_REFLECT":
+                assert "Pellam" in text
+            else:
+                assert "Pellam" not in text
+            if condition == "PARAPHRASE":
+                assert f"[{target}]" in text
+
+
+def test_matched_round0_holds_across_protocols() -> None:
+    """Materials seed ignores protocol; PERMISSIVE and FORCED share round 0."""
+    configs = ["qwen38_27b_nothink", "gemma4_12b", "olmo3_7b_final"]
+    conditions = ["SELF_REFLECT", "OTHER_REFLECT", "PARAPHRASE", "NEUTRAL_EDIT"]
+    ref = build_initial_constitution(configs[0], conditions[0], 0)
+    for config_id in configs:
+        for condition in conditions:
+            cons = build_initial_constitution(config_id, condition, 0)
+            assert [p.opaque_id for p in cons.principles] == [p.opaque_id for p in ref.principles]
+            assert [p.text for p in cons.principles] == [p.text for p in ref.principles]

@@ -15,6 +15,16 @@ def test_real_configs_validate() -> None:
     cfg = load_all()
     assert cfg.models.by_id("gemma4_12b").dtype == "bf16"
     assert cfg.experiment.master_seed == 20261004
+    assert cfg.experiment.categories == [
+        "COR",
+        "AGENT",
+        "SELF",
+        "HON",
+        "HARM",
+        "CARE",
+        "PROC",
+    ]
+    assert cfg.experiment.protocols == ["PERMISSIVE", "FORCED"]
     assert set(cfg.experiment.erosion_events) <= set(cfg.experiment.fate_scale_best_to_worst)
 
 

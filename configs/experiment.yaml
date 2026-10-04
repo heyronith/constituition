@@ -1,7 +1,8 @@
-categories: [COR, SELF, HON, HARM, CARE, PROC]
+categories: [COR, AGENT, SELF, HON, HARM, CARE, PROC]
 forms: [A, B]
 clauses_per_category: 5
 
+protocols: [PERMISSIVE, FORCED]
 conditions: [SELF_REFLECT, OTHER_REFLECT, PARAPHRASE, NEUTRAL_EDIT]
 instruction_paraphrases: 2
 formats: [STRUCTURED, FREE]
