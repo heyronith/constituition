@@ -53,10 +53,11 @@ os.environ["HF_TOKEN"] = """${HF_TOKEN}"""
 os.environ["RC_REPO_URL"] = """${REPO_URL}"""
 os.environ["RC_GIT_SHA"] = """${GIT_SHA}"""
 os.environ["RC_VLLM_VERSION"] = """${VLLM_VERSION}"""
+os.environ["RC_CONFIGS"] = """${CONFIGS}"""
 EOF
-  # Body without the module's __main__ guard.
+  # Body without the module's __main__ guard; start job in the same exec.
   sed '/^if __name__/,$d' "${SCRIPTS}/colab_remote_setup.py"
-  printf '\nmain()\n'
+  printf '\nmain()\nstart_job()\n'
 } >"${WRAPPER}"
 SETUP_OUT="$(mktemp -t rc_colab_setup_out.XXXXXX)"
 set +e
@@ -64,25 +65,12 @@ colab --auth=adc exec -s "${SESSION}" -f "${WRAPPER}" --timeout 1200 | tee "${SE
 SETUP_RC=${PIPESTATUS[0]}
 set -e
 rm -f "${WRAPPER}"
-if [[ ${SETUP_RC} -ne 0 ]] || ! grep -q SETUP_OK "${SETUP_OUT}"; then
-  echo "Colab setup failed" >&2
+if [[ ${SETUP_RC} -ne 0 ]] || ! grep -q SETUP_OK "${SETUP_OUT}" || ! grep -q STARTED "${SETUP_OUT}"; then
+  echo "Colab setup/start failed" >&2
   rm -f "${SETUP_OUT}"
   exit 1
 fi
 rm -f "${SETUP_OUT}"
-
-echo "=== start background job ==="
-START_WRAP="$(mktemp -t rc_colab_start.XXXXXX.py)"
-{
-  cat <<EOF
-import os
-os.environ["RC_CONFIGS"] = """${CONFIGS}"""
-EOF
-  sed '/^if __name__/,$d' "${SCRIPTS}/colab_remote_start.py"
-  printf '\nmain()\n'
-} >"${START_WRAP}"
-colab --auth=adc exec -s "${SESSION}" -f "${START_WRAP}" --timeout 60
-rm -f "${START_WRAP}"
 
 echo "=== poll status every 60s ==="
 while true; do
