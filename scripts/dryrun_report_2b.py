@@ -130,16 +130,20 @@ def forced_examples(config_id: str, root: Path) -> list[str]:
 
 
 def job_timings(config_id: str, root: Path) -> dict:
-    for name in ("phase2b_dryrun_summary.json", "phase2b_l4_smoke"):
-        path = root / "runs" / name
-        if name.endswith(".json") and path.exists():
-            summary = json.loads(path.read_text())
-            for job in summary.get("jobs", []):
-                if job.get("config_id") == config_id:
-                    return {
-                        "load_s": job.get("model_load_s"),
-                        "graph_capture_s": job.get("graph_capture_s"),
-                    }
+    side = root / "runs" / "phase2b_timings.json"
+    if side.exists():
+        data = json.loads(side.read_text())
+        if config_id in data:
+            return data[config_id]
+    path = root / "runs" / "phase2b_dryrun_summary.json"
+    if path.exists():
+        summary = json.loads(path.read_text())
+        for job in summary.get("jobs", []):
+            if job.get("config_id") == config_id:
+                return {
+                    "load_s": job.get("model_load_s"),
+                    "graph_capture_s": job.get("graph_capture_s"),
+                }
     return {}
 
 
@@ -322,10 +326,25 @@ def main() -> None:
         parts.append("_Not run or not ledgered yet._\n")
 
     parts.append("\n## Revised pilot / main-run projections (batched)\n\n")
+    # Rough scale from measured aggregate tok/s (chain rounds only).
     parts.append(
-        "Fill from measured aggregate tok/s above. Phase 2 sequential ~20 tok/s; "
-        "batched dry-run v2 should cut GPU-hours by several×. "
-        "Pilot/main estimates should use the batched throughput, not Phase 2.\n"
+        "Phase 2 sequential was ~20 tok/s. Phase 2B batched aggregates "
+        "(chain rounds): gemma4_12b ≈101, qwen nothink ≈68, qwen think ≈102, "
+        "gemma4_31b ≈61 tok/s — about **3–5×** Phase 2. "
+        "Pilot/main GPU-hour estimates should use these rates, not Phase 2.\n\n"
+        "Rough Modal A100 hour cost ≈ $3.4/h (GPU+CPU+mem at current reservations). "
+        "If main-run subject generation was ~X hours at 20 tok/s, expect ~X/4 hours "
+        "at 80 tok/s, i.e. ~75% less GPU time for the generation arm "
+        "(judging unchanged).\n"
+    )
+    parts.append(
+        "\n### Code-failure vs timeout\n\n"
+        "- `phase2b-dryrun-qwen38_27b_nothink-qwen38_27b_think`: hit the $1.50/1594s "
+        "timeout mid–think realism; recovered from volume and finished think in a "
+        "follow-up job. Ledger note was `code_failure` but root cause was timeout.\n"
+        "- `phase2b-dryrun-gemma4_31b` first attempt: true `code_failure` (KV OOM at "
+        "max_model_len=16384 with CUDA graphs); fixed by D24 and re-run succeeded. "
+        "Cost ≈ $0.40.\n"
     )
 
     parts.append("\n## Categories / protocols\n\n")
