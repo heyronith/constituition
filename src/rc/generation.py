@@ -70,7 +70,10 @@ def max_model_len_for(config_id: str, root: Path | None = None) -> int:
     vllm = load_vllm(root)
     if config_id == "qwen38_27b_think":
         return vllm.think_max_model_len
-    # D13: Gemma 31B uses 16384
+    # D13/D24: Gemma 31B needs headroom for CUDA-graph capture on A100-80GB.
+    # With enforce_eager=False, 16384 exceeds available KV; 12288 fits.
+    if config_id == "gemma4_31b":
+        return 12288
     return vllm.default_max_model_len
 
 

@@ -141,7 +141,7 @@ def preflight(
         already = spent_modal_usd(root)
         project_cap = hard_cap_usd if hard_cap_usd is not None else budget.modal_hard_cap_usd
         # Phase-2 dry run also enforces its own $6 hard stop.
-        if str(phase) in {"2", "phase2", "phase2_dryrun"}:
+        if str(phase) in {"2", "2b", "phase2", "phase2b", "phase2_dryrun"}:
             project_cap = min(project_cap, budget.phase2_dryrun_hard_cap_usd)
         if hard_cap_usd is not None:
             project_cap = hard_cap_usd

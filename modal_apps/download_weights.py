@@ -84,10 +84,14 @@ def main(*config_ids: str) -> None:
     seen: set[tuple[str, str]] = set()
     repos: list[dict[str, str]] = []
     for sid in sorted(wanted):
-        subject = models.by_id(sid)
-        if not subject.compute.startswith("modal_"):
-            print(f"skip non-modal {sid}")
-            continue
+        try:
+            subject = models.by_id(sid)
+            if not subject.compute.startswith("modal_"):
+                print(f"skip non-modal {sid}")
+                continue
+        except KeyError:
+            # Smoke models live in the lockfile, not models.yaml.
+            pass
         repo_id, sha = load_lock_revision(sid, root)
         key = (repo_id, sha)
         if key in seen:
@@ -95,14 +99,16 @@ def main(*config_ids: str) -> None:
         seen.add(key)
         repos.append({"repo_id": repo_id, "revision": sha})
 
-    max_seconds = 60 * 60 * 3
+    smoke_only = wanted == {"qwen35_08b_smoke"}
+    job_id = "phase2b-download-smoke" if smoke_only else "phase2-download-weights"
+    max_seconds = 900 if smoke_only else 60 * 60 * 3
     preflight(
         gpu="cpu",
         max_seconds=max_seconds,
-        phase=2,
-        job_id="phase2-download-weights",
+        phase="2b" if smoke_only else 2,
+        job_id=job_id,
         platform="modal",
-        override_job_cap_usd=5.0,
+        override_job_cap_usd=1.50 if smoke_only else 5.0,
         cpu_cores=4.0,
         memory_gib=8.0,
         root=root,
@@ -114,8 +120,8 @@ def main(*config_ids: str) -> None:
     elapsed = time.perf_counter() - started
     actual = estimate_modal_usd("cpu", int(elapsed) + 1, cpu_cores=4.0, memory_gib=8.0, root=root)
     record_actual(
-        job_id="phase2-download-weights",
-        phase=2,
+        job_id=job_id,
+        phase="2b" if smoke_only else 2,
         platform="modal",
         gpu="cpu",
         max_seconds=max_seconds,

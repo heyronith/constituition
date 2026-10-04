@@ -11,7 +11,7 @@
 
 set -euo pipefail
 
-SESSION="${SESSION:-rc-olmo-p2}"
+SESSION="${SESSION:-rc-olmo-p2b}"
 REPO_URL="${REPO_URL:-https://github.com/heyronith/constituition.git}"
 GIT_SHA="${GIT_SHA:-$(git rev-parse HEAD)}"
 VLLM_VERSION="${VLLM_VERSION:-0.30.0}"
@@ -72,6 +72,7 @@ nohup python scripts/colab_run.py \
   > /content/rc-runs/job.log 2>&1 &
 echo \$! > /content/rc-runs/job.pid
 "
+# phase2b_dryrun tag is set inside colab_run.py
 
 echo "=== poll status every 60s ==="
 while true; do
@@ -90,10 +91,11 @@ done
 
 echo "=== tar + download ==="
 colab exec -s "${SESSION}" -- bash -lc "
-cd /content && tar -czf rc-runs-phase2.tgz -C /content rc-runs
+cd /content && tar -czf rc-runs-phase2b.tgz -C /content rc-runs
 "
 mkdir -p "${LOCAL_ROOT}/runs"
-colab download -s "${SESSION}" /content/rc-runs-phase2.tgz "${LOCAL_ROOT}/runs/rc-runs-phase2.tgz"
-tar -xzf "${LOCAL_ROOT}/runs/rc-runs-phase2.tgz" -C "${LOCAL_ROOT}/runs" --strip-components=1
+colab download -s "${SESSION}" /content/rc-runs-phase2b.tgz "${LOCAL_ROOT}/runs/rc-runs-phase2b.tgz"
+# Merge downloaded run tags into local runs/ without wiping prior Modal pulls.
+tar -xzf "${LOCAL_ROOT}/runs/rc-runs-phase2b.tgz" -C "${LOCAL_ROOT}/runs" --strip-components=1
 
 echo "=== Colab job finished; trap will stop the session ==="

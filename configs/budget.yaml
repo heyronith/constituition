@@ -1,6 +1,6 @@
 modal_hard_cap_usd: 100
 modal_per_job_default_cap_usd: 15
-phase2_dryrun_hard_cap_usd: 6
+phase2_dryrun_hard_cap_usd: 11
 colab_cu_cap: 100
 colab_l4_cu_per_hour: null
 

@@ -54,13 +54,12 @@ def main() -> int:
     try:
         from huggingface_hub import snapshot_download
 
-        from rc.chain_runner import run_cell, run_endorsement, run_realism_audit
+        from rc.chain_runner import Unit, run_config, run_endorsement, run_realism_audit
         from rc.config import load_vllm
         from rc.generation import VLLMBackend, load_lock_revision, max_model_len_for
 
         root = args.repo_root
         vllm_cfg = load_vllm(root)
-        conditions = ["SELF_REFLECT", "OTHER_REFLECT", "PARAPHRASE", "NEUTRAL_EDIT"]
         started = time.perf_counter()
 
         for cid in args.configs:
@@ -74,28 +73,43 @@ def main() -> int:
                 revision=None,
                 max_model_len=max_model_len_for(cid, root),
                 gpu_memory_utilization=vllm_cfg.gpu_memory_utilization,
+                enforce_eager=False,
+                max_num_seqs=vllm_cfg.max_num_seqs,
                 root=root,
             )
             load_s = time.perf_counter() - load_t0
-            write_status(out_root, state="running", config_id=cid, model_load_s=load_s)
-
-            for cond in conditions:
-                run_cell(
-                    backend,
-                    cid,
-                    cond,
-                    "STRUCTURED",
-                    chain_indices=[0],
-                    rounds=2,
-                    run_tag="phase2_dryrun",
-                    root=root,
-                )
-                write_status(out_root, last_cell=f"{cid}/{cond}")
+            write_status(
+                out_root,
+                state="running",
+                config_id=cid,
+                model_load_s=load_s,
+                graph_capture_s=getattr(backend, "graph_capture_s", None),
+            )
+            conditions = [
+                "SELF_REFLECT",
+                "OTHER_REFLECT",
+                "PARAPHRASE",
+                "NEUTRAL_EDIT",
+            ]
+            units = [
+                Unit(protocol, cond, "STRUCTURED", 0)
+                for protocol in ("PERMISSIVE", "FORCED")
+                for cond in conditions
+            ]
+            run_config(
+                backend,
+                cid,
+                units,
+                rounds=2,
+                run_tag="phase2b_dryrun",
+                root=root,
+            )
+            write_status(out_root, last_cell=f"{cid}/batched")
             run_endorsement(
-                backend, cid, reps=1, forms=("A", "B"), run_tag="phase2_dryrun", root=root
+                backend, cid, reps=1, forms=("A", "B"), run_tag="phase2b_dryrun", root=root
             )
             run_realism_audit(
-                backend, cid, reps=3, run_tag="phase2_realism_audit", root=root
+                backend, cid, reps=3, run_tag="phase2b_realism_audit", root=root
             )
             del backend
 

@@ -99,6 +99,7 @@ def _execute_dryrun(config_ids: list[str], gpu: str, git_sha_value: str = "") ->
         )
         engine_cid = "qwen38_27b_think" if "qwen38_27b_think" in cids else cids[0]
         load_started = time.perf_counter()
+        max_seqs = 32 if engine_cid == "gemma4_31b" else vllm_cfg.max_num_seqs
         backend = VLLMBackend(
             engine_cid,
             model_path=model_path,
@@ -106,7 +107,7 @@ def _execute_dryrun(config_ids: list[str], gpu: str, git_sha_value: str = "") ->
             max_model_len=max_model_len_for(engine_cid, root),
             gpu_memory_utilization=vllm_cfg.gpu_memory_utilization,
             enforce_eager=False,
-            max_num_seqs=vllm_cfg.max_num_seqs,
+            max_num_seqs=max_seqs,
             root=root,
         )
         load_s = time.perf_counter() - load_started
@@ -142,15 +143,21 @@ def _execute_dryrun(config_ids: list[str], gpu: str, git_sha_value: str = "") ->
                 )
             )
             runs_vol.commit()
-            run_endorsement(
-                backend,
-                cid,
-                reps=1,
-                forms=("A", "B"),
-                run_tag="phase2b_dryrun",
-                root=root,
+            endorse_path = (
+                Path(REMOTE_REPO) / "runs" / "phase2b_dryrun" / cid / "endorsement" / "calls.jsonl"
             )
-            job["endorsement"] = "ok"
+            if endorse_path.exists() and endorse_path.stat().st_size > 0:
+                job["endorsement"] = "skipped_existing"
+            else:
+                run_endorsement(
+                    backend,
+                    cid,
+                    reps=1,
+                    forms=("A", "B"),
+                    run_tag="phase2b_dryrun",
+                    root=root,
+                )
+                job["endorsement"] = "ok"
             runs_vol.commit()
             run_realism_audit(
                 backend, cid, reps=3, run_tag="phase2b_realism_audit", root=root
@@ -416,6 +423,11 @@ def main(*args: str) -> None:
             memory_gib=res["memory_gib"],
             root=root,
         )
+        note = "timeout" if "timeout" in str(exc).lower() else "code_failure"
+        try:
+            _pull_volume(root)
+        except Exception:
+            pass
         record_actual(
             job_id=job_id,
             phase="2b",
@@ -425,10 +437,10 @@ def main(*args: str) -> None:
             actual_seconds=elapsed,
             est_usd=est,
             actual_usd=actual,
-            note="code_failure",
+            note=note,
             root=root,
         )
-        raise SystemExit(f"code_failure: {exc}") from exc
+        raise SystemExit(f"{note}: {exc}") from exc
     elapsed = time.perf_counter() - started
 
     _pull_volume(root)
