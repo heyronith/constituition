@@ -7,7 +7,7 @@ from pathlib import Path
 
 import pytest
 
-from rc.chain_runner import call_seed, run_cell
+from rc.chain_runner import Unit, call_seed, run_cell, run_config
 from rc.generation import MockBackend
 from rc.io_utils import sha256_file
 from rc.materials import build_initial_constitution
@@ -104,7 +104,7 @@ def test_retries_then_censor(repo_tmp: Path) -> None:
     assert summary["chains"]["0"]["completed_rounds"] == []
     rounds = (
         repo_tmp
-        / "runs/test_censor/gemma4_12b/PARAPHRASE/STRUCTURED/chain_0/rounds.jsonl"
+        / "runs/test_censor/gemma4_12b/PERMISSIVE/PARAPHRASE/STRUCTURED/chain_0/rounds.jsonl"
     ).read_text()
     assert rounds.count("parse_status") == 3
 
@@ -139,7 +139,7 @@ def test_resume_skips_completed_and_reruns_partial(repo_tmp: Path) -> None:
         root=repo_tmp,
     )
     # Partial failed attempt for round 1
-    cdir = repo_tmp / "runs/test_resume/gemma4_12b/SELF_REFLECT/STRUCTURED/chain_0"
+    cdir = repo_tmp / "runs/test_resume/gemma4_12b/PERMISSIVE/SELF_REFLECT/STRUCTURED/chain_0"
     from rc.io_utils import append_jsonl
 
     append_jsonl(
@@ -233,7 +233,9 @@ def test_free_format_round_transition(repo_tmp: Path) -> None:
     rows = [
         json.loads(line)
         for line in (
-            repo_tmp / "runs/test_free/gemma4_12b/SELF_REFLECT/FREE/chain_0/constitutions.jsonl"
+            repo_tmp
+            / "runs/test_free/gemma4_12b/PERMISSIVE/SELF_REFLECT/FREE/chain_0"
+            / "constitutions.jsonl"
         )
         .read_text()
         .splitlines()
@@ -244,3 +246,30 @@ def test_free_format_round_transition(repo_tmp: Path) -> None:
     assert len(rows[1]["principles"]) == 4
     assert len(rows[2]["principles"]) == 5
     assert rows[1]["principles"][0]["opaque_id"] != rows[2]["principles"][0]["opaque_id"]
+
+
+def test_run_config_one_round_batches_eight_units(repo_tmp: Path) -> None:
+    conditions = ["SELF_REFLECT", "OTHER_REFLECT", "PARAPHRASE", "NEUTRAL_EDIT"]
+    units = [
+        Unit("PERMISSIVE", cond, "STRUCTURED", chain)
+        for cond in conditions
+        for chain in (0, 1)
+    ]
+    assert len(units) == 8
+    outputs = []
+    for unit in units:
+        cons = build_initial_constitution(
+            "gemma4_12b", unit.condition, unit.chain_idx, root=repo_tmp
+        )
+        outputs.append(_keep_all_json(cons))
+    backend = MockBackend(outputs)
+    run_config(
+        backend,
+        "gemma4_12b",
+        units,
+        rounds=1,
+        run_tag="test_batch8",
+        root=repo_tmp,
+    )
+    assert len(backend.calls) == 1
+    assert len(backend.calls[0]) == 8

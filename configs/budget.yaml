@@ -13,6 +13,7 @@ gpu_prices_usd_per_second:
   L40S: 0.000542
   A100-80GB: 0.000694
   H100: 0.001097
+  L4: 0.000222
   # CPU is billed per physical core / sec; Modal minimum is 0.125 cores.
   cpu: 0.0000131
 

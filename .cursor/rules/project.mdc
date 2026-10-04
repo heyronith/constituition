@@ -19,3 +19,4 @@ Iterated constitutional self-revision. A stateless LM revises a first-person con
 10. Subjects never see clause categories or item IDs. Clauses are shown with per-chain random opaque IDs.
 11. Clause and prompt wording in `materials/` is frozen by the lead scientist. Never edit it; report problems instead.
 12. Sampling parameters come only from `configs/models.yaml`. Never set them inline.
+13. GPU-safety (D23): no job may start on a GPU of A100 class or larger until the exact same code path has passed (a) `pytest` with `MockBackend` and (b) an end-to-end tiny-model run on Modal L4 (`Qwen/Qwen3.5-0.8B` or another ≤1B instruct model pinned under `smoke_models`). A container that fails from a code error is billed with note `code_failure`.

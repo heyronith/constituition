@@ -7,6 +7,7 @@
 version: "0.30.0"
 source: https://pypi.org/project/vllm/0.30.0/
 gpu_memory_utilization: 0.92
+max_num_seqs: 64
 default_max_model_len: 16384
 think_max_model_len: 24576
 think_max_tokens: 16384

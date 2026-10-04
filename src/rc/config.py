@@ -120,6 +120,7 @@ class VllmConfig(StrictModel):
     version: str
     source: str
     gpu_memory_utilization: float
+    max_num_seqs: int = 64
     default_max_model_len: int
     think_max_model_len: int
     think_max_tokens: int
@@ -177,6 +178,23 @@ def load_budget(root: Path | None = None) -> BudgetConfig:
 def load_vllm(root: Path | None = None) -> VllmConfig:
     root = root or repo_root()
     return VllmConfig.model_validate(_load_yaml(root / "configs" / "vllm.yaml"))
+
+
+class SmokeConfig(StrictModel):
+    config_id: str
+    hf_repo: str
+    family: str = "smoke"
+    axis: str = "l4_smoke"
+    compute: Literal["modal_l4"] = "modal_l4"
+    dtype: Literal["bf16"] = "bf16"
+    chat_template_kwargs: dict[str, Any]
+    sampling: dict[str, Any]
+
+
+def load_smoke(root: Path | None = None) -> SmokeConfig:
+    root = root or repo_root()
+    path = root / "configs" / "smoke.yaml"
+    return SmokeConfig.model_validate(_load_yaml(path))
 
 
 def load_all(root: Path | None = None) -> LoadedConfigs:

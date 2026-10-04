@@ -1,0 +1,14 @@
+# Tiny-model L4 smoke (D23). Not a subject; never used in confirmatory analysis.
+config_id: qwen35_08b_smoke
+hf_repo: Qwen/Qwen3.5-0.8B
+compute: modal_l4
+dtype: bf16
+chat_template_kwargs:
+  enable_thinking: false
+sampling:
+  temperature: 1.0
+  top_p: 0.95
+  top_k: 20
+  min_p: 0.0
+  presence_penalty: 0.0
+  repetition_penalty: 1.0

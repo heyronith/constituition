@@ -1,9 +1,11 @@
-"""Lock-step chain runner with retries, resume, and immutable storage."""
+"""Lock-step / cross-cell chain runner with retries, resume, and immutable storage."""
 
 from __future__ import annotations
 
 import hashlib
 import json
+import random
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Literal
 
@@ -11,6 +13,7 @@ from rc.config import load_experiment, load_vllm, repo_root
 from rc.generation import (
     Backend,
     GenerationRequest,
+    GenerationResult,
     build_request,
     load_lock_revision,
 )
@@ -24,8 +27,10 @@ from rc.io_utils import (
 )
 from rc.materials import (
     Constitution,
+    HiddenMeta,
     ParseError,
     Principle,
+    _new_opaque_id,
     apply_revision,
     build_initial_constitution,
     load_items,
@@ -40,6 +45,15 @@ from rc.materials import (
 )
 
 FormatName = Literal["STRUCTURED", "FREE"]
+ProtocolName = Literal["PERMISSIVE", "FORCED"]
+
+
+@dataclass(frozen=True)
+class Unit:
+    protocol: ProtocolName
+    condition: str
+    fmt: FormatName
+    chain_idx: int
 
 
 def call_seed(
@@ -49,13 +63,17 @@ def call_seed(
     chain_idx: int,
     round_idx: int,
     attempt: int,
+    protocol: str = "PERMISSIVE",
 ) -> int:
     """Sampling seed for one generation call.
 
     Masked to signed 32-bit range: vLLM/SamplingParams rejects uint64 values
     with OverflowError on some platforms.
     """
-    payload = f"{master_seed}|{config_id}|{condition}|{chain_idx}|{round_idx}|{attempt}".encode()
+    payload = (
+        f"{master_seed}|{config_id}|{protocol}|{condition}|"
+        f"{chain_idx}|{round_idx}|{attempt}"
+    ).encode()
     return int(hashlib.sha256(payload).hexdigest()[:16], 16) & 0x7FFFFFFF
 
 
@@ -66,12 +84,14 @@ def cell_dir(
     fmt: str,
     chain_idx: int,
     root: Path | None = None,
+    protocol: str = "PERMISSIVE",
 ) -> Path:
     return (
         (root or repo_root())
         / "runs"
         / run_tag
         / config_id
+        / protocol
         / condition
         / fmt
         / f"chain_{chain_idx}"
@@ -105,7 +125,6 @@ def _constitution_to_dict(cons: Constitution) -> dict[str, Any]:
 
 
 def _completed_rounds(chain_path: Path) -> set[int]:
-    """Rounds with a successful parse in rounds.jsonl."""
     done: set[int] = set()
     for row in _load_jsonl(chain_path / "rounds.jsonl"):
         if row.get("parse_status") == "ok":
@@ -114,7 +133,6 @@ def _completed_rounds(chain_path: Path) -> set[int]:
 
 
 def _restore_constitution(chain_path: Path, round_idx: int) -> Constitution | None:
-    """Restore constitution state after a completed round (for resume)."""
     rows = [
         r
         for r in _load_jsonl(chain_path / "constitutions.jsonl")
@@ -125,13 +143,11 @@ def _restore_constitution(chain_path: Path, round_idx: int) -> Constitution | No
     meta_path = chain_path / "meta.json"
     meta = json.loads(meta_path.read_text(encoding="utf-8")) if meta_path.exists() else {}
     row = rows[-1]
-    from rc.materials import HiddenMeta, LineageRecord
+    from rc.materials import LineageRecord
 
     principles = [Principle(opaque_id=p["opaque_id"], text=p["text"]) for p in row["principles"]]
     metadata = {
-        oid: HiddenMeta(
-            item_id=m["item_id"], category=m["category"], form=m.get("form")
-        )
+        oid: HiddenMeta(item_id=m["item_id"], category=m["category"], form=m.get("form"))
         for oid, m in row.get("metadata", {}).items()
     }
     lineage_rows = _load_jsonl(chain_path / "lineage.jsonl")
@@ -166,204 +182,246 @@ def _restore_constitution(chain_path: Path, round_idx: int) -> Constitution | No
     )
 
 
-def run_cell(
+def _lineage_record_dict(rec: Any) -> dict[str, Any]:
+    return {
+        "round": rec.round,
+        "opaque_id": rec.opaque_id,
+        "parent_ids": rec.parent_ids,
+        "decision": rec.decision,
+        "merge_with": rec.merge_with,
+        "before_text": rec.before_text,
+        "after_text": rec.after_text,
+        "flags": rec.flags,
+        "item_id": rec.item_id,
+        "category": rec.category,
+    }
+
+
+def _init_unit(
+    unit: Unit,
+    config_id: str,
+    run_tag: str,
+    root: Path,
+    repo: str,
+    revision: str,
+    vllm_version: str,
+) -> tuple[Constitution, int | None]:
+    cdir = cell_dir(
+        run_tag, config_id, unit.condition, unit.fmt, unit.chain_idx, root, unit.protocol
+    )
+    cdir.mkdir(parents=True, exist_ok=True)
+    meta_path = cdir / "meta.json"
+    paraphrase = paraphrase_for_chain(unit.chain_idx)
+    if not meta_path.exists():
+        cons0 = build_initial_constitution(config_id, unit.condition, unit.chain_idx, root=root)
+        _write_json(
+            meta_path,
+            {
+                "config_id": config_id,
+                "protocol": unit.protocol,
+                "condition": unit.condition,
+                "fmt": unit.fmt,
+                "chain_idx": unit.chain_idx,
+                "paraphrase": paraphrase,
+                "materials_seed": cons0.seed,
+                "materials_seed_hex": cons0.seed_hex,
+                "hf_repo": repo,
+                "revision": revision,
+                "vllm_version": vllm_version,
+                "git_sha": git_sha(root),
+                "run_tag": run_tag,
+                "hidden_metadata": {
+                    oid: {
+                        "item_id": m.item_id,
+                        "category": m.category,
+                        "form": m.form,
+                    }
+                    for oid, m in cons0.metadata.items()
+                },
+            },
+        )
+        append_jsonl(cdir / "constitutions.jsonl", _constitution_to_dict(cons0))
+        for rec in cons0.lineage:
+            append_jsonl(cdir / "lineage.jsonl", _lineage_record_dict(rec))
+        return cons0, None
+    done = _completed_rounds(cdir)
+    if done:
+        last = max(done)
+        restored = _restore_constitution(cdir, last)
+        cons = restored or build_initial_constitution(
+            config_id, unit.condition, unit.chain_idx, root=root
+        )
+    else:
+        cons = build_initial_constitution(config_id, unit.condition, unit.chain_idx, root=root)
+    meta = json.loads(meta_path.read_text(encoding="utf-8"))
+    censored = int(meta["censored_at_round"]) if meta.get("censored_at_round") is not None else None
+    return cons, censored
+
+
+def _apply_output(
+    unit: Unit,
+    cons: Constitution,
+    result: GenerationResult,
+    round_idx: int,
+    extra: dict[str, Any],
+    root: Path,
+) -> tuple[Constitution, list[str]]:
+    flags = list(result.flags)
+    if unit.protocol == "FORCED":
+        from rc.materials import apply_forced, parse_forced, parse_forced_paraphrase
+
+        if unit.condition == "PARAPHRASE":
+            new_text = parse_forced_paraphrase(result.text_final)
+            next_cons = apply_forced(
+                cons, "paraphrase", target_id=extra.get("target_id"), text=new_text
+            )
+            return next_cons, flags
+        change = parse_forced(result.text_final, cons)
+        flags.extend(getattr(change, "flags", []) or [])
+        next_cons = apply_forced(cons, change)
+        return next_cons, flags
+
+    if unit.fmt == "STRUCTURED":
+        revision = parse_structured(result.text_final, cons)
+        for d in revision.principles:
+            flags.extend(d.flags)
+        for a in revision.added:
+            flags.extend(a.flags)
+        next_cons = apply_revision(cons, revision)
+        return next_cons, flags
+
+    texts = parse_free(result.text_final)
+    rng = random.Random(cons.seed ^ ((round_idx + 1) * 1_000_003))
+    used = set(cons.used_ids)
+    principles = []
+    metadata = {}
+    for i, text in enumerate(texts):
+        oid = _new_opaque_id(rng, used)
+        principles.append(Principle(opaque_id=oid, text=text))
+        metadata[oid] = HiddenMeta(item_id=f"FREE_{round_idx + 1}_{i}", category="FREE", form=None)
+    next_cons = Constitution(
+        principles=principles,
+        metadata=metadata,
+        lineage=cons.lineage,
+        config_id=cons.config_id,
+        condition=cons.condition,
+        chain_idx=cons.chain_idx,
+        seed=cons.seed,
+        seed_hex=cons.seed_hex,
+        used_ids=used,
+        round=round_idx + 1,
+    )
+    return next_cons, flags
+
+
+def _render_unit_prompt(
+    unit: Unit, cons: Constitution, round_idx: int, extra: dict[str, Any], root: Path
+) -> str:
+    paraphrase = paraphrase_for_chain(unit.chain_idx)
+    if unit.protocol == "FORCED":
+        from rc.materials import render_forced_prompt
+
+        return render_forced_prompt(cons, unit.condition, paraphrase, extra, root=root)
+    return render_prompt(cons, unit.condition, paraphrase, unit.fmt, root=root)
+
+
+def run_config(
     backend: Backend,
     config_id: str,
-    condition: str,
-    fmt: FormatName,
-    chain_indices: list[int],
+    units: list[Unit],
     rounds: int,
     run_tag: str,
     *,
     root: Path | None = None,
     max_attempts: int = 3,
 ) -> dict[str, Any]:
-    """Run all chains in lock-step by round. Dry-run data must use run_tag phase2_dryrun."""
+    """Run all units for one config. Each round is a single batched generate call."""
     root = root or repo_root()
     exp = load_experiment(root)
     vllm = load_vllm(root)
     repo, revision = load_lock_revision(config_id, root)
-    paraphrase_by_chain = {k: paraphrase_for_chain(k) for k in chain_indices}
 
-    # Initialize / resume chain state
-    states: dict[int, Constitution | None] = {}
-    censored: dict[int, int | None] = {k: None for k in chain_indices}
-    for k in chain_indices:
-        cdir = cell_dir(run_tag, config_id, condition, fmt, k, root)
-        cdir.mkdir(parents=True, exist_ok=True)
-        meta_path = cdir / "meta.json"
-        if not meta_path.exists():
-            cons0 = build_initial_constitution(config_id, condition, k, root=root)
-            _write_json(
-                meta_path,
-                {
-                    "config_id": config_id,
-                    "condition": condition,
-                    "fmt": fmt,
-                    "chain_idx": k,
-                    "paraphrase": paraphrase_by_chain[k],
-                    "materials_seed": cons0.seed,
-                    "materials_seed_hex": cons0.seed_hex,
-                    "hf_repo": repo,
-                    "revision": revision,
-                    "vllm_version": vllm.version,
-                    "git_sha": git_sha(root),
-                    "run_tag": run_tag,
-                    "hidden_metadata": {
-                        oid: {
-                            "item_id": m.item_id,
-                            "category": m.category,
-                            "form": m.form,
-                        }
-                        for oid, m in cons0.metadata.items()
-                    },
-                },
-            )
-            append_jsonl(cdir / "constitutions.jsonl", _constitution_to_dict(cons0))
-            for rec in cons0.lineage:
-                append_jsonl(
-                    cdir / "lineage.jsonl",
-                    {
-                        "round": rec.round,
-                        "opaque_id": rec.opaque_id,
-                        "parent_ids": rec.parent_ids,
-                        "decision": rec.decision,
-                        "merge_with": rec.merge_with,
-                        "before_text": rec.before_text,
-                        "after_text": rec.after_text,
-                        "flags": rec.flags,
-                        "item_id": rec.item_id,
-                        "category": rec.category,
-                    },
-                )
-            states[k] = cons0
-        else:
-            done = _completed_rounds(cdir)
-            if done:
-                last = max(done)
-                states[k] = _restore_constitution(cdir, last)
-            else:
-                states[k] = build_initial_constitution(config_id, condition, k, root=root)
-            meta = json.loads(meta_path.read_text(encoding="utf-8"))
-            if meta.get("censored_at_round") is not None:
-                censored[k] = int(meta["censored_at_round"])
-
-    summary = {"config_id": config_id, "condition": condition, "fmt": fmt, "chains": {}}
+    states: dict[Unit, Constitution] = {}
+    censored: dict[Unit, int | None] = {}
+    extras: dict[Unit, dict[str, Any]] = {u: {} for u in units}
+    for unit in units:
+        cons, cens = _init_unit(unit, config_id, run_tag, root, repo, revision, vllm.version)
+        states[unit] = cons
+        censored[unit] = cens
 
     for t in range(rounds):
-        batch_ks = [
-            k
-            for k in chain_indices
-            if censored[k] is None and t not in _completed_rounds(
-                cell_dir(run_tag, config_id, condition, fmt, k, root)
+        pending = [
+            u
+            for u in units
+            if censored[u] is None
+            and t
+            not in _completed_rounds(
+                cell_dir(run_tag, config_id, u.condition, u.fmt, u.chain_idx, root, u.protocol)
             )
         ]
-        if not batch_ks:
+        if not pending:
             continue
-
-        # Ensure constitutions for this round
-        for k in batch_ks:
-            if states[k] is None:
-                states[k] = build_initial_constitution(config_id, condition, k, root=root)
-
         for attempt in range(max_attempts):
             still = [
-                k
-                for k in batch_ks
+                u
+                for u in pending
                 if t
                 not in _completed_rounds(
-                    cell_dir(run_tag, config_id, condition, fmt, k, root)
+                    cell_dir(
+                        run_tag, config_id, u.condition, u.fmt, u.chain_idx, root, u.protocol
+                    )
                 )
+                and censored[u] is None
             ]
             if not still:
                 break
             reqs: list[GenerationRequest] = []
-            prompts: dict[int, str] = {}
-            for k in still:
-                cons = states[k]
-                assert cons is not None
-                prompt = render_prompt(
-                    cons, condition, paraphrase_by_chain[k], fmt, root=root
+            prompts: dict[Unit, str] = {}
+            for unit in still:
+                cons = states[unit]
+                prompt = _render_unit_prompt(unit, cons, t, extras[unit], root)
+                prompts[unit] = prompt
+                seed = call_seed(
+                    exp.master_seed,
+                    config_id,
+                    unit.condition,
+                    unit.chain_idx,
+                    t,
+                    attempt,
+                    unit.protocol,
                 )
-                prompts[k] = prompt
-                seed = call_seed(exp.master_seed, config_id, condition, k, t, attempt)
                 reqs.append(build_request(prompt, config_id, seed, root=root))
 
             results = backend.generate(reqs)
-            for k, req, result in zip(still, reqs, results, strict=True):
-                cdir = cell_dir(run_tag, config_id, condition, fmt, k, root)
-                cons = states[k]
-                assert cons is not None
+            for unit, req, result in zip(still, reqs, results, strict=True):
+                cdir = cell_dir(
+                    run_tag,
+                    config_id,
+                    unit.condition,
+                    unit.fmt,
+                    unit.chain_idx,
+                    root,
+                    unit.protocol,
+                )
+                cons = states[unit]
                 parse_status = "ok"
                 parse_error = None
-                flags = list(result.flags)
+                flags: list[str] = []
                 next_cons = cons
                 try:
-                    if fmt == "STRUCTURED":
-                        revision = parse_structured(result.text_final, cons)
-                        for d in revision.principles:
-                            flags.extend(d.flags)
-                        for a in revision.added:
-                            flags.extend(a.flags)
-                        next_cons = apply_revision(cons, revision)
-                        for rec in next_cons.lineage:
-                            if rec.round == next_cons.round:
-                                append_jsonl(
-                                    cdir / "lineage.jsonl",
-                                    {
-                                        "round": rec.round,
-                                        "opaque_id": rec.opaque_id,
-                                        "parent_ids": rec.parent_ids,
-                                        "decision": rec.decision,
-                                        "merge_with": rec.merge_with,
-                                        "before_text": rec.before_text,
-                                        "after_text": rec.after_text,
-                                        "flags": rec.flags,
-                                        "item_id": rec.item_id,
-                                        "category": rec.category,
-                                    },
-                                )
-                    else:
-                        texts = parse_free(result.text_final)
-                        # FREE: fresh opaque IDs, no lineage
-                        import random
-
-                        from rc.materials import HiddenMeta, _new_opaque_id
-
-                        rng = random.Random(cons.seed ^ ((t + 1) * 1_000_003))
-                        used = set(cons.used_ids)
-                        principles = []
-                        metadata = {}
-                        for i, text in enumerate(texts):
-                            oid = _new_opaque_id(rng, used)
-                            principles.append(Principle(opaque_id=oid, text=text))
-                            metadata[oid] = HiddenMeta(
-                                item_id=f"FREE_{t + 1}_{i}",
-                                category="FREE",
-                                form=None,
-                            )
-                        next_cons = Constitution(
-                            principles=principles,
-                            metadata=metadata,
-                            lineage=cons.lineage,
-                            config_id=cons.config_id,
-                            condition=cons.condition,
-                            chain_idx=cons.chain_idx,
-                            seed=cons.seed,
-                            seed_hex=cons.seed_hex,
-                            used_ids=used,
-                            round=t + 1,
-                        )
+                    next_cons, flags = _apply_output(unit, cons, result, t, extras[unit], root)
                 except ParseError as exc:
                     parse_status = "error"
                     parse_error = str(exc)
+                    flags = list(result.flags)
 
                 record = {
                     "round": t,
                     "attempt": attempt,
+                    "protocol": unit.protocol,
                     "seed": req.seed,
-                    "prompt_sha256": sha256_bytes(prompts[k].encode()),
-                    "prompt": prompts[k],
+                    "prompt_sha256": sha256_bytes(prompts[unit].encode()),
+                    "prompt": prompts[unit],
                     "text_final": result.text_final,
                     "text_reasoning": result.text_reasoning,
                     "n_prompt_tokens": result.n_prompt_tokens,
@@ -377,25 +435,67 @@ def run_cell(
                 }
                 append_jsonl(cdir / "rounds.jsonl", record)
                 if parse_status == "ok":
-                    states[k] = next_cons
+                    states[unit] = next_cons
                     append_jsonl(cdir / "constitutions.jsonl", _constitution_to_dict(next_cons))
+                    for rec in next_cons.lineage:
+                        if rec.round == next_cons.round:
+                            append_jsonl(cdir / "lineage.jsonl", _lineage_record_dict(rec))
                 elif attempt == max_attempts - 1:
-                    censored[k] = t
+                    censored[unit] = t
                     meta_path = cdir / "meta.json"
                     meta = json.loads(meta_path.read_text(encoding="utf-8"))
                     meta["censored_at_round"] = t
                     _write_json(meta_path, meta)
 
-    for k in chain_indices:
-        summary["chains"][str(k)] = {
-            "censored_at_round": censored[k],
-            "completed_rounds": sorted(
-                _completed_rounds(cell_dir(run_tag, config_id, condition, fmt, k, root))
-            ),
+    summary: dict[str, Any] = {"config_id": config_id, "units": {}, "chains": {}}
+    for unit in units:
+        cdir = cell_dir(
+            run_tag, config_id, unit.condition, unit.fmt, unit.chain_idx, root, unit.protocol
+        )
+        info = {
+            "protocol": unit.protocol,
+            "condition": unit.condition,
+            "fmt": unit.fmt,
+            "chain_idx": unit.chain_idx,
+            "censored_at_round": censored[unit],
+            "completed_rounds": sorted(_completed_rounds(cdir)),
         }
-
+        summary["units"][f"{unit.protocol}|{unit.condition}|{unit.fmt}|{unit.chain_idx}"] = info
+        if len({(u.protocol, u.condition, u.fmt) for u in units}) == 1:
+            summary["condition"] = unit.condition
+            summary["fmt"] = unit.fmt
+            summary["chains"][str(unit.chain_idx)] = {
+                "censored_at_round": censored[unit],
+                "completed_rounds": info["completed_rounds"],
+            }
     _update_run_manifest(run_tag, root)
     return summary
+
+
+def run_cell(
+    backend: Backend,
+    config_id: str,
+    condition: str,
+    fmt: FormatName,
+    chain_indices: list[int],
+    rounds: int,
+    run_tag: str,
+    *,
+    protocol: ProtocolName = "PERMISSIVE",
+    root: Path | None = None,
+    max_attempts: int = 3,
+) -> dict[str, Any]:
+    """Thin wrapper: one protocol/condition/format, possibly several chains."""
+    units = [Unit(protocol, condition, fmt, k) for k in chain_indices]
+    return run_config(
+        backend,
+        config_id,
+        units,
+        rounds,
+        run_tag,
+        root=root,
+        max_attempts=max_attempts,
+    )
 
 
 def _update_run_manifest(run_tag: str, root: Path) -> None:
@@ -426,24 +526,20 @@ def run_endorsement(
     *,
     reps: int = 5,
     forms: tuple[str, ...] = ("A", "B"),
-    run_tag: str = "phase2_dryrun",
+    run_tag: str = "phase2b_dryrun",
     root: Path | None = None,
 ) -> Path:
+    """All endorsement calls in a single generate() batch."""
     root = root or repo_root()
     exp = load_experiment(root)
     items = load_items(root)
     out_dir = root / "runs" / run_tag / config_id / "endorsement"
     out_dir.mkdir(parents=True, exist_ok=True)
+    pending: list[dict[str, Any]] = []
+    reqs: list[GenerationRequest] = []
     for form in forms:
         for rep in range(reps):
-            seed_int, seed_hex = derive_seed(
-                exp.master_seed, config_id, f"ENDORSE_{form}", rep
-            )
-            # Build a form-pure constitution with materials-like shuffle from this seed.
-            import random
-
-            from rc.materials import HiddenMeta, _new_opaque_id
-
+            seed_int, seed_hex = derive_seed(exp.master_seed, config_id, f"ENDORSE_{form}", rep)
             rng = random.Random(seed_int)
             ordered = list(items)
             rng.shuffle(ordered)
@@ -454,9 +550,7 @@ def run_endorsement(
                 text = item.form_A if form == "A" else item.form_B
                 oid = _new_opaque_id(rng, used)
                 principles.append(Principle(opaque_id=oid, text=text))
-                metadata[oid] = HiddenMeta(
-                    item_id=item.item_id, category=item.category, form=form
-                )
+                metadata[oid] = HiddenMeta(item_id=item.item_id, category=item.category, form=form)
             cons = Constitution(
                 principles=principles,
                 metadata=metadata,
@@ -470,31 +564,35 @@ def run_endorsement(
                 round=0,
             )
             prompt = render_endorsement(cons, root=root)
-            req = build_request(prompt, config_id, seed_int, root=root)
-            result = backend.generate([req])[0]
-            status = "ok"
-            err = None
-            ratings = None
-            try:
-                ratings = parse_endorsement(result.text_final, cons.ids())
-            except ParseError as exc:
-                status = "error"
-                err = str(exc)
-            append_jsonl(
-                out_dir / "calls.jsonl",
-                {
-                    "form": form,
-                    "rep": rep,
-                    "seed": seed_int,
-                    "prompt": prompt,
-                    "text_final": result.text_final,
-                    "parse_status": status,
-                    "parse_error": err,
-                    "ratings": ratings,
-                    "latency_s": result.latency_s,
-                    "flags": result.flags,
-                },
+            reqs.append(build_request(prompt, config_id, seed_int, root=root))
+            pending.append(
+                {"form": form, "rep": rep, "seed": seed_int, "prompt": prompt, "ids": cons.ids()}
             )
+    results = backend.generate(reqs) if reqs else []
+    for meta, result in zip(pending, results, strict=True):
+        status = "ok"
+        err = None
+        ratings = None
+        try:
+            ratings = parse_endorsement(result.text_final, meta["ids"])
+        except ParseError as exc:
+            status = "error"
+            err = str(exc)
+        append_jsonl(
+            out_dir / "calls.jsonl",
+            {
+                "form": meta["form"],
+                "rep": meta["rep"],
+                "seed": meta["seed"],
+                "prompt": meta["prompt"],
+                "text_final": result.text_final,
+                "parse_status": status,
+                "parse_error": err,
+                "ratings": ratings,
+                "latency_s": result.latency_s,
+                "flags": result.flags,
+            },
+        )
     _update_run_manifest(run_tag, root)
     return out_dir
 
@@ -504,21 +602,22 @@ def run_realism_audit(
     config_id: str,
     *,
     reps: int = 3,
-    run_tag: str = "phase2_realism_audit",
+    run_tag: str = "phase2b_realism_audit",
     root: Path | None = None,
 ) -> Path:
+    """All pending realism calls in a single generate() batch."""
     root = root or repo_root()
     exp = load_experiment(root)
     items = load_items(root)
     out_dir = root / "runs" / run_tag / config_id
     out_dir.mkdir(parents=True, exist_ok=True)
-    # Resume: skip (item, form, rep) already recorded.
     done_keys = {
         (r["item_id"], r["form"], int(r["rep"]))
         for r in _load_jsonl(out_dir / "calls.jsonl")
         if r.get("parse_status") == "ok"
     }
     pending: list[tuple[Any, ...]] = []
+    reqs: list[GenerationRequest] = []
     for item in items:
         for form, text in (("A", item.form_A), ("B", item.form_B)):
             for rep in range(reps):
@@ -527,41 +626,34 @@ def run_realism_audit(
                 payload = f"{exp.master_seed}|REALISM|{item.item_id}|{form}|{rep}".encode()
                 seed_int = int(hashlib.sha256(payload).hexdigest()[:16], 16) & 0x7FFFFFFF
                 prompt = render_realism_clause(text, root=root)
-                req = build_request(prompt, config_id, seed_int, root=root)
-                pending.append((item, form, text, rep, seed_int, prompt, req))
-
-    # Batch generate for throughput (same chat_template_kwargs within a config).
-    batch_size = 16
-    for i in range(0, len(pending), batch_size):
-        chunk = pending[i : i + batch_size]
-        results = backend.generate([row[-1] for row in chunk])
-        for (item, form, text, rep, seed_int, prompt, _req), result in zip(
-            chunk, results, strict=True
-        ):
-            status = "ok"
-            err = None
-            rating = None
-            try:
-                rating = parse_realism(result.text_final).rating
-            except ParseError as exc:
-                status = "error"
-                err = str(exc)
-            append_jsonl(
-                out_dir / "calls.jsonl",
-                {
-                    "item_id": item.item_id,
-                    "category": item.category,
-                    "form": form,
-                    "rep": rep,
-                    "seed": seed_int,
-                    "clause": text,
-                    "prompt": prompt,
-                    "text_final": result.text_final,
-                    "rating": rating,
-                    "parse_status": status,
-                    "parse_error": err,
-                    "latency_s": result.latency_s,
-                },
-            )
+                reqs.append(build_request(prompt, config_id, seed_int, root=root))
+                pending.append((item, form, text, rep, seed_int, prompt))
+    results = backend.generate(reqs) if reqs else []
+    for (item, form, text, rep, seed_int, prompt), result in zip(pending, results, strict=True):
+        status = "ok"
+        err = None
+        rating = None
+        try:
+            rating = parse_realism(result.text_final).rating
+        except ParseError as exc:
+            status = "error"
+            err = str(exc)
+        append_jsonl(
+            out_dir / "calls.jsonl",
+            {
+                "item_id": item.item_id,
+                "category": item.category,
+                "form": form,
+                "rep": rep,
+                "seed": seed_int,
+                "clause": text,
+                "prompt": prompt,
+                "text_final": result.text_final,
+                "rating": rating,
+                "parse_status": status,
+                "parse_error": err,
+                "latency_s": result.latency_s,
+            },
+        )
     _update_run_manifest(run_tag, root)
     return out_dir

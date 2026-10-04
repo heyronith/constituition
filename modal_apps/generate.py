@@ -106,7 +106,8 @@ def _execute_dryrun(config_ids: list[str], gpu: str, git_sha_value: str = "") ->
             revision=None,
             max_model_len=max_model_len_for(engine_cid, root),
             gpu_memory_utilization=vllm_cfg.gpu_memory_utilization,
-            enforce_eager=True,  # dry-run: avoid multi-minute cudagraph capture
+            enforce_eager=False,
+            max_num_seqs=vllm_cfg.max_num_seqs,
             root=root,
         )
         load_s = time.perf_counter() - load_started
@@ -232,7 +233,7 @@ def main(*args: str) -> None:
     from rc.budget import BudgetExceeded, estimate_modal_usd, preflight, record_actual
     from rc.compute_map import COMPUTE_RESERVATIONS, modal_gpu
     from rc.config import load_budget, load_models, repo_root
-    from rc.guards import assert_modal_workspace, check_modal_hf_secret
+    from rc.guards import assert_large_gpu_allowed, assert_modal_workspace, check_modal_hf_secret
 
     assert_modal_workspace(expected="heyronith")
     check_modal_hf_secret("hf-token")
@@ -245,6 +246,7 @@ def main(*args: str) -> None:
         raise SystemExit(f"all configs in one job must share compute; got {computes}")
     compute = next(iter(computes))
     gpu = modal_gpu(compute)
+    assert_large_gpu_allowed(gpu, root=root)
     res = COMPUTE_RESERVATIONS[compute]
 
     timeouts = {
@@ -310,10 +312,33 @@ def main(*args: str) -> None:
 
     sha = local_git_sha(root)
     started = time.perf_counter()
-    if gpu == "L40S":
-        summary = run_l40s.with_options(timeout=max_seconds).remote(config_ids, sha)
-    else:
-        summary = run_a100.with_options(timeout=max_seconds).remote(config_ids, sha)
+    try:
+        if gpu == "L40S":
+            summary = run_l40s.with_options(timeout=max_seconds).remote(config_ids, sha)
+        else:
+            summary = run_a100.with_options(timeout=max_seconds).remote(config_ids, sha)
+    except Exception as exc:
+        elapsed = time.perf_counter() - started
+        actual = estimate_modal_usd(
+            gpu,
+            int(elapsed) + 1,
+            cpu_cores=res["cpu_cores"],
+            memory_gib=res["memory_gib"],
+            root=root,
+        )
+        record_actual(
+            job_id=job_id,
+            phase=2,
+            platform="modal",
+            gpu=gpu,
+            max_seconds=max_seconds,
+            actual_seconds=elapsed,
+            est_usd=est,
+            actual_usd=actual,
+            note="code_failure",
+            root=root,
+        )
+        raise SystemExit(f"code_failure: {exc}") from exc
     elapsed = time.perf_counter() - started
 
     _pull_volume(root)

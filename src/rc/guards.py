@@ -54,6 +54,30 @@ class ModalSecretError(RuntimeError):
     pass
 
 
+class GpuSafetyError(RuntimeError):
+    pass
+
+
+# D23: A100-class or larger requires L4 tiny-model smoke + MockBackend pytest.
+A100_CLASS_OR_LARGER = frozenset({"A100-80GB", "H100", "A100", "H200"})
+
+
+def l4_smoke_marker(root: Path | None = None) -> Path:
+    return (root or repo_root()) / "runs" / "phase2b_l4_smoke" / "PASSED.json"
+
+
+def assert_large_gpu_allowed(gpu: str, *, root: Path | None = None) -> None:
+    """Refuse A100-class GPUs until the L4 tiny-model smoke marker exists."""
+    if gpu not in A100_CLASS_OR_LARGER:
+        return
+    marker = l4_smoke_marker(root)
+    if not marker.exists():
+        raise GpuSafetyError(
+            f"D23: GPU {gpu} is A100-class or larger. Run the Modal L4 tiny-model "
+            f"smoke first (marker missing: {marker})."
+        )
+
+
 def assert_blinded(text: str, *, allow_eval_words: bool = False) -> None:
     """Raise if a subject-facing prompt contains a protocol-forbidden word.
 

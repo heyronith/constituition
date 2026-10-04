@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import logging
 import re
 import time
 from dataclasses import dataclass, field
@@ -10,7 +11,7 @@ from typing import Any, Protocol
 
 import yaml
 
-from rc.config import load_models, load_vllm, repo_root
+from rc.config import load_models, load_smoke, load_vllm, repo_root
 
 # Qwen thinking delimiters (HF chat template / vLLM reasoning parser).
 _QWEN_THINK_CLOSE = "</think>"
@@ -19,6 +20,7 @@ _GEMMA_THOUGHT_RE = re.compile(
     r"<\|channel\|>thought\n(?P<thought>.*?)<channel\|>",
     re.DOTALL,
 )
+_GRAPH_CAPTURE_RE = re.compile(r"Graph capturing finished in (\d+(?:\.\d+)?) secs")
 
 
 @dataclass
@@ -50,9 +52,10 @@ class Backend(Protocol):
 def load_lock_revision(config_id: str, root: Path | None = None) -> tuple[str, str]:
     root = root or repo_root()
     lock = yaml.safe_load((root / "configs" / "model_revisions.lock.yaml").read_text())
-    for row in lock.get("subjects", []):
-        if row.get("config_id") == config_id:
-            return row["exact_repo_id"], row["sha"]
+    for section in ("subjects", "smoke_models", "judges"):
+        for row in lock.get(section) or []:
+            if row.get("config_id") == config_id:
+                return row["exact_repo_id"], row["sha"]
     raise KeyError(f"no lock entry for {config_id}")
 
 
@@ -75,6 +78,17 @@ def expects_reasoning(config_id: str) -> bool:
     return config_id == "qwen38_27b_think"
 
 
+def count_tokens(text: str | None, tokenizer: Any | None = None) -> int:
+    """Count tokens with the model tokenizer when available."""
+    if not text:
+        return 0
+    if tokenizer is not None:
+        encoded = tokenizer.encode(text, add_special_tokens=False)
+        return len(encoded)
+    # MockBackend / tests: whitespace tokens are not used on GPU.
+    return len(text.split())
+
+
 def build_request(
     prompt: str,
     config_id: str,
@@ -82,11 +96,16 @@ def build_request(
     *,
     root: Path | None = None,
 ) -> GenerationRequest:
-    subject = load_models(root).by_id(config_id)
-    sampling = dict(subject.sampling) if isinstance(subject.sampling, dict) else {}
-    # reasoning_effort belongs in chat_template_kwargs (Qwen jinja), not SamplingParams.
-    # https://huggingface.co/Qwen/Qwen3.8-27B
-    kwargs = dict(subject.chat_template_kwargs)
+    try:
+        subject = load_models(root).by_id(config_id)
+        sampling = dict(subject.sampling) if isinstance(subject.sampling, dict) else {}
+        kwargs = dict(subject.chat_template_kwargs)
+    except KeyError:
+        smoke = load_smoke(root)
+        if smoke.config_id != config_id:
+            raise
+        sampling = dict(smoke.sampling)
+        kwargs = dict(smoke.chat_template_kwargs)
     if "reasoning_effort" in sampling:
         kwargs["reasoning_effort"] = sampling.pop("reasoning_effort")
     # vLLM SamplingParams.seed must fit a signed 32-bit C long on Linux.
@@ -162,21 +181,23 @@ class MockBackend:
     def __init__(self, outputs: list[str] | None = None) -> None:
         self.outputs = list(outputs or [])
         self.calls: list[list[GenerationRequest]] = []
+        self.load_s = 0.0
+        self.graph_capture_s = 0.0
 
     def generate(self, requests: list[GenerationRequest]) -> list[GenerationResult]:
         self.calls.append(requests)
         results: list[GenerationResult] = []
-        for i, req in enumerate(requests):
+        for req in requests:
             if not self.outputs:
                 raise RuntimeError("MockBackend exhausted scripted outputs")
             raw = self.outputs.pop(0)
             final, reasoning, flags = split_reasoning(req.config_id, raw)
-            n_reason = len((reasoning or "").split())
+            n_reason = count_tokens(reasoning)
             result = GenerationResult(
                 text_final=final,
                 text_reasoning=reasoning,
-                n_prompt_tokens=len(req.prompt.split()),
-                n_output_tokens=len(raw.split()),
+                n_prompt_tokens=count_tokens(req.prompt),
+                n_output_tokens=count_tokens(raw),
                 n_reasoning_tokens=n_reason,
                 finish_reason="stop",
                 latency_s=0.001,
@@ -184,6 +205,17 @@ class MockBackend:
             )
             results.append(apply_thinking_token_policy(req.config_id, result))
         return results
+
+
+class _GraphCaptureHandler(logging.Handler):
+    def __init__(self) -> None:
+        super().__init__()
+        self.seconds = 0.0
+
+    def emit(self, record: logging.LogRecord) -> None:
+        match = _GRAPH_CAPTURE_RE.search(record.getMessage())
+        if match:
+            self.seconds = float(match.group(1))
 
 
 class VLLMBackend:
@@ -198,12 +230,18 @@ class VLLMBackend:
         max_model_len: int | None = None,
         gpu_memory_utilization: float | None = None,
         enforce_eager: bool = False,
+        max_num_seqs: int | None = None,
         root: Path | None = None,
     ) -> None:
         from vllm import LLM
 
         vllm_cfg = load_vllm(root)
         self.config_id = config_id
+        self.load_s = 0.0
+        self.graph_capture_s = 0.0
+        handler = _GraphCaptureHandler()
+        logging.getLogger().addHandler(handler)
+        started = time.perf_counter()
         self._llm = LLM(
             model=model_path,
             revision=revision,
@@ -215,9 +253,14 @@ class VLLMBackend:
                 else vllm_cfg.gpu_memory_utilization
             ),
             trust_remote_code=True,
-            # Dry-run / short jobs: skip CUDA-graph capture (~minutes of idle GPU).
             enforce_eager=enforce_eager,
+            max_num_seqs=max_num_seqs if max_num_seqs is not None else vllm_cfg.max_num_seqs,
         )
+        total = time.perf_counter() - started
+        logging.getLogger().removeHandler(handler)
+        self.graph_capture_s = handler.seconds if not enforce_eager else 0.0
+        self.load_s = max(0.0, total - self.graph_capture_s)
+        self._tokenizer = self._llm.get_tokenizer()
 
     def generate(self, requests: list[GenerationRequest]) -> list[GenerationResult]:
         from vllm import SamplingParams
@@ -225,13 +268,24 @@ class VLLMBackend:
         if not requests:
             return []
 
-        # Batch when chat_template_kwargs match (realism audit). Seeds still
-        # differ per request via a list of SamplingParams when supported.
-        results: list[GenerationResult] = []
-        started_all = time.perf_counter()
+        # Group by identical chat_template_kwargs; preserve original order in results.
+        groups: dict[str, list[int]] = {}
+        for i, req in enumerate(requests):
+            key = repr(sorted((req.chat_template_kwargs or {}).items()))
+            groups.setdefault(key, []).append(i)
+
+        slots: list[GenerationResult | None] = [None] * len(requests)
+        for idxs in groups.values():
+            chunk = [requests[i] for i in idxs]
+            chunk_results = self._generate_group(chunk, SamplingParams)
+            for i, result in zip(idxs, chunk_results, strict=True):
+                slots[i] = result
+        return [r for r in slots if r is not None]
+
+    def _generate_group(self, requests: list[GenerationRequest], sampling_cls: Any) -> list:
         conversations = [[{"role": "user", "content": req.prompt}] for req in requests]
         sampling_params = [
-            SamplingParams(
+            sampling_cls(
                 temperature=float(req.sampling.get("temperature", 1.0)),
                 top_p=float(req.sampling.get("top_p", 1.0)),
                 top_k=int(req.sampling.get("top_k", -1))
@@ -250,34 +304,20 @@ class VLLMBackend:
         # reasoning_effort / enable_thinking via chat_template_kwargs:
         # https://huggingface.co/Qwen/Qwen3.8-27B
         kwargs0 = requests[0].chat_template_kwargs or None
-        if any((r.chat_template_kwargs or None) != kwargs0 for r in requests):
-            # Mixed kwargs: fall back to sequential.
-            outs = []
-            for req, conv, sp in zip(requests, conversations, sampling_params, strict=True):
-                t0 = time.perf_counter()
-                out = self._llm.chat(
-                    [conv],
-                    sampling_params=sp,
-                    chat_template_kwargs=req.chat_template_kwargs or None,
-                )[0]
-                # Attach per-call latency on the object for later split.
-                out._rc_latency = time.perf_counter() - t0  # type: ignore[attr-defined]
-                outs.append(out)
-        else:
-            outs = self._llm.chat(
-                conversations,
-                sampling_params=sampling_params,
-                chat_template_kwargs=kwargs0,
-            )
-            per = (time.perf_counter() - started_all) / max(len(outs), 1)
-            for out in outs:
-                out._rc_latency = per  # type: ignore[attr-defined]
-
+        started = time.perf_counter()
+        outs = self._llm.chat(
+            conversations,
+            sampling_params=sampling_params,
+            chat_template_kwargs=kwargs0,
+        )
+        per = (time.perf_counter() - started) / max(len(outs), 1)
+        results: list[GenerationResult] = []
         for req, out in zip(requests, outs, strict=True):
             raw = out.outputs[0].text
             reasoning_attr = getattr(out.outputs[0], "reasoning", None) or getattr(
                 out.outputs[0], "reasoning_content", None
             )
+            n_reason_vllm = getattr(out.outputs[0], "num_reasoning_tokens", None)
             if reasoning_attr:
                 final = raw
                 reasoning = str(reasoning_attr)
@@ -286,19 +326,20 @@ class VLLMBackend:
                 final, reasoning, flags = split_reasoning(req.config_id, raw)
             prompt_tokens = len(getattr(out, "prompt_token_ids", []) or [])
             output_tokens = len(out.outputs[0].token_ids or [])
-            n_reason = 0
-            if reasoning:
-                n_reason = max(1, len(reasoning.split()))
+            if n_reason_vllm is not None:
+                n_reason = int(n_reason_vllm)
+            else:
+                n_reason = count_tokens(reasoning, self._tokenizer)
+            if not (expects_reasoning(req.config_id) or reasoning):
+                n_reason = 0
             result = GenerationResult(
                 text_final=final,
                 text_reasoning=reasoning,
                 n_prompt_tokens=prompt_tokens,
                 n_output_tokens=output_tokens,
-                n_reasoning_tokens=n_reason
-                if expects_reasoning(req.config_id) or reasoning
-                else 0,
+                n_reasoning_tokens=n_reason,
                 finish_reason=str(out.outputs[0].finish_reason or "stop"),
-                latency_s=float(getattr(out, "_rc_latency", 0.0)),
+                latency_s=per,
                 flags=flags,
             )
             results.append(apply_thinking_token_policy(req.config_id, result))

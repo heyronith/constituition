@@ -319,3 +319,12 @@ judges:
     weights_gb: 16.375657312572002
     fits: true
     flag: null
+
+smoke_models:
+- config_id: qwen35_08b_smoke
+  requested_id: Qwen/Qwen3.5-0.8B
+  exact_repo_id: Qwen/Qwen3.5-0.8B
+  sha: 2fc06364715b967f1860aea9cf38778875588b17
+  role: smoke
+  compute: modal_l4
+  note: D23 tiny-model L4 end-to-end smoke. Not a confirmatory subject.
