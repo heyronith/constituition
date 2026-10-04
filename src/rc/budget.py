@@ -78,6 +78,27 @@ def gpu_price(gpu: str, root: Path | None = None) -> float:
         ) from exc
 
 
+def estimate_modal_usd(
+    gpu: str,
+    max_seconds: int,
+    *,
+    cpu_cores: float | None = None,
+    memory_gib: float | None = None,
+    root: Path | None = None,
+) -> float:
+    """GPU + reserved CPU + reserved memory (Modal bills all three)."""
+    budget = load_budget(root)
+    cores = budget.default_cpu_cores if cpu_cores is None else cpu_cores
+    mem = budget.default_memory_gib if memory_gib is None else memory_gib
+    gpu_cost = gpu_price(gpu, root) * max_seconds
+    if gpu == "cpu":
+        # Smoke tests: treat gpu key as CPU billing only.
+        return budget.cpu_usd_per_core_second * max(cores, 0.125) * max_seconds
+    cpu_cost = budget.cpu_usd_per_core_second * cores * max_seconds
+    mem_cost = budget.memory_usd_per_gib_second * mem * max_seconds
+    return gpu_cost + cpu_cost + mem_cost
+
+
 def preflight(
     gpu: str,
     max_seconds: int,
@@ -86,6 +107,9 @@ def preflight(
     *,
     platform: Platform = "modal",
     override_job_cap_usd: float | None = None,
+    hard_cap_usd: float | None = None,
+    cpu_cores: float | None = None,
+    memory_gib: float | None = None,
     root: Path | None = None,
 ) -> int:
     """Estimate cost and refuse to start if caps would be exceeded.
@@ -95,8 +119,9 @@ def preflight(
     root = root or repo_root()
     budget = load_budget(root)
     if platform == "modal":
-        price = gpu_price(gpu, root)
-        estimate = price * max_seconds
+        estimate = estimate_modal_usd(
+            gpu, max_seconds, cpu_cores=cpu_cores, memory_gib=memory_gib, root=root
+        )
         job_cap = (
             override_job_cap_usd
             if override_job_cap_usd is not None
@@ -114,10 +139,16 @@ def preflight(
                 f"job {job_id} estimate ${estimate:.4f} exceeds per-job cap ${job_cap:.2f}"
             )
         already = spent_modal_usd(root)
-        if already + estimate > budget.modal_hard_cap_usd:
+        project_cap = hard_cap_usd if hard_cap_usd is not None else budget.modal_hard_cap_usd
+        # Phase-2 dry run also enforces its own $6 hard stop.
+        if str(phase) in {"2", "phase2", "phase2_dryrun"}:
+            project_cap = min(project_cap, budget.phase2_dryrun_hard_cap_usd)
+        if hard_cap_usd is not None:
+            project_cap = hard_cap_usd
+        if already + estimate > project_cap:
             raise BudgetExceeded(
                 f"job {job_id} would bring Modal spend to "
-                f"${already + estimate:.4f} > hard cap ${budget.modal_hard_cap_usd:.2f}"
+                f"${already + estimate:.4f} > hard cap ${project_cap:.2f}"
             )
     else:
         if budget.colab_l4_cu_per_hour is None:
@@ -175,7 +206,8 @@ def summary(root: Path | None = None) -> str:
     colab_spent = spent_colab_cu(root)
     lines = [
         f"Modal: ${modal_spent:.4f} / ${budget.modal_hard_cap_usd:.2f} hard cap "
-        f"(per-job default ${budget.modal_per_job_default_cap_usd:.2f})",
+        f"(per-job default ${budget.modal_per_job_default_cap_usd:.2f}; "
+        f"phase2 dry-run ${budget.phase2_dryrun_hard_cap_usd:.2f})",
         f"Colab: {colab_spent:.4f} / {budget.colab_cu_cap:.1f} CU "
         f"(L4 CU/hour={budget.colab_l4_cu_per_hour})",
     ]

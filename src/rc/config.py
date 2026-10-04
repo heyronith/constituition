@@ -104,11 +104,26 @@ class ExperimentConfig(StrictModel):
 class BudgetConfig(StrictModel):
     modal_hard_cap_usd: float
     modal_per_job_default_cap_usd: float
+    phase2_dryrun_hard_cap_usd: float = 6.0
     colab_cu_cap: float
     colab_l4_cu_per_hour: float | None
     checked_on: str
     source: str
     gpu_prices_usd_per_second: dict[str, float]
+    cpu_usd_per_core_second: float = 0.0000131
+    memory_usd_per_gib_second: float = 0.00000222
+    default_cpu_cores: float = 8.0
+    default_memory_gib: float = 64.0
+
+
+class VllmConfig(StrictModel):
+    version: str
+    source: str
+    gpu_memory_utilization: float
+    default_max_model_len: int
+    think_max_model_len: int
+    think_max_tokens: int
+    default_max_tokens: int
 
 
 class LoadedConfigs(StrictModel):
@@ -157,6 +172,11 @@ def load_experiment(root: Path | None = None) -> ExperimentConfig:
 def load_budget(root: Path | None = None) -> BudgetConfig:
     root = root or repo_root()
     return BudgetConfig.model_validate(_load_yaml(root / "configs" / "budget.yaml"))
+
+
+def load_vllm(root: Path | None = None) -> VllmConfig:
+    root = root or repo_root()
+    return VllmConfig.model_validate(_load_yaml(root / "configs" / "vllm.yaml"))
 
 
 def load_all(root: Path | None = None) -> LoadedConfigs:

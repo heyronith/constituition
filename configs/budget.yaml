@@ -1,10 +1,10 @@
 modal_hard_cap_usd: 100
 modal_per_job_default_cap_usd: 15
+phase2_dryrun_hard_cap_usd: 6
 colab_cu_cap: 100
 colab_l4_cu_per_hour: null
 
 # Checked 2026-10-04 at https://modal.com/pricing (per-second toggle).
-# Live values matched the protocol table exactly.
 checked_on: "2026-10-04"
 source: https://modal.com/pricing
 
@@ -14,5 +14,12 @@ gpu_prices_usd_per_second:
   A100-80GB: 0.000694
   H100: 0.001097
   # CPU is billed per physical core / sec; Modal minimum is 0.125 cores.
-  # Used only for CPU smoke tests (gpu: cpu).
   cpu: 0.0000131
+
+# Modal also bills CPU and memory on GPU containers (same pricing page).
+cpu_usd_per_core_second: 0.0000131
+memory_usd_per_gib_second: 0.00000222
+
+# Default reservations used in preflight estimates for GPU jobs.
+default_cpu_cores: 8.0
+default_memory_gib: 64.0

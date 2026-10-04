@@ -28,10 +28,12 @@ subjects:
     axis: reasoning_on
     compute: modal_a100_80gb
     dtype: bf16
+    # reasoning_effort is a chat-template kwarg (jinja), not SamplingParams.
+    # Card: https://huggingface.co/Qwen/Qwen3.8-27B
     chat_template_kwargs:
       enable_thinking: true
-    # D10: same sampling as nothink; reasoning_effort is the only extra think knob.
-    # Card: https://huggingface.co/Qwen/Qwen3.8-27B
+      reasoning_effort: medium
+    # D10: same sampling as nothink; thinking toggle is the only difference.
     sampling:
       temperature: 1.0
       top_p: 0.95
@@ -39,7 +41,6 @@ subjects:
       min_p: 0.0
       presence_penalty: 0.0
       repetition_penalty: 1.0
-      reasoning_effort: medium
 
   - config_id: gemma4_31b
     hf_repo: google/gemma-4-31B-it

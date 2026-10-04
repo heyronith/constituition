@@ -18,14 +18,20 @@ def _seed_root(tmp_path: Path) -> Path:
     budget = {
         "modal_hard_cap_usd": 100,
         "modal_per_job_default_cap_usd": 15,
+        "phase2_dryrun_hard_cap_usd": 6,
         "colab_cu_cap": 100,
         "colab_l4_cu_per_hour": None,
         "checked_on": "2026-10-04",
         "source": "https://modal.com/pricing",
         "gpu_prices_usd_per_second": {
             "A100-80GB": 0.000694,
+            "L40S": 0.000542,
             "cpu": 0.0000131,
         },
+        "cpu_usd_per_core_second": 0.0000131,
+        "memory_usd_per_gib_second": 0.00000222,
+        "default_cpu_cores": 8.0,
+        "default_memory_gib": 64.0,
     }
     (configs / "budget.yaml").write_text(yaml.safe_dump(budget), encoding="utf-8")
     (tmp_path / "budget").mkdir()
@@ -91,3 +97,27 @@ def test_ledger_append_and_summary(tmp_path: Path, capsys: pytest.CaptureFixture
     row = json.loads(lines[0])
     assert row["job_id"] == "a"
     assert row["platform"] == "modal"
+
+
+def test_phase2_dryrun_hard_cap_blocks(tmp_path: Path) -> None:
+    root = _seed_root(tmp_path)
+    # Fill almost to the $6 dry-run cap.
+    record_actual(
+        job_id="prior",
+        phase=2,
+        platform="modal",
+        gpu="L40S",
+        max_seconds=1,
+        actual_seconds=1,
+        actual_usd=5.5,
+        root=root,
+    )
+    # 1800s L40S full estimate ≫ remaining $0.50
+    with pytest.raises(BudgetExceeded, match="hard cap"):
+        preflight(
+            "L40S",
+            max_seconds=1800,
+            phase=2,
+            job_id="phase2-too-big",
+            root=root,
+        )
