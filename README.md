@@ -49,7 +49,7 @@ uv run ruff check && uv run ruff format --check && uv run pytest
 
 | Phase | Name | Status |
 |---|---|---|
-| P0 | Foundation | in progress |
+| P0 | Foundation | complete |
 | P1 | Materials | not started |
 | P2 | Infrastructure + dry run | not started |
 | P3 | Judge calibration | not started |

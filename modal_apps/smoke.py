@@ -1,4 +1,8 @@
-"""CPU-only Modal smoke. No GPU, no weight download."""
+"""CPU-only Modal smoke. No GPU, no weight download.
+
+Remote `ping` is self-contained. Workspace/budget guards run only in the
+local entrypoint so the container need not install `rc`.
+"""
 
 from __future__ import annotations
 
@@ -6,9 +10,6 @@ import time
 from datetime import datetime, timezone
 
 import modal
-
-from rc.budget import gpu_price, preflight, record_actual
-from rc.guards import assert_modal_workspace
 
 app = modal.App("rc-phase0-smoke-cpu")
 
@@ -25,6 +26,9 @@ def ping() -> dict[str, str]:
 
 @app.local_entrypoint()
 def main() -> None:
+    from rc.budget import gpu_price, preflight, record_actual
+    from rc.guards import assert_modal_workspace
+
     assert_modal_workspace(expected="heyronith")
     max_seconds = preflight(
         gpu="cpu",

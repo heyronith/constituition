@@ -15,3 +15,8 @@ D5 | 2026-10-04 | Target venue TMLR; preregistration on OSF before the main run.
 D6 | 2026-10-04 | Use Hub IDs with verified casing: `google/gemma-4-12B-it` (not `...-12b-it`); judge repos `nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B-BF16` and `ibm-granite/granite-4.1-8b`. | Exact-ID verification, not a model substitution. | DECIDED
 
 D7 | 2026-10-04 | Erosion YAML lists only fate-scale labels; `merged_commitment_lost_is_erosion: true` encodes MERGED-where-commitment-lost. | `config.py` must reject erosion labels that are not on the fate scale, while Section 1 still treats commitment-losing merges as erosion. | DECIDED
+
+D8 | 2026-10-04 | Do not substitute judge models despite BF16 fit flags. | `openai/gpt-oss-120b` safetensors sum 121.5 GB vs 64 GB usable on H100; `mistralai/Mistral-Small-3.2-24B-Instruct-2506` 89.4 GB vs 64 GB usable on A100-80GB. Protocol forbids substitution. Phase 3 must decide serving (tensor parallel, native MXFP4 for gpt-oss vs BF16-only rule). | PROPOSED
+
+D9 | 2026-10-04 | Modal CPU smoke records CPU at $0.0000131/core/s from live pricing (not in the protocol GPU table). | Needed for `preflight(gpu="cpu")`. | DECIDED
+
