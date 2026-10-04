@@ -58,8 +58,18 @@ EOF
   sed '/^if __name__/,$d' "${SCRIPTS}/colab_remote_setup.py"
   printf '\nmain()\n'
 } >"${WRAPPER}"
-colab --auth=adc exec -s "${SESSION}" -f "${WRAPPER}" --timeout 1200
+SETUP_OUT="$(mktemp -t rc_colab_setup_out.XXXXXX)"
+set +e
+colab --auth=adc exec -s "${SESSION}" -f "${WRAPPER}" --timeout 1200 | tee "${SETUP_OUT}"
+SETUP_RC=${PIPESTATUS[0]}
+set -e
 rm -f "${WRAPPER}"
+if [[ ${SETUP_RC} -ne 0 ]] || ! grep -q SETUP_OK "${SETUP_OUT}"; then
+  echo "Colab setup failed" >&2
+  rm -f "${SETUP_OUT}"
+  exit 1
+fi
+rm -f "${SETUP_OUT}"
 
 echo "=== start background job ==="
 START_WRAP="$(mktemp -t rc_colab_start.XXXXXX.py)"

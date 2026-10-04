@@ -40,11 +40,13 @@ def main() -> None:
             "huggingface_hub",
         ]
     )
-    run([sys.executable, "-m", "pip", "-q", "install", "-e", "."])
+    # Editable install is flaky on Colab; put src on PYTHONPATH instead.
     run(["mkdir", "-p", "/content/rc-runs"])
-    # Persist token for the background job without printing it.
     Path = __import__("pathlib").Path
     Path("/content/rc-runs/.hf_token").write_text(token, encoding="utf-8")
+    Path("/content/rc-runs/pythonpath").write_text(
+        "/content/constituition/src\n", encoding="utf-8"
+    )
     print("SETUP_OK", flush=True)
 
 

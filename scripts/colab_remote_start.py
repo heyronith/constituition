@@ -17,6 +17,13 @@ def main() -> None:
         raise SystemExit("missing /content/rc-runs/.hf_token; run setup first")
     env = os.environ.copy()
     env["HF_TOKEN"] = token_path.read_text(encoding="utf-8").strip()
+    pp = Path("/content/rc-runs/pythonpath")
+    src = (
+        pp.read_text(encoding="utf-8").strip()
+        if pp.exists()
+        else "/content/constituition/src"
+    )
+    env["PYTHONPATH"] = src + ((":" + env["PYTHONPATH"]) if env.get("PYTHONPATH") else "")
     out = Path("/content/rc-runs")
     out.mkdir(parents=True, exist_ok=True)
     log = out / "job.log"
