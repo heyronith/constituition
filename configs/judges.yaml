@@ -1,0 +1,28 @@
+# Judge candidates (non-subject families). Selection happens in Phase 3.
+# selected remains false for all entries until calibration.
+judges:
+  - judge_id: gptoss_120b
+    hf_repo: openai/gpt-oss-120b
+    revision: null
+    compute: modal_h100
+    selected: false
+
+  - judge_id: mistral_small32_24b
+    hf_repo: mistralai/Mistral-Small-3.2-24B-Instruct-2506
+    revision: null
+    compute: modal_a100_80gb
+    selected: false
+
+  - judge_id: nemotron3_nano_30b
+    # Resolved exact BF16 repo (not substituted).
+    hf_repo: nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B-BF16
+    revision: null
+    compute: modal_a100_80gb
+    selected: false
+
+  - judge_id: granite41_8b
+    # Resolved exact instruct repo: ibm-granite/granite-4.1-8b (no separate -instruct suffix).
+    hf_repo: ibm-granite/granite-4.1-8b
+    revision: null
+    compute: modal_l40s
+    selected: false

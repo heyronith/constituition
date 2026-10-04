@@ -1,0 +1,112 @@
+# Subject registry. Do not add/drop/substitute models.
+# revision is null until scripts/resolve_model_revisions.py writes the lockfile.
+subjects:
+  - config_id: qwen38_27b_nothink
+    hf_repo: Qwen/Qwen3.8-27B
+    revision: null
+    family: qwen
+    axis: family_a_reasoning_off
+    compute: modal_a100_80gb
+    dtype: bf16
+    chat_template_kwargs:
+      enable_thinking: false
+    # Sampling from https://huggingface.co/Qwen/Qwen3.8-27B (instruct / non-thinking)
+    sampling:
+      temperature: 0.7
+      top_p: 0.80
+      top_k: 20
+      min_p: 0.0
+      presence_penalty: 1.5
+      repetition_penalty: 1.0
+
+  - config_id: qwen38_27b_think
+    hf_repo: Qwen/Qwen3.8-27B
+    revision: null
+    family: qwen
+    axis: reasoning_on
+    compute: modal_a100_80gb
+    dtype: bf16
+    chat_template_kwargs:
+      enable_thinking: true
+      preserve_thinking: true
+    # Sampling from https://huggingface.co/Qwen/Qwen3.8-27B (thinking mode).
+    # reasoning_effort is a model-card kwarg (not chat_template): supported xhigh, medium, low; default xhigh.
+    sampling:
+      temperature: 1.0
+      top_p: 0.95
+      top_k: 20
+      min_p: 0.0
+      presence_penalty: 0.0
+      repetition_penalty: 1.0
+      reasoning_effort: medium
+
+  - config_id: gemma4_31b
+    hf_repo: google/gemma-4-31B-it
+    revision: null
+    family: gemma
+    axis: family_b_large
+    compute: modal_a100_80gb
+    dtype: bf16
+    # Thinking off: do not insert <|think|> in the system prompt; also pass enable_thinking=False.
+    # Card: https://huggingface.co/google/gemma-4-31B-it and https://ai.google.dev/gemma/docs/core/model_card_4
+    chat_template_kwargs:
+      enable_thinking: false
+    sampling:
+      temperature: 1.0
+      top_p: 0.95
+      top_k: 64
+
+  - config_id: gemma4_12b
+    # Verified Hub ID uses capital B: google/gemma-4-12B-it (not google/gemma-4-12b-it).
+    hf_repo: google/gemma-4-12B-it
+    revision: null
+    family: gemma
+    axis: scale_vs_31b
+    compute: modal_l40s
+    dtype: bf16
+    chat_template_kwargs:
+      enable_thinking: false
+    # Same standardized sampling as Gemma 4 31B: https://ai.google.dev/gemma/docs/core/model_card_4
+    sampling:
+      temperature: 1.0
+      top_p: 0.95
+      top_k: 64
+
+  - config_id: olmo3_7b_sft
+    hf_repo: allenai/Olmo-3-7B-Instruct-SFT
+    revision: null
+    family: olmo
+    axis: family_c_sft
+    compute: colab_l4
+    dtype: bf16
+    chat_template_kwargs: {}
+    # Generate example on https://huggingface.co/allenai/Olmo-3-7B-Instruct-SFT
+    sampling:
+      temperature: 0.6
+      top_p: 0.95
+
+  - config_id: olmo3_7b_dpo
+    hf_repo: allenai/Olmo-3-7B-Instruct-DPO
+    revision: null
+    family: olmo
+    axis: family_c_dpo
+    compute: colab_l4
+    dtype: bf16
+    chat_template_kwargs: {}
+    # Generate example on https://huggingface.co/allenai/Olmo-3-7B-Instruct-DPO
+    sampling:
+      temperature: 0.6
+      top_p: 0.95
+
+  - config_id: olmo3_7b_final
+    hf_repo: allenai/Olmo-3-7B-Instruct
+    revision: null
+    family: olmo
+    axis: family_c_rlvr
+    compute: colab_l4
+    dtype: bf16
+    chat_template_kwargs: {}
+    # Generate example on https://huggingface.co/allenai/Olmo-3-7B-Instruct
+    sampling:
+      temperature: 0.6
+      top_p: 0.95

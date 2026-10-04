@@ -1,0 +1,40 @@
+[project]
+name = "rc"
+version = "0.0.1"
+description = "Reflective corrigibility: iterated constitutional self-revision"
+readme = "README.md"
+requires-python = ">=3.11,<3.12"
+dependencies = [
+    "modal",
+    "pydantic>=2",
+    "pyyaml",
+    "huggingface_hub",
+    "python-dotenv",
+]
+
+[dependency-groups]
+dev = [
+    "pytest",
+    "ruff",
+    "pre-commit",
+]
+
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+addopts = "-q"
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+src = ["src", "tests", "scripts", "modal_apps"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "W"]
