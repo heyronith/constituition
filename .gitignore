@@ -1,6 +1,11 @@
 .env
 .env.*
 !.env.example
+secrets/
+*.token
+*_token.txt
+*.pem
+*.key
 
 runs/
 *.safetensors
@@ -26,11 +31,6 @@ venv/
 .mypy_cache/
 .coverage
 htmlcov/
-
-*token*
-*secret*
-*.pem
-*.key
 
 .DS_Store
 .idea/

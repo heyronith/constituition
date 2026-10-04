@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 import logging
 from pathlib import Path
 from typing import Any
@@ -20,37 +21,106 @@ GPU_MEMORY_GB = {
 }
 
 HEADROOM = 0.20
+# Cross-check assumes BF16 unless the index weight_map or card says otherwise.
+BYTES_PER_PARAM_BF16 = 2.0
 log = logging.getLogger("rc.hf_registry")
 
 
-def _safetensors_gb(info) -> float | None:
-    total_bytes = 0
-    found = False
-    siblings = getattr(info, "siblings", None) or []
-    for sib in siblings:
+def _sibling_sizes(info) -> dict[str, int]:
+    sizes: dict[str, int] = {}
+    for sib in getattr(info, "siblings", None) or []:
         name = getattr(sib, "rfilename", "") or ""
         size = getattr(sib, "size", None)
-        if name.endswith(".safetensors") and size:
-            total_bytes += int(size)
-            found = True
-    st = getattr(info, "safetensors", None)
-    if st is not None and getattr(st, "total", None):
-        total_bytes = max(total_bytes, int(st.total))
-        found = True
-    if not found:
-        return None
-    return total_bytes / (1024**3)
+        if name and size is not None:
+            sizes[name] = int(size)
+    return sizes
 
 
-def _param_count(info) -> str | None:
+def _load_weight_map(
+    repo_id: str, revision: str, token: str | None, sizes: dict[str, int]
+) -> tuple[list[str] | None, str | None]:
+    """Return (weight filenames vLLM would load, method) or (None, reason).
+
+    Downloads only the tiny index JSON — never weight shards.
+    """
+    if "model.safetensors.index.json" in sizes:
+        try:
+            index_path = hf_hub_download(
+                repo_id=repo_id,
+                filename="model.safetensors.index.json",
+                revision=revision,
+                token=token,
+            )
+            data = json.loads(Path(index_path).read_text(encoding="utf-8"))
+            weight_map = data.get("weight_map") or {}
+            files = sorted(set(weight_map.values()))
+            if files:
+                return files, "index"
+        except (EntryNotFoundError, GatedRepoError, HfHubHTTPError, OSError, json.JSONDecodeError):
+            pass
+
+    if "model.safetensors" in sizes:
+        return ["model.safetensors"], "single"
+
+    return None, "no_index_or_single"
+
+
+def _index_safetensors_gb(
+    info, repo_id: str, revision: str, token: str | None
+) -> tuple[float | None, dict[str, Any]]:
+    """Sum only the shard files listed in the index (or single model.safetensors).
+
+    Avoids double-counting duplicate copies such as `original/` or
+    `consolidated.safetensors` alongside HF shards.
+    """
+    sizes = _sibling_sizes(info)
+    files, method = _load_weight_map(repo_id, revision, token, sizes)
+    meta: dict[str, Any] = {
+        "weight_file_source": method,
+        "weight_files": files,
+        "all_safetensors_gb": None,
+    }
+    all_st = [(name, size) for name, size in sizes.items() if name.endswith(".safetensors")]
+    if all_st:
+        meta["all_safetensors_gb"] = sum(s for _, s in all_st) / (1024**3)
+
+    if files is None:
+        # Fallback: only top-level *.safetensors (no path separators).
+        top = [s for name, s in all_st if "/" not in name]
+        if not top:
+            return None, meta
+        meta["weight_file_source"] = "toplevel_fallback"
+        return sum(top) / (1024**3), meta
+
+    total = 0
+    missing = []
+    for name in files:
+        if name not in sizes:
+            missing.append(name)
+            continue
+        total += sizes[name]
+    meta["missing_weight_files"] = missing
+    if total == 0:
+        return None, meta
+    return total / (1024**3), meta
+
+
+def _param_count(info) -> int | None:
     st = getattr(info, "safetensors", None)
     if st is not None and getattr(st, "parameters", None):
         params = st.parameters
         if isinstance(params, dict):
-            total = sum(int(v) for v in params.values())
-            return str(total)
-        return str(params)
+            return sum(int(v) for v in params.values())
+        return int(params)
     return None
+
+
+def _param_bytes_crosscheck_gb(
+    param_count: int | None, bytes_per_param: float = BYTES_PER_PARAM_BF16
+) -> float | None:
+    if param_count is None:
+        return None
+    return (param_count * bytes_per_param) / (1024**3)
 
 
 def _chat_template_flags(repo_id: str, revision: str, token: str | None) -> dict[str, Any]:
@@ -91,8 +161,12 @@ def inspect_repo(hf_repo: str, *, token: str | None = None) -> dict[str, Any]:
         "gated": None,
         "token_has_access": False,
         "license": None,
+        "license_name": None,
         "safetensors_gb": None,
+        "all_safetensors_gb": None,
+        "weight_file_source": None,
         "parameter_count": None,
+        "param_bytes_bf16_gb": None,
         "status": "UNRESOLVED",
         "error": None,
         "candidates": [],
@@ -121,11 +195,24 @@ def inspect_repo(hf_repo: str, *, token: str | None = None) -> dict[str, Any]:
     record["token_has_access"] = True
     license_id = getattr(info, "license", None)
     card = getattr(info, "card_data", None)
-    if not license_id and card is not None:
-        license_id = getattr(card, "license", None)
+    license_name = None
+    if card is not None:
+        raw = card.to_dict() if hasattr(card, "to_dict") else {}
+        if not license_id:
+            license_id = raw.get("license") or getattr(card, "license", None)
+        license_name = raw.get("license_name") or getattr(card, "license_name", None)
     record["license"] = license_id
-    record["safetensors_gb"] = _safetensors_gb(info)
-    record["parameter_count"] = _param_count(info) or _param_from_card(info)
+    record["license_name"] = license_name
+    gb, size_meta = _index_safetensors_gb(info, info.id, info.sha, token)
+    record["safetensors_gb"] = gb
+    record["all_safetensors_gb"] = size_meta.get("all_safetensors_gb")
+    record["weight_file_source"] = size_meta.get("weight_file_source")
+    params = _param_count(info)
+    if params is None:
+        card_params = _param_from_card(info)
+        params = int(card_params) if card_params and str(card_params).isdigit() else None
+    record["parameter_count"] = str(params) if params is not None else None
+    record["param_bytes_bf16_gb"] = _param_bytes_crosscheck_gb(params)
     record["chat_template"] = _chat_template_flags(info.id, info.sha, token)
     record["status"] = "OK"
     return record

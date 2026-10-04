@@ -16,3 +16,6 @@ Iterated constitutional self-revision. A stateless LM revises a first-person con
 7. Every phase ends with `reports/PHASE_<N>.md` and a commit plus push to `main`.
 8. Seeds are deterministic: master seed `20261004`; per-unit seeds from `sha256(master_seed|config_id|condition|chain_idx)`.
 9. Raw generations are immutable. Store their SHA-256 hashes in a manifest.
+10. Subjects never see clause categories or item IDs. Clauses are shown with per-chain random opaque IDs.
+11. Clause and prompt wording in `materials/` is frozen by the lead scientist. Never edit it; report problems instead.
+12. Sampling parameters come only from `configs/models.yaml`. Never set them inline.

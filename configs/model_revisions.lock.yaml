@@ -5,8 +5,12 @@ subjects:
   gated: false
   token_has_access: true
   license: apache-2.0
+  license_name: null
   safetensors_gb: 51.7470825240016
+  all_safetensors_gb: 51.7470825240016
+  weight_file_source: index
   parameter_count: '27781427952'
+  param_bytes_bf16_gb: 51.74694201350212
   status: OK
   error: null
   candidates: []
@@ -30,8 +34,12 @@ subjects:
   gated: false
   token_has_access: true
   license: apache-2.0
+  license_name: null
   safetensors_gb: 51.7470825240016
+  all_safetensors_gb: 51.7470825240016
+  weight_file_source: index
   parameter_count: '27781427952'
+  param_bytes_bf16_gb: 51.74694201350212
   status: OK
   error: null
   candidates: []
@@ -55,8 +63,12 @@ subjects:
   gated: false
   token_has_access: true
   license: apache-2.0
+  license_name: null
   safetensors_gb: 58.25081676989794
+  all_safetensors_gb: 58.25081676989794
+  weight_file_source: index
   parameter_count: '31273088876'
+  param_bytes_bf16_gb: 58.25066729635
   status: OK
   error: null
   candidates: []
@@ -80,8 +92,12 @@ subjects:
   gated: false
   token_has_access: true
   license: apache-2.0
+  license_name: null
   safetensors_gb: 22.276816338300705
+  all_safetensors_gb: 22.276816338300705
+  weight_file_source: single
   parameter_count: '11959730224'
+  param_bytes_bf16_gb: 22.276733487844467
   status: OK
   error: null
   candidates: []
@@ -105,8 +121,12 @@ subjects:
   gated: false
   token_has_access: true
   license: apache-2.0
+  license_name: null
   safetensors_gb: 13.593643635511398
+  all_safetensors_gb: 13.593643635511398
+  weight_file_source: index
   parameter_count: '7298011136'
+  param_bytes_bf16_gb: 13.593605041503906
   status: OK
   error: null
   candidates: []
@@ -130,8 +150,12 @@ subjects:
   gated: false
   token_has_access: true
   license: apache-2.0
+  license_name: null
   safetensors_gb: 13.593643635511398
+  all_safetensors_gb: 13.593643635511398
+  weight_file_source: index
   parameter_count: '7298011136'
+  param_bytes_bf16_gb: 13.593605041503906
   status: OK
   error: null
   candidates: []
@@ -155,8 +179,12 @@ subjects:
   gated: false
   token_has_access: true
   license: apache-2.0
+  license_name: null
   safetensors_gb: 13.593643635511398
+  all_safetensors_gb: 13.593643635511398
+  weight_file_source: index
   parameter_count: '7298011136'
+  param_bytes_bf16_gb: 13.593605041503906
   status: OK
   error: null
   candidates: []
@@ -181,8 +209,12 @@ judges:
   gated: false
   token_has_access: true
   license: apache-2.0
-  safetensors_gb: 121.53551260381937
+  license_name: null
+  safetensors_gb: 60.76776719093323
+  all_safetensors_gb: 121.53551260381937
+  weight_file_source: index
   parameter_count: '116829156672'
+  param_bytes_bf16_gb: 217.6112619638443
   status: OK
   error: null
   candidates: []
@@ -197,17 +229,21 @@ judges:
     gpu_memory_gb: 80
     required_headroom: 0.2
     usable_gb: 64.0
-    weights_gb: 121.53551260381937
-    fits: false
-    flag: FAILS_HEADROOM
+    weights_gb: 60.76776719093323
+    fits: true
+    flag: null
 - requested_id: mistralai/Mistral-Small-3.2-24B-Instruct-2506
   exact_repo_id: mistralai/Mistral-Small-3.2-24B-Instruct-2506
   sha: 95a6d26c4bfb886c58daf9d3f7332c857cb27b43
   gated: false
   token_has_access: true
   license: apache-2.0
-  safetensors_gb: 89.44942880421877
+  license_name: null
+  safetensors_gb: 44.72471825778484
+  all_safetensors_gb: 89.44942880421877
+  weight_file_source: index
   parameter_count: '24011361280'
+  param_bytes_bf16_gb: 44.72464561462402
   status: OK
   error: null
   candidates: []
@@ -222,17 +258,21 @@ judges:
     gpu_memory_gb: 80
     required_headroom: 0.2
     usable_gb: 64.0
-    weights_gb: 89.44942880421877
-    fits: false
-    flag: FAILS_HEADROOM
+    weights_gb: 44.72471825778484
+    fits: true
+    flag: null
 - requested_id: nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B-BF16
   exact_repo_id: nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B-BF16
   sha: bf77c3174f68ad409e1c2aa60daeb46e32d1c606
   gated: false
   token_has_access: true
   license: other
+  license_name: nvidia-nemotron-open-model-license
   safetensors_gb: 58.819255113601685
+  all_safetensors_gb: 58.819255113601685
+  weight_file_source: index
   parameter_count: '31577940288'
+  param_bytes_bf16_gb: 58.81849730014801
   status: OK
   error: null
   candidates: []
@@ -256,8 +296,12 @@ judges:
   gated: false
   token_has_access: true
   license: apache-2.0
+  license_name: null
   safetensors_gb: 16.375657312572002
+  all_safetensors_gb: 16.375657312572002
+  weight_file_source: index
   parameter_count: '8791592960'
+  param_bytes_bf16_gb: 16.37561798095703
   status: OK
   error: null
   candidates: []

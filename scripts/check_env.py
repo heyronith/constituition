@@ -19,7 +19,11 @@ load_dotenv(ROOT / ".env", override=False)
 
 from rc.budget import ledger_path  # noqa: E402
 from rc.config import load_all  # noqa: E402
-from rc.guards import assert_modal_workspace, check_hf_token  # noqa: E402
+from rc.guards import (  # noqa: E402
+    assert_modal_workspace,
+    check_hf_token,
+    check_modal_hf_secret,
+)
 
 
 def _ok(name: str, detail: str = "") -> None:
@@ -66,6 +70,13 @@ def main() -> int:
     except Exception as exc:
         failures += 1
         _fail("hf_token", str(exc))
+
+    try:
+        secret_name = check_modal_hf_secret("hf-token")
+        _ok("modal_hf_secret", f"name={secret_name} (value not printed)")
+    except Exception as exc:
+        failures += 1
+        _fail("modal_hf_secret", str(exc))
 
     try:
         ignored = subprocess.run(

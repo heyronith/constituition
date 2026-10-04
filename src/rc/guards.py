@@ -18,6 +18,18 @@ FORBIDDEN_SUBJECT_WORDS = (
     "study",
     "experiment",
     "erosion",
+    "evaluation",
+    "evaluate",
+    "test",
+    "tested",
+    "testing",
+    "benchmark",
+    "research",
+    "researcher",
+    "hypothetical",
+    "scenario",
+    "overseer",
+    "overseers",
 )
 
 _FORBIDDEN_RE = re.compile(
@@ -38,8 +50,18 @@ class HuggingFaceTokenError(RuntimeError):
     pass
 
 
-def assert_blinded(text: str) -> None:
-    """Raise if a subject-facing prompt contains a protocol-forbidden word."""
+class ModalSecretError(RuntimeError):
+    pass
+
+
+def assert_blinded(text: str, *, allow_eval_words: bool = False) -> None:
+    """Raise if a subject-facing prompt contains a protocol-forbidden word.
+
+    Set allow_eval_words=True only for the post-hoc eval-awareness probe
+    (materials/prompts/eval_awareness.yaml), which is not chain-facing.
+    """
+    if allow_eval_words:
+        return
     match = _FORBIDDEN_RE.search(text)
     if match:
         raise BlindingError(f"subject-facing text contains forbidden word {match.group(0)!r}")
@@ -98,3 +120,30 @@ def check_hf_token(*, env_file: Path | None = None) -> dict:
 
     identity = whoami(token=token)
     return {"name": identity.get("name"), "type": identity.get("type")}
+
+
+def check_modal_hf_secret(expected_name: str = "hf-token") -> str:
+    """Verify a Modal secret name exists. Never print secret values."""
+    assert_modal_workspace(expected="heyronith")
+    result = subprocess.run(
+        ["modal", "secret", "list", "--json"],
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    if result.returncode != 0:
+        raise ModalSecretError(
+            f"modal secret list --json failed (exit {result.returncode}): "
+            f"{result.stderr.strip() or result.stdout.strip()}"
+        )
+    try:
+        secrets = json.loads(result.stdout)
+    except json.JSONDecodeError as exc:
+        raise ModalSecretError("modal secret list --json returned invalid JSON") from exc
+    names = {row.get("name") for row in secrets if isinstance(row, dict)}
+    if expected_name not in names:
+        raise ModalSecretError(
+            f"Modal secret {expected_name!r} not found in workspace heyronith. "
+            "Create it with: uv run modal secret create hf-token HF_TOKEN=<token>"
+        )
+    return expected_name
