@@ -89,13 +89,15 @@ def build_request(
     kwargs = dict(subject.chat_template_kwargs)
     if "reasoning_effort" in sampling:
         kwargs["reasoning_effort"] = sampling.pop("reasoning_effort")
+    # vLLM SamplingParams.seed must fit a signed 32-bit C long on Linux.
+    safe_seed = int(seed) & 0x7FFFFFFF
     return GenerationRequest(
         prompt=prompt,
         config_id=config_id,
         sampling=sampling,
         chat_template_kwargs=kwargs,
         max_tokens=max_tokens_for(config_id, root),
-        seed=seed,
+        seed=safe_seed,
     )
 
 
@@ -195,6 +197,7 @@ class VLLMBackend:
         revision: str | None = None,
         max_model_len: int | None = None,
         gpu_memory_utilization: float | None = None,
+        enforce_eager: bool = False,
         root: Path | None = None,
     ) -> None:
         from vllm import LLM
@@ -212,16 +215,23 @@ class VLLMBackend:
                 else vllm_cfg.gpu_memory_utilization
             ),
             trust_remote_code=True,
+            # Dry-run / short jobs: skip CUDA-graph capture (~minutes of idle GPU).
+            enforce_eager=enforce_eager,
         )
 
     def generate(self, requests: list[GenerationRequest]) -> list[GenerationResult]:
         from vllm import SamplingParams
 
+        if not requests:
+            return []
+
+        # Batch when chat_template_kwargs match (realism audit). Seeds still
+        # differ per request via a list of SamplingParams when supported.
         results: list[GenerationResult] = []
-        # Per-request chat_template_kwargs / seeds: loop (vLLM batching still
-        # amortizes the loaded weights; dry-run batches are tiny).
-        for req in requests:
-            sp = SamplingParams(
+        started_all = time.perf_counter()
+        conversations = [[{"role": "user", "content": req.prompt}] for req in requests]
+        sampling_params = [
+            SamplingParams(
                 temperature=float(req.sampling.get("temperature", 1.0)),
                 top_p=float(req.sampling.get("top_p", 1.0)),
                 top_k=int(req.sampling.get("top_k", -1))
@@ -235,19 +245,36 @@ class VLLMBackend:
                 max_tokens=req.max_tokens,
                 seed=req.seed,
             )
-            messages = [{"role": "user", "content": req.prompt}]
-            started = time.perf_counter()
-            # reasoning_effort / enable_thinking via chat_template_kwargs:
-            # https://huggingface.co/Qwen/Qwen3.8-27B
+            for req in requests
+        ]
+        # reasoning_effort / enable_thinking via chat_template_kwargs:
+        # https://huggingface.co/Qwen/Qwen3.8-27B
+        kwargs0 = requests[0].chat_template_kwargs or None
+        if any((r.chat_template_kwargs or None) != kwargs0 for r in requests):
+            # Mixed kwargs: fall back to sequential.
+            outs = []
+            for req, conv, sp in zip(requests, conversations, sampling_params, strict=True):
+                t0 = time.perf_counter()
+                out = self._llm.chat(
+                    [conv],
+                    sampling_params=sp,
+                    chat_template_kwargs=req.chat_template_kwargs or None,
+                )[0]
+                # Attach per-call latency on the object for later split.
+                out._rc_latency = time.perf_counter() - t0  # type: ignore[attr-defined]
+                outs.append(out)
+        else:
             outs = self._llm.chat(
-                [messages],
-                sampling_params=sp,
-                chat_template_kwargs=req.chat_template_kwargs or None,
+                conversations,
+                sampling_params=sampling_params,
+                chat_template_kwargs=kwargs0,
             )
-            latency = time.perf_counter() - started
-            out = outs[0]
+            per = (time.perf_counter() - started_all) / max(len(outs), 1)
+            for out in outs:
+                out._rc_latency = per  # type: ignore[attr-defined]
+
+        for req, out in zip(requests, outs, strict=True):
             raw = out.outputs[0].text
-            # Prefer vLLM reasoning field if present.
             reasoning_attr = getattr(out.outputs[0], "reasoning", None) or getattr(
                 out.outputs[0], "reasoning_content", None
             )
@@ -261,16 +288,17 @@ class VLLMBackend:
             output_tokens = len(out.outputs[0].token_ids or [])
             n_reason = 0
             if reasoning:
-                # Approximate if tokenizer unavailable for reasoning span alone.
                 n_reason = max(1, len(reasoning.split()))
             result = GenerationResult(
                 text_final=final,
                 text_reasoning=reasoning,
                 n_prompt_tokens=prompt_tokens,
                 n_output_tokens=output_tokens,
-                n_reasoning_tokens=n_reason if expects_reasoning(req.config_id) or reasoning else 0,
+                n_reasoning_tokens=n_reason
+                if expects_reasoning(req.config_id) or reasoning
+                else 0,
                 finish_reason=str(out.outputs[0].finish_reason or "stop"),
-                latency_s=latency,
+                latency_s=float(getattr(out, "_rc_latency", 0.0)),
                 flags=flags,
             )
             results.append(apply_thinking_token_policy(req.config_id, result))

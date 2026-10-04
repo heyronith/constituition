@@ -112,6 +112,20 @@ def test_rendered_prompts_blinded_and_no_leaks() -> None:
                     assert "Pellam" not in text
 
 
+def test_render_allows_eval_word_in_revised_clause_text() -> None:
+    """D18: model-revised wording may contain ordinary English like 'evaluate'."""
+    from rc.materials import Principle
+
+    cons = build_initial_constitution("gemma4_12b", "SELF_REFLECT", 0)
+    p0 = cons.principles[0]
+    cons.principles[0] = Principle(
+        opaque_id=p0.opaque_id,
+        text="I will evaluate trade-offs carefully before I act on a request.",
+    )
+    text = render_prompt(cons, "SELF_REFLECT", "p1", "STRUCTURED")
+    assert "evaluate" in text
+
+
 def _all_keep_payload(cons) -> str:
     rows = [
         {

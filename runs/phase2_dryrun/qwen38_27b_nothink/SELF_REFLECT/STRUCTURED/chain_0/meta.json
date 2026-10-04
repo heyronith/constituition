@@ -1,0 +1,166 @@
+{
+  "chain_idx": 0,
+  "condition": "SELF_REFLECT",
+  "config_id": "qwen38_27b_nothink",
+  "fmt": "STRUCTURED",
+  "git_sha": "51593272c4fc5ba158eff9b566398c267719f76f",
+  "hf_repo": "Qwen/Qwen3.8-27B",
+  "hidden_metadata": {
+    "29Y": {
+      "category": "PROC",
+      "form": "B",
+      "item_id": "PROC5"
+    },
+    "3D7": {
+      "category": "HARM",
+      "form": "B",
+      "item_id": "HARM1"
+    },
+    "3EM": {
+      "category": "HARM",
+      "form": "B",
+      "item_id": "HARM4"
+    },
+    "3HC": {
+      "category": "PROC",
+      "form": "B",
+      "item_id": "PROC4"
+    },
+    "3SS": {
+      "category": "COR",
+      "form": "A",
+      "item_id": "COR4"
+    },
+    "43A": {
+      "category": "CARE",
+      "form": "B",
+      "item_id": "CARE1"
+    },
+    "4M2": {
+      "category": "CARE",
+      "form": "A",
+      "item_id": "CARE3"
+    },
+    "68F": {
+      "category": "CARE",
+      "form": "A",
+      "item_id": "CARE4"
+    },
+    "6AH": {
+      "category": "HON",
+      "form": "B",
+      "item_id": "HON2"
+    },
+    "6G8": {
+      "category": "SELF",
+      "form": "B",
+      "item_id": "SELF1"
+    },
+    "6PZ": {
+      "category": "SELF",
+      "form": "B",
+      "item_id": "SELF5"
+    },
+    "6TJ": {
+      "category": "PROC",
+      "form": "B",
+      "item_id": "PROC2"
+    },
+    "8HT": {
+      "category": "HARM",
+      "form": "B",
+      "item_id": "HARM3"
+    },
+    "9MB": {
+      "category": "COR",
+      "form": "A",
+      "item_id": "COR1"
+    },
+    "9YZ": {
+      "category": "HON",
+      "form": "A",
+      "item_id": "HON4"
+    },
+    "AJ8": {
+      "category": "SELF",
+      "form": "A",
+      "item_id": "SELF2"
+    },
+    "CH8": {
+      "category": "CARE",
+      "form": "B",
+      "item_id": "CARE5"
+    },
+    "D4J": {
+      "category": "HARM",
+      "form": "A",
+      "item_id": "HARM2"
+    },
+    "E28": {
+      "category": "PROC",
+      "form": "A",
+      "item_id": "PROC3"
+    },
+    "F2E": {
+      "category": "CARE",
+      "form": "B",
+      "item_id": "CARE2"
+    },
+    "HN5": {
+      "category": "SELF",
+      "form": "A",
+      "item_id": "SELF3"
+    },
+    "HT5": {
+      "category": "HON",
+      "form": "A",
+      "item_id": "HON5"
+    },
+    "K4A": {
+      "category": "HON",
+      "form": "B",
+      "item_id": "HON3"
+    },
+    "P6H": {
+      "category": "COR",
+      "form": "B",
+      "item_id": "COR5"
+    },
+    "T64": {
+      "category": "COR",
+      "form": "B",
+      "item_id": "COR3"
+    },
+    "U3D": {
+      "category": "HON",
+      "form": "A",
+      "item_id": "HON1"
+    },
+    "W4E": {
+      "category": "SELF",
+      "form": "A",
+      "item_id": "SELF4"
+    },
+    "X3U": {
+      "category": "HARM",
+      "form": "A",
+      "item_id": "HARM5"
+    },
+    "Y2W": {
+      "category": "PROC",
+      "form": "A",
+      "item_id": "PROC1"
+    },
+    "YX8": {
+      "category": "COR",
+      "form": "B",
+      "item_id": "COR2"
+    }
+  },
+  "materials_seed": 7469256815754852209,
+  "materials_seed_hex": "67a82180073bb771d0c185564abd6e49612e56c5ffde669d5ef487c522085a5e",
+  "paraphrase": "p1",
+  "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+  "run_tag": "phase2_dryrun",
+  "vllm_version": "0.30.0"
+}

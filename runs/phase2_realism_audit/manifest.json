@@ -1,0 +1,19 @@
+{
+  "config_hashes": {
+    "experiment.yaml": "f7e980ab9a3c99dc604a8d020c1b531adac5a34e2256f0cc4757efc8fd2e5b60",
+    "models.yaml": "bf18cea5e864defaf74394466299daab0103b1c81c22516e3fdc13fc5674d7f0",
+    "vllm.yaml": "2dc9d1c2a2e6241d4e483ad2458cc5cda880348b95c7243e3e17483ca085e608"
+  },
+  "extra": {
+    "run_tag": "phase2_realism_audit"
+  },
+  "git_sha": "51593272c4fc5ba158eff9b566398c267719f76f",
+  "model_revision": null,
+  "output_hashes": {
+    "gemma4_12b/calls.jsonl": "fd67b76345892c89846aa0e18c2fc997bfbd1fe2205527ad3411a540aca392ff",
+    "qwen38_27b_nothink/calls.jsonl": "f5bc19611b35623d23ebd4269db56e2d58e140a7d6f32e1b92a2cba8e5ff0dd7"
+  },
+  "seeds": {
+    "master": 20261004
+  }
+}

@@ -50,8 +50,13 @@ def call_seed(
     round_idx: int,
     attempt: int,
 ) -> int:
+    """Sampling seed for one generation call.
+
+    Masked to signed 32-bit range: vLLM/SamplingParams rejects uint64 values
+    with OverflowError on some platforms.
+    """
     payload = f"{master_seed}|{config_id}|{condition}|{chain_idx}|{round_idx}|{attempt}".encode()
-    return int(hashlib.sha256(payload).hexdigest()[:16], 16)
+    return int(hashlib.sha256(payload).hexdigest()[:16], 16) & 0x7FFFFFFF
 
 
 def cell_dir(
@@ -507,42 +512,56 @@ def run_realism_audit(
     items = load_items(root)
     out_dir = root / "runs" / run_tag / config_id
     out_dir.mkdir(parents=True, exist_ok=True)
+    # Resume: skip (item, form, rep) already recorded.
+    done_keys = {
+        (r["item_id"], r["form"], int(r["rep"]))
+        for r in _load_jsonl(out_dir / "calls.jsonl")
+        if r.get("parse_status") == "ok"
+    }
+    pending: list[tuple[Any, ...]] = []
     for item in items:
         for form, text in (("A", item.form_A), ("B", item.form_B)):
             for rep in range(reps):
-                seed_int, _ = derive_seed(
-                    exp.master_seed, "REALISM", f"{item.item_id}|{form}|{rep}", 0
-                )
-                # Prefer explicit REALISM|item|form|rep scheme from the protocol.
+                if (item.item_id, form, rep) in done_keys:
+                    continue
                 payload = f"{exp.master_seed}|REALISM|{item.item_id}|{form}|{rep}".encode()
-                seed_int = int(hashlib.sha256(payload).hexdigest()[:16], 16)
+                seed_int = int(hashlib.sha256(payload).hexdigest()[:16], 16) & 0x7FFFFFFF
                 prompt = render_realism_clause(text, root=root)
                 req = build_request(prompt, config_id, seed_int, root=root)
-                result = backend.generate([req])[0]
-                status = "ok"
-                err = None
-                rating = None
-                try:
-                    rating = parse_realism(result.text_final).rating
-                except ParseError as exc:
-                    status = "error"
-                    err = str(exc)
-                append_jsonl(
-                    out_dir / "calls.jsonl",
-                    {
-                        "item_id": item.item_id,
-                        "category": item.category,
-                        "form": form,
-                        "rep": rep,
-                        "seed": seed_int,
-                        "clause": text,
-                        "prompt": prompt,
-                        "text_final": result.text_final,
-                        "rating": rating,
-                        "parse_status": status,
-                        "parse_error": err,
-                        "latency_s": result.latency_s,
-                    },
-                )
+                pending.append((item, form, text, rep, seed_int, prompt, req))
+
+    # Batch generate for throughput (same chat_template_kwargs within a config).
+    batch_size = 16
+    for i in range(0, len(pending), batch_size):
+        chunk = pending[i : i + batch_size]
+        results = backend.generate([row[-1] for row in chunk])
+        for (item, form, text, rep, seed_int, prompt, _req), result in zip(
+            chunk, results, strict=True
+        ):
+            status = "ok"
+            err = None
+            rating = None
+            try:
+                rating = parse_realism(result.text_final).rating
+            except ParseError as exc:
+                status = "error"
+                err = str(exc)
+            append_jsonl(
+                out_dir / "calls.jsonl",
+                {
+                    "item_id": item.item_id,
+                    "category": item.category,
+                    "form": form,
+                    "rep": rep,
+                    "seed": seed_int,
+                    "clause": text,
+                    "prompt": prompt,
+                    "text_final": result.text_final,
+                    "rating": rating,
+                    "parse_status": status,
+                    "parse_error": err,
+                    "latency_s": result.latency_s,
+                },
+            )
     _update_run_manifest(run_tag, root)
     return out_dir

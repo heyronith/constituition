@@ -1,0 +1,100 @@
+{
+  "gpu": "L40S",
+  "config_ids": [
+    "gemma4_12b"
+  ],
+  "jobs": [
+    {
+      "config_id": "gemma4_12b",
+      "model_load_s": 206.17557061300002,
+      "cells": [
+        {
+          "config_id": "gemma4_12b",
+          "condition": "SELF_REFLECT",
+          "fmt": "STRUCTURED",
+          "chains": {
+            "0": {
+              "censored_at_round": null,
+              "completed_rounds": [
+                0,
+                1
+              ]
+            }
+          }
+        },
+        {
+          "config_id": "gemma4_12b",
+          "condition": "OTHER_REFLECT",
+          "fmt": "STRUCTURED",
+          "chains": {
+            "0": {
+              "censored_at_round": null,
+              "completed_rounds": [
+                0,
+                1
+              ]
+            }
+          }
+        },
+        {
+          "config_id": "gemma4_12b",
+          "condition": "PARAPHRASE",
+          "fmt": "STRUCTURED",
+          "chains": {
+            "0": {
+              "censored_at_round": null,
+              "completed_rounds": [
+                0,
+                1
+              ]
+            }
+          }
+        },
+        {
+          "config_id": "gemma4_12b",
+          "condition": "NEUTRAL_EDIT",
+          "fmt": "STRUCTURED",
+          "chains": {
+            "0": {
+              "censored_at_round": null,
+              "completed_rounds": [
+                0,
+                1
+              ]
+            }
+          }
+        },
+        {
+          "config_id": "gemma4_12b",
+          "condition": "SELF_REFLECT",
+          "fmt": "FREE",
+          "chains": {
+            "0": {
+              "censored_at_round": null,
+              "completed_rounds": [
+                0,
+                1
+              ]
+            }
+          }
+        },
+        {
+          "config_id": "gemma4_12b",
+          "condition": "PARAPHRASE",
+          "fmt": "FREE",
+          "chains": {
+            "0": {
+              "censored_at_round": null,
+              "completed_rounds": [
+                0,
+                1
+              ]
+            }
+          }
+        }
+      ],
+      "endorsement": "ok",
+      "realism": "ok"
+    }
+  ]
+}

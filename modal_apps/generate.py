@@ -25,8 +25,15 @@ app = modal.App(APP_NAME)
 hf_vol = modal.Volume.from_name(HF_VOLUME, create_if_missing=True)
 runs_vol = modal.Volume.from_name(RUNS_VOLUME, create_if_missing=True)
 
+# vLLM 0.30 flashinfer JIT needs nvcc. Use NVIDIA devel + pip vllm==0.30.0
+# (same pin on Colab). CUDA 12.8 is within Modal host driver compatibility.
 image = (
-    modal.Image.debian_slim(python_version="3.11")
+    modal.Image.from_registry(
+        "nvidia/cuda:12.8.1-devel-ubuntu22.04",
+        add_python="3.11",
+    )
+    .entrypoint([])
+    .apt_install("git")
     .pip_install(
         f"vllm=={VLLM_VERSION}",
         "huggingface_hub>=0.26",
@@ -40,6 +47,7 @@ image = (
             "HF_HOME": HF_CACHE,
             "HUGGINGFACE_HUB_CACHE": f"{HF_CACHE}/hub",
             "TRANSFORMERS_CACHE": f"{HF_CACHE}/hub",
+            "CUDA_HOME": "/usr/local/cuda",
         }
     )
     .add_local_dir("src", remote_path=f"{REMOTE_REPO}/src")
@@ -48,12 +56,14 @@ image = (
 )
 
 
-def _execute_dryrun(config_ids: list[str], gpu: str) -> dict:
+def _execute_dryrun(config_ids: list[str], gpu: str, git_sha_value: str = "") -> dict:
     """Shared worker body (runs inside a GPU container)."""
     import os
     import sys
 
     os.environ.setdefault("HF_HOME", HF_CACHE)
+    if git_sha_value:
+        os.environ["RC_GIT_SHA"] = git_sha_value
     sys.path.insert(0, f"{REMOTE_REPO}/src")
     os.chdir(REMOTE_REPO)
 
@@ -96,6 +106,7 @@ def _execute_dryrun(config_ids: list[str], gpu: str) -> dict:
             revision=None,
             max_model_len=max_model_len_for(engine_cid, root),
             gpu_memory_utilization=vllm_cfg.gpu_memory_utilization,
+            enforce_eager=True,  # dry-run: avoid multi-minute cudagraph capture
             root=root,
         )
         load_s = time.perf_counter() - load_started
@@ -122,6 +133,7 @@ def _execute_dryrun(config_ids: list[str], gpu: str) -> dict:
                         root=root,
                     )
                 )
+                runs_vol.commit()
             if cid == "gemma4_12b":
                 for cond in ("SELF_REFLECT", "PARAPHRASE"):
                     job["cells"].append(
@@ -136,10 +148,12 @@ def _execute_dryrun(config_ids: list[str], gpu: str) -> dict:
                             root=root,
                         )
                     )
+                    runs_vol.commit()
             run_endorsement(
                 backend, cid, reps=1, forms=("A", "B"), run_tag="phase2_dryrun", root=root
             )
             job["endorsement"] = "ok"
+            runs_vol.commit()
             run_realism_audit(
                 backend, cid, reps=3, run_tag="phase2_realism_audit", root=root
             )
@@ -166,8 +180,8 @@ def _execute_dryrun(config_ids: list[str], gpu: str) -> dict:
     cpu=8,
     memory=65536,
 )
-def run_l40s(config_ids: list[str]) -> dict:
-    return _execute_dryrun(config_ids, "L40S")
+def run_l40s(config_ids: list[str], git_sha_value: str = "") -> dict:
+    return _execute_dryrun(config_ids, "L40S", git_sha_value=git_sha_value)
 
 
 @app.function(
@@ -180,8 +194,8 @@ def run_l40s(config_ids: list[str]) -> dict:
     cpu=8,
     memory=65536,
 )
-def run_a100(config_ids: list[str]) -> dict:
-    return _execute_dryrun(config_ids, "A100-80GB")
+def run_a100(config_ids: list[str], git_sha_value: str = "") -> dict:
+    return _execute_dryrun(config_ids, "A100-80GB", git_sha_value=git_sha_value)
 
 
 def _pull_volume(local_root: Path) -> None:
@@ -217,7 +231,7 @@ def main(*args: str) -> None:
     """Usage: modal run modal_apps/generate.py -- gemma4_12b"""
     from rc.budget import BudgetExceeded, estimate_modal_usd, preflight, record_actual
     from rc.compute_map import COMPUTE_RESERVATIONS, modal_gpu
-    from rc.config import load_models, repo_root
+    from rc.config import load_budget, load_models, repo_root
     from rc.guards import assert_modal_workspace, check_modal_hf_secret
 
     assert_modal_workspace(expected="heyronith")
@@ -240,8 +254,23 @@ def main(*args: str) -> None:
         "gemma4_31b": 1800,
     }
     max_seconds = sum(timeouts.get(c, 1800) for c in config_ids)
-    if set(config_ids) == {"qwen38_27b_nothink", "qwen38_27b_think"}:
-        max_seconds = 3600
+    # Cap Modal jobs by remaining phase-2 dry-run budget.
+    from rc.budget import spent_modal_usd
+
+    remaining = load_budget(root).phase2_dryrun_hard_cap_usd - spent_modal_usd(root)
+    rate = estimate_modal_usd(
+        gpu, 1, cpu_cores=res["cpu_cores"], memory_gib=res["memory_gib"], root=root
+    )
+    # Leave a small buffer for ledger/pull overhead.
+    budget_seconds = max(120, int((remaining - 0.05) / rate)) if remaining > 0.05 else 0
+    if budget_seconds <= 0:
+        raise SystemExit(f"STOP: no phase-2 budget remaining (spent leaves ${remaining:.4f})")
+    if max_seconds > budget_seconds:
+        print(
+            f"capping max_seconds {max_seconds} → {budget_seconds} "
+            f"(budget left ${remaining:.2f})"
+        )
+        max_seconds = budget_seconds
 
     job_id = "phase2-dryrun-" + "-".join(config_ids)
     est = estimate_modal_usd(
@@ -277,11 +306,14 @@ def main(*args: str) -> None:
     except BudgetExceeded as exc:
         raise SystemExit(f"preflight blocked: {exc}") from exc
 
+    from rc.io_utils import git_sha as local_git_sha
+
+    sha = local_git_sha(root)
     started = time.perf_counter()
     if gpu == "L40S":
-        summary = run_l40s.with_options(timeout=max_seconds).remote(config_ids)
+        summary = run_l40s.with_options(timeout=max_seconds).remote(config_ids, sha)
     else:
-        summary = run_a100.with_options(timeout=max_seconds).remote(config_ids)
+        summary = run_a100.with_options(timeout=max_seconds).remote(config_ids, sha)
     elapsed = time.perf_counter() - started
 
     _pull_volume(root)

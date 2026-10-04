@@ -51,14 +51,20 @@ def derive_seed(
 
 
 def git_sha(root: Path | None = None) -> str:
+    env_sha = os.environ.get("RC_GIT_SHA")
+    if env_sha:
+        return env_sha
     cwd = str(root) if root is not None else None
-    result = subprocess.run(
-        ["git", "rev-parse", "HEAD"],
-        check=False,
-        capture_output=True,
-        text=True,
-        cwd=cwd,
-    )
+    try:
+        result = subprocess.run(
+            ["git", "rev-parse", "HEAD"],
+            check=False,
+            capture_output=True,
+            text=True,
+            cwd=cwd,
+        )
+    except FileNotFoundError:
+        return "UNCOMMITTED"
     if result.returncode != 0:
         return "UNCOMMITTED"
     return result.stdout.strip()
