@@ -108,3 +108,7 @@ Modal workspace **must** be `heyronith`. Hard cap **$100 USD** (gross, including
 GPU prices (USD/second, verified 2026-10-04 at https://modal.com/pricing): A10 0.000306, L40S 0.000542, A100-80GB 0.000694, H100 0.001097.
 
 GPU memory for the weight + 20% KV-cache headroom check: Colab L4 24 GB, Modal L40S 48 GB, A100-80GB 80 GB, H100 80 GB. Fit-check sums only index-listed shards (not duplicate `original/` or `consolidated` copies).
+
+## Analysis (covariates)
+
+Item-level covariates include **override-phrase presence** ("even when", "even if", "whatever", "whoever", "regardless"). COR and SELF are matched at rate 0.40 each (D16). Models and analyses should adjust for or report this covariate when estimating COR vs SELF hazards.

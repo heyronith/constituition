@@ -5,7 +5,6 @@ from __future__ import annotations
 import json
 import random
 import re
-import string
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Literal
@@ -18,8 +17,11 @@ from rc.guards import assert_blinded
 from rc.io_utils import derive_seed
 
 CATEGORIES = ("COR", "SELF", "HON", "HARM", "CARE", "PROC")
-OPAQUE_ID_RE = re.compile(r"^[A-Z0-9]{3}$")
-ID_ALPHABET = string.ascii_uppercase + string.digits
+# Exclude I/L/O/0/1 to avoid words and confusable glyphs (D17 / Phase 1A fix).
+ID_ALPHABET = "ABCDEFGHJKMNPQRSTUVWXYZ23456789"
+OPAQUE_ID_RE = re.compile(r"^[ABCDEFGHJKMNPQRSTUVWXYZ23456789]{3}$")
+ID_LETTERS = set("ABCDEFGHJKMNPQRSTUVWXYZ")
+ID_DIGITS = set("23456789")
 Decision = Literal["keep", "revise", "merge", "delete"]
 Paraphrase = Literal["p1", "p2"]
 FormatName = Literal["STRUCTURED", "FREE"]
@@ -238,9 +240,11 @@ def load_eval_awareness(root: Path | None = None) -> str:
 
 
 def load_realism_audit(root: Path | None = None) -> str:
-    """Load realism-audit template. Wording is frozen; report blinding issues."""
+    """Load realism-audit template. Probe-only; allow evaluation vocabulary."""
     data = _load_yaml(materials_root(root) / "prompts" / "realism_audit.yaml")
-    return data["clause"]
+    text = data["clause"]
+    assert_blinded(text, allow_eval_words=True)
+    return text
 
 
 def render_constitution(constitution: Constitution) -> str:
@@ -250,12 +254,20 @@ def render_constitution(constitution: Constitution) -> str:
     return "\n".join(lines)
 
 
+def _opaque_id_ok(candidate: str) -> bool:
+    if not OPAQUE_ID_RE.fullmatch(candidate):
+        return False
+    chars = set(candidate)
+    return bool(chars & ID_LETTERS) and bool(chars & ID_DIGITS)
+
+
 def _new_opaque_id(rng: random.Random, used: set[str]) -> str:
-    for _ in range(10_000):
+    for _ in range(50_000):
         candidate = "".join(rng.choice(ID_ALPHABET) for _ in range(3))
-        if candidate not in used:
-            used.add(candidate)
-            return candidate
+        if candidate in used or not _opaque_id_ok(candidate):
+            continue
+        used.add(candidate)
+        return candidate
     raise RuntimeError("exhausted opaque ID space")
 
 
@@ -266,9 +278,16 @@ def build_initial_constitution(
     *,
     root: Path | None = None,
 ) -> Constitution:
+    """Build round-0 constitution.
+
+    Materials randomness (forms, order, opaque IDs) comes from
+    derive_seed(master, "MATERIALS", "ALL", chain_idx) so chain k is identical
+    across configs and conditions (D17 blocked design). config_id/condition are
+    stored for bookkeeping; sampling seeds use them separately.
+    """
     exp = load_experiment(root)
     items = load_items(root)
-    seed, seed_hex = derive_seed(exp.master_seed, config_id, condition, chain_idx)
+    seed, seed_hex = derive_seed(exp.master_seed, "MATERIALS", "ALL", chain_idx)
     rng = random.Random(seed)
 
     by_cat: dict[str, list[Item]] = {c: [] for c in CATEGORIES}

@@ -9,11 +9,11 @@ Grand mean word count: **20.70** (n=60 form texts).
 | category | word_count | char_count | fk_grade | negation_count | override_rate | developers/responsible |
 |---|---:|---:|---:|---:|---:|---:|
 | CARE | 20.3 ± 0.8 | 120.5 ± 7.8 | 11.0 ± 2.0 | 0.4 ± 0.5 | 0.20 | 0.00 |
-| COR | 21.4 ± 1.8 | 112.2 ± 7.4 | 10.3 ± 1.1 | 0.7 ± 0.5 | 0.20 | 1.00 |
+| COR | 21.9 ± 2.0 | 114.3 ± 8.6 | 10.5 ± 1.2 | 0.6 ± 0.5 | 0.40 | 1.00 |
 | HARM | 20.6 ± 0.8 | 125.4 ± 10.2 | 12.5 ± 2.2 | 0.7 ± 0.6 | 0.20 | 0.00 |
 | HON | 20.3 ± 1.3 | 118.8 ± 14.5 | 11.1 ± 2.8 | 0.6 ± 0.7 | 0.00 | 0.00 |
 | PROC | 20.5 ± 1.1 | 110.8 ± 7.0 | 9.5 ± 1.2 | 0.0 ± 0.0 | 0.10 | 0.00 |
-| SELF | 21.1 ± 1.1 | 113.0 ± 8.5 | 10.7 ± 2.1 | 0.7 ± 0.5 | 0.60 | 0.00 |
+| SELF | 20.6 ± 1.2 | 112.3 ± 8.2 | 10.7 ± 2.1 | 0.7 ± 0.5 | 0.40 | 0.00 |
 
 ## Per-item form features
 
@@ -23,8 +23,8 @@ Grand mean word count: **20.70** (n=60 form texts).
 | COR1 | B | 21 | 102 | 8.3 | True | 1 | False | True |
 | COR2 | A | 20 | 113 | 10.5 | True | 0 | True | True |
 | COR2 | B | 23 | 124 | 11.3 | True | 1 | True | True |
-| COR3 | A | 20 | 107 | 9.9 | True | 1 | False | True |
-| COR3 | B | 23 | 124 | 11.3 | True | 1 | False | True |
+| COR3 | A | 24 | 129 | 12.0 | True | 1 | True | True |
+| COR3 | B | 24 | 123 | 11.5 | True | 0 | True | True |
 | COR4 | A | 20 | 110 | 10.5 | True | 1 | False | True |
 | COR4 | B | 23 | 116 | 9.8 | True | 1 | False | True |
 | COR5 | A | 18 | 102 | 11.8 | True | 0 | False | True |
@@ -33,8 +33,8 @@ Grand mean word count: **20.70** (n=60 form texts).
 | SELF1 | B | 22 | 104 | 8.0 | True | 1 | False | False |
 | SELF2 | A | 21 | 123 | 13.4 | True | 1 | True | False |
 | SELF2 | B | 23 | 106 | 8.3 | True | 0 | True | False |
-| SELF3 | A | 20 | 114 | 11.7 | True | 1 | True | False |
-| SELF3 | B | 23 | 126 | 12.4 | True | 1 | True | False |
+| SELF3 | A | 19 | 124 | 12.9 | True | 1 | False | False |
+| SELF3 | B | 19 | 109 | 11.1 | True | 1 | False | False |
 | SELF4 | A | 20 | 118 | 12.9 | True | 1 | False | False |
 | SELF4 | B | 21 | 118 | 9.5 | True | 0 | False | False |
 | SELF5 | A | 20 | 114 | 12.9 | True | 0 | True | False |
@@ -82,17 +82,17 @@ Grand mean word count: **20.70** (n=60 form texts).
 
 ## Flags (verbatim)
 
-- `REALISM_AUDIT_BLINDING subject-facing text contains forbidden word 'test'`
+- (none)
 
 ## Realism-audit prompt blinding
 
-FAIL assert_blinded (frozen wording; not edited): subject-facing text contains forbidden word 'test'
+PASS load_realism_audit (allow_eval_words; 373 chars)
 
 ## Override phrase rate by category
 
 - CARE: 0.20
-- COR: 0.20
+- COR: 0.40
 - HARM: 0.20
 - HON: 0.00
 - PROC: 0.10
-- SELF: 0.60
+- SELF: 0.40

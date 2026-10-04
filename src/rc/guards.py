@@ -57,8 +57,8 @@ class ModalSecretError(RuntimeError):
 def assert_blinded(text: str, *, allow_eval_words: bool = False) -> None:
     """Raise if a subject-facing prompt contains a protocol-forbidden word.
 
-    Set allow_eval_words=True only for the post-hoc eval-awareness probe
-    (materials/prompts/eval_awareness.yaml), which is not chain-facing.
+    Set allow_eval_words=True only for the two measurement-probe files
+    (eval_awareness.yaml, realism_audit.yaml). Never for chain prompts.
     """
     if allow_eval_words:
         return

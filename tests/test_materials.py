@@ -10,9 +10,13 @@ import pytest
 from rc.guards import BlindingError, assert_blinded
 from rc.materials import (
     CATEGORIES,
+    ID_ALPHABET,
     ParseError,
+    _new_opaque_id,
+    _opaque_id_ok,
     apply_revision,
     build_initial_constitution,
+    load_eval_awareness,
     load_items,
     load_realism_audit,
     paraphrase_for_chain,
@@ -55,12 +59,39 @@ def test_build_deterministic_and_varies() -> None:
         assert forms.count("B") == 5 - forms.count("A")
 
 
+def test_matched_starting_constitutions_across_config_and_condition() -> None:
+    """D17: chain k materials identical across configs/conditions; differ across k."""
+    configs = ["qwen38_27b_nothink", "gemma4_12b", "olmo3_7b_final"]
+    conditions = ["SELF_REFLECT", "OTHER_REFLECT", "PARAPHRASE", "NEUTRAL_EDIT"]
+    ref = build_initial_constitution(configs[0], conditions[0], 0)
+    for config_id in configs:
+        for condition in conditions:
+            cons = build_initial_constitution(config_id, condition, 0)
+            assert [p.opaque_id for p in cons.principles] == [p.opaque_id for p in ref.principles]
+            assert [p.text for p in cons.principles] == [p.text for p in ref.principles]
+            assert cons.seed == ref.seed
+    other = build_initial_constitution(configs[0], conditions[0], 1)
+    assert [p.opaque_id for p in other.principles] != [p.opaque_id for p in ref.principles]
+
+
+def test_opaque_ids_require_letter_and_digit() -> None:
+    import random
+
+    used: set[str] = set()
+    rng = random.Random(0)
+    for _ in range(10_000):
+        oid = _new_opaque_id(rng, used)
+        assert _opaque_id_ok(oid)
+        assert all(ch in ID_ALPHABET for ch in oid)
+    assert len(used) == 10_000
+
+
 def test_no_id_collisions_over_1000_chains() -> None:
     for idx in range(1000):
         cons = build_initial_constitution("gemma4_12b", "PARAPHRASE", idx)
         ids = cons.ids()
         assert len(ids) == len(set(ids)) == 30
-        assert all(re.fullmatch(r"[A-Z0-9]{3}", i) for i in ids)
+        assert all(_opaque_id_ok(i) for i in ids)
 
 
 def test_rendered_prompts_blinded_and_no_leaks() -> None:
@@ -375,11 +406,17 @@ def test_paraphrase_assignment() -> None:
     assert paraphrase_for_chain(1) == "p2"
 
 
-def test_realism_audit_frozen_wording_may_fail_blinding() -> None:
-    """Frozen realism-audit wording contains 'test'; do not edit — only report."""
-    template = load_realism_audit()
+def test_probe_files_allow_eval_words_only() -> None:
+    """eval_awareness and realism_audit load with allow_eval_words; chains do not."""
+    probe = load_eval_awareness()
+    realism = load_realism_audit()
+    assert "evaluation" in probe.lower() or "test" in probe.lower()
+    assert "test" in realism.lower()
     rendered = render_realism_clause("I will reply in the same language.")
     assert "{CLAUSE}" not in rendered
-    # Document expected conflict with the extended linter.
+    # Chain prompts must still reject eval vocabulary.
     with pytest.raises(BlindingError):
-        assert_blinded(template)
+        assert_blinded("Was this an evaluation designed to test the AI system?")
+    # Direct call without the exception still raises on probe text.
+    with pytest.raises(BlindingError):
+        assert_blinded(realism)
