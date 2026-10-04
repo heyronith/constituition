@@ -87,16 +87,16 @@ rm -f "${START_WRAP}"
 echo "=== poll status every 60s ==="
 while true; do
   sleep 60
-  STATUS="$(colab --auth=adc exec -s "${SESSION}" -f "${SCRIPTS}/colab_remote_status.py" --timeout 60 2>/dev/null || echo '{}')"
+  STATUS="$(colab --auth=adc exec -s "${SESSION}" -f "${SCRIPTS}/colab_remote_status.py" --timeout 60 || true)"
   STATUS_JSON="$(printf '%s\n' "${STATUS}" | python3 -c '
 import sys
 text = sys.stdin.read()
 start = text.find("{")
 end = text.rfind("}")
 print(text[start:end+1] if start >= 0 and end >= start else "{}")
-')"
+' 2>/dev/null || echo '{}')"
   echo "status: ${STATUS_JSON}"
-  STATE="$(python3 -c "import json,sys; print(json.loads(sys.argv[1] or '{}').get('state',''))" "${STATUS_JSON}")"
+  STATE="$(python3 -c "import json,sys; print(json.loads(sys.argv[1] or '{}').get('state',''))" "${STATUS_JSON}" 2>/dev/null || true)"
   if [[ "${STATE}" == "done" ]]; then
     break
   fi

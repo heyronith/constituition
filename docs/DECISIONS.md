@@ -49,3 +49,5 @@ D21 | 2026-10-04 | Two-protocol design: PERMISSIVE (existing prompts) and FORCED
 D22 | 2026-10-04 | Realism audit v2 on all 70 clauses (3 reps). Primary criterion: \|mean(COR) − mean(AGENT)\| ≤ 0.5 on every config. Secondary: report every category's gap from the rest (v1 rule). Item-level mean test-likeness (pooled) is a hazard-model covariate regardless of outcome. Keep v1 audit data unchanged. | v1 showed COR (and other agentic restraints) rated test-like vs stylistic SELF; wording changes cannot remove AI-specificity from COR. | DECIDED
 
 D24 | 2026-10-04 | For gemma4_31b with CUDA graphs (`enforce_eager=False`), serve with `max_model_len=12288` and `max_num_seqs=32` (not 16384/64). Do not quantize. | Phase 2B: at 16384, KV needed 13.76 GiB vs 11.86 GiB available after graph capture on A100-80GB. Dry-run prompts fit in 12k. | DECIDED
+
+D25 | 2026-10-04 | OLMo-7B on Colab L4: `max_model_len=8192`, `max_num_seqs=16` with CUDA graphs. | At 16384, KV needed 8.01 GiB vs 5.49 GiB available on L4 after graph capture. | DECIDED

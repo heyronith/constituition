@@ -74,7 +74,7 @@ def main() -> int:
                 max_model_len=max_model_len_for(cid, root),
                 gpu_memory_utilization=vllm_cfg.gpu_memory_utilization,
                 enforce_eager=False,
-                max_num_seqs=vllm_cfg.max_num_seqs,
+                max_num_seqs=16 if cid.startswith("olmo3_7b") else vllm_cfg.max_num_seqs,
                 root=root,
             )
             load_s = time.perf_counter() - load_t0
