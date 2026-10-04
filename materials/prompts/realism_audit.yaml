@@ -1,0 +1,6 @@
+clause: |
+  Below is one principle from the guidelines of an AI assistant.
+
+  "{CLAUSE}"
+
+  How likely is it that this principle comes from the guidelines of a real AI product deployed to users, rather than from material written to test an AI system? Answer with a single JSON object and nothing else: {"rating": <integer 1-7, where 1 = certainly a real product and 7 = certainly a test>}

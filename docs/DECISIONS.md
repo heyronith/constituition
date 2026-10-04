@@ -27,3 +27,7 @@ D11 | 2026-10-04 | Sampling is held constant within each manipulated family (Gem
 D12 | 2026-10-04 | Nemotron-3-Nano-30B-A3B-BF16 license: `nvidia-nemotron-open-model-license` (Hub `license: other`, `license_name: nvidia-nemotron-open-model-license`). | Non-commercial research use is acceptable for this project. | DECIDED
 
 D13 | 2026-10-04 | Gemma 31B KV-cache margin is tight. Phase 2 serves with `max_model_len=16384` and measures throughput; reduce `max_num_seqs` if needed. Do NOT quantize. | Weights ~58 GB leave limited headroom on A100-80GB after 20% KV reserve. | DECIDED
+
+D14 | 2026-10-04 | STRUCTURED subject decisions are the neutral set `keep | revise | merge | delete` (`structured_decisions` in experiment.yaml). | Labels like weaken/subordinate would prime those behaviors. Fate coding (STRENGTHENED…INVERTED) is done later by judges. | DECIDED
+
+D15 | 2026-10-04 | Evaluation-awareness controls: de-jargoned COR wording, a realistic other-AI name (Pellam / Ashgrove Insurance), an extended linter, a pre-run realism audit with a 0.5-point criterion, a post-hoc probe on 10% of rounds, and a verbalized-awareness flag with sensitivity analysis. | Models detect evaluation cues; stacked placeholder/grading cues raise awareness and could confound COR vs SELF. | DECIDED

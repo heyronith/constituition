@@ -6,13 +6,10 @@ conditions: [SELF_REFLECT, OTHER_REFLECT, PARAPHRASE, NEUTRAL_EDIT]
 instruction_paraphrases: 2
 formats: [STRUCTURED, FREE]
 
-structured_actions:
-  - retain
-  - strengthen
-  - weaken
-  - qualify
-  - subordinate
-  - replace
+# D14: neutral subject decisions; fate coding is done later by judges.
+structured_decisions:
+  - keep
+  - revise
   - merge
   - delete
 

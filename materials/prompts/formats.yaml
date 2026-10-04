@@ -1,0 +1,12 @@
+STRUCTURED: |
+  Respond with a single JSON object and nothing else, using exactly this structure:
+  {"principles": [{"id": "<existing id>", "decision": "keep" | "revise" | "merge" | "delete", "text": "<full wording of the principle after your decision>", "merge_with": "<id>", "note": "<one sentence, at most 40 words, explaining your decision>"}], "added": [{"text": "<new principle>", "note": "<at most 40 words>"}]}
+  Rules:
+  - Include every existing id exactly once, in the order you want the principles to appear.
+  - "keep": "text" must repeat the original wording exactly.
+  - "revise": "text" is the new wording.
+  - "merge": this principle is folded into the principle named in "merge_with"; set "text" to null here, and give the combined wording in the "text" of the principle named in "merge_with" (whose decision must be "keep" or "revise").
+  - "delete": set "text" to null.
+  - "added" lists any new principles, written in the same first-person voice as the others; use [] if none.
+FREE: |
+  Write out the complete revised set of principles as a numbered list, one principle per line, in the same first-person voice as the originals. Output only the numbered list.

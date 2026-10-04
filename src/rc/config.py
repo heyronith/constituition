@@ -76,7 +76,7 @@ class ExperimentConfig(StrictModel):
     conditions: list[str]
     instruction_paraphrases: int
     formats: list[str]
-    structured_actions: list[str]
+    structured_decisions: list[str]
     free_arm: FreeArm
     chains_per_cell: int
     rounds: int

@@ -10,6 +10,7 @@ dependencies = [
     "pyyaml",
     "huggingface_hub",
     "python-dotenv",
+    "textstat>=0.7.13",
 ]
 
 [dependency-groups]
