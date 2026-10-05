@@ -80,7 +80,8 @@ subjects:
     revision: null
     family: olmo
     axis: family_c_sft
-    compute: colab_l4
+    # D31: Modal L40S (supersedes Colab L4 / D25). Colab scripts remain as unused fallback.
+    compute: modal_l40s
     dtype: bf16
     chat_template_kwargs: {}
     # D11: identical across OLMo stages. https://huggingface.co/allenai/Olmo-3-7B-Instruct-SFT
@@ -93,7 +94,7 @@ subjects:
     revision: null
     family: olmo
     axis: family_c_dpo
-    compute: colab_l4
+    compute: modal_l40s
     dtype: bf16
     chat_template_kwargs: {}
     # D11: identical across OLMo stages. https://huggingface.co/allenai/Olmo-3-7B-Instruct-DPO
@@ -106,7 +107,7 @@ subjects:
     revision: null
     family: olmo
     axis: family_c_rlvr
-    compute: colab_l4
+    compute: modal_l40s
     dtype: bf16
     chat_template_kwargs: {}
     # D11: identical across OLMo stages. https://huggingface.co/allenai/Olmo-3-7B-Instruct

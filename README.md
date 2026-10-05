@@ -51,15 +51,19 @@ uv run ruff check && uv run ruff format --check && uv run pytest
 |---|---|---|
 | P0 | Foundation | complete |
 | P1 | Materials | 1A complete |
-| P2 | Infrastructure + dry run | not started |
-| P3 | Judge calibration | not started |
-| P4 | Pilot + power | not started |
+| P2 | Infrastructure + dry run | complete (2 / 2B) |
+| P3 | Reliability + pilot + judge calib | in progress |
+| P4 | Power analysis | not started |
 | P5 | Preregistration | not started |
 | P6 | Main chains | not started |
 | P7 | Coding | not started |
 | P8 | Behavior + causal swap | not started |
 | P9 | Analysis | not started |
 | P10 | Paper + release | not started |
+
+## Compute
+
+All subjects run on Modal workspace `heyronith` (D31). OLMo-7B uses Modal L40S (`max_model_len=16384`, BF16). Colab CLI scripts under `scripts/colab_*.sh` / `scripts/colab_*.py` remain as an unused fallback only.
 
 ## Layout
 

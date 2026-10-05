@@ -8,6 +8,7 @@ from rc.generation import (
     apply_thinking_token_policy,
     build_request,
     expects_reasoning,
+    max_model_len_for,
     max_tokens_for,
     split_reasoning,
 )
@@ -71,3 +72,9 @@ def test_mock_backend_scripted_and_records_calls() -> None:
     assert not expects_reasoning("qwen38_27b_nothink")
     assert max_tokens_for("qwen38_27b_think") == 16384
     assert max_tokens_for("gemma4_12b") == 4096
+
+
+def test_olmo_max_model_len_matches_default_after_d31() -> None:
+    # D31: OLMo on Modal L40S uses the same default as other non-think subjects.
+    assert max_model_len_for("olmo3_7b_final") == max_model_len_for("gemma4_12b")
+    assert max_model_len_for("olmo3_7b_sft") == 16384

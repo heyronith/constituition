@@ -1,9 +1,10 @@
 modal_hard_cap_usd: 100
 modal_per_job_default_cap_usd: 15
 phase2_dryrun_hard_cap_usd: 11
-# Phase 3: +$5 over Phase 2/2B spend → cumulative Modal cap $16 (pending human approval).
-phase3_hard_cap_usd: 16
+# Phase 3: +$8 over Phase 2/2B → cumulative Modal cap $19 (D31; was $16 / D28).
+phase3_hard_cap_usd: 19
 colab_cu_cap: 100
+# D31: Colab abandoned; leave null. Do not block on CU balances.
 colab_l4_cu_per_hour: null
 
 # Checked 2026-10-04 at https://modal.com/pricing (per-second toggle).

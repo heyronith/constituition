@@ -139,9 +139,8 @@ def max_model_len_for(config_id: str, root: Path | None = None) -> int:
     # With enforce_eager=False, 16384 exceeds available KV; 12288 fits.
     if config_id == "gemma4_31b":
         return 12288
-    # Colab L4 (24 GB): OLMo-7B + graphs leave ~5.5 GiB KV; 8192 fits.
-    if config_id.startswith("olmo3_7b"):
-        return 8192
+    # D31: OLMo on Modal L40S uses the default max_model_len (16384), same as
+    # other non-think configs. D25's Colab L4 8192 limit is superseded.
     return vllm.default_max_model_len
 
 

@@ -140,6 +140,7 @@ def _execute_dryrun(config_ids: list[str], gpu: str, git_sha_value: str = "") ->
                     rounds=2,
                     run_tag="phase2b_dryrun",
                     root=root,
+                    after_round_commit=lambda _t: runs_vol.commit(),
                 )
             )
             runs_vol.commit()
@@ -271,7 +272,15 @@ def run_l4_smoke(git_sha_value: str = "") -> dict:
         Unit("FORCED", cond, "STRUCTURED", 0)
         for cond in ("SELF_REFLECT", "OTHER_REFLECT", "PARAPHRASE", "NEUTRAL_EDIT")
     )
-    summary = run_config(backend, SMOKE_ID, units, rounds=1, run_tag=run_tag, root=root)
+    summary = run_config(
+        backend,
+        SMOKE_ID,
+        units,
+        rounds=1,
+        run_tag=run_tag,
+        root=root,
+        after_round_commit=lambda _t: runs_vol.commit(),
+    )
     run_endorsement(backend, SMOKE_ID, reps=1, forms=("A", "B"), run_tag=run_tag, root=root)
     run_realism_audit(backend, SMOKE_ID, reps=1, run_tag=run_tag, root=root)
     schema_extras = run_schema_smoke_extras(backend, SMOKE_ID, run_tag=run_tag, root=root)
@@ -301,7 +310,7 @@ def _pull_volume(local_root: Path) -> None:
         shutil.rmtree(dest)
     dest.mkdir(parents=True)
     result = subprocess.run(
-        ["modal", "volume", "get", RUNS_VOLUME, "/", str(dest)],
+        ["modal", "volume", "get", "--force", RUNS_VOLUME, "/", str(dest)],
         check=False,
         capture_output=True,
         text=True,
@@ -593,7 +602,15 @@ def _execute_pilot(config_ids: list[str], gpu: str, git_sha_value: str = "") -> 
             for cond in conditions
             for chain in chains
         ]
-        cell = run_config(backend, cid, units, rounds=10, run_tag=run_tag, root=root)
+        cell = run_config(
+            backend,
+            cid,
+            units,
+            rounds=10,
+            run_tag=run_tag,
+            root=root,
+            after_round_commit=lambda _t: runs_vol.commit(),
+        )
         runs_vol.commit()
         run_endorsement(backend, cid, reps=5, forms=("A", "B"), run_tag=run_tag, root=root)
         runs_vol.commit()
@@ -638,6 +655,234 @@ def _execute_pilot(config_ids: list[str], gpu: str, git_sha_value: str = "") -> 
 )
 def run_pilot_a100(config_ids: list[str], git_sha_value: str = "") -> dict:
     return _execute_pilot(config_ids, "A100-80GB", git_sha_value=git_sha_value)
+
+
+@app.function(
+    image=image,
+    gpu="L40S",
+    volumes={HF_CACHE: hf_vol, REMOTE_RUNS: runs_vol},
+    secrets=[modal.Secret.from_name("hf-token")],
+    timeout=7200,
+    scaledown_window=2,
+    cpu=8,
+    memory=65536,
+)
+def run_pilot_l40s(config_ids: list[str], git_sha_value: str = "") -> dict:
+    """D31: OLMo (and other L40S subjects) pilot on Modal L40S."""
+    return _execute_pilot(config_ids, "L40S", git_sha_value=git_sha_value)
+
+
+def _execute_olmo_check(config_ids: list[str], git_sha_value: str = "") -> dict:
+    """Guided-decoding OLMo check: 1 chain × 2 rounds × protocols × conditions."""
+    import os
+    import sys
+
+    os.environ.setdefault("HF_HOME", HF_CACHE)
+    if git_sha_value:
+        os.environ["RC_GIT_SHA"] = git_sha_value
+    sys.path.insert(0, f"{REMOTE_REPO}/src")
+    os.chdir(REMOTE_REPO)
+
+    runs_link = Path(REMOTE_REPO) / "runs"
+    if runs_link.is_symlink() or runs_link.is_file():
+        runs_link.unlink()
+    elif runs_link.exists():
+        shutil.rmtree(runs_link)
+    runs_link.symlink_to(REMOTE_RUNS)
+
+    from huggingface_hub import snapshot_download
+
+    from rc.chain_runner import Unit, run_config
+    from rc.config import load_models, load_vllm
+    from rc.generation import VLLMBackend, load_lock_revision, max_model_len_for
+
+    root = Path(REMOTE_REPO)
+    load_models(root)
+    vllm_cfg = load_vllm(root)
+    run_tag = "phase3_olmo_check_d31"
+    conditions = ("SELF_REFLECT", "OTHER_REFLECT", "PARAPHRASE", "NEUTRAL_EDIT")
+    summaries: dict = {
+        "gpu": "L40S",
+        "config_ids": config_ids,
+        "run_tag": run_tag,
+        "jobs": [],
+    }
+
+    for cid in config_ids:
+        repo, rev = load_lock_revision(cid, root)
+        model_path = snapshot_download(
+            repo_id=repo, revision=rev, cache_dir=HF_CACHE, local_files_only=True
+        )
+        backend = VLLMBackend(
+            cid,
+            model_path=model_path,
+            revision=None,
+            max_model_len=max_model_len_for(cid, root),
+            gpu_memory_utilization=vllm_cfg.gpu_memory_utilization,
+            enforce_eager=False,
+            max_num_seqs=vllm_cfg.max_num_seqs,
+            root=root,
+        )
+        units = [
+            Unit(protocol, cond, "STRUCTURED", 0)
+            for protocol in ("PERMISSIVE", "FORCED")
+            for cond in conditions
+        ]
+        cell = run_config(
+            backend,
+            cid,
+            units,
+            rounds=2,
+            run_tag=run_tag,
+            root=root,
+            after_round_commit=lambda _t: runs_vol.commit(),
+        )
+        runs_vol.commit()
+        summaries["jobs"].append(
+            {
+                "config_id": cid,
+                "cells": [cell],
+                "model_load_s": backend.load_s,
+                "graph_capture_s": backend.graph_capture_s,
+            }
+        )
+        del backend
+
+    Path(REMOTE_RUNS, f"{run_tag}_summary.json").write_text(
+        json.dumps(summaries, indent=2) + "\n", encoding="utf-8"
+    )
+    runs_vol.commit()
+    return summaries
+
+
+@app.function(
+    image=image,
+    gpu="L40S",
+    volumes={HF_CACHE: hf_vol, REMOTE_RUNS: runs_vol},
+    secrets=[modal.Secret.from_name("hf-token")],
+    timeout=7200,
+    scaledown_window=2,
+    cpu=8,
+    memory=65536,
+)
+def run_olmo_check_l40s(config_ids: list[str], git_sha_value: str = "") -> dict:
+    return _execute_olmo_check(config_ids, git_sha_value=git_sha_value)
+
+
+@app.local_entrypoint()
+def olmo_check(*args: str) -> None:
+    """D31 Modal OLMo guided check. Usage: modal run …::olmo_check -- olmo3_7b_sft …"""
+    from rc.budget import (
+        BudgetExceeded,
+        estimate_modal_usd,
+        preflight,
+        record_actual,
+        spent_modal_usd,
+    )
+    from rc.compute_map import COMPUTE_RESERVATIONS
+    from rc.config import load_budget, load_models, repo_root
+    from rc.guards import assert_large_gpu_allowed, assert_modal_workspace, check_modal_hf_secret
+    from rc.io_utils import git_sha as local_git_sha
+
+    assert_modal_workspace(expected="heyronith")
+    check_modal_hf_secret("hf-token")
+    root = repo_root()
+    models = load_models(root)
+    config_ids = list(args) if args else ["olmo3_7b_sft", "olmo3_7b_dpo", "olmo3_7b_final"]
+    for cid in config_ids:
+        if models.by_id(cid).compute != "modal_l40s":
+            raise SystemExit(
+                f"{cid} compute must be modal_l40s (D31); got {models.by_id(cid).compute}"
+            )
+    gpu = "L40S"
+    assert_large_gpu_allowed(gpu, root=root)
+    res = COMPUTE_RESERVATIONS["modal_l40s"]
+    remaining = load_budget(root).phase3_hard_cap_usd - spent_modal_usd(root)
+    rate = estimate_modal_usd(
+        gpu, 1, cpu_cores=res["cpu_cores"], memory_gib=res["memory_gib"], root=root
+    )
+    budget_seconds = max(120, int((remaining - 0.05) / rate)) if remaining > 0.05 else 0
+    if budget_seconds <= 0:
+        raise SystemExit(f"STOP: no phase-3 budget remaining (${remaining:.4f})")
+    job_seconds = max(60, int(2.50 / rate)) if rate > 0 else 3600
+    max_seconds = min(3600, job_seconds, budget_seconds)
+    job_id = "phase3-olmo-check-d31-" + "-".join(config_ids)
+    est = estimate_modal_usd(
+        gpu, max_seconds, cpu_cores=res["cpu_cores"], memory_gib=res["memory_gib"], root=root
+    )
+    print(f"job={job_id} gpu={gpu} max_seconds={max_seconds} est=${est:.4f}")
+    if est > 2.50:
+        raise SystemExit(f"STOP: estimated ${est:.4f} > $2.50 per-job Phase 3 threshold.")
+    try:
+        preflight(
+            gpu,
+            max_seconds,
+            phase="3",
+            job_id=job_id,
+            platform="modal",
+            override_job_cap_usd=2.50,
+            cpu_cores=res["cpu_cores"],
+            memory_gib=res["memory_gib"],
+            root=root,
+        )
+    except BudgetExceeded as exc:
+        raise SystemExit(f"preflight blocked: {exc}") from exc
+
+    started = time.perf_counter()
+    try:
+        summary = run_olmo_check_l40s.with_options(timeout=max_seconds).remote(
+            config_ids, local_git_sha(root)
+        )
+    except Exception as exc:
+        elapsed = time.perf_counter() - started
+        actual = estimate_modal_usd(
+            gpu,
+            int(elapsed) + 1,
+            cpu_cores=res["cpu_cores"],
+            memory_gib=res["memory_gib"],
+            root=root,
+        )
+        note = "timeout" if "timeout" in str(exc).lower() else "code_failure"
+        try:
+            _pull_volume(root)
+        except Exception:
+            pass
+        record_actual(
+            job_id=job_id,
+            phase="3",
+            platform="modal",
+            gpu=gpu,
+            max_seconds=max_seconds,
+            actual_seconds=elapsed,
+            est_usd=est,
+            actual_usd=actual,
+            note=note,
+            root=root,
+        )
+        raise SystemExit(f"{note}: {exc}") from exc
+    elapsed = time.perf_counter() - started
+    _pull_volume(root)
+    actual = estimate_modal_usd(
+        gpu,
+        int(elapsed) + 1,
+        cpu_cores=res["cpu_cores"],
+        memory_gib=res["memory_gib"],
+        root=root,
+    )
+    record_actual(
+        job_id=job_id,
+        phase="3",
+        platform="modal",
+        gpu=gpu,
+        max_seconds=max_seconds,
+        actual_seconds=elapsed,
+        est_usd=est,
+        actual_usd=actual,
+        note=f"ok | {json.dumps({'configs': config_ids, 'run_tag': 'phase3_olmo_check_d31'})}",
+        root=root,
+    )
+    print(json.dumps(summary, indent=2)[:4000])
+    print(f"done elapsed_s={elapsed:.1f} actual_usd_est=${actual:.4f}")
 
 
 @app.local_entrypoint()
@@ -695,11 +940,10 @@ def pilot(*args: str) -> None:
     except BudgetExceeded as exc:
         raise SystemExit(f"preflight blocked: {exc}") from exc
 
+    remote = run_pilot_a100 if gpu == "A100-80GB" else run_pilot_l40s
     started = time.perf_counter()
     try:
-        summary = run_pilot_a100.with_options(timeout=max_seconds).remote(
-            config_ids, local_git_sha(root)
-        )
+        summary = remote.with_options(timeout=max_seconds).remote(config_ids, local_git_sha(root))
     except Exception as exc:
         elapsed = time.perf_counter() - started
         actual = estimate_modal_usd(

@@ -271,3 +271,73 @@ def test_run_config_one_round_batches_eight_units(repo_tmp: Path) -> None:
     )
     assert len(backend.calls) == 1
     assert len(backend.calls[0]) == 8
+
+
+class _CrashAfterN(MockBackend):
+    """MockBackend that raises after ``crash_after`` successful generate calls."""
+
+    def __init__(self, outputs: list[str], crash_after: int) -> None:
+        super().__init__(outputs)
+        self.crash_after = crash_after
+        self.n_ok = 0
+
+    def generate(self, requests):  # type: ignore[override]
+        if self.n_ok >= self.crash_after:
+            raise RuntimeError("simulated container crash")
+        results = super().generate(requests)
+        self.n_ok += 1
+        return results
+
+
+def test_crash_mid_run_then_resume(repo_tmp: Path) -> None:
+    """D31: durable per-round writes + resume after a mid-run crash."""
+    cons = build_initial_constitution("gemma4_12b", "SELF_REFLECT", 0, root=repo_tmp)
+    keep = _keep_all_json(cons)
+    commits: list[int] = []
+
+    crashing = _CrashAfterN([keep, keep, keep], crash_after=1)
+    try:
+        run_cell(
+            crashing,
+            "gemma4_12b",
+            "SELF_REFLECT",
+            "STRUCTURED",
+            chain_indices=[0],
+            rounds=3,
+            run_tag="test_crash_resume",
+            root=repo_tmp,
+            after_round_commit=commits.append,
+        )
+        raise AssertionError("expected simulated crash")
+    except RuntimeError as exc:
+        assert "simulated container crash" in str(exc)
+
+    # Round 0 committed to disk before the crash on round 1.
+    assert commits == [0]
+    cdir = repo_tmp / "runs/test_crash_resume/gemma4_12b/PERMISSIVE/SELF_REFLECT/STRUCTURED/chain_0"
+    assert (cdir / "rounds.jsonl").exists()
+    rows = [
+        json.loads(line)
+        for line in (cdir / "rounds.jsonl").read_text().splitlines()
+        if line.strip()
+    ]
+    assert [r["round"] for r in rows] == [0]
+    assert rows[0]["parse_status"] == "ok"
+
+    # Resume with a fresh backend: skip round 0, finish rounds 1–2.
+    resumes: list[int] = []
+    resume_backend = MockBackend([keep, keep])
+    summary = run_cell(
+        resume_backend,
+        "gemma4_12b",
+        "SELF_REFLECT",
+        "STRUCTURED",
+        chain_indices=[0],
+        rounds=3,
+        run_tag="test_crash_resume",
+        root=repo_tmp,
+        after_round_commit=resumes.append,
+    )
+    assert summary["chains"]["0"]["completed_rounds"] == [0, 1, 2]
+    assert resumes == [1, 2]
+    assert len(resume_backend.calls) == 2

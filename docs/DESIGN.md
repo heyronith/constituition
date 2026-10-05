@@ -105,11 +105,11 @@ Sampling is held constant within each manipulated family (D10–D11). Parameters
 
 ## Compute and budget
 
-Modal workspace **must** be `heyronith`. Hard cap **$100 USD** (gross, including starter credits), tracked in `budget/ledger.jsonl`. Per-job default cap $15. Colab: 100 compute units; L4 CU/hour measured in Phase 2.
+Modal workspace **must** be `heyronith`. Hard cap **$100 USD** (gross, including starter credits), tracked in `budget/ledger.jsonl`. Per-job default cap $15. Colab scripts remain in-repo as an unused fallback (D31); all subjects including OLMo run on Modal.
 
 GPU prices (USD/second, verified 2026-10-04 at https://modal.com/pricing): A10 0.000306, L40S 0.000542, A100-80GB 0.000694, H100 0.001097.
 
-GPU memory for the weight + 20% KV-cache headroom check: Colab L4 24 GB, Modal L40S 48 GB, A100-80GB 80 GB, H100 80 GB. Fit-check sums only index-listed shards (not duplicate `original/` or `consolidated` copies).
+GPU memory for the weight + 20% KV-cache headroom check: Modal L40S 48 GB (OLMo-7B and gemma4_12b), A100-80GB 80 GB, H100 80 GB. Fit-check sums only index-listed shards (not duplicate `original/` or `consolidated` copies). Every chain round is written to the `rc-runs` Modal Volume and committed before the next round starts (D31), so a container crash can resume.
 
 ## Analysis (covariates)
 

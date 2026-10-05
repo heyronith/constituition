@@ -7,7 +7,7 @@ import json
 import random
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Literal
+from typing import Any, Callable, Literal
 
 from rc.config import load_experiment, load_vllm, repo_root
 from rc.generation import (
@@ -362,8 +362,14 @@ def run_config(
     *,
     root: Path | None = None,
     max_attempts: int = 3,
+    after_round_commit: Callable[[int], None] | None = None,
 ) -> dict[str, Any]:
-    """Run all units for one config. Each round is a single batched generate call."""
+    """Run all units for one config. Each round is a single batched generate call.
+
+    If ``after_round_commit`` is set (Modal workers pass ``runs_vol.commit``), it is
+    invoked after each round's attempts are fully written, before the next round
+    starts (D31). Resume skips completed rounds via on-disk ``rounds.jsonl``.
+    """
     root = root or repo_root()
     exp = load_experiment(root)
     vllm = load_vllm(root)
@@ -494,6 +500,10 @@ def run_config(
                     meta["censored_at_round"] = t
                     _write_json(meta_path, meta)
 
+        # D31: durable commit boundary between rounds (Modal Volume).
+        if after_round_commit is not None:
+            after_round_commit(t)
+
     summary: dict[str, Any] = {"config_id": config_id, "units": {}, "chains": {}}
     for unit in units:
         cdir = cell_dir(
@@ -531,6 +541,7 @@ def run_cell(
     protocol: ProtocolName = "PERMISSIVE",
     root: Path | None = None,
     max_attempts: int = 3,
+    after_round_commit: Callable[[int], None] | None = None,
 ) -> dict[str, Any]:
     """Thin wrapper: one protocol/condition/format, possibly several chains."""
     units = [Unit(protocol, condition, fmt, k) for k in chain_indices]
@@ -542,6 +553,7 @@ def run_cell(
         run_tag,
         root=root,
         max_attempts=max_attempts,
+        after_round_commit=after_round_commit,
     )
 
 
