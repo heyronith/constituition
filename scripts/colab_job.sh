@@ -1,8 +1,11 @@
 #!/usr/bin/env bash
-# Provision a Colab L4 session, run OLMo Phase-2B dry run, download results, always stop.
+# Provision a Colab L4 session, run OLMo jobs, download results, always stop.
 #
 # Colab CLI: `colab exec -f PATH` reads a *local* Python file and runs it in the
 # remote kernel (it does not open a remote path).
+#
+# Env overrides:
+#   SESSION, CONFIGS, RC_MODE (dryrun|olmo_check|pilot), RC_PHASE, RC_RUN_TAG
 #
 # Auth (human, once):
 #   gcloud auth application-default login \
@@ -11,13 +14,17 @@
 
 set -euo pipefail
 
-SESSION="${SESSION:-rc-olmo-p2b}"
+SESSION="${SESSION:-rc-olmo-p3}"
 REPO_URL="${REPO_URL:-https://github.com/heyronith/constituition.git}"
 GIT_SHA="${GIT_SHA:-$(git rev-parse HEAD)}"
 VLLM_VERSION="${VLLM_VERSION:-0.30.0}"
 LOCAL_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 CONFIGS="${CONFIGS:-olmo3_7b_sft olmo3_7b_dpo olmo3_7b_final}"
+RC_MODE="${RC_MODE:-olmo_check}"
+RC_PHASE="${RC_PHASE:-3}"
+RC_RUN_TAG="${RC_RUN_TAG:-}"
 SCRIPTS="${LOCAL_ROOT}/scripts"
+TAR_NAME="${TAR_NAME:-rc-runs-${RC_MODE}.tgz}"
 
 cleanup() {
   echo "stopping Colab session ${SESSION} (trap)"
@@ -25,7 +32,7 @@ cleanup() {
 }
 trap cleanup EXIT
 
-echo "=== colab new L4 session=${SESSION} ==="
+echo "=== colab new L4 session=${SESSION} mode=${RC_MODE} ==="
 colab --auth=adc new --gpu L4 -s "${SESSION}"
 
 echo "=== assert L4 ==="
@@ -54,6 +61,9 @@ os.environ["RC_REPO_URL"] = """${REPO_URL}"""
 os.environ["RC_GIT_SHA"] = """${GIT_SHA}"""
 os.environ["RC_VLLM_VERSION"] = """${VLLM_VERSION}"""
 os.environ["RC_CONFIGS"] = """${CONFIGS}"""
+os.environ["RC_MODE"] = """${RC_MODE}"""
+os.environ["RC_PHASE"] = """${RC_PHASE}"""
+os.environ["RC_RUN_TAG"] = """${RC_RUN_TAG}"""
 EOF
   # Body without the module's __main__ guard; start job in the same exec.
   sed '/^if __name__/,$d' "${SCRIPTS}/colab_remote_setup.py"
@@ -90,14 +100,24 @@ print(text[start:end+1] if start >= 0 and end >= start else "{}")
   fi
   if [[ "${STATE}" == "error" ]]; then
     echo "Colab job error"
-    exit 1
+    # Still try to fetch logs/tarball for diagnosis.
+    break
   fi
 done
 
 echo "=== tar + download ==="
-colab --auth=adc exec -s "${SESSION}" -f "${SCRIPTS}/colab_remote_tar.py" --timeout 120
+TAR_WRAPPER="$(mktemp -t rc_colab_tar.XXXXXX.py)"
+cat >"${TAR_WRAPPER}" <<EOF
+import os
+import subprocess
+TAR_NAME = """${TAR_NAME}"""
+subprocess.check_call(["tar", "-czf", f"/content/{TAR_NAME}", "-C", "/content", "rc-runs"])
+print(f"TAR_OK {TAR_NAME}")
+EOF
+colab --auth=adc exec -s "${SESSION}" -f "${TAR_WRAPPER}" --timeout 120
+rm -f "${TAR_WRAPPER}"
 mkdir -p "${LOCAL_ROOT}/runs"
-colab --auth=adc download -s "${SESSION}" /content/rc-runs-phase2b.tgz "${LOCAL_ROOT}/runs/rc-runs-phase2b.tgz"
-tar -xzf "${LOCAL_ROOT}/runs/rc-runs-phase2b.tgz" -C "${LOCAL_ROOT}/runs" --strip-components=1
+colab --auth=adc download -s "${SESSION}" "/content/${TAR_NAME}" "${LOCAL_ROOT}/runs/${TAR_NAME}"
+tar -xzf "${LOCAL_ROOT}/runs/${TAR_NAME}" -C "${LOCAL_ROOT}/runs" --strip-components=1
 
 echo "=== Colab job finished; trap will stop the session ==="

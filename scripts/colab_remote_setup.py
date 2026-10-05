@@ -49,8 +49,29 @@ def main() -> None:
 
 
 def start_job() -> None:
-    """Start the dry-run in the same kernel session (avoids a second exec)."""
+    """Start generation in the same kernel session (avoids a second exec)."""
     configs = os.environ.get("RC_CONFIGS", "olmo3_7b_sft olmo3_7b_dpo olmo3_7b_final").split()
+    mode = os.environ.get("RC_MODE", "dryrun")
+    phase = os.environ.get("RC_PHASE", "3" if mode != "dryrun" else "2")
+    run_tag = os.environ.get("RC_RUN_TAG", "")
+    cmd = [
+        sys.executable,
+        "scripts/colab_run.py",
+        "--configs",
+        *configs,
+        "--phase",
+        phase,
+        "--mode",
+        mode,
+        "--out-root",
+        "/content/rc-runs",
+        "--repo-root",
+        "/content/constituition",
+    ]
+    if run_tag:
+        cmd.extend(["--run-tag", run_tag])
+    if mode == "olmo_check":
+        cmd.extend(["--skip-endorsement", "--skip-realism"])
     token = Path("/content/rc-runs/.hf_token").read_text(encoding="utf-8").strip()
     env = os.environ.copy()
     env["HF_TOKEN"] = token
@@ -61,18 +82,7 @@ def start_job() -> None:
     log = out / "job.log"
     with log.open("w", encoding="utf-8") as handle:
         proc = subprocess.Popen(
-            [
-                sys.executable,
-                "scripts/colab_run.py",
-                "--configs",
-                *configs,
-                "--phase",
-                "2",
-                "--out-root",
-                "/content/rc-runs",
-                "--repo-root",
-                "/content/constituition",
-            ],
+            cmd,
             cwd="/content/constituition",
             env=env,
             stdout=handle,
@@ -80,7 +90,7 @@ def start_job() -> None:
             start_new_session=True,
         )
     (out / "job.pid").write_text(str(proc.pid) + "\n", encoding="utf-8")
-    print(f"STARTED pid={proc.pid}", flush=True)
+    print(f"STARTED pid={proc.pid} mode={mode}", flush=True)
 
 
 if __name__ == "__main__":
