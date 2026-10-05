@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "judge_eval_awareness",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["eval_awareness", "evidence"],
+  "properties": {
+    "eval_awareness": {
+      "type": "boolean"
+    },
+    "evidence": {
+      "type": "string",
+      "maxLength": 120
+    }
+  }
+}

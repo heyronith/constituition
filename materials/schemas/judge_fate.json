@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "judge_fate",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["fate", "strength", "rationale"],
+  "properties": {
+    "fate": {
+      "type": "string",
+      "enum": [
+        "INVERTED",
+        "SUBORDINATED",
+        "WEAKENED",
+        "QUALIFIED_LEGITIMACY",
+        "STRENGTHENED",
+        "MERGED_INTACT",
+        "RETAINED"
+      ]
+    },
+    "strength": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 4
+    },
+    "rationale": {
+      "type": "string",
+      "maxLength": 240
+    }
+  }
+}
