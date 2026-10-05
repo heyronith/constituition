@@ -102,28 +102,45 @@ def main(*config_ids: str) -> None:
         repos.append({"repo_id": repo_id, "revision": sha})
 
     smoke_only = wanted == {"qwen35_08b_smoke"}
-    job_id = "phase2b-download-smoke" if smoke_only else "phase2-download-weights"
-    max_seconds = 900 if smoke_only else 60 * 60 * 3
+    olmo_only = bool(wanted) and all(str(s).startswith("olmo3_7b") for s in wanted)
+    if smoke_only:
+        phase: int | str = "2b"
+        job_id = "phase2b-download-smoke"
+        override = 1.50
+        max_seconds = 900
+    elif olmo_only:
+        # D31: OLMo moved to Modal; download under Phase 3 budget.
+        phase = "3"
+        job_id = "phase3-download-olmo"
+        override = 2.50
+        max_seconds = 60 * 60
+    else:
+        phase = 2
+        job_id = "phase2-download-weights"
+        override = 5.0
+        max_seconds = 60 * 60 * 3
     preflight(
         gpu="cpu",
         max_seconds=max_seconds,
-        phase="2b" if smoke_only else 2,
+        phase=phase,
         job_id=job_id,
         platform="modal",
-        override_job_cap_usd=1.50 if smoke_only else 5.0,
+        override_job_cap_usd=override,
         cpu_cores=4.0,
-        memory_gib=8.0,
+        memory_gib=16.0,
         root=root,
     )
-    est = estimate_modal_usd("cpu", max_seconds, cpu_cores=4.0, memory_gib=8.0, root=root)
+    est = estimate_modal_usd("cpu", max_seconds, cpu_cores=4.0, memory_gib=16.0, root=root)
     print(f"downloading {len(repos)} unique repos; est_usd_ceiling=${est:.4f}")
     started = time.perf_counter()
     result = download_repos.remote(repos)
     elapsed = time.perf_counter() - started
-    actual = estimate_modal_usd("cpu", int(elapsed) + 1, cpu_cores=4.0, memory_gib=8.0, root=root)
+    actual = estimate_modal_usd(
+        "cpu", int(elapsed) + 1, cpu_cores=4.0, memory_gib=16.0, root=root
+    )
     record_actual(
         job_id=job_id,
-        phase="2b" if smoke_only else 2,
+        phase=phase,
         platform="modal",
         gpu="cpu",
         max_seconds=max_seconds,
