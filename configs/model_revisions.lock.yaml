@@ -328,3 +328,10 @@ smoke_models:
   role: smoke
   compute: modal_l4
   note: D23 tiny-model L4 end-to-end smoke. Not a confirmatory subject.
+- config_id: gptoss_20b_smoke
+  requested_id: openai/gpt-oss-20b
+  exact_repo_id: openai/gpt-oss-20b
+  sha: 6cee5e81ee83917806bbde320786a8fb61efebee
+  role: smoke
+  compute: modal_l4
+  note: D23 Phase-4 gpt-oss MXFP4 L4 smoke for the judge code path (harmony + reasoning parser). Not confirmatory.

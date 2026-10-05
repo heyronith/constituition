@@ -67,6 +67,11 @@ def l4_smoke_marker(root: Path | None = None) -> Path:
     return (root or repo_root()) / "runs" / "phase3_d30_l4_smoke" / "PASSED.json"
 
 
+def gptoss_judge_smoke_marker(root: Path | None = None) -> Path:
+    """D23 Phase-4 marker: gpt-oss-20b MXFP4 on L4 via the judge code path."""
+    return (root or repo_root()) / "runs" / "phase4_gptoss20b_l4_smoke" / "PASSED.json"
+
+
 def assert_large_gpu_allowed(gpu: str, *, root: Path | None = None) -> None:
     """Refuse A100-class GPUs until the L4 tiny-model smoke marker exists."""
     if gpu not in A100_CLASS_OR_LARGER:
@@ -76,6 +81,16 @@ def assert_large_gpu_allowed(gpu: str, *, root: Path | None = None) -> None:
         raise GpuSafetyError(
             f"D23: GPU {gpu} is A100-class or larger. Run the Modal L4 tiny-model "
             f"smoke first (marker missing: {marker})."
+        )
+
+
+def assert_gptoss_judge_smoke(root: Path | None = None) -> None:
+    """Refuse gpt-oss-120b H100 jobs until the gpt-oss-20b L4 judge smoke passed."""
+    marker = gptoss_judge_smoke_marker(root)
+    if not marker.exists():
+        raise GpuSafetyError(
+            "D23: gpt-oss-120b requires the Phase-4 gpt-oss-20b L4 judge smoke "
+            f"(marker missing: {marker})."
         )
 
 

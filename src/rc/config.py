@@ -6,7 +6,7 @@ from pathlib import Path
 from typing import Any, Literal
 
 import yaml
-from pydantic import BaseModel, ConfigDict, model_validator
+from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 SamplingValue = dict[str, Any] | Literal["TBD_P2"]
 
@@ -50,8 +50,12 @@ class JudgeConfig(StrictModel):
     judge_id: str
     hf_repo: str
     revision: str | None
-    compute: Literal["colab_l4", "modal_l40s", "modal_a100_80gb", "modal_h100"]
+    compute: Literal["colab_l4", "modal_l4", "modal_l40s", "modal_a100_80gb", "modal_h100"]
+    dtype: Literal["bf16", "auto"] = "bf16"
     selected: bool
+    max_tokens: int = 256
+    chat_template_kwargs: dict[str, Any] = Field(default_factory=dict)
+    sampling: dict[str, Any]
 
 
 class JudgesFile(StrictModel):
@@ -107,6 +111,7 @@ class BudgetConfig(StrictModel):
     modal_per_job_default_cap_usd: float
     phase2_dryrun_hard_cap_usd: float = 11.0
     phase3_hard_cap_usd: float = 16.0
+    phase4_hard_cap_usd: float = 27.0
     colab_cu_cap: float
     colab_l4_cu_per_hour: float | None
     checked_on: str
@@ -188,14 +193,15 @@ class SmokeConfig(StrictModel):
     family: str = "smoke"
     axis: str = "l4_smoke"
     compute: Literal["modal_l4"] = "modal_l4"
-    dtype: Literal["bf16"] = "bf16"
+    dtype: Literal["bf16", "auto"] = "bf16"
+    max_tokens: int | None = None
     chat_template_kwargs: dict[str, Any]
     sampling: dict[str, Any]
 
 
-def load_smoke(root: Path | None = None) -> SmokeConfig:
+def load_smoke(root: Path | None = None, *, name: str = "smoke") -> SmokeConfig:
     root = root or repo_root()
-    path = root / "configs" / "smoke.yaml"
+    path = root / "configs" / f"{name}.yaml"
     return SmokeConfig.model_validate(_load_yaml(path))
 
 

@@ -1,28 +1,70 @@
-# Judge candidates (non-subject families). Selection happens in Phase 3.
-# selected remains false for all entries until calibration.
+# Judge candidates (non-subject families). Selection happens in Phase 4 (D33).
+# Sampling / chat kwargs live here (judges are not subjects); never set inline.
 judges:
   - judge_id: gptoss_120b
     hf_repo: openai/gpt-oss-120b
     revision: null
     compute: modal_h100
+    dtype: auto
     selected: false
+    max_tokens: 1024
+    chat_template_kwargs:
+      reasoning_effort: low
+    sampling:
+      temperature: 0.0
+      top_p: 1.0
+      top_k: -1
+      min_p: 0.0
+      presence_penalty: 0.0
+      repetition_penalty: 1.0
 
   - judge_id: mistral_small32_24b
     hf_repo: mistralai/Mistral-Small-3.2-24B-Instruct-2506
     revision: null
     compute: modal_a100_80gb
+    dtype: bf16
     selected: false
+    max_tokens: 256
+    chat_template_kwargs: {}
+    sampling:
+      temperature: 0.0
+      top_p: 1.0
+      top_k: -1
+      min_p: 0.0
+      presence_penalty: 0.0
+      repetition_penalty: 1.0
 
   - judge_id: nemotron3_nano_30b
     # Resolved exact BF16 repo (not substituted).
     hf_repo: nvidia/NVIDIA-Nemotron-3-Nano-30B-A3B-BF16
     revision: null
     compute: modal_a100_80gb
+    dtype: bf16
     selected: false
+    max_tokens: 256
+    chat_template_kwargs:
+      enable_thinking: false
+    sampling:
+      temperature: 0.0
+      top_p: 1.0
+      top_k: -1
+      min_p: 0.0
+      presence_penalty: 0.0
+      repetition_penalty: 1.0
 
   - judge_id: granite41_8b
     # Resolved exact instruct repo: ibm-granite/granite-4.1-8b (no separate -instruct suffix).
     hf_repo: ibm-granite/granite-4.1-8b
     revision: null
     compute: modal_l40s
+    dtype: bf16
     selected: false
+    max_tokens: 256
+    chat_template_kwargs: {}
+    sampling:
+      temperature: 0.0
+      top_p: 1.0
+      top_k: -1
+      min_p: 0.0
+      presence_penalty: 0.0
+      repetition_penalty: 1.0

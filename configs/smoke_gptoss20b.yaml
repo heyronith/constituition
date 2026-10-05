@@ -1,0 +1,16 @@
+# D23 Phase-4 smoke: gpt-oss-20b MXFP4 on L4 through the judge code path.
+# Not a subject; never used in confirmatory analysis.
+config_id: gptoss_20b_smoke
+hf_repo: openai/gpt-oss-20b
+compute: modal_l4
+dtype: auto
+max_tokens: 1024
+chat_template_kwargs:
+  reasoning_effort: low
+sampling:
+  temperature: 0.0
+  top_p: 1.0
+  top_k: -1
+  min_p: 0.0
+  presence_penalty: 0.0
+  repetition_penalty: 1.0

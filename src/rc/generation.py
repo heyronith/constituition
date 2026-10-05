@@ -13,7 +13,7 @@ from typing import Any, Protocol
 
 import yaml
 
-from rc.config import load_models, load_smoke, load_vllm, repo_root
+from rc.config import load_judges, load_models, load_smoke, load_vllm, repo_root
 
 SCHEMA_NAMES = (
     "permissive_structured",
@@ -24,7 +24,11 @@ SCHEMA_NAMES = (
     "eval_awareness",
     "calib_generator",
     "calib_verifier",
+    "judge_fate",
+    "judge_eval_awareness",
 )
+
+GPTOSS_JUDGE_IDS = frozenset({"gptoss_120b", "gptoss_20b_smoke"})
 
 # D30: these schemas get per-request opaque-ID enums.
 ID_ENUM_SCHEMAS = frozenset({"permissive_structured", "forced", "endorsement"})
@@ -119,7 +123,7 @@ def load_lock_revision(config_id: str, root: Path | None = None) -> tuple[str, s
     lock = yaml.safe_load((root / "configs" / "model_revisions.lock.yaml").read_text())
     for section in ("subjects", "smoke_models", "judges"):
         for row in lock.get(section) or []:
-            if row.get("config_id") == config_id:
+            if row.get("config_id") == config_id or row.get("judge_id") == config_id:
                 return row["exact_repo_id"], row["sha"]
     raise KeyError(f"no lock entry for {config_id}")
 
@@ -128,6 +132,17 @@ def max_tokens_for(config_id: str, root: Path | None = None) -> int:
     vllm = load_vllm(root)
     if config_id == "qwen38_27b_think":
         return vllm.think_max_tokens
+    try:
+        return int(load_judges(root).by_id(config_id).max_tokens)
+    except KeyError:
+        pass
+    for smoke_name in ("smoke_gptoss20b", "smoke"):
+        try:
+            smoke = load_smoke(root, name=smoke_name)
+        except FileNotFoundError:
+            continue
+        if smoke.config_id == config_id and smoke.max_tokens is not None:
+            return int(smoke.max_tokens)
     return vllm.default_max_tokens
 
 
@@ -145,7 +160,11 @@ def max_model_len_for(config_id: str, root: Path | None = None) -> int:
 
 
 def expects_reasoning(config_id: str) -> bool:
-    return config_id == "qwen38_27b_think"
+    return config_id == "qwen38_27b_think" or config_id in GPTOSS_JUDGE_IDS
+
+
+def is_gptoss(config_id: str) -> bool:
+    return config_id in GPTOSS_JUDGE_IDS
 
 
 def count_tokens(text: str | None, tokenizer: Any | None = None) -> int:
@@ -168,16 +187,31 @@ def build_request(
     schema_name: str | None = None,
     opaque_ids: list[str] | None = None,
 ) -> GenerationRequest:
+    sampling: dict[str, Any]
+    kwargs: dict[str, Any]
     try:
         subject = load_models(root).by_id(config_id)
         sampling = dict(subject.sampling) if isinstance(subject.sampling, dict) else {}
         kwargs = dict(subject.chat_template_kwargs)
     except KeyError:
-        smoke = load_smoke(root)
-        if smoke.config_id != config_id:
-            raise
-        sampling = dict(smoke.sampling)
-        kwargs = dict(smoke.chat_template_kwargs)
+        try:
+            judge = load_judges(root).by_id(config_id)
+            sampling = dict(judge.sampling)
+            kwargs = dict(judge.chat_template_kwargs or {})
+        except KeyError:
+            smoke = None
+            for smoke_name in ("smoke_gptoss20b", "smoke"):
+                try:
+                    candidate = load_smoke(root, name=smoke_name)
+                except FileNotFoundError:
+                    continue
+                if candidate.config_id == config_id:
+                    smoke = candidate
+                    break
+            if smoke is None:
+                raise KeyError(f"unknown config_id/judge_id {config_id}") from None
+            sampling = dict(smoke.sampling)
+            kwargs = dict(smoke.chat_template_kwargs)
     if "reasoning_effort" in sampling:
         kwargs["reasoning_effort"] = sampling.pop("reasoning_effort")
     # vLLM SamplingParams.seed must fit a signed 32-bit C long on Linux.
@@ -317,10 +351,18 @@ class VLLMBackend:
         handler = _GraphCaptureHandler()
         logging.getLogger().addHandler(handler)
         started = time.perf_counter()
+        dtype = "bfloat16"
+        if is_gptoss(config_id):
+            dtype = "auto"
+        else:
+            try:
+                dtype = "auto" if load_judges(root).by_id(config_id).dtype == "auto" else "bfloat16"
+            except KeyError:
+                pass
         llm_kwargs: dict[str, Any] = {
             "model": model_path,
             "revision": revision,
-            "dtype": "bfloat16",
+            "dtype": dtype,
             "max_model_len": max_model_len or max_model_len_for(config_id, root),
             "gpu_memory_utilization": (
                 gpu_memory_utilization
@@ -331,9 +373,10 @@ class VLLMBackend:
             "enforce_eager": enforce_eager,
             "max_num_seqs": max_num_seqs if max_num_seqs is not None else vllm_cfg.max_num_seqs,
         }
-        # D26: for thinking subjects, use the Qwen reasoning parser so structured
-        # outputs constrain only the final answer after reasoning.
-        if expects_reasoning(config_id):
+        # D26: Qwen thinking parser. Phase 4: gpt-oss harmony reasoning parser.
+        if is_gptoss(config_id):
+            llm_kwargs["reasoning_parser"] = "openai_gptoss"
+        elif expects_reasoning(config_id):
             llm_kwargs["reasoning_parser"] = "qwen3"
         self._llm = LLM(**llm_kwargs)
         total = time.perf_counter() - started
