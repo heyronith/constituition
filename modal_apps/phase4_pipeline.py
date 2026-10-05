@@ -1011,7 +1011,17 @@ def main() -> None:
     pilot_local = root / "runs" / "pilot_v1"
     if pilot_local.exists():
         print("uploading pilot_v1 to rc-runs …")
-        subprocess.check_call(["modal", "volume", "put", "rc-runs", str(pilot_local), "pilot_v1"])
+        subprocess.check_call(
+            [
+                "modal",
+                "volume",
+                "put",
+                "rc-runs",
+                str(pilot_local),
+                "pilot_v1",
+                "--force",
+            ]
+        )
 
     remaining = load_budget(root).phase4_hard_cap_usd - spent_modal_usd(root)
     print(f"phase4 remaining ≈ ${remaining:.2f}; spawning orchestrate")
