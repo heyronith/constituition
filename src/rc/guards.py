@@ -63,8 +63,8 @@ A100_CLASS_OR_LARGER = frozenset({"A100-80GB", "H100", "A100", "H200"})
 
 
 def l4_smoke_marker(root: Path | None = None) -> Path:
-    """Current D23 marker: Phase 3 guided-decoding L4 smoke (supersedes phase2b)."""
-    return (root or repo_root()) / "runs" / "phase3_l4_smoke" / "PASSED.json"
+    """Current D23 marker: D30 per-request ID-enum L4 smoke."""
+    return (root or repo_root()) / "runs" / "phase3_d30_l4_smoke" / "PASSED.json"
 
 
 def assert_large_gpu_allowed(gpu: str, *, root: Path | None = None) -> None:

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import copy
 import json
 import logging
 import re
@@ -24,6 +25,9 @@ SCHEMA_NAMES = (
     "calib_generator",
     "calib_verifier",
 )
+
+# D30: these schemas get per-request opaque-ID enums.
+ID_ENUM_SCHEMAS = frozenset({"permissive_structured", "forced", "endorsement"})
 
 # Qwen thinking delimiters (HF chat template / vLLM reasoning parser).
 _QWEN_THINK_CLOSE = "</think>"
@@ -57,6 +61,41 @@ def load_json_schema(name: str, root: Path | None = None) -> dict[str, Any]:
         raise KeyError(f"unknown schema {name}; known={SCHEMA_NAMES}")
     path = schemas_root(root) / f"{name}.json"
     return json.loads(path.read_text(encoding="utf-8"))
+
+
+def instantiate_schema(
+    name: str,
+    opaque_ids: list[str] | None = None,
+    *,
+    root: Path | None = None,
+) -> dict[str, Any]:
+    """Deep-copy a base schema; for ID tasks, bind id/merge_with enums (D30)."""
+    schema = copy.deepcopy(load_json_schema(name, root))
+    if name not in ID_ENUM_SCHEMAS:
+        return schema
+    if not opaque_ids:
+        raise ValueError(f"schema {name} requires non-empty opaque_ids")
+    ids = list(opaque_ids)
+    id_schema: dict[str, Any] = {"type": "string", "enum": ids}
+    # null allowed for optional merge_with.
+    merge_schema: dict[str, Any] = {"enum": [None, *ids]}
+    if name == "permissive_structured":
+        principles = schema["properties"]["principles"]
+        principles["minItems"] = len(ids)
+        principles["maxItems"] = len(ids)
+        item_props = principles["items"]["properties"]
+        item_props["id"] = id_schema
+        item_props["merge_with"] = merge_schema
+    elif name == "forced":
+        change_props = schema["properties"]["change"]["properties"]
+        change_props["id"] = id_schema
+        change_props["merge_with"] = merge_schema
+    elif name == "endorsement":
+        ratings = schema["properties"]["ratings"]
+        ratings["minItems"] = len(ids)
+        ratings["maxItems"] = len(ids)
+        ratings["items"]["properties"]["id"] = id_schema
+    return schema
 
 
 @dataclass
@@ -128,6 +167,7 @@ def build_request(
     *,
     root: Path | None = None,
     schema_name: str | None = None,
+    opaque_ids: list[str] | None = None,
 ) -> GenerationRequest:
     try:
         subject = load_models(root).by_id(config_id)
@@ -143,7 +183,9 @@ def build_request(
         kwargs["reasoning_effort"] = sampling.pop("reasoning_effort")
     # vLLM SamplingParams.seed must fit a signed 32-bit C long on Linux.
     safe_seed = int(seed) & 0x7FFFFFFF
-    schema = load_json_schema(schema_name, root) if schema_name else None
+    schema = None
+    if schema_name:
+        schema = instantiate_schema(schema_name, opaque_ids, root=root)
     return GenerationRequest(
         prompt=prompt,
         config_id=config_id,

@@ -261,7 +261,7 @@ def run_l4_smoke(git_sha_value: str = "") -> dict:
         max_num_seqs=vllm_cfg.max_num_seqs,
         root=root,
     )
-    run_tag = "phase3_l4_smoke"
+    run_tag = "phase3_d30_l4_smoke"
     units = [
         Unit("PERMISSIVE", cond, "STRUCTURED", 0)
         for cond in ("SELF_REFLECT", "OTHER_REFLECT", "PARAPHRASE", "NEUTRAL_EDIT")
@@ -528,10 +528,10 @@ def smoke() -> None:
         actual_seconds=elapsed,
         est_usd=est,
         actual_usd=actual,
-        note="ok | phase3_l4_smoke guided_decoding",
+        note="ok | phase3_d30_l4_smoke guided_decoding",
         root=root,
     )
-    marker_path = root / "runs" / "phase3_l4_smoke" / "PASSED.json"
+    marker_path = root / "runs" / "phase3_d30_l4_smoke" / "PASSED.json"
     marker_path.parent.mkdir(parents=True, exist_ok=True)
     marker_path.write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
     print(json.dumps({k: result[k] for k in ("ok", "load_s", "graph_capture_s") if k in result}))

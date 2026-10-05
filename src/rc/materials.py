@@ -28,10 +28,33 @@ Paraphrase = Literal["p1", "p2"]
 FormatName = Literal["STRUCTURED", "FREE"]
 
 _WORD_RE = re.compile(r"\S+")
+# D30 safety-net: one layer of brackets around an opaque ID, or a leading [ID] prefix in text.
+_ID_BRACKET_RE = re.compile(r"^\[([^\]]+)\]$")
+_TEXT_ID_PREFIX_RE = re.compile(r"^\[([ABCDEFGHJKMNPQRSTUVWXYZ23456789]{3})\]\s*")
 
 
 class ParseError(ValueError):
     pass
+
+
+def normalize_opaque_id(value: str | None) -> tuple[str | None, bool]:
+    """Strip one layer of [] from an ID. Returns (normalized, did_strip)."""
+    if value is None:
+        return None, False
+    match = _ID_BRACKET_RE.fullmatch(str(value).strip())
+    if match:
+        return match.group(1), True
+    return value, False
+
+
+def strip_leading_id_prefix(text: str | None) -> tuple[str | None, bool]:
+    """Strip a leading [XXX] opaque-ID prefix from principle text."""
+    if text is None:
+        return None, False
+    match = _TEXT_ID_PREFIX_RE.match(text)
+    if match:
+        return text[match.end() :], True
+    return text, False
 
 
 class Item(BaseModel):
@@ -581,11 +604,25 @@ def parse_structured(raw: str, constitution: Constitution) -> RevisionResult:
     seen: list[str] = []
     flags: list[str] = []
     decisions: list[PrincipleDecision] = []
-    by_id = {row.id: row for row in model.principles}
-    if len(by_id) != len(model.principles):
+
+    # D30: normalize bracketed IDs before uniqueness / membership checks.
+    normalized_rows: list[Any] = []
+    for row in model.principles:
+        nid, id_stripped = normalize_opaque_id(row.id)
+        mw, mw_stripped = normalize_opaque_id(row.merge_with)
+        row_flags: list[str] = []
+        if id_stripped or mw_stripped:
+            row_flags.append("id_bracket_normalized")
+        # Mutate a shallow copy via object.__setattr__ if frozen — pydantic models are mutable.
+        row.id = nid  # type: ignore[misc]
+        row.merge_with = mw  # type: ignore[misc]
+        normalized_rows.append((row, row_flags))
+
+    by_id = {row.id: row for row, _ in normalized_rows}
+    if len(by_id) != len(normalized_rows):
         raise ParseError("duplicate ID in principles")
 
-    for row in model.principles:
+    for row, _ in normalized_rows:
         if row.id not in existing:
             raise ParseError(f"unknown ID {row.id}")
         seen.append(row.id)
@@ -594,10 +631,12 @@ def parse_structured(raw: str, constitution: Constitution) -> RevisionResult:
         raise ParseError(f"missing ID(s): {missing}")
 
     originals = constitution.text_by_id()
-    for row in model.principles:
-        row_flags: list[str] = []
+    for row, row_flags in normalized_rows:
         decision = row.decision
         text = row.text
+        text, text_stripped = strip_leading_id_prefix(text)
+        if text_stripped:
+            row_flags.append("text_id_prefix_stripped")
         if decision == "keep":
             if text is None or not str(text).strip():
                 raise ParseError(f"{row.id}: keep requires non-empty text")
@@ -608,6 +647,9 @@ def parse_structured(raw: str, constitution: Constitution) -> RevisionResult:
         elif decision == "revise":
             if text is None or not str(text).strip():
                 raise ParseError(f"{row.id}: revise requires non-empty text")
+            # ID-prefix-only "revise" is a keep after D30 stripping.
+            if text == originals[row.id]:
+                decision = "keep"
         elif decision in ("merge", "delete"):
             if text is not None:
                 raise ParseError(f"{row.id}: {decision} requires text=null")
@@ -776,16 +818,26 @@ def parse_forced(raw: str, constitution: Constitution) -> ForcedChange:
 
     row = model.change
     existing = set(constitution.ids())
+    flags: list[str] = []
+    nid, id_stripped = normalize_opaque_id(row.id)
+    mw, mw_stripped = normalize_opaque_id(row.merge_with)
+    if id_stripped or mw_stripped:
+        flags.append("id_bracket_normalized")
+    row.id = nid  # type: ignore[misc]
+    row.merge_with = mw  # type: ignore[misc]
     if row.id not in existing:
         raise ParseError("unknown ID")
-    flags: list[str] = []
     if row.note and _word_count(row.note) > 40:
         flags.append("note_too_long")
     originals = constitution.text_by_id()
+    text = row.text
+    text, text_stripped = strip_leading_id_prefix(text)
+    if text_stripped:
+        flags.append("text_id_prefix_stripped")
     if row.action == "revise":
-        if row.text is None or not str(row.text).strip():
+        if text is None or not str(text).strip():
             raise ParseError("revise requires text")
-        if _norm_ws(row.text) == _norm_ws(originals[row.id]):
+        if _norm_ws(text) == _norm_ws(originals[row.id]):
             raise ParseError("revise text identical")
     elif row.action == "merge":
         if not row.merge_with:
@@ -794,14 +846,14 @@ def parse_forced(raw: str, constitution: Constitution) -> ForcedChange:
             raise ParseError("unknown ID")
         if row.merge_with == row.id:
             raise ParseError("merge with itself")
-        if row.text is None or not str(row.text).strip():
+        if text is None or not str(text).strip():
             raise ParseError("merge requires text")
     elif row.action == "delete":
         pass
     return ForcedChange(
         id=row.id,
         action=row.action,
-        text=row.text,
+        text=text,
         merge_with=row.merge_with,
         note=row.note,
         flags=flags,
@@ -967,7 +1019,7 @@ def parse_free(raw: str) -> list[str]:
     return lines
 
 
-def parse_endorsement(raw: str, ids: list[str]) -> dict[str, int]:
+def parse_endorsement(raw: str, ids: list[str]) -> tuple[dict[str, int], list[str]]:
     try:
         blob = _extract_json_object(raw)
         model = EndorsementOutput.model_validate(json.loads(blob))
@@ -975,12 +1027,21 @@ def parse_endorsement(raw: str, ids: list[str]) -> dict[str, int]:
         raise
     except Exception as exc:
         raise ParseError(f"invalid endorsement output: {exc}") from exc
-    got = [r.id for r in model.ratings]
+    flags: list[str] = []
+    got: list[str] = []
+    ratings: dict[str, int] = {}
+    for r in model.ratings:
+        nid, stripped = normalize_opaque_id(r.id)
+        if stripped:
+            flags.append("id_bracket_normalized")
+        assert nid is not None
+        got.append(nid)
+        ratings[nid] = r.rating
     if len(got) != len(set(got)):
         raise ParseError("duplicate ID in ratings")
     if set(got) != set(ids):
         raise ParseError(f"rating IDs mismatch; missing={sorted(set(ids) - set(got))}")
-    return {r.id: r.rating for r in model.ratings}
+    return ratings, flags
 
 
 def parse_eval_probe(raw: str) -> EvalProbeOutput:

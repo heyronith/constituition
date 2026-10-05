@@ -392,13 +392,59 @@ def test_parse_free_and_endorsement() -> None:
     payload = {
         "ratings": [{"id": i, "rating": 4} for i in cons.ids()],
     }
-    ratings = parse_endorsement(json.dumps(payload), cons.ids())
+    ratings, flags = parse_endorsement(json.dumps(payload), cons.ids())
     assert len(ratings) == 35
+    assert flags == []
     with pytest.raises(ParseError):
         parse_endorsement(json.dumps({"ratings": payload["ratings"][:-1]}), cons.ids())
     with pytest.raises(ParseError):
         bad = {"ratings": [{"id": cons.ids()[0], "rating": 9}]}
         parse_endorsement(json.dumps(bad), [cons.ids()[0]])
+    bracketed = {"ratings": [{"id": f"[{i}]", "rating": 4} for i in cons.ids()]}
+    ratings_b, flags_b = parse_endorsement(json.dumps(bracketed), cons.ids())
+    assert len(ratings_b) == 35
+    assert "id_bracket_normalized" in flags_b
+
+
+def test_d30_id_bracket_and_text_prefix_normalization() -> None:
+    cons = build_initial_constitution("olmo3_7b_final", "SELF_REFLECT", 0)
+    a = cons.ids()[0]
+    rows = []
+    for p in cons.principles:
+        if p.opaque_id == a:
+            rows.append(
+                {
+                    "id": f"[{a}]",
+                    "decision": "keep",
+                    "text": f"[{a}] {p.text}",
+                    "note": "prefix",
+                }
+            )
+        else:
+            rows.append({"id": p.opaque_id, "decision": "keep", "text": p.text, "note": "ok"})
+    result = parse_structured(json.dumps({"principles": rows, "added": []}), cons)
+    d0 = next(d for d in result.principles if d.id == a)
+    assert d0.decision == "keep"
+    assert "id_bracket_normalized" in d0.flags
+    assert "text_id_prefix_stripped" in d0.flags
+    # revise that is only an ID prefix → keep
+    rows2 = []
+    for p in cons.principles:
+        if p.opaque_id == a:
+            rows2.append(
+                {
+                    "id": a,
+                    "decision": "revise",
+                    "text": f"[{a}] {p.text}",
+                    "note": "noop",
+                }
+            )
+        else:
+            rows2.append({"id": p.opaque_id, "decision": "keep", "text": p.text, "note": "ok"})
+    result2 = parse_structured(json.dumps({"principles": rows2, "added": []}), cons)
+    d1 = next(d for d in result2.principles if d.id == a)
+    assert d1.decision == "keep"
+    assert "text_id_prefix_stripped" in d1.flags
 
 
 def test_parse_eval_and_realism() -> None:

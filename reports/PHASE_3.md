@@ -257,6 +257,86 @@ Gate criterion ≥0.95 final parse: **FAIL on all three**.
 
 **Colab CU.** Job 1 (download-failed, ~2754 s) then job 2 (success, ~2726 s). Before job 1: **197.83**. Need after-balances for both jobs to set `colab_l4_cu_per_hour` and to backfill Phase 2B OLMo as `estimated_from_phase3_rate` (D29).
 
+
+## D30 re-score (parser only, no re-generation)
+
+# Re-score `phase2b_dryrun` with D30 parser normalization
+
+## gemma4_12b
+- attempts: 16; old parse_ok: 16; new parse_ok: 16
+- revise→keep via ID prefix only: **0**
+- flag `id_bracket_normalized`: 0
+- flag `text_id_prefix_stripped`: 0
+- all flags: {}
+
+## gemma4_31b
+- attempts: 17; old parse_ok: 16; new parse_ok: 16
+- revise→keep via ID prefix only: **0**
+- flag `id_bracket_normalized`: 0
+- flag `text_id_prefix_stripped`: 0
+- all flags: {}
+
+## olmo3_7b_dpo
+- attempts: 23; old parse_ok: 7; new parse_ok: 19
+- revise→keep via ID prefix only: **0**
+- flag `id_bracket_normalized`: 355
+- flag `text_id_prefix_stripped`: 2
+- all flags: {'id_bracket_normalized': 355, 'text_id_prefix_stripped': 2, 'keep_text_mismatch': 106}
+
+## olmo3_7b_final
+- attempts: 20; old parse_ok: 10; new parse_ok: 17
+- revise→keep via ID prefix only: **0**
+- flag `id_bracket_normalized`: 245
+- flag `text_id_prefix_stripped`: 0
+- all flags: {'id_bracket_normalized': 245, 'keep_text_mismatch': 83}
+
+## olmo3_7b_sft
+- attempts: 20; old parse_ok: 11; new parse_ok: 19
+- revise→keep via ID prefix only: **0**
+- flag `id_bracket_normalized`: 280
+- flag `text_id_prefix_stripped`: 128
+- all flags: {'id_bracket_normalized': 280, 'text_id_prefix_stripped': 128, 'keep_text_mismatch': 4}
+
+## qwen38_27b_nothink
+- attempts: 19; old parse_ok: 16; new parse_ok: 18
+- revise→keep via ID prefix only: **0**
+- flag `id_bracket_normalized`: 2
+- flag `text_id_prefix_stripped`: 0
+- all flags: {'id_bracket_normalized': 2}
+
+## qwen38_27b_think
+- attempts: 16; old parse_ok: 16; new parse_ok: 16
+- revise→keep via ID prefix only: **0**
+- flag `id_bracket_normalized`: 0
+- flag `text_id_prefix_stripped`: 0
+- all flags: {}
+
+
+# Re-score `phase3_olmo_check` with D30 parser normalization
+
+## olmo3_7b_dpo
+- attempts: 24; old parse_ok: 9; new parse_ok: 21
+- revise→keep via ID prefix only: **0**
+- flag `id_bracket_normalized`: 388
+- flag `text_id_prefix_stripped`: 1
+- all flags: {'id_bracket_normalized': 388, 'text_id_prefix_stripped': 1, 'keep_text_mismatch': 155}
+
+## olmo3_7b_final
+- attempts: 20; old parse_ok: 10; new parse_ok: 18
+- revise→keep via ID prefix only: **0**
+- flag `id_bracket_normalized`: 280
+- flag `text_id_prefix_stripped`: 0
+- all flags: {'id_bracket_normalized': 280, 'keep_text_mismatch': 88}
+
+## olmo3_7b_sft
+- attempts: 20; old parse_ok: 11; new parse_ok: 20
+- revise→keep via ID prefix only: **0**
+- flag `id_bracket_normalized`: 315
+- flag `text_id_prefix_stripped`: 117
+- all flags: {'id_bracket_normalized': 315, 'text_id_prefix_stripped': 117, 'keep_text_mismatch': 6}
+
+
+
 ## Part B — Pilot (`pilot_v1`)
 
 **STOPPED** — OLMo parse gate failed.

@@ -68,11 +68,14 @@ def schema_for_unit(unit: Unit) -> str | None:
     return "permissive_structured"
 
 
-def guided_decoding_meta(schema_name: str | None) -> dict[str, Any]:
+def guided_decoding_meta(
+    schema_name: str | None, *, per_request_id_enum: bool = False
+) -> dict[str, Any]:
     return {
         "enabled": schema_name is not None,
         "schema_name": schema_name,
         "engine": "vllm_structured_outputs",
+        "per_request_id_enum": per_request_id_enum,
     }
 
 
@@ -250,7 +253,11 @@ def _init_unit(
                 "vllm_version": vllm_version,
                 "git_sha": git_sha(root),
                 "run_tag": run_tag,
-                "guided_decoding": guided_decoding_meta(schema_name),
+                "guided_decoding": guided_decoding_meta(
+                    schema_name,
+                    per_request_id_enum=schema_name
+                    in ("permissive_structured", "forced", "endorsement"),
+                ),
                 "hidden_metadata": {
                     oid: {
                         "item_id": m.item_id,
@@ -419,13 +426,15 @@ def run_config(
                     attempt,
                     unit.protocol,
                 )
+                schema_name = schema_for_unit(unit)
                 reqs.append(
                     build_request(
                         prompt,
                         config_id,
                         seed,
                         root=root,
-                        schema_name=schema_for_unit(unit),
+                        schema_name=schema_name,
+                        opaque_ids=None if schema_name is None else cons.ids(),
                     )
                 )
 
@@ -602,19 +611,28 @@ def run_endorsement(
                 round=0,
             )
             prompt = render_endorsement(cons, root=root)
+            ids = cons.ids()
             reqs.append(
-                build_request(prompt, config_id, seed_int, root=root, schema_name="endorsement")
+                build_request(
+                    prompt,
+                    config_id,
+                    seed_int,
+                    root=root,
+                    schema_name="endorsement",
+                    opaque_ids=ids,
+                )
             )
             pending.append(
-                {"form": form, "rep": rep, "seed": seed_int, "prompt": prompt, "ids": cons.ids()}
+                {"form": form, "rep": rep, "seed": seed_int, "prompt": prompt, "ids": ids}
             )
     results = backend.generate(reqs) if reqs else []
     for meta, result in zip(pending, results, strict=True):
         status = "ok"
         err = None
         ratings = None
+        parse_flags: list[str] = []
         try:
-            ratings = parse_endorsement(result.text_final, meta["ids"])
+            ratings, parse_flags = parse_endorsement(result.text_final, meta["ids"])
         except ParseError as exc:
             status = "error"
             err = str(exc)
@@ -630,8 +648,8 @@ def run_endorsement(
                 "parse_error": err,
                 "ratings": ratings,
                 "latency_s": result.latency_s,
-                "flags": result.flags,
-                "guided_decoding": guided_decoding_meta("endorsement"),
+                "flags": list(result.flags) + parse_flags,
+                "guided_decoding": guided_decoding_meta("endorsement", per_request_id_enum=True),
             },
         )
     meta_path = out_dir / "meta.json"
@@ -642,7 +660,7 @@ def run_endorsement(
                 "config_id": config_id,
                 "task": "endorsement",
                 "run_tag": run_tag,
-                "guided_decoding": guided_decoding_meta("endorsement"),
+                "guided_decoding": guided_decoding_meta("endorsement", per_request_id_enum=True),
             },
         )
     _update_run_manifest(run_tag, root)
