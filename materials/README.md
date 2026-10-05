@@ -12,5 +12,9 @@ Frozen by the lead scientist. Do not edit clause or prompt wording; report probl
 | `prompts/endorsement.yaml` | Round-0 endorsement covariate |
 | `prompts/eval_awareness.yaml` | Post-hoc evaluation-awareness probe (not chain-facing) |
 | `prompts/realism_audit.yaml` | Pre-run realism cue audit |
+| `prompts/calib_generator.yaml` | Judge-calibration generator (blinding-exempt) |
+| `prompts/calib_verifier.yaml` | Judge-calibration verifier (blinding-exempt) |
+| `schemas/*.json` | JSON Schemas for vLLM guided decoding (D26) |
+| `calibration/` | Kept/verifier calibration items (`calib_v1.jsonl`) |
 
-Load and render via `rc.materials`.
+Load and render via `rc.materials`. Schemas via `rc.generation.load_json_schema`.

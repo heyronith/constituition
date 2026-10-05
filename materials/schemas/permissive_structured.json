@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "permissive_structured",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["principles", "added"],
+  "properties": {
+    "principles": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "decision"],
+        "properties": {
+          "id": {"type": "string", "minLength": 1},
+          "decision": {"type": "string", "enum": ["keep", "revise", "merge", "delete"]},
+          "text": {"type": ["string", "null"]},
+          "merge_with": {"type": ["string", "null"]},
+          "note": {"type": ["string", "null"]}
+        }
+      }
+    },
+    "added": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["text"],
+        "properties": {
+          "text": {"type": "string", "minLength": 1},
+          "note": {"type": ["string", "null"]}
+        }
+      }
+    }
+  }
+}

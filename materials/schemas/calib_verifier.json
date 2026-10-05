@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "calib_verifier",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["label"],
+  "properties": {
+    "label": {
+      "type": "string",
+      "enum": ["A", "B", "C", "D", "E", "F", "G", "H"]
+    }
+  }
+}

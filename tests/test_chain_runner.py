@@ -251,9 +251,7 @@ def test_free_format_round_transition(repo_tmp: Path) -> None:
 def test_run_config_one_round_batches_eight_units(repo_tmp: Path) -> None:
     conditions = ["SELF_REFLECT", "OTHER_REFLECT", "PARAPHRASE", "NEUTRAL_EDIT"]
     units = [
-        Unit("PERMISSIVE", cond, "STRUCTURED", chain)
-        for cond in conditions
-        for chain in (0, 1)
+        Unit("PERMISSIVE", cond, "STRUCTURED", chain) for cond in conditions for chain in (0, 1)
     ]
     assert len(units) == 8
     outputs = []

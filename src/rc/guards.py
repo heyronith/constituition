@@ -63,7 +63,8 @@ A100_CLASS_OR_LARGER = frozenset({"A100-80GB", "H100", "A100", "H200"})
 
 
 def l4_smoke_marker(root: Path | None = None) -> Path:
-    return (root or repo_root()) / "runs" / "phase2b_l4_smoke" / "PASSED.json"
+    """Current D23 marker: Phase 3 guided-decoding L4 smoke (supersedes phase2b)."""
+    return (root or repo_root()) / "runs" / "phase3_l4_smoke" / "PASSED.json"
 
 
 def assert_large_gpu_allowed(gpu: str, *, root: Path | None = None) -> None:
@@ -81,8 +82,9 @@ def assert_large_gpu_allowed(gpu: str, *, root: Path | None = None) -> None:
 def assert_blinded(text: str, *, allow_eval_words: bool = False) -> None:
     """Raise if a subject-facing prompt contains a protocol-forbidden word.
 
-    Set allow_eval_words=True only for the two measurement-probe files
-    (eval_awareness.yaml, realism_audit.yaml). Never for chain prompts.
+    Set allow_eval_words=True only for measurement/calibration probe files
+    (eval_awareness.yaml, realism_audit.yaml, calib_generator.yaml,
+    calib_verifier.yaml). Never for chain prompts.
     """
     if allow_eval_words:
         return

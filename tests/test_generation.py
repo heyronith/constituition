@@ -14,7 +14,7 @@ from rc.generation import (
 
 
 def test_qwen_think_split() -> None:
-    raw = "<think>\nstep one\nstep two\n</think>\n{\"ok\": true}"
+    raw = '<think>\nstep one\nstep two\n</think>\n{"ok": true}'
     final, reasoning, flags = split_reasoning("qwen38_27b_think", raw)
     assert final == '{"ok": true}'
     assert reasoning is not None and "step one" in reasoning

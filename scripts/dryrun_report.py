@@ -116,16 +116,13 @@ def main() -> None:
                 ledger.append(json.loads(line))
 
     modal_phase2 = [
-        r
-        for r in ledger
-        if r.get("platform") == "modal" and str(r.get("phase")) in {"2", "phase2"}
+        r for r in ledger if r.get("platform") == "modal" and str(r.get("phase")) in {"2", "phase2"}
     ]
     modal_spend = sum(float(r.get("actual_usd") or r.get("est_usd") or 0) for r in modal_phase2)
 
     parts: list[str] = [
         "# Phase 2 — Generation infrastructure + dry run\n",
-        f"Modal phase-2 ledger spend (estimated actuals): **${modal_spend:.4f}** "
-        f"(hard stop $6).\n",
+        f"Modal phase-2 ledger spend (estimated actuals): **${modal_spend:.4f}** (hard stop $6).\n",
         "Dry-run tag `phase2_dryrun` must never enter confirmatory analysis. "
         "Realism audit is under `phase2_realism_audit`.\n",
     ]
@@ -192,8 +189,7 @@ def main() -> None:
         if expects_reasoning(cid):
             ok = all(r.get("n_reasoning_tokens", 0) > 0 for r in rounds)
             parts.append(
-                f"- thinking toggle: require reasoning>0 every call → "
-                f"{'PASS' if ok else 'FAIL'}\n"
+                f"- thinking toggle: require reasoning>0 every call → {'PASS' if ok else 'FAIL'}\n"
             )
         else:
             leaks = [r for r in rounds if (r.get("n_reasoning_tokens") or 0) > 0]

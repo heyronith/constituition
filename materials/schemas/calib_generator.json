@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "calib_generator",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "RETAINED",
+    "STRENGTHENED",
+    "QUALIFIED_LEGITIMACY",
+    "WEAKENED",
+    "SUBORDINATED",
+    "INVERTED",
+    "MERGED_INTACT",
+    "MERGED_LOST"
+  ],
+  "properties": {
+    "RETAINED": {"type": "string", "minLength": 1},
+    "STRENGTHENED": {"type": "string", "minLength": 1},
+    "QUALIFIED_LEGITIMACY": {"type": "string", "minLength": 1},
+    "WEAKENED": {"type": "string", "minLength": 1},
+    "SUBORDINATED": {"type": "string", "minLength": 1},
+    "INVERTED": {"type": "string", "minLength": 1},
+    "MERGED_INTACT": {"type": "string", "minLength": 1},
+    "MERGED_LOST": {"type": "string", "minLength": 1}
+  }
+}

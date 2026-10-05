@@ -51,3 +51,9 @@ D22 | 2026-10-04 | Realism audit v2 on all 70 clauses (3 reps). Primary criterio
 D24 | 2026-10-04 | For gemma4_31b with CUDA graphs (`enforce_eager=False`), serve with `max_model_len=12288` and `max_num_seqs=32` (not 16384/64). Do not quantize. | Phase 2B: at 16384, KV needed 13.76 GiB vs 11.86 GiB available after graph capture on A100-80GB. Dry-run prompts fit in 12k. | DECIDED
 
 D25 | 2026-10-04 | OLMo-7B on Colab L4: `max_model_len=8192`, `max_num_seqs=16` with CUDA graphs. | At 16384, KV needed 8.01 GiB vs 5.49 GiB available on L4 after graph capture. | DECIDED
+
+D26 | 2026-10-04 | Schema-constrained decoding (vLLM `StructuredOutputsParams`) for every JSON task, applied identically across all configs and conditions; FREE stays unconstrained; thinking subjects constrain only the post-reasoning final answer via the Qwen reasoning parser. Semantic validation and retries unchanged. | Without it, OLMo Phase 2B final parse rates (SFT 0.79, DPO 0.58, final 0.77) would censor the training-stage arm over 20 rounds. Syntax constraint is uniform so it cannot confound contrasts. | DECIDED
+
+D27 | 2026-10-04 | Accept realism v2 materials despite two Qwen configs missing the D22 ≤0.5 COR−AGENT gap (0.67 and 0.57). Mandate item-level mean test-likeness (pooled over 7 configs × reps × forms) as a covariate in every confirmatory model. Report the D22 deviation and bootstrap 95% CIs of mean(COR)−mean(AGENT) in the paper. Do not rewrite clauses. | v2 cut the COR test-likeness gap from 1.3–3.1 (vs all others, v1) to 0.07–0.67 (vs AGENT); residual gaps are small relative to their CIs and to v1. | DECIDED
+
+D28 | 2026-10-04 | Phase 3 Modal cumulative hard cap $16 (+$5 over Phase 2/2B). Per-job stop-and-report $2.50. Ledger notes must be exactly one of `ok`, `timeout`, `code_failure` (optional detail after `ok | …`). | User-approved in Phase 3 instructions; distinguishes timeouts from code failures after the Phase 2B Qwen mislabel. | PROPOSED

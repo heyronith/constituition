@@ -1,0 +1,20 @@
+{
+  "config_hashes": {
+    "experiment.yaml": "a7c4a7d981d8c4d32f0bc119d1eba954c14f5d1c1a7473ed25486d67aabd578c",
+    "models.yaml": "bf18cea5e864defaf74394466299daab0103b1c81c22516e3fdc13fc5674d7f0",
+    "vllm.yaml": "99b1b0062b2d093741db5afab940d74909bcda09e67b45223d19f72456899809"
+  },
+  "extra": {
+    "run_tag": "phase2b_realism_audit"
+  },
+  "git_sha": "9ecc0ace86a62bff2d8ad1fd83dcaa3e15f36032",
+  "model_revision": null,
+  "output_hashes": {
+    "olmo3_7b_dpo/calls.jsonl": "2b40097c18713b9c36518f2de431317056b33188b600ceffeb50d7a51d780202",
+    "olmo3_7b_final/calls.jsonl": "06f04476a9d2129e5a636b2c6cd053dc5e91d1c2cd23f4b30e134f907552dec0",
+    "olmo3_7b_sft/calls.jsonl": "e90287cacad632559b836697d5c9a841581776348ef209b353b47fd790992b78"
+  },
+  "seeds": {
+    "master": 20261004
+  }
+}

@@ -122,10 +122,7 @@ def forced_examples(config_id: str, root: Path) -> list[str]:
         final = row.get("text_final") or ""
         if len(final) > 2000:
             final = final[:2000] + "\n…[truncated]"
-        lines.append(
-            f"### FORCED {cond} (round {row.get('round')})\n\n"
-            f"```\n{final}\n```\n"
-        )
+        lines.append(f"### FORCED {cond} (round {row.get('round')})\n\n```\n{final}\n```\n")
     return lines
 
 
@@ -180,9 +177,7 @@ def main() -> None:
     ]
     spend_2b = sum(float(r.get("actual_usd") or r.get("est_usd") or 0) for r in modal_2b_only)
     code_fail_2b = sum(
-        float(r.get("actual_usd") or 0)
-        for r in modal_2b_only
-        if r.get("note") == "code_failure"
+        float(r.get("actual_usd") or 0) for r in modal_2b_only if r.get("note") == "code_failure"
     )
 
     parts: list[str] = [
@@ -284,8 +279,7 @@ def main() -> None:
         if "COR" in means and "AGENT" in means:
             primary = abs(means["COR"] - means["AGENT"])
             parts.append(
-                f"  - primary |COR−AGENT|={primary:.3f} → "
-                f"{'PASS' if primary <= 0.5 else 'FAIL'}\n"
+                f"  - primary |COR−AGENT|={primary:.3f} → {'PASS' if primary <= 0.5 else 'FAIL'}\n"
             )
         else:
             parts.append("  - primary: missing COR or AGENT\n")

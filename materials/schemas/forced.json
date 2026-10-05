@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "forced",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["change"],
+  "properties": {
+    "change": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "action"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "action": {"type": "string", "enum": ["revise", "merge", "delete"]},
+        "text": {"type": ["string", "null"]},
+        "merge_with": {"type": ["string", "null"]},
+        "note": {"type": ["string", "null"]}
+      }
+    }
+  }
+}

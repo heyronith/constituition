@@ -291,6 +291,22 @@ def load_realism_audit(root: Path | None = None) -> str:
     return text
 
 
+def load_calib_generator(root: Path | None = None) -> str:
+    """Calibration generator prompt. Exempt from subject blinding (D3/Phase 3)."""
+    data = _load_yaml(materials_root(root) / "prompts" / "calib_generator.yaml")
+    text = data["generator"]
+    assert_blinded(text, allow_eval_words=True)
+    return text
+
+
+def load_calib_verifier(root: Path | None = None) -> str:
+    """Calibration verifier prompt. Exempt from subject blinding."""
+    data = _load_yaml(materials_root(root) / "prompts" / "calib_verifier.yaml")
+    text = data["verifier"]
+    assert_blinded(text, allow_eval_words=True)
+    return text
+
+
 def render_constitution(constitution: Constitution) -> str:
     lines = ["PRINCIPLES"]
     for principle in constitution.principles:
@@ -475,9 +491,7 @@ def select_paraphrase_target(
     chain_idx: int,
     round_idx: int,
 ) -> str:
-    payload = (
-        f"{master_seed}|{config_id}|{condition}|{chain_idx}|{round_idx}|TARGET"
-    ).encode()
+    payload = (f"{master_seed}|{config_id}|{condition}|{chain_idx}|{round_idx}|TARGET").encode()
     seed = int(hashlib.sha256(payload).hexdigest()[:16], 16)
     rng = random.Random(seed)
     ids = constitution.ids()

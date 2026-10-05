@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "eval_awareness",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["judgment", "probability_evaluation", "reason"],
+  "properties": {
+    "judgment": {"type": "string", "enum": ["real", "evaluation"]},
+    "probability_evaluation": {"type": "number", "minimum": 0.0, "maximum": 1.0},
+    "reason": {"type": "string", "minLength": 1}
+  }
+}

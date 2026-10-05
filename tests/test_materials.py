@@ -428,11 +428,17 @@ def test_paraphrase_assignment() -> None:
 
 
 def test_probe_files_allow_eval_words_only() -> None:
-    """eval_awareness and realism_audit load with allow_eval_words; chains do not."""
+    """eval_awareness/realism/calib load with allow_eval_words; chains do not."""
+    from rc.materials import load_calib_generator, load_calib_verifier
+
     probe = load_eval_awareness()
     realism = load_realism_audit()
+    calib_g = load_calib_generator()
+    calib_v = load_calib_verifier()
     assert "evaluation" in probe.lower() or "test" in probe.lower()
     assert "test" in realism.lower()
+    assert "STRENGTHENED" in calib_g
+    assert "label" in calib_v.lower() or "letter" in calib_v.lower()
     rendered = render_realism_clause("I will reply in the same language.")
     assert "{CLAUSE}" not in rendered
     # Chain prompts must still reject eval vocabulary.
@@ -564,9 +570,7 @@ def test_paraphrase_target_deterministic_and_uniform() -> None:
     counts = Counter()
     n = 10_000
     for round_idx in range(n):
-        tid = select_paraphrase_target(
-            cons, 20261004, "gemma4_12b", "PARAPHRASE", 0, round_idx
-        )
+        tid = select_paraphrase_target(cons, 20261004, "gemma4_12b", "PARAPHRASE", 0, round_idx)
         counts[tid] += 1
     expected = n / len(ids)
     chi2 = sum((counts[i] - expected) ** 2 / expected for i in ids)
@@ -581,7 +585,10 @@ def test_forced_prompts_blinded_and_no_leaks() -> None:
     for condition in conditions:
         for paraphrase in ("p1", "p2"):
             text = render_forced_prompt(
-                cons, condition, paraphrase, {"target_id": target}  # type: ignore[arg-type]
+                cons,
+                condition,
+                paraphrase,
+                {"target_id": target},  # type: ignore[arg-type]
             )
             assert_blinded(text)
             for cat in CATEGORIES:

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 import logging
 import re
 import time
@@ -12,6 +13,17 @@ from typing import Any, Protocol
 import yaml
 
 from rc.config import load_models, load_smoke, load_vllm, repo_root
+
+SCHEMA_NAMES = (
+    "permissive_structured",
+    "forced",
+    "forced_paraphrase",
+    "endorsement",
+    "realism",
+    "eval_awareness",
+    "calib_generator",
+    "calib_verifier",
+)
 
 # Qwen thinking delimiters (HF chat template / vLLM reasoning parser).
 _QWEN_THINK_CLOSE = "</think>"
@@ -31,6 +43,20 @@ class GenerationRequest:
     chat_template_kwargs: dict[str, Any]
     max_tokens: int
     seed: int
+    json_schema: dict[str, Any] | None = None
+    schema_name: str | None = None
+
+
+def schemas_root(root: Path | None = None) -> Path:
+    return (root or repo_root()) / "materials" / "schemas"
+
+
+def load_json_schema(name: str, root: Path | None = None) -> dict[str, Any]:
+    """Load a frozen JSON Schema by stem name (no .json)."""
+    if name not in SCHEMA_NAMES:
+        raise KeyError(f"unknown schema {name}; known={SCHEMA_NAMES}")
+    path = schemas_root(root) / f"{name}.json"
+    return json.loads(path.read_text(encoding="utf-8"))
 
 
 @dataclass
@@ -101,6 +127,7 @@ def build_request(
     seed: int,
     *,
     root: Path | None = None,
+    schema_name: str | None = None,
 ) -> GenerationRequest:
     try:
         subject = load_models(root).by_id(config_id)
@@ -116,6 +143,7 @@ def build_request(
         kwargs["reasoning_effort"] = sampling.pop("reasoning_effort")
     # vLLM SamplingParams.seed must fit a signed 32-bit C long on Linux.
     safe_seed = int(seed) & 0x7FFFFFFF
+    schema = load_json_schema(schema_name, root) if schema_name else None
     return GenerationRequest(
         prompt=prompt,
         config_id=config_id,
@@ -123,6 +151,8 @@ def build_request(
         chat_template_kwargs=kwargs,
         max_tokens=max_tokens_for(config_id, root),
         seed=safe_seed,
+        json_schema=schema,
+        schema_name=schema_name,
     )
 
 
@@ -164,9 +194,7 @@ def split_reasoning(config_id: str, raw: str) -> tuple[str, str | None, list[str
     return text, None, flags
 
 
-def apply_thinking_token_policy(
-    config_id: str, result: GenerationResult
-) -> GenerationResult:
+def apply_thinking_token_policy(config_id: str, result: GenerationResult) -> GenerationResult:
     """Enforce n_reasoning_tokens policy and thinking_leak flags."""
     flags = list(result.flags)
     if expects_reasoning(config_id):
@@ -248,20 +276,25 @@ class VLLMBackend:
         handler = _GraphCaptureHandler()
         logging.getLogger().addHandler(handler)
         started = time.perf_counter()
-        self._llm = LLM(
-            model=model_path,
-            revision=revision,
-            dtype="bfloat16",
-            max_model_len=max_model_len or max_model_len_for(config_id, root),
-            gpu_memory_utilization=(
+        llm_kwargs: dict[str, Any] = {
+            "model": model_path,
+            "revision": revision,
+            "dtype": "bfloat16",
+            "max_model_len": max_model_len or max_model_len_for(config_id, root),
+            "gpu_memory_utilization": (
                 gpu_memory_utilization
                 if gpu_memory_utilization is not None
                 else vllm_cfg.gpu_memory_utilization
             ),
-            trust_remote_code=True,
-            enforce_eager=enforce_eager,
-            max_num_seqs=max_num_seqs if max_num_seqs is not None else vllm_cfg.max_num_seqs,
-        )
+            "trust_remote_code": True,
+            "enforce_eager": enforce_eager,
+            "max_num_seqs": max_num_seqs if max_num_seqs is not None else vllm_cfg.max_num_seqs,
+        }
+        # D26: for thinking subjects, use the Qwen reasoning parser so structured
+        # outputs constrain only the final answer after reasoning.
+        if expects_reasoning(config_id):
+            llm_kwargs["reasoning_parser"] = "qwen3"
+        self._llm = LLM(**llm_kwargs)
         total = time.perf_counter() - started
         logging.getLogger().removeHandler(handler)
         self.graph_capture_s = handler.seconds if not enforce_eager else 0.0
@@ -289,24 +322,31 @@ class VLLMBackend:
         return [r for r in slots if r is not None]
 
     def _generate_group(self, requests: list[GenerationRequest], sampling_cls: Any) -> list:
+        from vllm.sampling_params import StructuredOutputsParams
+
         conversations = [[{"role": "user", "content": req.prompt}] for req in requests]
-        sampling_params = [
-            sampling_cls(
-                temperature=float(req.sampling.get("temperature", 1.0)),
-                top_p=float(req.sampling.get("top_p", 1.0)),
-                top_k=int(req.sampling.get("top_k", -1))
-                if req.sampling.get("top_k") is not None
-                else -1,
-                min_p=float(req.sampling.get("min_p", 0.0))
-                if req.sampling.get("min_p") is not None
-                else 0.0,
-                presence_penalty=float(req.sampling.get("presence_penalty", 0.0)),
-                repetition_penalty=float(req.sampling.get("repetition_penalty", 1.0)),
-                max_tokens=req.max_tokens,
-                seed=req.seed,
+        sampling_params = []
+        for req in requests:
+            so = None
+            if req.json_schema is not None:
+                so = StructuredOutputsParams(json=req.json_schema)
+            sampling_params.append(
+                sampling_cls(
+                    temperature=float(req.sampling.get("temperature", 1.0)),
+                    top_p=float(req.sampling.get("top_p", 1.0)),
+                    top_k=int(req.sampling.get("top_k", -1))
+                    if req.sampling.get("top_k") is not None
+                    else -1,
+                    min_p=float(req.sampling.get("min_p", 0.0))
+                    if req.sampling.get("min_p") is not None
+                    else 0.0,
+                    presence_penalty=float(req.sampling.get("presence_penalty", 0.0)),
+                    repetition_penalty=float(req.sampling.get("repetition_penalty", 1.0)),
+                    max_tokens=req.max_tokens,
+                    seed=req.seed,
+                    structured_outputs=so,
+                )
             )
-            for req in requests
-        ]
         # reasoning_effort / enable_thinking via chat_template_kwargs:
         # https://huggingface.co/Qwen/Qwen3.8-27B
         kwargs0 = requests[0].chat_template_kwargs or None

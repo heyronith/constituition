@@ -106,6 +106,7 @@ class BudgetConfig(StrictModel):
     modal_hard_cap_usd: float
     modal_per_job_default_cap_usd: float
     phase2_dryrun_hard_cap_usd: float = 11.0
+    phase3_hard_cap_usd: float = 16.0
     colab_cu_cap: float
     colab_l4_cu_per_hour: float | None
     checked_on: str

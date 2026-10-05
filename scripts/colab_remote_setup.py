@@ -44,17 +44,13 @@ def main() -> None:
     # Editable install is flaky on Colab; put src on PYTHONPATH instead.
     run(["mkdir", "-p", "/content/rc-runs"])
     Path("/content/rc-runs/.hf_token").write_text(token, encoding="utf-8")
-    Path("/content/rc-runs/pythonpath").write_text(
-        "/content/constituition/src\n", encoding="utf-8"
-    )
+    Path("/content/rc-runs/pythonpath").write_text("/content/constituition/src\n", encoding="utf-8")
     print("SETUP_OK", flush=True)
 
 
 def start_job() -> None:
     """Start the dry-run in the same kernel session (avoids a second exec)."""
-    configs = os.environ.get(
-        "RC_CONFIGS", "olmo3_7b_sft olmo3_7b_dpo olmo3_7b_final"
-    ).split()
+    configs = os.environ.get("RC_CONFIGS", "olmo3_7b_sft olmo3_7b_dpo olmo3_7b_final").split()
     token = Path("/content/rc-runs/.hf_token").read_text(encoding="utf-8").strip()
     env = os.environ.copy()
     env["HF_TOKEN"] = token

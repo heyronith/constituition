@@ -77,9 +77,11 @@ def main(*config_ids: str) -> None:
     check_modal_hf_secret("hf-token")
     root = repo_root()
     models = load_models(root)
-    wanted = set(config_ids) if config_ids else {
-        s.config_id for s in models.subjects if s.compute.startswith("modal_")
-    }
+    wanted = (
+        set(config_ids)
+        if config_ids
+        else {s.config_id for s in models.subjects if s.compute.startswith("modal_")}
+    )
     # Deduplicate by (repo, revision).
     seen: set[tuple[str, str]] = set()
     repos: list[dict[str, str]] = []

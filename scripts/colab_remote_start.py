@@ -6,9 +6,7 @@ import os
 import subprocess
 from pathlib import Path
 
-CONFIGS = os.environ.get(
-    "RC_CONFIGS", "olmo3_7b_sft olmo3_7b_dpo olmo3_7b_final"
-).split()
+CONFIGS = os.environ.get("RC_CONFIGS", "olmo3_7b_sft olmo3_7b_dpo olmo3_7b_final").split()
 
 
 def main() -> None:
@@ -18,11 +16,7 @@ def main() -> None:
     env = os.environ.copy()
     env["HF_TOKEN"] = token_path.read_text(encoding="utf-8").strip()
     pp = Path("/content/rc-runs/pythonpath")
-    src = (
-        pp.read_text(encoding="utf-8").strip()
-        if pp.exists()
-        else "/content/constituition/src"
-    )
+    src = pp.read_text(encoding="utf-8").strip() if pp.exists() else "/content/constituition/src"
     env["PYTHONPATH"] = src + ((":" + env["PYTHONPATH"]) if env.get("PYTHONPATH") else "")
     out = Path("/content/rc-runs")
     out.mkdir(parents=True, exist_ok=True)
