@@ -1,0 +1,12 @@
+{
+  "config_id": "olmo3_7b_final",
+  "guided_decoding": {
+    "enabled": true,
+    "engine": "vllm_structured_outputs",
+    "per_request_id_enum": false,
+    "schema_name": "eval_awareness"
+  },
+  "n_probes": 24,
+  "run_tag": "pilot_v1",
+  "task": "eval_awareness"
+}

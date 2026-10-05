@@ -146,6 +146,9 @@ def preflight(
         # Phase 3 cumulative Modal cap (D26/D27 work + pilot + calib).
         if str(phase) in {"3", "phase3", "3a", "3b", "3c"}:
             project_cap = min(project_cap, budget.phase3_hard_cap_usd)
+        # Phase 4 cumulative Modal cap (judge calib + pilot coding + power).
+        if str(phase) in {"4", "phase4", "4a", "4b", "4c", "4d", "4e"}:
+            project_cap = min(project_cap, budget.phase4_hard_cap_usd)
         if hard_cap_usd is not None:
             project_cap = hard_cap_usd
         if already + estimate > project_cap:

@@ -1,0 +1,56 @@
+{
+  "gpu_seconds_per_unit_round": {
+    "gemma4_12b|FORCED": 4.254078819496525,
+    "gemma4_12b|PERMISSIVE": 4.175436750442222,
+    "gemma4_31b|FORCED": 7.900432093350688,
+    "gemma4_31b|PERMISSIVE": 7.754382536535555,
+    "olmo3_7b_dpo|FORCED": 3.3424905010329837,
+    "olmo3_7b_dpo|PERMISSIVE": 3.2807003039188887,
+    "olmo3_7b_final|FORCED": 2.5914035351039857,
+    "olmo3_7b_final|PERMISSIVE": 4.279070820579056,
+    "olmo3_7b_sft|FORCED": 3.3424905010329837,
+    "olmo3_7b_sft|PERMISSIVE": 3.2807003039188887,
+    "qwen38_27b_nothink|FORCED": 6.0772554564236065,
+    "qwen38_27b_nothink|PERMISSIVE": 5.964909643488888,
+    "qwen38_27b_think|FORCED": 10.939059821562491,
+    "qwen38_27b_think|PERMISSIVE": 10.736837358279999
+  },
+  "hard_cap_usd": 100.0,
+  "judging_usd_per_transition": 0.00015,
+  "projections": [
+    {
+      "fits_remaining_budget": true,
+      "generation_usd": 58.99978344,
+      "judging_usd": 10.079999999999998,
+      "n_chains": 10,
+      "total_usd": 69.07978344,
+      "unit_rounds": 12000
+    },
+    {
+      "fits_remaining_budget": false,
+      "generation_usd": 87.90781376,
+      "judging_usd": 15.12,
+      "n_chains": 15,
+      "total_usd": 103.02781376,
+      "unit_rounds": 18000
+    },
+    {
+      "fits_remaining_budget": false,
+      "generation_usd": 116.8149032,
+      "judging_usd": 20.159999999999997,
+      "n_chains": 20,
+      "total_usd": 136.9749032,
+      "unit_rounds": 24000
+    },
+    {
+      "fits_remaining_budget": false,
+      "generation_usd": 145.72120375999998,
+      "judging_usd": 25.2,
+      "n_chains": 25,
+      "total_usd": 170.92120375999997,
+      "unit_rounds": 30000
+    }
+  ],
+  "remaining_budget_usd": 85.6266153551558,
+  "spent_modal_usd": 14.373384644844199
+}

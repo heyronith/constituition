@@ -9,7 +9,7 @@ import statistics
 from collections import Counter, defaultdict
 from pathlib import Path
 
-from rc.config import load_budget, load_models, repo_root
+from rc.config import load_budget, repo_root
 from rc.materials import paraphrase_for_chain
 
 RUN_TAG = "pilot_v1"
