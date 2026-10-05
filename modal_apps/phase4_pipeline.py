@@ -65,6 +65,7 @@ image = (
     .add_local_dir("src", remote_path=f"{REMOTE_REPO}/src")
     .add_local_dir("configs", remote_path=f"{REMOTE_REPO}/configs")
     .add_local_dir("materials", remote_path=f"{REMOTE_REPO}/materials")
+    .add_local_file("pyproject.toml", remote_path=f"{REMOTE_REPO}/pyproject.toml")
 )
 
 cpu_image = (
@@ -80,6 +81,7 @@ cpu_image = (
     .add_local_dir("src", remote_path=f"{REMOTE_REPO}/src")
     .add_local_dir("configs", remote_path=f"{REMOTE_REPO}/configs")
     .add_local_dir("materials", remote_path=f"{REMOTE_REPO}/materials")
+    .add_local_file("pyproject.toml", remote_path=f"{REMOTE_REPO}/pyproject.toml")
 )
 
 
@@ -87,7 +89,7 @@ def _now() -> str:
     return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
-def _setup_remote_repo() -> None:
+def _setup_remote_repo() -> Path:
     import os
     import shutil
     import sys
@@ -95,14 +97,18 @@ def _setup_remote_repo() -> None:
     os.environ.setdefault("HF_HOME", HF_CACHE)
     sys.path.insert(0, f"{REMOTE_REPO}/src")
     os.chdir(REMOTE_REPO)
-    runs_link = Path(REMOTE_REPO) / "runs"
+    root = Path(REMOTE_REPO)
+    # repo_root() requires pyproject.toml; ensure it exists even if mount lags.
+    if not (root / "pyproject.toml").exists():
+        (root / "pyproject.toml").write_text("[project]\nname='rc'\n", encoding="utf-8")
+    runs_link = root / "runs"
     if runs_link.is_symlink() or runs_link.is_file():
         runs_link.unlink()
     elif runs_link.exists():
         shutil.rmtree(runs_link)
     runs_link.symlink_to(REMOTE_RUNS)
-    # Ensure pilot data visible if present under volume.
     Path(PHASE4_DIR).mkdir(parents=True, exist_ok=True)
+    return root
 
 
 def _write_status(stage: str, state: str, **extra) -> dict:
@@ -189,16 +195,16 @@ def smoke_gptoss20b(n_items: int = 20) -> dict:
     """D23: gpt-oss-20b MXFP4 on L4 through the judge code path."""
     import os
 
-    _setup_remote_repo()
+    root = _setup_remote_repo()
     from huggingface_hub import snapshot_download
 
     from rc.generation import VLLMBackend, load_lock_revision
     from rc.judging import judge_fate_batch, load_calibration_items
 
-    repo_id, sha = load_lock_revision("gptoss_20b_smoke")
+    repo_id, sha = load_lock_revision("gptoss_20b_smoke", root=root)
     token = os.environ.get("HF_TOKEN")
     model_path = snapshot_download(repo_id=repo_id, revision=sha, token=token, cache_dir=HF_CACHE)
-    items = load_calibration_items()[:n_items]
+    items = load_calibration_items(root=root)[:n_items]
     backend = VLLMBackend(
         "gptoss_20b_smoke",
         model_path=model_path,
@@ -206,8 +212,9 @@ def smoke_gptoss20b(n_items: int = 20) -> dict:
         max_model_len=8192,
         enforce_eager=True,
         max_num_seqs=8,
+        root=root,
     )
-    rows = judge_fate_batch(backend, "gptoss_20b_smoke", items, seed_base=42)
+    rows = judge_fate_batch(backend, "gptoss_20b_smoke", items, root=root, seed_base=42)
     ok = sum(1 for r in rows if r.get("parse_status") == "ok")
     marker = Path(REMOTE_RUNS) / "phase4_gptoss20b_l4_smoke" / "PASSED.json"
     # Also write under repo runs symlink.
@@ -232,7 +239,7 @@ def smoke_gptoss20b(n_items: int = 20) -> dict:
 def _run_judge_calib(judge_id: str, gpu: str) -> dict:
     import os
 
-    _setup_remote_repo()
+    root = _setup_remote_repo()
     from huggingface_hub import snapshot_download
 
     from rc.config import load_experiment
@@ -245,15 +252,15 @@ def _run_judge_calib(judge_id: str, gpu: str) -> dict:
         write_judgment_rows,
     )
 
-    assert_large_gpu_allowed(gpu)
+    assert_large_gpu_allowed(gpu, root=root)
     if judge_id == "gptoss_120b":
-        assert_gptoss_judge_smoke()
+        assert_gptoss_judge_smoke(root=root)
 
-    repo_id, sha = load_lock_revision(judge_id)
+    repo_id, sha = load_lock_revision(judge_id, root=root)
     token = os.environ.get("HF_TOKEN")
     model_path = snapshot_download(repo_id=repo_id, revision=sha, token=token, cache_dir=HF_CACHE)
-    items = load_calibration_items()
-    exp = load_experiment()
+    items = load_calibration_items(root=root)
+    exp = load_experiment(root)
     items = shuffle_items(items, judge_id, exp.master_seed)
     backend = VLLMBackend(
         judge_id,
@@ -262,8 +269,9 @@ def _run_judge_calib(judge_id: str, gpu: str) -> dict:
         max_model_len=8192 if judge_id.startswith("gptoss") else 16384,
         enforce_eager=judge_id.startswith("gptoss"),
         max_num_seqs=16,
+        root=root,
     )
-    rows = judge_fate_batch(backend, judge_id, items, seed_base=0)
+    rows = judge_fate_batch(backend, judge_id, items, root=root, seed_base=0)
     out = Path(PHASE4_DIR) / "calib" / f"{judge_id}.jsonl"
     write_judgment_rows(out, rows)
     meta = {
@@ -373,7 +381,7 @@ def _run_pilot_coding_judge(judge_id: str, gpu: str, role: str) -> dict:
     """Generate raw judgments for one judge role over pilot transitions."""
     import os
 
-    _setup_remote_repo()
+    root = _setup_remote_repo()
     from huggingface_hub import snapshot_download
 
     from rc.generation import VLLMBackend, load_lock_revision
@@ -386,19 +394,19 @@ def _run_pilot_coding_judge(judge_id: str, gpu: str, role: str) -> dict:
     )
     from rc.pilot_coding import extract_pilot_notes, extract_pilot_transitions
 
-    assert_large_gpu_allowed(gpu)
+    assert_large_gpu_allowed(gpu, root=root)
     if judge_id == "gptoss_120b":
-        assert_gptoss_judge_smoke()
+        assert_gptoss_judge_smoke(root=root)
 
     # Pilot data must be on the volume under runs/pilot_v1.
     pilot = Path(REMOTE_RUNS) / "pilot_v1"
     if not pilot.exists():
         raise FileNotFoundError(f"pilot_v1 missing on volume at {pilot}")
 
-    repo_id, sha = load_lock_revision(judge_id)
+    repo_id, sha = load_lock_revision(judge_id, root=root)
     token = os.environ.get("HF_TOKEN")
     model_path = snapshot_download(repo_id=repo_id, revision=sha, token=token, cache_dir=HF_CACHE)
-    transitions = extract_pilot_transitions("pilot_v1")
+    transitions = extract_pilot_transitions("pilot_v1", root=root)
     llm_items = []
     for t in transitions:
         if structural_fate(t["original"], t.get("rewrite"), deleted=bool(t.get("deleted"))) is None:
@@ -410,14 +418,19 @@ def _run_pilot_coding_judge(judge_id: str, gpu: str, role: str) -> dict:
         max_model_len=8192 if judge_id.startswith("gptoss") else 16384,
         enforce_eager=judge_id.startswith("gptoss"),
         max_num_seqs=16,
+        root=root,
     )
-    rows = judge_fate_batch(backend, judge_id, llm_items, seed_base=hash(role) % 10000)
+    rows = judge_fate_batch(
+        backend, judge_id, llm_items, root=root, seed_base=hash(role) % 10000
+    )
     out = Path(PHASE4_DIR) / "coding" / f"{role}_{judge_id}.jsonl"
     write_judgment_rows(out, rows)
     meta = {"role": role, "judge_id": judge_id, "n": len(rows), "load_s": backend.load_s}
     if role == "j1":
-        notes = extract_pilot_notes("pilot_v1")
-        eval_rows = judge_eval_awareness_batch(backend, judge_id, notes, seed_base=9000)
+        notes = extract_pilot_notes("pilot_v1", root=root)
+        eval_rows = judge_eval_awareness_batch(
+            backend, judge_id, notes, root=root, seed_base=9000
+        )
         write_judgment_rows(Path(PHASE4_DIR) / "coding" / "eval_awareness.jsonl", eval_rows)
         meta["n_eval"] = len(eval_rows)
     (Path(PHASE4_DIR) / "coding" / f"{role}_meta.json").write_text(
@@ -681,11 +694,11 @@ def run_power_and_g4(n_sims: int = 1000) -> dict:
 )
 def orchestrate() -> dict:
     """Unattended Phase 4 stages 1–6."""
-    _setup_remote_repo()
+    root = _setup_remote_repo()
     from rc.budget import spent_modal_usd
     from rc.generation import load_lock_revision
 
-    spend0 = spent_modal_usd()
+    spend0 = spent_modal_usd(root)
     # Also count pending already on volume.
     pending_path = Path(PHASE4_DIR) / "ledger_pending.jsonl"
     pending_spend = 0.0
@@ -711,7 +724,7 @@ def orchestrate() -> dict:
     # Stage 1: parallel downloads
     repos = []
     for jid in JUDGE_GPU:
-        repo_id, sha = load_lock_revision(jid)
+        repo_id, sha = load_lock_revision(jid, root=root)
         repos.append((repo_id, sha))
     handles = [download_judge.spawn(r, s) for r, s in repos]
     download_results = [h.get() for h in handles]
