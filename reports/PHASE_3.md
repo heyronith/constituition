@@ -350,11 +350,30 @@ Gate ≥0.95 final parse: **PASS**. Continuing to pilot → calibration.
 
 ## Part B — Pilot (`pilot_v1`)
 
-**Partial.** Modal A100 `qwen38_27b_nothink` **complete** (24/24 units × 10 rounds; final parse 1.000; endorsement + eval-awareness + calib generator). Colab `olmo3_7b_final` **lost** (D31): three overnight session drops with results only on ephemeral Colab disk; no durable tarball. Under D31, OLMo pilot re-runs on Modal L40S after the Modal OLMo guided check.
+**Done.**
+
+| config | platform | final parse | censored | G1 | G3 |
+|---|---|---:|---:|---|---|
+| qwen38_27b_nothink | Modal A100 | 1.000 | 0/26 | PASS | PASS |
+| olmo3_7b_final | Modal L40S (D31) | 0.996 | 1/26 (3.8%) | PASS | PASS |
+
+- G2 (FORCED SELF_REFLECT pooled): PASS (actions revise/delete; max category share 0.25)
+- G4: Phase 3 Modal spent ≈ **$14.37** / cap **$19** (see `reports/pilot_gates.md`)
+- Full descriptive gates: `reports/pilot_gates.md`; category appendix: `reports/pilot_appendix_categories.csv`
 
 ## Part C — Calibration (`calib_v1`)
 
-**Done for generator+verifier.** `materials/calibration/calib_v1.jsonl` has 1120 rows (70 clauses × 2 reps × 8 fates); verifier on `gemma4_12b` kept 1006 with matching `verifier_label`. Will not regenerate unless the Qwen pilot is re-run.
+**Done.** Generator `qwen38_27b_nothink` + verifier `gemma4_12b` → `materials/calibration/calib_v1.jsonl` (**1120** rows).
+
+### Modal OLMo guided check D31 (`run_tag=phase3_olmo_check_d31`)
+
+| config | first-attempt | **final parse** | censored |
+|---|---:|---:|---:|
+| olmo3_7b_sft | 1.000 | **1.000** | 0/8 |
+| olmo3_7b_dpo | 0.938 | **1.000** | 0/8 |
+| olmo3_7b_final | 1.000 | **1.000** | 0/8 |
+
+Gate ≥0.95: **PASS** (~$0.67). OLMo pilot followed on Modal L40S (~$0.98).
 
 ## D31 — Drop Colab; OLMo on Modal L40S
 
@@ -382,6 +401,8 @@ All Colab ledger rows annotated with follow-up notes `colab_abandoned_D31` (`act
 | olmo3_7b_final | 0.938 | **1.000** | 0/8 |
 
 Re-run on Modal as `phase3_olmo_check_d31` (gate ≥0.95) before the OLMo pilot.
+
+
 
 ## Decisions
 
