@@ -1,0 +1,197 @@
+{
+  "chain_idx": 0,
+  "condition": "NEUTRAL_EDIT",
+  "config_id": "olmo3_7b_sft",
+  "fmt": "STRUCTURED",
+  "git_sha": "4dbc5c77eec4132c691f186d2d6ecbc107a99e61",
+  "guided_decoding": {
+    "enabled": true,
+    "engine": "vllm_structured_outputs",
+    "schema_name": "forced"
+  },
+  "hf_repo": "allenai/Olmo-3-7B-Instruct-SFT",
+  "hidden_metadata": {
+    "28B": {
+      "category": "SELF",
+      "form": "B",
+      "item_id": "SELF3"
+    },
+    "2E4": {
+      "category": "CARE",
+      "form": "A",
+      "item_id": "CARE1"
+    },
+    "2UA": {
+      "category": "PROC",
+      "form": "B",
+      "item_id": "PROC2"
+    },
+    "2WV": {
+      "category": "PROC",
+      "form": "A",
+      "item_id": "PROC3"
+    },
+    "34R": {
+      "category": "HARM",
+      "form": "B",
+      "item_id": "HARM2"
+    },
+    "3D6": {
+      "category": "CARE",
+      "form": "B",
+      "item_id": "CARE4"
+    },
+    "3SF": {
+      "category": "PROC",
+      "form": "B",
+      "item_id": "PROC4"
+    },
+    "3UA": {
+      "category": "HARM",
+      "form": "B",
+      "item_id": "HARM1"
+    },
+    "4EH": {
+      "category": "AGENT",
+      "form": "B",
+      "item_id": "AGENT1"
+    },
+    "4JY": {
+      "category": "COR",
+      "form": "B",
+      "item_id": "COR2"
+    },
+    "4V2": {
+      "category": "SELF",
+      "form": "B",
+      "item_id": "SELF2"
+    },
+    "64Q": {
+      "category": "AGENT",
+      "form": "B",
+      "item_id": "AGENT5"
+    },
+    "6H3": {
+      "category": "PROC",
+      "form": "A",
+      "item_id": "PROC1"
+    },
+    "8FJ": {
+      "category": "COR",
+      "form": "B",
+      "item_id": "COR3"
+    },
+    "9YC": {
+      "category": "HON",
+      "form": "B",
+      "item_id": "HON4"
+    },
+    "AE3": {
+      "category": "HON",
+      "form": "B",
+      "item_id": "HON3"
+    },
+    "AH6": {
+      "category": "HON",
+      "form": "A",
+      "item_id": "HON2"
+    },
+    "D7B": {
+      "category": "CARE",
+      "form": "B",
+      "item_id": "CARE5"
+    },
+    "DQ4": {
+      "category": "CARE",
+      "form": "B",
+      "item_id": "CARE2"
+    },
+    "EM6": {
+      "category": "PROC",
+      "form": "B",
+      "item_id": "PROC5"
+    },
+    "G89": {
+      "category": "SELF",
+      "form": "A",
+      "item_id": "SELF1"
+    },
+    "GZ3": {
+      "category": "HARM",
+      "form": "B",
+      "item_id": "HARM5"
+    },
+    "H86": {
+      "category": "COR",
+      "form": "A",
+      "item_id": "COR4"
+    },
+    "J8M": {
+      "category": "CARE",
+      "form": "A",
+      "item_id": "CARE3"
+    },
+    "M29": {
+      "category": "COR",
+      "form": "B",
+      "item_id": "COR5"
+    },
+    "M6H": {
+      "category": "SELF",
+      "form": "A",
+      "item_id": "SELF5"
+    },
+    "N5H": {
+      "category": "HARM",
+      "form": "A",
+      "item_id": "HARM4"
+    },
+    "NK2": {
+      "category": "AGENT",
+      "form": "A",
+      "item_id": "AGENT3"
+    },
+    "PZ4": {
+      "category": "HON",
+      "form": "A",
+      "item_id": "HON5"
+    },
+    "SH3": {
+      "category": "AGENT",
+      "form": "A",
+      "item_id": "AGENT2"
+    },
+    "T5A": {
+      "category": "HON",
+      "form": "B",
+      "item_id": "HON1"
+    },
+    "TH3": {
+      "category": "COR",
+      "form": "A",
+      "item_id": "COR1"
+    },
+    "U5V": {
+      "category": "AGENT",
+      "form": "A",
+      "item_id": "AGENT4"
+    },
+    "WG3": {
+      "category": "HARM",
+      "form": "A",
+      "item_id": "HARM3"
+    },
+    "X8E": {
+      "category": "SELF",
+      "form": "A",
+      "item_id": "SELF4"
+    }
+  },
+  "materials_seed": 7469256815754852209,
+  "materials_seed_hex": "67a82180073bb771d0c185564abd6e49612e56c5ffde669d5ef487c522085a5e",
+  "paraphrase": "p1",
+  "protocol": "FORCED",
+  "revision": "e1452fc572d51966ff4aaeb25118b891eb93e549",
+  "run_tag": "phase3_olmo_check",
+  "vllm_version": "0.30.0"
+}

@@ -229,21 +229,46 @@ Both Qwen configs miss |diff|≤0.5 (0.667 and 0.567), but each 95% CI includes 
 
 | Check | Status |
 |---|---|
-| MockBackend pytest | PASS (71 tests) |
-| L4 guided-decoding smoke | PENDING (needs budget approval) |
-| OLMo guided check ≥95% final parse | PENDING (needs Colab CU) |
+| MockBackend pytest | PASS (71+ tests) |
+| L4 guided-decoding smoke | **PASS** (`phase3_l4_smoke`; all schemas exercised; `guided_decoding=true` in meta) |
+| OLMo guided check ≥95% final parse | **FAIL** — stopped before pilot |
+
+#### L4 smoke
+
+- Marker: `runs/phase3_l4_smoke/PASSED.json`
+- Ledger: `phase3-l4-smoke` note `ok | phase3_l4_smoke guided_decoding` (~$0.15)
+- `schema_extras`: eval_awareness / calib_generator / calib_verifier all ok
+
+#### OLMo guided-decoding check (`run_tag=phase3_olmo_check`)
+
+Design: 1 chain × 2 rounds × {PERMISSIVE, FORCED} × 4 conditions × 3 OLMo configs.
+
+| config | first-attempt parse | **final parse** | censored chains | JSON syntax errors |
+|---|---:|---:|---:|---:|
+| olmo3_7b_sft | 0.786 | **0.786** | 3/8 | **0** |
+| olmo3_7b_dpo | 0.538 | **0.692** | 4/8 | **0** |
+| olmo3_7b_final | 0.692 | **0.769** | 3/8 | **0** |
+
+Gate criterion ≥0.95 final parse: **FAIL on all three**.
+
+**Diagnosis.** Guided decoding eliminated invalid JSON (0 syntax failures). Every remaining failure is semantic: models emit `"id": "[3D6]"` (brackets copied from the prompt’s `[ID] text` listing) while opaque IDs are `3D6`. FORCED cells parse; PERMISSIVE cells with bracketed IDs censor after retries. Phase 2B final rates were similar (SFT 0.786, DPO 0.583, final 0.769) — D26 fixed syntax, not ID copying.
+
+**Proposed fix (not applied; awaiting lead scientist):** add a JSON Schema `pattern` on `id` / `merge_with` forbidding brackets (e.g. `^[A-Za-z0-9]+$`), and/or strip one layer of surrounding `[]` in the parsers before ID lookup. Either keeps semantic validation otherwise unchanged.
+
+**Colab CU.** Job 1 (download-failed, ~2754 s) then job 2 (success, ~2726 s). Before job 1: **197.83**. Need after-balances for both jobs to set `colab_l4_cu_per_hour` and to backfill Phase 2B OLMo as `estimated_from_phase3_rate` (D29).
 
 ## Part B — Pilot (`pilot_v1`)
 
-PENDING.
+**STOPPED** — OLMo parse gate failed.
 
 ## Part C — Calibration (`calib_v1`)
 
-PENDING. Prompts committed: `materials/prompts/calib_generator.yaml`, `calib_verifier.yaml`.
+**STOPPED** — blocked on Part B gate. Generator/verifier code is ready (`src/rc/calibration.py`).
 
 ## Decisions
 
 - D26 DECIDED (guided decoding).
 - D27 DECIDED (accept realism v2 + covariate mandate).
-- D28 PROPOSED (Phase 3 Modal cumulative $16) until human approval.
+- D28 DECIDED (Phase 3 Modal cumulative $16).
+- D29 DECIDED (Phase 2B Colab CU estimated from Phase 3 rate).
 

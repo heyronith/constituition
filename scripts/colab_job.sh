@@ -34,11 +34,26 @@ trap cleanup EXIT
 
 echo "=== colab new L4 session=${SESSION} mode=${RC_MODE} ==="
 colab --auth=adc new --gpu L4 -s "${SESSION}"
+# Kernel can briefly drop the websocket right after READY; wait then retry.
+sleep 15
 
 echo "=== assert L4 ==="
-colab --auth=adc exec -s "${SESSION}" -f "${SCRIPTS}/colab_remote_gpu.py" --timeout 60 \
-  | tee /tmp/rc_colab_gpu.txt
-grep -qi L4 /tmp/rc_colab_gpu.txt
+GPU_OK=0
+for attempt in 1 2 3 4 5; do
+  if colab --auth=adc exec -s "${SESSION}" -f "${SCRIPTS}/colab_remote_gpu.py" --timeout 120 \
+    | tee /tmp/rc_colab_gpu.txt; then
+    if grep -qi L4 /tmp/rc_colab_gpu.txt; then
+      GPU_OK=1
+      break
+    fi
+  fi
+  echo "GPU assert attempt ${attempt} failed; sleeping 20s"
+  sleep 20
+done
+if [[ "${GPU_OK}" -ne 1 ]]; then
+  echo "Colab GPU assert failed after retries" >&2
+  exit 1
+fi
 
 if [[ -z "${HF_TOKEN:-}" ]]; then
   if [[ -f "${LOCAL_ROOT}/.env" ]]; then
@@ -82,10 +97,11 @@ if [[ ${SETUP_RC} -ne 0 ]] || ! grep -q SETUP_OK "${SETUP_OUT}" || ! grep -q STA
 fi
 rm -f "${SETUP_OUT}"
 
-echo "=== poll status every 60s ==="
+echo "=== poll status every 90s ==="
 while true; do
-  sleep 60
-  STATUS="$(colab --auth=adc exec -s "${SESSION}" -f "${SCRIPTS}/colab_remote_status.py" --timeout 60 || true)"
+  sleep 90
+  # Redirect stderr so connection blips don't look like fatal failures.
+  STATUS="$(colab --auth=adc exec -s "${SESSION}" -f "${SCRIPTS}/colab_remote_status.py" --timeout 90 2>/dev/null || true)"
   STATUS_JSON="$(printf '%s\n' "${STATUS}" | python3 -c '
 import sys
 text = sys.stdin.read()

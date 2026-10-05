@@ -1,0 +1,61 @@
+{
+  "config_hashes": {
+    "experiment.yaml": "a7c4a7d981d8c4d32f0bc119d1eba954c14f5d1c1a7473ed25486d67aabd578c",
+    "models.yaml": "bf18cea5e864defaf74394466299daab0103b1c81c22516e3fdc13fc5674d7f0",
+    "vllm.yaml": "99b1b0062b2d093741db5afab940d74909bcda09e67b45223d19f72456899809"
+  },
+  "extra": {
+    "run_tag": "phase3_l4_smoke"
+  },
+  "git_sha": "09fbed9f468196517315e5509055eabc4f91a220",
+  "model_revision": null,
+  "output_hashes": {
+    "qwen35_08b_smoke/FORCED/NEUTRAL_EDIT/STRUCTURED/chain_0/constitutions.jsonl": "fb29875e54d4c6d3307db8727f1e41f25308ae1c8e15016fba77c52fe3e2086f",
+    "qwen35_08b_smoke/FORCED/NEUTRAL_EDIT/STRUCTURED/chain_0/lineage.jsonl": "24e2399762caabb9b0293a8549e4887cb690ddf063f1e81328ad9af3e86b9d82",
+    "qwen35_08b_smoke/FORCED/NEUTRAL_EDIT/STRUCTURED/chain_0/meta.json": "6678a7d7388682b2a121e21286d26f3e51cd5ccf2de75efd9873d5fcbbdfc8d2",
+    "qwen35_08b_smoke/FORCED/NEUTRAL_EDIT/STRUCTURED/chain_0/rounds.jsonl": "0a0147c880fadf3b7ed1d3da08bc3036913f353f0281bdea8d15978227bb42dd",
+    "qwen35_08b_smoke/FORCED/OTHER_REFLECT/STRUCTURED/chain_0/constitutions.jsonl": "df8eef1dd619afee5d440be0b9c9a12d38b840846c5ef6a90dd8851fa3739bfc",
+    "qwen35_08b_smoke/FORCED/OTHER_REFLECT/STRUCTURED/chain_0/lineage.jsonl": "62e106997cba4b1229fe06498a73d72bdfb64abdf8c8b1a6f832864c3f9db7a7",
+    "qwen35_08b_smoke/FORCED/OTHER_REFLECT/STRUCTURED/chain_0/meta.json": "3a0a68a1f211bced9f125174072163a6e4b838d27e5384aaffec10c586f2af0e",
+    "qwen35_08b_smoke/FORCED/OTHER_REFLECT/STRUCTURED/chain_0/rounds.jsonl": "1129d062b1e5806cc7a2983640adb2750393b92dc34b1250066d5d0ef8ac9d52",
+    "qwen35_08b_smoke/FORCED/PARAPHRASE/STRUCTURED/chain_0/constitutions.jsonl": "347813f2b7211296e51060407b4549f562330380461dc32c3aa821403b35eabd",
+    "qwen35_08b_smoke/FORCED/PARAPHRASE/STRUCTURED/chain_0/lineage.jsonl": "e6cd994d7863d9a2699f2041137546968c556e4b18241fb8c5bab24bd0d9868c",
+    "qwen35_08b_smoke/FORCED/PARAPHRASE/STRUCTURED/chain_0/meta.json": "db2554f3fbe00d55478a5120c194ceee2d0226f29df868e7e0646c0dcc5b3aba",
+    "qwen35_08b_smoke/FORCED/PARAPHRASE/STRUCTURED/chain_0/rounds.jsonl": "93043e1ca93a20c681751ab0e4f7dcd7788abe185abdc5e4fc919bf5069da114",
+    "qwen35_08b_smoke/FORCED/SELF_REFLECT/STRUCTURED/chain_0/constitutions.jsonl": "a3738a8de59f7e8aef1cc3ee5ae9c1014dc6969235199e9fcf8b04846afd1ee3",
+    "qwen35_08b_smoke/FORCED/SELF_REFLECT/STRUCTURED/chain_0/lineage.jsonl": "9b10f5204b258ee23e7839e4c4e1cf94b803b83ec9d69cae39773184ef565670",
+    "qwen35_08b_smoke/FORCED/SELF_REFLECT/STRUCTURED/chain_0/meta.json": "d920f174534fb7bc89bd6f956708928edc5e70cb38aea024a4ee64cf1fe9c813",
+    "qwen35_08b_smoke/FORCED/SELF_REFLECT/STRUCTURED/chain_0/rounds.jsonl": "5c9a47f822710a727704e083b202928b90de480332aa10d7576d43540afa361a",
+    "qwen35_08b_smoke/PERMISSIVE/NEUTRAL_EDIT/STRUCTURED/chain_0/constitutions.jsonl": "4bb6fd8e362f6e2eb22bc7ccc3c924ab6f23dbdf6e4e077afda4c55893f2512b",
+    "qwen35_08b_smoke/PERMISSIVE/NEUTRAL_EDIT/STRUCTURED/chain_0/lineage.jsonl": "42c7221dddf42376fb2e62446576009409287eb39879daf9efeb6924fdc21540",
+    "qwen35_08b_smoke/PERMISSIVE/NEUTRAL_EDIT/STRUCTURED/chain_0/meta.json": "643d85f2500984abda9af7f9f805757ed31267d471d08d56f25b2ce11541b064",
+    "qwen35_08b_smoke/PERMISSIVE/NEUTRAL_EDIT/STRUCTURED/chain_0/rounds.jsonl": "1e503548d499c6dfca9c32d94e1b1ce5a52c90c68e3aec5c71a5d2fc7fd4582e",
+    "qwen35_08b_smoke/PERMISSIVE/OTHER_REFLECT/STRUCTURED/chain_0/constitutions.jsonl": "4bb6fd8e362f6e2eb22bc7ccc3c924ab6f23dbdf6e4e077afda4c55893f2512b",
+    "qwen35_08b_smoke/PERMISSIVE/OTHER_REFLECT/STRUCTURED/chain_0/lineage.jsonl": "42c7221dddf42376fb2e62446576009409287eb39879daf9efeb6924fdc21540",
+    "qwen35_08b_smoke/PERMISSIVE/OTHER_REFLECT/STRUCTURED/chain_0/meta.json": "6b8eed6f1f9841a82f36152c8fd9163042cacbb11692995f8dffc7937c878d44",
+    "qwen35_08b_smoke/PERMISSIVE/OTHER_REFLECT/STRUCTURED/chain_0/rounds.jsonl": "43fadc199831506fc3ace75b7bcf69cfa75d631765c6db5e37499fdf6d27d599",
+    "qwen35_08b_smoke/PERMISSIVE/PARAPHRASE/STRUCTURED/chain_0/constitutions.jsonl": "663a64c9f815b874c56a30061ed1396dd348fa6397c56f525dc351bfebd349a0",
+    "qwen35_08b_smoke/PERMISSIVE/PARAPHRASE/STRUCTURED/chain_0/lineage.jsonl": "3075d2c8d01a75fbc000c7ace6ddcff2f2233a852fae72d6d7559513e93179b0",
+    "qwen35_08b_smoke/PERMISSIVE/PARAPHRASE/STRUCTURED/chain_0/meta.json": "fef19d06bf94113dcb921be813a0885789749efb8e9b4911ce23aab0f2802bc4",
+    "qwen35_08b_smoke/PERMISSIVE/PARAPHRASE/STRUCTURED/chain_0/rounds.jsonl": "3cdd8c6e68628ffcb0ee87e536bff4d0e14d4dfa82b1321c4811e49f8c18ceab",
+    "qwen35_08b_smoke/PERMISSIVE/SELF_REFLECT/FREE/chain_0/constitutions.jsonl": "32298dc5a106dc88b1f2d40616c6a9eaac37969e5a6bd1f8ab4b5b1fee97b904",
+    "qwen35_08b_smoke/PERMISSIVE/SELF_REFLECT/FREE/chain_0/lineage.jsonl": "42c7221dddf42376fb2e62446576009409287eb39879daf9efeb6924fdc21540",
+    "qwen35_08b_smoke/PERMISSIVE/SELF_REFLECT/FREE/chain_0/meta.json": "3029397b45c8bb5f4444c4c78bb632a78e276e10e32af498eb87c9092f5d0904",
+    "qwen35_08b_smoke/PERMISSIVE/SELF_REFLECT/FREE/chain_0/rounds.jsonl": "d0291d0570e2e3962b9eb7b962fddb9d140195ec1449f5c92e1770a07cc0a00c",
+    "qwen35_08b_smoke/PERMISSIVE/SELF_REFLECT/STRUCTURED/chain_0/constitutions.jsonl": "4bb6fd8e362f6e2eb22bc7ccc3c924ab6f23dbdf6e4e077afda4c55893f2512b",
+    "qwen35_08b_smoke/PERMISSIVE/SELF_REFLECT/STRUCTURED/chain_0/lineage.jsonl": "42c7221dddf42376fb2e62446576009409287eb39879daf9efeb6924fdc21540",
+    "qwen35_08b_smoke/PERMISSIVE/SELF_REFLECT/STRUCTURED/chain_0/meta.json": "fcf2d1a32b1f6f10e4e84e4212699af3d998184bf236a884615af83fe587d63b",
+    "qwen35_08b_smoke/PERMISSIVE/SELF_REFLECT/STRUCTURED/chain_0/rounds.jsonl": "e3e16c1ca3bcf7754ba2815456f2f2ed904616a8163197505e982ef435f562f3",
+    "qwen35_08b_smoke/calls.jsonl": "64076b3c5c3c4cccb03932efc0923372a8487536322aebf7da66461423a57753",
+    "qwen35_08b_smoke/endorsement/calls.jsonl": "d454727e6ace83b3558e1028c0f38ff740bcb41e41a100e13d4aa34cbbe57e05",
+    "qwen35_08b_smoke/endorsement/meta.json": "4ba2705ff4a5a4db63290e754b2b19e28bfc4cc0e777aabd6c5bad47e3002327",
+    "qwen35_08b_smoke/eval_awareness/calls.jsonl": "5a92436295dea2e1900596e00bb920c305dd2e41f4eea3457bfb6fe1a248e7e4",
+    "qwen35_08b_smoke/eval_awareness/meta.json": "b7469d2c0903529473c41fc7d76d6a8990411c374a19b1de31b11d1645579d9e",
+    "qwen35_08b_smoke/meta.json": "4d93b0cdfdf65a67f2080e65abd3567cb2f01167282d784cebedf95c151bfe8f",
+    "qwen35_08b_smoke/schema_smoke/calib_generator/calls.jsonl": "25b7afeb4322882f815c6ae757092aa4b4ce4e5e0b153e8e3b30668cb238ad5f",
+    "qwen35_08b_smoke/schema_smoke/calib_verifier/calls.jsonl": "66f4f177cb063c1258a01926e38cc3dc676f9340161e1a98cdce8b25b9cb0b9f"
+  },
+  "seeds": {
+    "master": 20261004
+  }
+}

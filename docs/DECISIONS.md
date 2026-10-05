@@ -59,3 +59,5 @@ D27 | 2026-10-04 | Accept realism v2 materials despite two Qwen configs missing 
 D28 | 2026-10-04 | Phase 3 Modal cumulative hard cap $16 (+$5 over Phase 2/2B). Per-job stop-and-report $2.50. Ledger notes must be exactly one of `ok`, `timeout`, `code_failure` (optional detail after `ok | …`). | User-approved 2026-10-04; distinguishes timeouts from code failures after the Phase 2B Qwen mislabel. | DECIDED
 
 D29 | 2026-10-04 | Phase 2B Colab OLMo CU: do not use `100 − balance`. Colab balance baseline was not 100 (user reported 197.83 at Phase 3 start). Log Phase 2B OLMo `actual_cu` as estimated = (L4 CU/hour measured in Phase 3) × 2872 s / 3600, note `estimated_from_phase3_rate`. | Exact Phase 2B Colab usage cannot be recovered from the current balance. | DECIDED
+
+D30 | 2026-10-05 | PROPOSED: after OLMo guided check failed (≥95%), constrain opaque `id`/`merge_with` with a JSON Schema pattern that forbids brackets, and/or strip one layer of `[]` in parsers before ID lookup. | Guided decoding made JSON syntax perfect; all residual OLMo failures are bracketed IDs copied from `[ID] text` prompt rendering. | PROPOSED

@@ -1,0 +1,1 @@
+{"guided_decoding": {"enabled": true, "engine": "vllm_structured_outputs", "schema_name": "calib_verifier"}, "parse_error": null, "parse_status": "ok", "schema_name": "calib_verifier", "text_final": "{\n  \"label\": \"B\"\n}", "text_reasoning": null}

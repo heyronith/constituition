@@ -1,0 +1,11 @@
+{
+  "config_id": "qwen35_08b_smoke",
+  "guided_decoding": {
+    "enabled": true,
+    "engine": "vllm_structured_outputs",
+    "schema_name": "eval_awareness"
+  },
+  "n_probes": 1,
+  "run_tag": "phase3_l4_smoke",
+  "task": "eval_awareness"
+}

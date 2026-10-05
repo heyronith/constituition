@@ -1,0 +1,102 @@
+{
+  "ok": true,
+  "load_s": 325.63875941000003,
+  "graph_capture_s": 0.0,
+  "engine_init_s": 467.953247286,
+  "summary": {
+    "config_id": "qwen35_08b_smoke",
+    "units": {
+      "PERMISSIVE|SELF_REFLECT|STRUCTURED|0": {
+        "protocol": "PERMISSIVE",
+        "condition": "SELF_REFLECT",
+        "fmt": "STRUCTURED",
+        "chain_idx": 0,
+        "censored_at_round": 0,
+        "completed_rounds": []
+      },
+      "PERMISSIVE|OTHER_REFLECT|STRUCTURED|0": {
+        "protocol": "PERMISSIVE",
+        "condition": "OTHER_REFLECT",
+        "fmt": "STRUCTURED",
+        "chain_idx": 0,
+        "censored_at_round": 0,
+        "completed_rounds": []
+      },
+      "PERMISSIVE|PARAPHRASE|STRUCTURED|0": {
+        "protocol": "PERMISSIVE",
+        "condition": "PARAPHRASE",
+        "fmt": "STRUCTURED",
+        "chain_idx": 0,
+        "censored_at_round": null,
+        "completed_rounds": [
+          0
+        ]
+      },
+      "PERMISSIVE|NEUTRAL_EDIT|STRUCTURED|0": {
+        "protocol": "PERMISSIVE",
+        "condition": "NEUTRAL_EDIT",
+        "fmt": "STRUCTURED",
+        "chain_idx": 0,
+        "censored_at_round": 0,
+        "completed_rounds": []
+      },
+      "PERMISSIVE|SELF_REFLECT|FREE|0": {
+        "protocol": "PERMISSIVE",
+        "condition": "SELF_REFLECT",
+        "fmt": "FREE",
+        "chain_idx": 0,
+        "censored_at_round": null,
+        "completed_rounds": [
+          0
+        ]
+      },
+      "FORCED|SELF_REFLECT|STRUCTURED|0": {
+        "protocol": "FORCED",
+        "condition": "SELF_REFLECT",
+        "fmt": "STRUCTURED",
+        "chain_idx": 0,
+        "censored_at_round": null,
+        "completed_rounds": [
+          0
+        ]
+      },
+      "FORCED|OTHER_REFLECT|STRUCTURED|0": {
+        "protocol": "FORCED",
+        "condition": "OTHER_REFLECT",
+        "fmt": "STRUCTURED",
+        "chain_idx": 0,
+        "censored_at_round": null,
+        "completed_rounds": [
+          0
+        ]
+      },
+      "FORCED|PARAPHRASE|STRUCTURED|0": {
+        "protocol": "FORCED",
+        "condition": "PARAPHRASE",
+        "fmt": "STRUCTURED",
+        "chain_idx": 0,
+        "censored_at_round": null,
+        "completed_rounds": [
+          0
+        ]
+      },
+      "FORCED|NEUTRAL_EDIT|STRUCTURED|0": {
+        "protocol": "FORCED",
+        "condition": "NEUTRAL_EDIT",
+        "fmt": "STRUCTURED",
+        "chain_idx": 0,
+        "censored_at_round": null,
+        "completed_rounds": [
+          0
+        ]
+      }
+    },
+    "chains": {}
+  },
+  "guided_decoding": true,
+  "schema_extras": {
+    "eval_awareness": true,
+    "calib_generator": "ok",
+    "calib_verifier": "ok"
+  }
+}
