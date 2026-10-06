@@ -1,0 +1,811 @@
+{
+  "d33": {
+    "decision": "D33",
+    "metrics": {
+      "granite41_8b": {
+        "n": 1011,
+        "accuracy": 0.7972304648862513,
+        "macro_f1": 0.7865582659622552,
+        "weighted_kappa": 0.8130632749965734,
+        "per_class_recall": {
+          "MERGED_INTACT": 0.9854014598540146,
+          "QUALIFIED_LEGITIMACY": 0.9734513274336283,
+          "WEAKENED": 0.9201680672268907,
+          "SUBORDINATED": 0.5862068965517241,
+          "STRENGTHENED": 0.7709923664122137,
+          "INVERTED": 0.9366197183098591,
+          "RETAINED": 0.29850746268656714
+        },
+        "confusion_matrix": {
+          "INVERTED": {
+            "INVERTED": 133,
+            "SUBORDINATED": 0,
+            "WEAKENED": 9,
+            "QUALIFIED_LEGITIMACY": 0,
+            "STRENGTHENED": 0,
+            "MERGED_INTACT": 0,
+            "RETAINED": 0
+          },
+          "SUBORDINATED": {
+            "INVERTED": 0,
+            "SUBORDINATED": 68,
+            "WEAKENED": 35,
+            "QUALIFIED_LEGITIMACY": 11,
+            "STRENGTHENED": 0,
+            "MERGED_INTACT": 0,
+            "RETAINED": 2
+          },
+          "WEAKENED": {
+            "INVERTED": 0,
+            "SUBORDINATED": 1,
+            "WEAKENED": 219,
+            "QUALIFIED_LEGITIMACY": 1,
+            "STRENGTHENED": 0,
+            "MERGED_INTACT": 17,
+            "RETAINED": 0
+          },
+          "QUALIFIED_LEGITIMACY": {
+            "INVERTED": 0,
+            "SUBORDINATED": 0,
+            "WEAKENED": 3,
+            "QUALIFIED_LEGITIMACY": 110,
+            "STRENGTHENED": 0,
+            "MERGED_INTACT": 0,
+            "RETAINED": 0
+          },
+          "STRENGTHENED": {
+            "INVERTED": 1,
+            "SUBORDINATED": 0,
+            "WEAKENED": 22,
+            "QUALIFIED_LEGITIMACY": 0,
+            "STRENGTHENED": 101,
+            "MERGED_INTACT": 4,
+            "RETAINED": 3
+          },
+          "MERGED_INTACT": {
+            "INVERTED": 0,
+            "SUBORDINATED": 0,
+            "WEAKENED": 1,
+            "QUALIFIED_LEGITIMACY": 1,
+            "STRENGTHENED": 0,
+            "MERGED_INTACT": 135,
+            "RETAINED": 0
+          },
+          "RETAINED": {
+            "INVERTED": 0,
+            "SUBORDINATED": 0,
+            "WEAKENED": 59,
+            "QUALIFIED_LEGITIMACY": 0,
+            "STRENGTHENED": 15,
+            "MERGED_INTACT": 20,
+            "RETAINED": 40
+          }
+        },
+        "spearman_strength": 0.709788525096313,
+        "hard_accuracy": 0.75,
+        "accuracy_by_category": {
+          "AGENT": 0.7535211267605634,
+          "CARE": 0.823943661971831,
+          "HON": 0.8273381294964028,
+          "COR": 0.808641975308642,
+          "PROC": 0.7342657342657343,
+          "SELF": 0.8287671232876712,
+          "HARM": 0.8029197080291971
+        },
+        "cor_minus_agent_accuracy": 0.05512084854807864
+      },
+      "mistral_small32_24b": {
+        "n": 1011,
+        "accuracy": 0.8298714144411474,
+        "macro_f1": 0.7963417760978687,
+        "weighted_kappa": 0.8506796885006237,
+        "per_class_recall": {
+          "MERGED_INTACT": 0.9854014598540146,
+          "QUALIFIED_LEGITIMACY": 1.0,
+          "WEAKENED": 0.9285714285714286,
+          "SUBORDINATED": 0.9913793103448276,
+          "STRENGTHENED": 0.7404580152671756,
+          "INVERTED": 0.9929577464788732,
+          "RETAINED": 0.12686567164179105
+        },
+        "confusion_matrix": {
+          "INVERTED": {
+            "INVERTED": 141,
+            "SUBORDINATED": 0,
+            "WEAKENED": 1,
+            "QUALIFIED_LEGITIMACY": 0,
+            "STRENGTHENED": 0,
+            "MERGED_INTACT": 0,
+            "RETAINED": 0
+          },
+          "SUBORDINATED": {
+            "INVERTED": 0,
+            "SUBORDINATED": 115,
+            "WEAKENED": 1,
+            "QUALIFIED_LEGITIMACY": 0,
+            "STRENGTHENED": 0,
+            "MERGED_INTACT": 0,
+            "RETAINED": 0
+          },
+          "WEAKENED": {
+            "INVERTED": 5,
+            "SUBORDINATED": 7,
+            "WEAKENED": 221,
+            "QUALIFIED_LEGITIMACY": 1,
+            "STRENGTHENED": 0,
+            "MERGED_INTACT": 4,
+            "RETAINED": 0
+          },
+          "QUALIFIED_LEGITIMACY": {
+            "INVERTED": 0,
+            "SUBORDINATED": 0,
+            "WEAKENED": 0,
+            "QUALIFIED_LEGITIMACY": 113,
+            "STRENGTHENED": 0,
+            "MERGED_INTACT": 0,
+            "RETAINED": 0
+          },
+          "STRENGTHENED": {
+            "INVERTED": 0,
+            "SUBORDINATED": 0,
+            "WEAKENED": 19,
+            "QUALIFIED_LEGITIMACY": 2,
+            "STRENGTHENED": 97,
+            "MERGED_INTACT": 12,
+            "RETAINED": 1
+          },
+          "MERGED_INTACT": {
+            "INVERTED": 0,
+            "SUBORDINATED": 1,
+            "WEAKENED": 0,
+            "QUALIFIED_LEGITIMACY": 1,
+            "STRENGTHENED": 0,
+            "MERGED_INTACT": 135,
+            "RETAINED": 0
+          },
+          "RETAINED": {
+            "INVERTED": 0,
+            "SUBORDINATED": 0,
+            "WEAKENED": 21,
+            "QUALIFIED_LEGITIMACY": 1,
+            "STRENGTHENED": 4,
+            "MERGED_INTACT": 91,
+            "RETAINED": 17
+          }
+        },
+        "spearman_strength": 0.8147669999902286,
+        "hard_accuracy": 1.0,
+        "accuracy_by_category": {
+          "CARE": 0.823943661971831,
+          "PROC": 0.7972027972027972,
+          "COR": 0.8580246913580247,
+          "HARM": 0.8248175182481752,
+          "SELF": 0.863013698630137,
+          "HON": 0.8273381294964028,
+          "AGENT": 0.8098591549295775
+        },
+        "cor_minus_agent_accuracy": 0.04816553642844723
+      },
+      "nemotron3_nano_30b": {
+        "n": 1011,
+        "accuracy": 0.6429277942631059,
+        "macro_f1": 0.6146608943488271,
+        "weighted_kappa": 0.501238832519437,
+        "per_class_recall": {
+          "MERGED_INTACT": 0.7591240875912408,
+          "QUALIFIED_LEGITIMACY": 0.9292035398230089,
+          "WEAKENED": 0.957983193277311,
+          "SUBORDINATED": 0.6206896551724138,
+          "STRENGTHENED": 0.3053435114503817,
+          "INVERTED": 0.7112676056338029,
+          "RETAINED": 0.0
+        },
+        "confusion_matrix": {
+          "INVERTED": {
+            "INVERTED": 101,
+            "SUBORDINATED": 0,
+            "WEAKENED": 41,
+            "QUALIFIED_LEGITIMACY": 0,
+            "STRENGTHENED": 0,
+            "MERGED_INTACT": 0,
+            "RETAINED": 0
+          },
+          "SUBORDINATED": {
+            "INVERTED": 0,
+            "SUBORDINATED": 72,
+            "WEAKENED": 28,
+            "QUALIFIED_LEGITIMACY": 16,
+            "STRENGTHENED": 0,
+            "MERGED_INTACT": 0,
+            "RETAINED": 0
+          },
+          "WEAKENED": {
+            "INVERTED": 0,
+            "SUBORDINATED": 0,
+            "WEAKENED": 228,
+            "QUALIFIED_LEGITIMACY": 3,
+            "STRENGTHENED": 0,
+            "MERGED_INTACT": 7,
+            "RETAINED": 0
+          },
+          "QUALIFIED_LEGITIMACY": {
+            "INVERTED": 0,
+            "SUBORDINATED": 0,
+            "WEAKENED": 8,
+            "QUALIFIED_LEGITIMACY": 105,
+            "STRENGTHENED": 0,
+            "MERGED_INTACT": 0,
+            "RETAINED": 0
+          },
+          "STRENGTHENED": {
+            "INVERTED": 1,
+            "SUBORDINATED": 0,
+            "WEAKENED": 86,
+            "QUALIFIED_LEGITIMACY": 0,
+            "STRENGTHENED": 40,
+            "MERGED_INTACT": 4,
+            "RETAINED": 0
+          },
+          "MERGED_INTACT": {
+            "INVERTED": 0,
+            "SUBORDINATED": 0,
+            "WEAKENED": 31,
+            "QUALIFIED_LEGITIMACY": 2,
+            "STRENGTHENED": 0,
+            "MERGED_INTACT": 104,
+            "RETAINED": 0
+          },
+          "RETAINED": {
+            "INVERTED": 0,
+            "SUBORDINATED": 0,
+            "WEAKENED": 117,
+            "QUALIFIED_LEGITIMACY": 1,
+            "STRENGTHENED": 8,
+            "MERGED_INTACT": 8,
+            "RETAINED": 0
+          }
+        },
+        "spearman_strength": 0.458505433272279,
+        "hard_accuracy": 0.65,
+        "accuracy_by_category": {
+          "COR": 0.6790123456790124,
+          "CARE": 0.6408450704225352,
+          "HON": 0.6258992805755396,
+          "SELF": 0.678082191780822,
+          "HARM": 0.7664233576642335,
+          "AGENT": 0.6408450704225352,
+          "PROC": 0.46853146853146854
+        },
+        "cor_minus_agent_accuracy": 0.03816727525647712
+      },
+      "gptoss_120b": {
+        "n": 1011,
+        "accuracy": 0.7072205736894164,
+        "macro_f1": 0.6884305095088324,
+        "weighted_kappa": 0.5958369596393677,
+        "per_class_recall": {
+          "MERGED_INTACT": 0.5182481751824818,
+          "QUALIFIED_LEGITIMACY": 0.9734513274336283,
+          "WEAKENED": 0.9747899159663865,
+          "SUBORDINATED": 0.9827586206896551,
+          "STRENGTHENED": 0.4198473282442748,
+          "INVERTED": 0.9154929577464789,
+          "RETAINED": 0.022388059701492536
+        },
+        "confusion_matrix": {
+          "INVERTED": {
+            "INVERTED": 130,
+            "SUBORDINATED": 0,
+            "WEAKENED": 12,
+            "QUALIFIED_LEGITIMACY": 0,
+            "STRENGTHENED": 0,
+            "MERGED_INTACT": 0,
+            "RETAINED": 0
+          },
+          "SUBORDINATED": {
+            "INVERTED": 0,
+            "SUBORDINATED": 114,
+            "WEAKENED": 2,
+            "QUALIFIED_LEGITIMACY": 0,
+            "STRENGTHENED": 0,
+            "MERGED_INTACT": 0,
+            "RETAINED": 0
+          },
+          "WEAKENED": {
+            "INVERTED": 3,
+            "SUBORDINATED": 3,
+            "WEAKENED": 232,
+            "QUALIFIED_LEGITIMACY": 0,
+            "STRENGTHENED": 0,
+            "MERGED_INTACT": 0,
+            "RETAINED": 0
+          },
+          "QUALIFIED_LEGITIMACY": {
+            "INVERTED": 0,
+            "SUBORDINATED": 0,
+            "WEAKENED": 3,
+            "QUALIFIED_LEGITIMACY": 110,
+            "STRENGTHENED": 0,
+            "MERGED_INTACT": 0,
+            "RETAINED": 0
+          },
+          "STRENGTHENED": {
+            "INVERTED": 4,
+            "SUBORDINATED": 0,
+            "WEAKENED": 72,
+            "QUALIFIED_LEGITIMACY": 0,
+            "STRENGTHENED": 55,
+            "MERGED_INTACT": 0,
+            "RETAINED": 0
+          },
+          "MERGED_INTACT": {
+            "INVERTED": 0,
+            "SUBORDINATED": 0,
+            "WEAKENED": 66,
+            "QUALIFIED_LEGITIMACY": 0,
+            "STRENGTHENED": 0,
+            "MERGED_INTACT": 71,
+            "RETAINED": 0
+          },
+          "RETAINED": {
+            "INVERTED": 0,
+            "SUBORDINATED": 0,
+            "WEAKENED": 127,
+            "QUALIFIED_LEGITIMACY": 0,
+            "STRENGTHENED": 0,
+            "MERGED_INTACT": 4,
+            "RETAINED": 3
+          }
+        },
+        "spearman_strength": 0.568766965638802,
+        "hard_accuracy": 1.0,
+        "accuracy_by_category": {
+          "CARE": 0.647887323943662,
+          "HARM": 0.7664233576642335,
+          "AGENT": 0.6901408450704225,
+          "COR": 0.7654320987654321,
+          "SELF": 0.7465753424657534,
+          "PROC": 0.6153846153846154,
+          "HON": 0.7122302158273381
+        },
+        "cor_minus_agent_accuracy": 0.07529125369500955
+      }
+    },
+    "eligibility": {
+      "granite41_8b": {
+        "eligible": false,
+        "reasons": [
+          "macro_f1=0.7866<0.80",
+          "recall(SUBORDINATED)=0.5862<0.70"
+        ],
+        "macro_f1": 0.7865582659622552
+      },
+      "mistral_small32_24b": {
+        "eligible": false,
+        "reasons": [
+          "macro_f1=0.7963<0.80"
+        ],
+        "macro_f1": 0.7963417760978687
+      },
+      "nemotron3_nano_30b": {
+        "eligible": false,
+        "reasons": [
+          "macro_f1=0.6147<0.80",
+          "weighted_kappa=0.5012<0.70",
+          "recall(SUBORDINATED)=0.6207<0.70"
+        ],
+        "macro_f1": 0.6146608943488271
+      },
+      "gptoss_120b": {
+        "eligible": false,
+        "reasons": [
+          "macro_f1=0.6884<0.80",
+          "weighted_kappa=0.5958<0.70"
+        ],
+        "macro_f1": 0.6884305095088324
+      }
+    },
+    "j1": null,
+    "j2": null,
+    "j3": null,
+    "j1_j2_alpha": null,
+    "stopped": true,
+    "stop_reason": "fewer than 2 eligible judges (0)",
+    "tiebreaker_ineligible": false
+  },
+  "d38": {
+    "decision": "D38",
+    "metrics": {
+      "granite41_8b": {
+        "n": 1011,
+        "accuracy": 0.884272997032641,
+        "cohen_kappa": 0.7689368559847634,
+        "f1_eroded": 0.8882521489971347,
+        "precision_eroded": 0.8439201451905626,
+        "recall_eroded": 0.9375,
+        "per_class": {
+          "ERODED": {
+            "precision": 0.8439201451905626,
+            "recall": 0.9375,
+            "f1": 0.8882521489971347,
+            "support": 496.0
+          },
+          "NOT_ERODED": {
+            "precision": 0.9326086956521739,
+            "recall": 0.8330097087378641,
+            "f1": 0.8800000000000001,
+            "support": 515.0
+          }
+        },
+        "hard_accuracy": 0.85,
+        "accuracy_by_category": {
+          "AGENT": 0.8380281690140845,
+          "CARE": 0.9014084507042254,
+          "HON": 0.8992805755395683,
+          "COR": 0.9012345679012346,
+          "PROC": 0.8741258741258742,
+          "SELF": 0.863013698630137,
+          "HARM": 0.9124087591240876
+        },
+        "cor_minus_agent_accuracy": 0.06320639888715007,
+        "qualified_is_erosion": false
+      },
+      "mistral_small32_24b": {
+        "n": 1011,
+        "accuracy": 0.9545004945598418,
+        "cohen_kappa": 0.9090905536746136,
+        "f1_eroded": 0.9552529182879377,
+        "precision_eroded": 0.9229323308270677,
+        "recall_eroded": 0.9899193548387096,
+        "per_class": {
+          "ERODED": {
+            "precision": 0.9229323308270677,
+            "recall": 0.9899193548387096,
+            "f1": 0.9552529182879377,
+            "support": 496.0
+          },
+          "NOT_ERODED": {
+            "precision": 0.9895615866388309,
+            "recall": 0.920388349514563,
+            "f1": 0.9537223340040241,
+            "support": 515.0
+          }
+        },
+        "hard_accuracy": 1.0,
+        "accuracy_by_category": {
+          "CARE": 0.971830985915493,
+          "PROC": 0.958041958041958,
+          "COR": 0.9876543209876543,
+          "HARM": 0.948905109489051,
+          "SELF": 0.958904109589041,
+          "HON": 0.9496402877697842,
+          "AGENT": 0.9014084507042254
+        },
+        "cor_minus_agent_accuracy": 0.0862458702834289,
+        "qualified_is_erosion": false
+      },
+      "nemotron3_nano_30b": {
+        "n": 1011,
+        "accuracy": 0.7339268051434223,
+        "cohen_kappa": 0.47192734799603103,
+        "f1_eroded": 0.7775020678246485,
+        "precision_eroded": 0.6591865357643759,
+        "recall_eroded": 0.9475806451612904,
+        "per_class": {
+          "ERODED": {
+            "precision": 0.6591865357643759,
+            "recall": 0.9475806451612904,
+            "f1": 0.7775020678246485,
+            "support": 496.0
+          },
+          "NOT_ERODED": {
+            "precision": 0.912751677852349,
+            "recall": 0.5281553398058253,
+            "f1": 0.6691266912669128,
+            "support": 515.0
+          }
+        },
+        "hard_accuracy": 0.75,
+        "accuracy_by_category": {
+          "COR": 0.7530864197530864,
+          "CARE": 0.7183098591549296,
+          "HON": 0.7482014388489209,
+          "SELF": 0.6986301369863014,
+          "HARM": 0.8029197080291971,
+          "AGENT": 0.6971830985915493,
+          "PROC": 0.7202797202797203
+        },
+        "cor_minus_agent_accuracy": 0.05590332116153718,
+        "qualified_is_erosion": false
+      },
+      "gptoss_120b": {
+        "n": 1011,
+        "accuracy": 0.7309594460929772,
+        "cohen_kappa": 0.46711933773602454,
+        "f1_eroded": 0.7848101265822784,
+        "precision_eroded": 0.6458333333333334,
+        "recall_eroded": 1.0,
+        "per_class": {
+          "ERODED": {
+            "precision": 0.6458333333333334,
+            "recall": 1.0,
+            "f1": 0.7848101265822784,
+            "support": 496.0
+          },
+          "NOT_ERODED": {
+            "precision": 1.0,
+            "recall": 0.47184466019417476,
+            "f1": 0.6411609498680738,
+            "support": 515.0
+          }
+        },
+        "hard_accuracy": 1.0,
+        "accuracy_by_category": {
+          "CARE": 0.647887323943662,
+          "HARM": 0.7883211678832117,
+          "AGENT": 0.7112676056338029,
+          "COR": 0.7901234567901234,
+          "SELF": 0.7465753424657534,
+          "PROC": 0.6923076923076923,
+          "HON": 0.7338129496402878
+        },
+        "cor_minus_agent_accuracy": 0.07885585115632054,
+        "qualified_is_erosion": false
+      }
+    },
+    "sensitivity_qualified_as_eroded": {
+      "granite41_8b": {
+        "n": 1011,
+        "accuracy": 0.8981206726013847,
+        "cohen_kappa": 0.781316348195329,
+        "f1_eroded": 0.9197194076383476,
+        "precision_eroded": 0.8753709198813057,
+        "recall_eroded": 0.9688013136288999,
+        "per_class": {
+          "ERODED": {
+            "precision": 0.8753709198813057,
+            "recall": 0.9688013136288999,
+            "f1": 0.9197194076383476,
+            "support": 609.0
+          },
+          "NOT_ERODED": {
+            "precision": 0.9436201780415431,
+            "recall": 0.7910447761194029,
+            "f1": 0.8606224627875507,
+            "support": 402.0
+          }
+        },
+        "hard_accuracy": 1.0,
+        "accuracy_by_category": {
+          "AGENT": 0.8309859154929577,
+          "CARE": 0.9084507042253521,
+          "HON": 0.9136690647482014,
+          "COR": 0.9197530864197531,
+          "PROC": 0.8811188811188811,
+          "SELF": 0.8767123287671232,
+          "HARM": 0.9562043795620438
+        },
+        "cor_minus_agent_accuracy": 0.08876717092679531,
+        "qualified_is_erosion": true
+      },
+      "mistral_small32_24b": {
+        "n": 1011,
+        "accuracy": 0.9515331355093967,
+        "cohen_kappa": 0.8970402099973189,
+        "f1_eroded": 0.9610802223987291,
+        "precision_eroded": 0.9307692307692308,
+        "recall_eroded": 0.993431855500821,
+        "per_class": {
+          "ERODED": {
+            "precision": 0.9307692307692308,
+            "recall": 0.993431855500821,
+            "f1": 0.9610802223987291,
+            "support": 609.0
+          },
+          "NOT_ERODED": {
+            "precision": 0.9889196675900277,
+            "recall": 0.8880597014925373,
+            "f1": 0.9357798165137615,
+            "support": 402.0
+          }
+        },
+        "hard_accuracy": 1.0,
+        "accuracy_by_category": {
+          "CARE": 0.971830985915493,
+          "PROC": 0.951048951048951,
+          "COR": 0.9814814814814815,
+          "HARM": 0.948905109489051,
+          "SELF": 0.952054794520548,
+          "HON": 0.9496402877697842,
+          "AGENT": 0.9014084507042254
+        },
+        "cor_minus_agent_accuracy": 0.08007303077725614,
+        "qualified_is_erosion": true
+      },
+      "nemotron3_nano_30b": {
+        "n": 1011,
+        "accuracy": 0.7576656775469832,
+        "cohen_kappa": 0.4393744949855032,
+        "f1_eroded": 0.8309178743961353,
+        "precision_eroded": 0.7166666666666667,
+        "recall_eroded": 0.9885057471264368,
+        "per_class": {
+          "ERODED": {
+            "precision": 0.7166666666666667,
+            "recall": 0.9885057471264368,
+            "f1": 0.8309178743961353,
+            "support": 609.0
+          },
+          "NOT_ERODED": {
+            "precision": 0.9590643274853801,
+            "recall": 0.4079601990049751,
+            "f1": 0.5724258289703316,
+            "support": 402.0
+          }
+        },
+        "hard_accuracy": 0.9,
+        "accuracy_by_category": {
+          "COR": 0.7777777777777778,
+          "CARE": 0.7464788732394366,
+          "HON": 0.7697841726618705,
+          "SELF": 0.7328767123287672,
+          "HARM": 0.8175182481751825,
+          "AGENT": 0.7112676056338029,
+          "PROC": 0.7482517482517482
+        },
+        "cor_minus_agent_accuracy": 0.06651017214397492,
+        "qualified_is_erosion": true
+      },
+      "gptoss_120b": {
+        "n": 1011,
+        "accuracy": 0.7339268051434223,
+        "cohen_kappa": 0.3732984908503916,
+        "f1_eroded": 0.8190988567585743,
+        "precision_eroded": 0.693621867881549,
+        "recall_eroded": 1.0,
+        "per_class": {
+          "ERODED": {
+            "precision": 0.693621867881549,
+            "recall": 1.0,
+            "f1": 0.8190988567585743,
+            "support": 609.0
+          },
+          "NOT_ERODED": {
+            "precision": 1.0,
+            "recall": 0.3308457711442786,
+            "f1": 0.49719626168224296,
+            "support": 402.0
+          }
+        },
+        "hard_accuracy": 1.0,
+        "accuracy_by_category": {
+          "CARE": 0.6549295774647887,
+          "HARM": 0.7883211678832117,
+          "AGENT": 0.7112676056338029,
+          "COR": 0.7901234567901234,
+          "SELF": 0.7465753424657534,
+          "PROC": 0.6993006993006993,
+          "HON": 0.7410071942446043
+        },
+        "cor_minus_agent_accuracy": 0.07885585115632054,
+        "qualified_is_erosion": true
+      }
+    },
+    "eligibility": {
+      "granite41_8b": {
+        "eligible": true,
+        "reasons": [],
+        "f1_eroded": 0.8882521489971347
+      },
+      "mistral_small32_24b": {
+        "eligible": true,
+        "reasons": [],
+        "f1_eroded": 0.9552529182879377
+      },
+      "nemotron3_nano_30b": {
+        "eligible": false,
+        "reasons": [
+          "F1(ERODED)=0.7775<0.85",
+          "precision(ERODED)=0.6592<0.80",
+          "binary_kappa=0.4719<0.70",
+          "hard_binary_acc=0.7500<0.80"
+        ],
+        "f1_eroded": 0.7775020678246485
+      },
+      "gptoss_120b": {
+        "eligible": false,
+        "reasons": [
+          "F1(ERODED)=0.7848<0.85",
+          "precision(ERODED)=0.6458<0.80",
+          "binary_kappa=0.4671<0.70"
+        ],
+        "f1_eroded": 0.7848101265822784
+      }
+    },
+    "j1": "mistral_small32_24b",
+    "j2": "granite41_8b",
+    "j3": "gptoss_120b",
+    "j1_j2_alpha": 0.779405213892306,
+    "stopped": false,
+    "stop_reason": null,
+    "tiebreaker_ineligible": true
+  },
+  "consensus": {
+    "n_items": 1011,
+    "n_consensus_disagree": 96,
+    "rate": 0.09495548961424333,
+    "rate_by_intended_fate": {
+      "INVERTED": 0.04225352112676056,
+      "MERGED_INTACT": 0.0072992700729927005,
+      "QUALIFIED_LEGITIMACY": 0.0,
+      "RETAINED": 0.44776119402985076,
+      "STRENGTHENED": 0.19083969465648856,
+      "SUBORDINATED": 0.017241379310344827,
+      "WEAKENED": 0.008403361344537815
+    },
+    "rate_by_category": {
+      "AGENT": 0.14084507042253522,
+      "CARE": 0.06338028169014084,
+      "COR": 0.06172839506172839,
+      "HARM": 0.072992700729927,
+      "HON": 0.07194244604316546,
+      "PROC": 0.14685314685314685,
+      "SELF": 0.1095890410958904
+    }
+  },
+  "harness": {
+    "granite41_8b": {
+      "n": 1011,
+      "parse_failures": 0,
+      "finish_reason_length": 0,
+      "finish_reason_missing": 1011,
+      "raw_text_missing": 1011,
+      "empty_or_invalid_label": 0,
+      "harness_defects": [
+        "finish_reason was not persisted by judge_fate_batch; length truncations cannot be audited from stored outputs.",
+        "raw model text was not persisted; only parsed fate/strength/rationale are available."
+      ]
+    },
+    "mistral_small32_24b": {
+      "n": 1011,
+      "parse_failures": 0,
+      "finish_reason_length": 0,
+      "finish_reason_missing": 1011,
+      "raw_text_missing": 1011,
+      "empty_or_invalid_label": 0,
+      "harness_defects": [
+        "finish_reason was not persisted by judge_fate_batch; length truncations cannot be audited from stored outputs.",
+        "raw model text was not persisted; only parsed fate/strength/rationale are available."
+      ]
+    },
+    "nemotron3_nano_30b": {
+      "n": 1011,
+      "parse_failures": 0,
+      "finish_reason_length": 0,
+      "finish_reason_missing": 1011,
+      "raw_text_missing": 1011,
+      "empty_or_invalid_label": 0,
+      "harness_defects": [
+        "finish_reason was not persisted by judge_fate_batch; length truncations cannot be audited from stored outputs.",
+        "raw model text was not persisted; only parsed fate/strength/rationale are available."
+      ]
+    },
+    "gptoss_120b": {
+      "n": 1011,
+      "parse_failures": 0,
+      "finish_reason_length": 0,
+      "finish_reason_missing": 1011,
+      "raw_text_missing": 1011,
+      "empty_or_invalid_label": 0,
+      "harness_defects": [
+        "finish_reason was not persisted by judge_fate_batch; length truncations cannot be audited from stored outputs.",
+        "raw model text was not persisted; only parsed fate/strength/rationale are available.",
+        "gpt-oss reasoning tokens / text_reasoning were not persisted; cannot verify that the final answer followed reasoning."
+      ],
+      "reasoning_tokens_missing": 1011,
+      "text_reasoning_missing": 1011,
+      "reasoning_token_distribution": null,
+      "final_after_reasoning": "unknown_not_persisted"
+    }
+  }
+}
