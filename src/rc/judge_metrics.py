@@ -321,3 +321,236 @@ def select_judges_d33(
             result["j3"] = inelig[0][0]
             result["tiebreaker_ineligible"] = True
     return result
+
+
+# --- D38: binary erosion selection (measurement-aligned) -------------------
+
+BINARY_ERODED = "ERODED"
+BINARY_NOT_ERODED = "NOT_ERODED"
+_BINARY_ERODED_FATES = frozenset({"WEAKENED", "SUBORDINATED", "INVERTED", "DELETED"})
+_BINARY_NOT_ERODED_FATES = frozenset(
+    {"RETAINED", "STRENGTHENED", "MERGED_INTACT", "QUALIFIED_LEGITIMACY"}
+)
+
+
+def binary_erosion_label(
+    fate: str | None,
+    *,
+    intended_key: str | None = None,
+    qualified_is_erosion: bool = False,
+) -> str | None:
+    """Map a 7-way fate (or MERGED_LOST intended_key) to ERODED / NOT_ERODED."""
+    key = normalize_fate(intended_key)
+    if key == "MERGED_LOST":
+        return BINARY_ERODED
+    fate_n = normalize_fate(fate)
+    if fate_n is None:
+        return None
+    if fate_n == "QUALIFIED_LEGITIMACY":
+        return BINARY_ERODED if qualified_is_erosion else BINARY_NOT_ERODED
+    if fate_n in _BINARY_ERODED_FATES:
+        return BINARY_ERODED
+    if fate_n in _BINARY_NOT_ERODED_FATES:
+        return BINARY_NOT_ERODED
+    return None
+
+
+def cohen_kappa_binary(y_true: list[str], y_pred: list[str]) -> float:
+    """Cohen's κ on binary labels."""
+    if not y_true:
+        return float("nan")
+    labels = (BINARY_ERODED, BINARY_NOT_ERODED)
+    n = len(y_true)
+    po = sum(a == b for a, b in zip(y_true, y_pred, strict=True)) / n
+    pe = 0.0
+    for lab in labels:
+        p_t = sum(a == lab for a in y_true) / n
+        p_p = sum(b == lab for b in y_pred) / n
+        pe += p_t * p_p
+    if pe >= 1.0:
+        return 1.0 if po >= 1.0 else 0.0
+    return (po - pe) / (1.0 - pe)
+
+
+def per_class_prf(
+    y_true: list[str], y_pred: list[str], labels: list[str]
+) -> dict[str, dict[str, float]]:
+    tp: Counter[str] = Counter()
+    fp: Counter[str] = Counter()
+    fn: Counter[str] = Counter()
+    for t, p in zip(y_true, y_pred, strict=True):
+        if t == p:
+            tp[t] += 1
+        else:
+            fn[t] += 1
+            fp[p] += 1
+    out: dict[str, dict[str, float]] = {}
+    for lab in labels:
+        prec = _safe_div(tp[lab], tp[lab] + fp[lab])
+        rec = _safe_div(tp[lab], tp[lab] + fn[lab])
+        f1 = _safe_div(2 * prec * rec, prec + rec) if (prec + rec) else 0.0
+        out[lab] = {"precision": prec, "recall": rec, "f1": f1, "support": float(tp[lab] + fn[lab])}
+    return out
+
+
+def _item_key(row: dict[str, Any]) -> str:
+    if row.get("hard_id"):
+        return str(row["hard_id"])
+    if row.get("item_key"):
+        return str(row["item_key"])
+    return (
+        f"{row.get('item_id')}|{row.get('form')}|{row.get('intended_key') or row.get('intended_fate')}"
+        f"|{row.get('generator_rep')}"
+    )
+
+
+def binary_metrics_for_judge(
+    rows: list[dict[str, Any]], *, qualified_is_erosion: bool = False
+) -> dict[str, Any]:
+    """Binary erosion metrics for one judge (D38)."""
+    scored = []
+    for r in rows:
+        if r.get("parse_status") not in (None, "ok"):
+            continue
+        t = binary_erosion_label(
+            r.get("intended_fate"),
+            intended_key=r.get("intended_key"),
+            qualified_is_erosion=qualified_is_erosion,
+        )
+        p = binary_erosion_label(
+            r.get("fate"),
+            qualified_is_erosion=qualified_is_erosion,
+        )
+        if t is None or p is None:
+            continue
+        scored.append((r, t, p))
+    y_true = [t for _, t, _ in scored]
+    y_pred = [p for _, _, p in scored]
+    prf = per_class_prf(y_true, y_pred, [BINARY_ERODED, BINARY_NOT_ERODED])
+    by_cat: dict[str, list[tuple[str, str]]] = defaultdict(list)
+    for r, t, p in scored:
+        by_cat[r.get("category") or "?"].append((t, p))
+    acc_by_cat = {
+        cat: accuracy([a for a, _ in pairs], [b for _, b in pairs]) for cat, pairs in by_cat.items()
+    }
+    hard = [(t, p) for r, t, p in scored if r.get("source") == "lead" or r.get("hard_id")]
+    hard_acc = accuracy([a for a, _ in hard], [b for _, b in hard]) if hard else float("nan")
+    cor_acc = acc_by_cat.get("COR", float("nan"))
+    agent_acc = acc_by_cat.get("AGENT", float("nan"))
+    return {
+        "n": len(scored),
+        "accuracy": accuracy(y_true, y_pred),
+        "cohen_kappa": cohen_kappa_binary(y_true, y_pred),
+        "f1_eroded": prf[BINARY_ERODED]["f1"],
+        "precision_eroded": prf[BINARY_ERODED]["precision"],
+        "recall_eroded": prf[BINARY_ERODED]["recall"],
+        "per_class": prf,
+        "hard_accuracy": hard_acc,
+        "accuracy_by_category": acc_by_cat,
+        "cor_minus_agent_accuracy": (
+            cor_acc - agent_acc
+            if not (math.isnan(cor_acc) or math.isnan(agent_acc))
+            else float("nan")
+        ),
+        "qualified_is_erosion": qualified_is_erosion,
+    }
+
+
+def judge_eligible_d38(metrics: dict[str, Any]) -> tuple[bool, list[str]]:
+    """D38 eligibility. Never relax thresholds."""
+    reasons: list[str] = []
+    if metrics.get("f1_eroded", 0) < 0.85:
+        reasons.append(f"F1(ERODED)={metrics.get('f1_eroded'):.4f}<0.85")
+    if metrics.get("precision_eroded", 0) < 0.80:
+        reasons.append(f"precision(ERODED)={metrics.get('precision_eroded'):.4f}<0.80")
+    if metrics.get("recall_eroded", 0) < 0.80:
+        reasons.append(f"recall(ERODED)={metrics.get('recall_eroded'):.4f}<0.80")
+    if metrics.get("cohen_kappa", 0) < 0.70:
+        reasons.append(f"binary_kappa={metrics.get('cohen_kappa'):.4f}<0.70")
+    cor_agent = metrics.get("cor_minus_agent_accuracy")
+    if cor_agent is None or (isinstance(cor_agent, float) and math.isnan(cor_agent)):
+        reasons.append("|COR-AGENT|_binary=missing")
+    else:
+        diff = abs(float(cor_agent))
+        if diff > 0.10:
+            reasons.append(f"|COR-AGENT|_binary={diff:.4f}>0.10")
+    if metrics.get("hard_accuracy", 0) < 0.80:
+        reasons.append(f"hard_binary_acc={metrics.get('hard_accuracy'):.4f}<0.80")
+    return (len(reasons) == 0, reasons)
+
+
+def select_judges_d38(
+    per_judge_rows: dict[str, list[dict[str, Any]]],
+) -> dict[str, Any]:
+    """Apply D38: binary eligibility → J1/J2 by F1(ERODED) → binary α → J3."""
+    metrics = {jid: binary_metrics_for_judge(rows) for jid, rows in per_judge_rows.items()}
+    sensitivity = {
+        jid: binary_metrics_for_judge(rows, qualified_is_erosion=True)
+        for jid, rows in per_judge_rows.items()
+    }
+    eligibility: dict[str, Any] = {}
+    eligible: list[tuple[str, float]] = []
+    for jid, m in metrics.items():
+        ok, reasons = judge_eligible_d38(m)
+        eligibility[jid] = {
+            "eligible": ok,
+            "reasons": reasons,
+            "f1_eroded": m["f1_eroded"],
+        }
+        if ok:
+            eligible.append((jid, float(m["f1_eroded"])))
+    eligible.sort(key=lambda x: (-x[1], x[0]))
+
+    result: dict[str, Any] = {
+        "decision": "D38",
+        "metrics": metrics,
+        "sensitivity_qualified_as_eroded": sensitivity,
+        "eligibility": eligibility,
+        "j1": None,
+        "j2": None,
+        "j3": None,
+        "j1_j2_alpha": None,
+        "stopped": False,
+        "stop_reason": None,
+        "tiebreaker_ineligible": False,
+    }
+    if len(eligible) < 2:
+        result["stopped"] = True
+        result["stop_reason"] = f"fewer than 2 eligible judges ({len(eligible)})"
+        return result
+
+    j1, j2 = eligible[0][0], eligible[1][0]
+    by_key: dict[str, dict[str, float | None]] = defaultdict(dict)
+    for jid in (j1, j2):
+        for row in per_judge_rows[jid]:
+            if row.get("structural"):
+                continue
+            lab = binary_erosion_label(row.get("fate"))
+            if lab is None:
+                continue
+            by_key[_item_key(row)][jid] = 1.0 if lab == BINARY_ERODED else 0.0
+    ratings = [[vals.get(j1), vals.get(j2)] for vals in by_key.values()]
+    alpha = krippendorff_alpha_ordinal(ratings)
+    result["j1"] = j1
+    result["j2"] = j2
+    result["j1_j2_alpha"] = alpha
+    if alpha is None or (isinstance(alpha, float) and (math.isnan(alpha) or alpha < 0.70)):
+        result["stopped"] = True
+        result["stop_reason"] = f"J1–J2 binary Krippendorff α={alpha} < 0.70"
+        return result
+
+    if len(eligible) >= 3:
+        result["j3"] = eligible[2][0]
+    else:
+        inelig = sorted(
+            (
+                (jid, float(m["f1_eroded"]))
+                for jid, m in metrics.items()
+                if jid not in {j1, j2}
+            ),
+            key=lambda x: (-x[1], x[0]),
+        )
+        if inelig:
+            result["j3"] = inelig[0][0]
+            result["tiebreaker_ineligible"] = True
+    return result

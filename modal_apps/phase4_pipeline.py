@@ -55,6 +55,9 @@ image = (
         "textstat>=0.7.13",
         "mistral_common>=1.6.2",
     )
+    # D36: vLLM 0.30.0 Pixtral imports PixtralRotaryEmbedding; Transformers
+    # 5.17 renamed it. Pin the pre-rename release vLLM 0.30.0 was tested with.
+    .pip_install("transformers==5.16.1")
     .env(
         {
             "HF_HOME": HF_CACHE,
@@ -348,6 +351,132 @@ def calib_granite() -> dict:
 
 
 @app.function(
+    image=image,
+    volumes={HF_CACHE: hf_vol, REMOTE_RUNS: runs_vol},
+    secrets=[modal.Secret.from_name("hf-token")],
+    timeout=60 * 20,
+    cpu=4,
+    memory=16384,
+)
+def diagnose_mistral_import() -> dict:
+    """CPU-only: import vLLM Pixtral/Mistral3 modules and surface the real traceback."""
+    import traceback
+
+    _setup_remote_repo()
+    out: dict = {"ok": False, "steps": []}
+    try:
+        import transformers
+        import vllm
+
+        out["vllm_version"] = getattr(vllm, "__version__", "?")
+        out["transformers_version"] = getattr(transformers, "__version__", "?")
+    except Exception as exc:  # noqa: BLE001
+        out["steps"].append({"step": "import vllm", "error": str(exc), "tb": traceback.format_exc()})
+        Path(PHASE4_DIR).mkdir(parents=True, exist_ok=True)
+        (Path(PHASE4_DIR) / "mistral_diagnose.json").write_text(
+            json.dumps(out, indent=2) + "\n", encoding="utf-8"
+        )
+        runs_vol.commit()
+        return out
+
+    candidates = [
+        "vllm.model_executor.models.pixtral",
+        "vllm.model_executor.models.mistral",
+        "vllm.model_executor.models.mistral3",
+    ]
+    for mod in candidates:
+        try:
+            __import__(mod)
+            out["steps"].append({"step": f"import {mod}", "ok": True})
+        except Exception as exc:  # noqa: BLE001
+            out["steps"].append(
+                {
+                    "step": f"import {mod}",
+                    "ok": False,
+                    "error": str(exc),
+                    "tb": traceback.format_exc(),
+                }
+            )
+
+    # Model-class inspection (CPU): resolve the architectures that previously
+    # failed behind the opaque PixtralForConditionalGeneration error.
+    try:
+        from transformers.models.pixtral.modeling_pixtral import PixtralRotaryEmbedding
+
+        out["steps"].append(
+            {
+                "step": "transformers.PixtralRotaryEmbedding",
+                "ok": True,
+                "cls": str(PixtralRotaryEmbedding),
+            }
+        )
+    except Exception as exc:  # noqa: BLE001
+        out["steps"].append(
+            {
+                "step": "transformers.PixtralRotaryEmbedding",
+                "ok": False,
+                "error": str(exc),
+                "tb": traceback.format_exc(),
+            }
+        )
+    try:
+        import vllm.model_executor.models.pixtral as pixtral_mod
+        import vllm.model_executor.models.mistral3 as mistral3_mod
+
+        for name, mod in (
+            ("PixtralForConditionalGeneration", pixtral_mod),
+            ("Mistral3ForConditionalGeneration", mistral3_mod),
+        ):
+            cls = getattr(mod, name, None)
+            # Class may live under a different export; module import success is
+            # the gate that previously failed.
+            out["steps"].append(
+                {
+                    "step": f"model_class {name}",
+                    "ok": True,
+                    "cls": str(cls) if cls is not None else f"<module {mod.__name__} imported>",
+                    "module": mod.__name__,
+                }
+            )
+    except Exception as exc:  # noqa: BLE001
+        out["steps"].append(
+            {
+                "step": "model_class inspection",
+                "ok": False,
+                "error": str(exc),
+                "tb": traceback.format_exc(),
+            }
+        )
+
+    try:
+        import mistral_common
+
+        out["mistral_common_version"] = getattr(mistral_common, "__version__", "?")
+    except Exception as exc:  # noqa: BLE001
+        out["mistral_common_version"] = None
+        out["steps"].append(
+            {"step": "import mistral_common", "ok": False, "error": str(exc), "tb": traceback.format_exc()}
+        )
+
+    out["ok"] = all(
+        s.get("ok")
+        for s in out["steps"]
+        if s.get("step")
+        in (
+            "import vllm.model_executor.models.pixtral",
+            "import vllm.model_executor.models.mistral3",
+        )
+    )
+    Path(PHASE4_DIR).mkdir(parents=True, exist_ok=True)
+    (Path(PHASE4_DIR) / "mistral_diagnose.json").write_text(
+        json.dumps(out, indent=2) + "\n", encoding="utf-8"
+    )
+    runs_vol.commit()
+    print(json.dumps(out, indent=2))
+    return out
+
+
+@app.function(
     image=cpu_image,
     volumes={REMOTE_RUNS: runs_vol},
     timeout=60 * 30,
@@ -359,16 +488,38 @@ def select_d33() -> dict:
     from rc.judge_metrics import select_judges_d33
 
     per: dict[str, list] = {}
+    technical_failures: dict[str, str] = {}
     calib_dir = Path(PHASE4_DIR) / "calib"
+    for path in calib_dir.glob("*_technical_failure.json"):
+        payload = json.loads(path.read_text(encoding="utf-8"))
+        jid = payload.get("judge_id") or path.name.replace("_technical_failure.json", "")
+        technical_failures[jid] = str(payload.get("error") or "technical_failure")
     for path in calib_dir.glob("*.jsonl"):
         jid = path.stem
+        # D37: only judges that actually ran (have jsonl) enter D33.
+        if jid in technical_failures:
+            # Prefer successful jsonl if both somehow exist.
+            pass
         rows = [
             json.loads(line)
             for line in path.read_text(encoding="utf-8").splitlines()
             if line.strip()
         ]
-        per[jid] = rows
+        if rows:
+            per[jid] = rows
+            technical_failures.pop(jid, None)
     selection = select_judges_d33(per)
+    selection["technical_failures"] = {
+        jid: {"ineligible": "technical_failure", "error": err}
+        for jid, err in technical_failures.items()
+    }
+    for jid, err in technical_failures.items():
+        selection.setdefault("eligibility", {})[jid] = {
+            "eligible": False,
+            "reasons": [f"technical_failure: {err}"],
+            "macro_f1": None,
+            "ineligible": "technical_failure",
+        }
     (Path(PHASE4_DIR) / "selection_d33.json").write_text(
         json.dumps(selection, indent=2, default=str) + "\n", encoding="utf-8"
     )
@@ -758,10 +909,12 @@ def orchestrate(spent_at_launch: float = 0.0, skip_downloads: bool = False) -> d
         ("nemotron3_nano_30b", "A100-80GB", calib_nemotron),
         ("gptoss_120b", "H100", calib_gptoss_120b),
     ]
+    technical_failures: dict[str, str] = {}
     for jid, gpu, fn in calib_fns:
         existing = Path(PHASE4_DIR) / "calib" / f"{jid}.jsonl"
         if existing.exists() and existing.stat().st_size > 0:
             continue
+        fail_marker = Path(PHASE4_DIR) / "calib" / f"{jid}_technical_failure.json"
         # Soft preflight against cumulative $27 using pending spend.
         from rc.config import load_budget
 
@@ -778,6 +931,8 @@ def orchestrate(spent_at_launch: float = 0.0, skip_downloads: bool = False) -> d
         try:
             meta = fn.remote()
             elapsed = time.perf_counter() - started
+            if fail_marker.exists():
+                fail_marker.unlink()
             _append_pending_ledger(
                 {
                     "timestamp_utc": _now(),
@@ -791,7 +946,25 @@ def orchestrate(spent_at_launch: float = 0.0, skip_downloads: bool = False) -> d
                 }
             )
         except Exception as exc:  # noqa: BLE001
+            # D37: isolate — record technical_failure and continue.
             elapsed = time.perf_counter() - started
+            err = str(exc)
+            technical_failures[jid] = err
+            fail_marker.parent.mkdir(parents=True, exist_ok=True)
+            fail_marker.write_text(
+                json.dumps(
+                    {
+                        "judge_id": jid,
+                        "ineligible": "technical_failure",
+                        "error": err,
+                        "timestamp_utc": _now(),
+                    },
+                    indent=2,
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+            runs_vol.commit()
             _append_pending_ledger(
                 {
                     "timestamp_utc": _now(),
@@ -801,18 +974,22 @@ def orchestrate(spent_at_launch: float = 0.0, skip_downloads: bool = False) -> d
                     "gpu": gpu,
                     "actual_seconds": elapsed,
                     "actual_usd": _estimate(gpu, int(elapsed) + 1),
-                    "note": f"code_failure | {exc}",
+                    "note": f"technical_failure | {err}",
                 }
             )
             _write_status(
                 "calibration",
-                "stopped",
-                reason=str(exc),
+                "running",
                 spend_usd=spend_now(),
+                last_technical_failure=jid,
+                technical_failures=technical_failures,
             )
-            return {"state": "stopped", "reason": str(exc)}
-    _write_status("calibration", "done", spend_usd=spend_now())
-
+    _write_status(
+        "calibration",
+        "done",
+        spend_usd=spend_now(),
+        technical_failures=technical_failures,
+    )
     # Stage 3: D33
     _write_status("selection", "running", spend_usd=spend_now())
     selection = select_d33.remote()
