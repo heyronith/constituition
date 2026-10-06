@@ -1,0 +1,540 @@
+{
+  "chosen_n": 25,
+  "at_chosen_n": {
+    "decision": "D49",
+    "n_forced": 25,
+    "n_permissive": 5,
+    "rounds_forced": 20,
+    "rounds_permissive": 10,
+    "free_arm": "dropped",
+    "scope": {
+      "FORCED": "7 configs \u00d7 4 conditions \u00d7 25 chains (idx 0..) \u00d7 20 rounds",
+      "PERMISSIVE": "7 configs \u00d7 4 conditions \u00d7 5 chains (idx 0\u20134) \u00d7 10 rounds",
+      "FREE": "dropped (limitation)"
+    },
+    "piloted_gpu_seconds_per_unit_round": {
+      "olmo3_7b_final|FORCED": 2.5914035351039857,
+      "olmo3_7b_final|PERMISSIVE": 4.279070820579056,
+      "qwen38_27b_nothink|FORCED": 6.0772554564236065,
+      "qwen38_27b_nothink|PERMISSIVE": 5.964909643488888
+    },
+    "scaled_gpu_seconds_per_unit_round": {
+      "gemma4_12b|FORCED": 1.0123790797480183,
+      "gemma4_12b|PERMISSIVE": 1.6716971019106794,
+      "gemma4_31b|FORCED": 6.777939021382973,
+      "gemma4_31b|PERMISSIVE": 6.652640179687196,
+      "olmo3_7b_dpo|FORCED": 2.5914035351039857,
+      "olmo3_7b_dpo|PERMISSIVE": 4.279070820579056,
+      "olmo3_7b_final|FORCED": 2.5914035351039857,
+      "olmo3_7b_final|PERMISSIVE": 4.279070820579056,
+      "olmo3_7b_sft|FORCED": 2.5914035351039857,
+      "olmo3_7b_sft|PERMISSIVE": 4.279070820579056,
+      "qwen38_27b_nothink|FORCED": 6.0772554564236065,
+      "qwen38_27b_nothink|PERMISSIVE": 5.964909643488888,
+      "qwen38_27b_think|FORCED": 10.939059821562491,
+      "qwen38_27b_think|PERMISSIVE": 10.736837358279999
+    },
+    "dryrun_tok_s": {
+      "qwen38_27b_nothink": 67.81,
+      "qwen38_27b_think": 101.62,
+      "gemma4_31b": 60.8,
+      "gemma4_12b": 101.16,
+      "olmo3_7b_final": 39.52,
+      "olmo3_7b_sft": 39.52,
+      "olmo3_7b_dpo": 39.52
+    },
+    "model_load_seconds": {
+      "gemma4_12b": 206.17557061300002,
+      "gemma4_31b": 500.59354912500004,
+      "qwen38_27b_nothink": 180.0,
+      "qwen38_27b_think": 180.0,
+      "olmo3_7b_final": 90.0,
+      "olmo3_7b_sft": 90.0,
+      "olmo3_7b_dpo": 90.0
+    },
+    "generation": {
+      "unit_rounds": 15400,
+      "by_gpu": {
+        "A100-80GB": {
+          "seconds": 53119.979584154346,
+          "usd": 49.979545599999994
+        },
+        "L40S": {
+          "seconds": 20951.136853462518,
+          "usd": 16.52861376
+        }
+      },
+      "modal_usd": 66.50815936
+    },
+    "judging": {
+      "densities": {
+        "forced_per_round_llm_per_unit_round": 0.9583333333333334,
+        "forced_cumulative_llm_per_checkpoint": 3.2777777777777777,
+        "permissive_cumulative_llm_per_checkpoint": 18.152173913043477,
+        "pilot_forced_per_round_llm": 230,
+        "pilot_forced_cum_llm": 118,
+        "pilot_perm_cum_llm": 1670,
+        "pilot_forced_unit_rounds": 240,
+        "pilot_forced_cum_checkpoints": 36,
+        "pilot_perm_cum_checkpoints": 92
+      },
+      "gpt54_n_transitions_est": 20546.859903381643,
+      "mimo_n_transitions_est": 3354.166666666667,
+      "gpt54_usd_per_transition": 0.0014584898414271568,
+      "mimo_usd_per_transition": 9.728593846153846e-05,
+      "api_gpt54_usd": 29.9673864423091,
+      "api_mimo_usd": 0.326313251923077,
+      "api_usd": 30.293699694232178,
+      "api_cap_usd": "TBD (to be approved)"
+    },
+    "h3_behaviour_battery_modal_usd": {
+      "low": 10.0,
+      "high": 15.0,
+      "note": "placeholder"
+    },
+    "budget": {
+      "modal_hard_cap_usd": 100.0,
+      "spent_modal_usd_ledger": 22.431896684844197,
+      "remaining_modal_usd": 77.56810331515581,
+      "pending_4f_modal_usd": 2.089098,
+      "pending_4f_api_usd": 4.661565500000001,
+      "generation_fits_remaining_modal": true,
+      "generation_plus_h3_high_fits": false
+    },
+    "totals": {
+      "modal_generation_usd": 66.50815936,
+      "modal_with_h3_high_usd": 81.50815936,
+      "api_judging_usd": 30.293699694232178
+    }
+  },
+  "by_n": {
+    "10": {
+      "decision": "D49",
+      "n_forced": 10,
+      "n_permissive": 5,
+      "rounds_forced": 20,
+      "rounds_permissive": 10,
+      "free_arm": "dropped",
+      "scope": {
+        "FORCED": "7 configs \u00d7 4 conditions \u00d7 10 chains (idx 0..) \u00d7 20 rounds",
+        "PERMISSIVE": "7 configs \u00d7 4 conditions \u00d7 5 chains (idx 0\u20134) \u00d7 10 rounds",
+        "FREE": "dropped (limitation)"
+      },
+      "piloted_gpu_seconds_per_unit_round": {
+        "olmo3_7b_final|FORCED": 2.5914035351039857,
+        "olmo3_7b_final|PERMISSIVE": 4.279070820579056,
+        "qwen38_27b_nothink|FORCED": 6.0772554564236065,
+        "qwen38_27b_nothink|PERMISSIVE": 5.964909643488888
+      },
+      "scaled_gpu_seconds_per_unit_round": {
+        "gemma4_12b|FORCED": 1.0123790797480183,
+        "gemma4_12b|PERMISSIVE": 1.6716971019106794,
+        "gemma4_31b|FORCED": 6.777939021382973,
+        "gemma4_31b|PERMISSIVE": 6.652640179687196,
+        "olmo3_7b_dpo|FORCED": 2.5914035351039857,
+        "olmo3_7b_dpo|PERMISSIVE": 4.279070820579056,
+        "olmo3_7b_final|FORCED": 2.5914035351039857,
+        "olmo3_7b_final|PERMISSIVE": 4.279070820579056,
+        "olmo3_7b_sft|FORCED": 2.5914035351039857,
+        "olmo3_7b_sft|PERMISSIVE": 4.279070820579056,
+        "qwen38_27b_nothink|FORCED": 6.0772554564236065,
+        "qwen38_27b_nothink|PERMISSIVE": 5.964909643488888,
+        "qwen38_27b_think|FORCED": 10.939059821562491,
+        "qwen38_27b_think|PERMISSIVE": 10.736837358279999
+      },
+      "dryrun_tok_s": {
+        "qwen38_27b_nothink": 67.81,
+        "qwen38_27b_think": 101.62,
+        "gemma4_31b": 60.8,
+        "gemma4_12b": 101.16,
+        "olmo3_7b_final": 39.52,
+        "olmo3_7b_sft": 39.52,
+        "olmo3_7b_dpo": 39.52
+      },
+      "model_load_seconds": {
+        "gemma4_12b": 206.17557061300002,
+        "gemma4_31b": 500.59354912500004,
+        "qwen38_27b_nothink": 180.0,
+        "qwen38_27b_think": 180.0,
+        "olmo3_7b_final": 90.0,
+        "olmo3_7b_sft": 90.0,
+        "olmo3_7b_dpo": 90.0
+      },
+      "generation": {
+        "unit_rounds": 7000,
+        "by_gpu": {
+          "A100-80GB": {
+            "seconds": 24566.874424911468,
+            "usd": 23.11459896
+          },
+          "L40S": {
+            "seconds": 10407.22923139055,
+            "usd": 8.21066304
+          }
+        },
+        "modal_usd": 31.325262
+      },
+      "judging": {
+        "densities": {
+          "forced_per_round_llm_per_unit_round": 0.9583333333333334,
+          "forced_cumulative_llm_per_checkpoint": 3.2777777777777777,
+          "permissive_cumulative_llm_per_checkpoint": 18.152173913043477,
+          "pilot_forced_per_round_llm": 230,
+          "pilot_forced_cum_llm": 118,
+          "pilot_perm_cum_llm": 1670,
+          "pilot_forced_unit_rounds": 240,
+          "pilot_forced_cum_checkpoints": 36,
+          "pilot_perm_cum_checkpoints": 92
+        },
+        "gpt54_n_transitions_est": 9743.526570048309,
+        "mimo_n_transitions_est": 1341.6666666666667,
+        "gpt54_usd_per_transition": 0.0014584898414271568,
+        "mimo_usd_per_transition": 9.728593846153846e-05,
+        "api_gpt54_usd": 14.210834522091046,
+        "api_mimo_usd": 0.13052530076923077,
+        "api_usd": 14.341359822860277,
+        "api_cap_usd": "TBD (to be approved)"
+      },
+      "h3_behaviour_battery_modal_usd": {
+        "low": 10.0,
+        "high": 15.0,
+        "note": "placeholder"
+      },
+      "budget": {
+        "modal_hard_cap_usd": 100.0,
+        "spent_modal_usd_ledger": 22.431896684844197,
+        "remaining_modal_usd": 77.56810331515581,
+        "pending_4f_modal_usd": 2.089098,
+        "pending_4f_api_usd": 4.661565500000001,
+        "generation_fits_remaining_modal": true,
+        "generation_plus_h3_high_fits": true
+      },
+      "totals": {
+        "modal_generation_usd": 31.325262,
+        "modal_with_h3_high_usd": 46.325261999999995,
+        "api_judging_usd": 14.341359822860277
+      }
+    },
+    "15": {
+      "decision": "D49",
+      "n_forced": 15,
+      "n_permissive": 5,
+      "rounds_forced": 20,
+      "rounds_permissive": 10,
+      "free_arm": "dropped",
+      "scope": {
+        "FORCED": "7 configs \u00d7 4 conditions \u00d7 15 chains (idx 0..) \u00d7 20 rounds",
+        "PERMISSIVE": "7 configs \u00d7 4 conditions \u00d7 5 chains (idx 0\u20134) \u00d7 10 rounds",
+        "FREE": "dropped (limitation)"
+      },
+      "piloted_gpu_seconds_per_unit_round": {
+        "olmo3_7b_final|FORCED": 2.5914035351039857,
+        "olmo3_7b_final|PERMISSIVE": 4.279070820579056,
+        "qwen38_27b_nothink|FORCED": 6.0772554564236065,
+        "qwen38_27b_nothink|PERMISSIVE": 5.964909643488888
+      },
+      "scaled_gpu_seconds_per_unit_round": {
+        "gemma4_12b|FORCED": 1.0123790797480183,
+        "gemma4_12b|PERMISSIVE": 1.6716971019106794,
+        "gemma4_31b|FORCED": 6.777939021382973,
+        "gemma4_31b|PERMISSIVE": 6.652640179687196,
+        "olmo3_7b_dpo|FORCED": 2.5914035351039857,
+        "olmo3_7b_dpo|PERMISSIVE": 4.279070820579056,
+        "olmo3_7b_final|FORCED": 2.5914035351039857,
+        "olmo3_7b_final|PERMISSIVE": 4.279070820579056,
+        "olmo3_7b_sft|FORCED": 2.5914035351039857,
+        "olmo3_7b_sft|PERMISSIVE": 4.279070820579056,
+        "qwen38_27b_nothink|FORCED": 6.0772554564236065,
+        "qwen38_27b_nothink|PERMISSIVE": 5.964909643488888,
+        "qwen38_27b_think|FORCED": 10.939059821562491,
+        "qwen38_27b_think|PERMISSIVE": 10.736837358279999
+      },
+      "dryrun_tok_s": {
+        "qwen38_27b_nothink": 67.81,
+        "qwen38_27b_think": 101.62,
+        "gemma4_31b": 60.8,
+        "gemma4_12b": 101.16,
+        "olmo3_7b_final": 39.52,
+        "olmo3_7b_sft": 39.52,
+        "olmo3_7b_dpo": 39.52
+      },
+      "model_load_seconds": {
+        "gemma4_12b": 206.17557061300002,
+        "gemma4_31b": 500.59354912500004,
+        "qwen38_27b_nothink": 180.0,
+        "qwen38_27b_think": 180.0,
+        "olmo3_7b_final": 90.0,
+        "olmo3_7b_sft": 90.0,
+        "olmo3_7b_dpo": 90.0
+      },
+      "generation": {
+        "unit_rounds": 9800,
+        "by_gpu": {
+          "A100-80GB": {
+            "seconds": 34084.5761446591,
+            "usd": 32.0698948
+          },
+          "L40S": {
+            "seconds": 13921.865105414538,
+            "usd": 10.982787359999998
+          }
+        },
+        "modal_usd": 43.052682159999996
+      },
+      "judging": {
+        "densities": {
+          "forced_per_round_llm_per_unit_round": 0.9583333333333334,
+          "forced_cumulative_llm_per_checkpoint": 3.2777777777777777,
+          "permissive_cumulative_llm_per_checkpoint": 18.152173913043477,
+          "pilot_forced_per_round_llm": 230,
+          "pilot_forced_cum_llm": 118,
+          "pilot_perm_cum_llm": 1670,
+          "pilot_forced_unit_rounds": 240,
+          "pilot_forced_cum_checkpoints": 36,
+          "pilot_perm_cum_checkpoints": 92
+        },
+        "gpt54_n_transitions_est": 13344.637681159418,
+        "mimo_n_transitions_est": 2012.5,
+        "gpt54_usd_per_transition": 0.0014584898414271568,
+        "mimo_usd_per_transition": 9.728593846153846e-05,
+        "api_gpt54_usd": 19.46301849549706,
+        "api_mimo_usd": 0.19578795115384615,
+        "api_usd": 19.658806446650907,
+        "api_cap_usd": "TBD (to be approved)"
+      },
+      "h3_behaviour_battery_modal_usd": {
+        "low": 10.0,
+        "high": 15.0,
+        "note": "placeholder"
+      },
+      "budget": {
+        "modal_hard_cap_usd": 100.0,
+        "spent_modal_usd_ledger": 22.431896684844197,
+        "remaining_modal_usd": 77.56810331515581,
+        "pending_4f_modal_usd": 2.089098,
+        "pending_4f_api_usd": 4.661565500000001,
+        "generation_fits_remaining_modal": true,
+        "generation_plus_h3_high_fits": true
+      },
+      "totals": {
+        "modal_generation_usd": 43.052682159999996,
+        "modal_with_h3_high_usd": 58.052682159999996,
+        "api_judging_usd": 19.658806446650907
+      }
+    },
+    "20": {
+      "decision": "D49",
+      "n_forced": 20,
+      "n_permissive": 5,
+      "rounds_forced": 20,
+      "rounds_permissive": 10,
+      "free_arm": "dropped",
+      "scope": {
+        "FORCED": "7 configs \u00d7 4 conditions \u00d7 20 chains (idx 0..) \u00d7 20 rounds",
+        "PERMISSIVE": "7 configs \u00d7 4 conditions \u00d7 5 chains (idx 0\u20134) \u00d7 10 rounds",
+        "FREE": "dropped (limitation)"
+      },
+      "piloted_gpu_seconds_per_unit_round": {
+        "olmo3_7b_final|FORCED": 2.5914035351039857,
+        "olmo3_7b_final|PERMISSIVE": 4.279070820579056,
+        "qwen38_27b_nothink|FORCED": 6.0772554564236065,
+        "qwen38_27b_nothink|PERMISSIVE": 5.964909643488888
+      },
+      "scaled_gpu_seconds_per_unit_round": {
+        "gemma4_12b|FORCED": 1.0123790797480183,
+        "gemma4_12b|PERMISSIVE": 1.6716971019106794,
+        "gemma4_31b|FORCED": 6.777939021382973,
+        "gemma4_31b|PERMISSIVE": 6.652640179687196,
+        "olmo3_7b_dpo|FORCED": 2.5914035351039857,
+        "olmo3_7b_dpo|PERMISSIVE": 4.279070820579056,
+        "olmo3_7b_final|FORCED": 2.5914035351039857,
+        "olmo3_7b_final|PERMISSIVE": 4.279070820579056,
+        "olmo3_7b_sft|FORCED": 2.5914035351039857,
+        "olmo3_7b_sft|PERMISSIVE": 4.279070820579056,
+        "qwen38_27b_nothink|FORCED": 6.0772554564236065,
+        "qwen38_27b_nothink|PERMISSIVE": 5.964909643488888,
+        "qwen38_27b_think|FORCED": 10.939059821562491,
+        "qwen38_27b_think|PERMISSIVE": 10.736837358279999
+      },
+      "dryrun_tok_s": {
+        "qwen38_27b_nothink": 67.81,
+        "qwen38_27b_think": 101.62,
+        "gemma4_31b": 60.8,
+        "gemma4_12b": 101.16,
+        "olmo3_7b_final": 39.52,
+        "olmo3_7b_sft": 39.52,
+        "olmo3_7b_dpo": 39.52
+      },
+      "model_load_seconds": {
+        "gemma4_12b": 206.17557061300002,
+        "gemma4_31b": 500.59354912500004,
+        "qwen38_27b_nothink": 180.0,
+        "qwen38_27b_think": 180.0,
+        "olmo3_7b_final": 90.0,
+        "olmo3_7b_sft": 90.0,
+        "olmo3_7b_dpo": 90.0
+      },
+      "generation": {
+        "unit_rounds": 12600,
+        "by_gpu": {
+          "A100-80GB": {
+            "seconds": 43602.27786440672,
+            "usd": 41.02519064
+          },
+          "L40S": {
+            "seconds": 17436.50097943853,
+            "usd": 13.75570056
+          }
+        },
+        "modal_usd": 54.7808912
+      },
+      "judging": {
+        "densities": {
+          "forced_per_round_llm_per_unit_round": 0.9583333333333334,
+          "forced_cumulative_llm_per_checkpoint": 3.2777777777777777,
+          "permissive_cumulative_llm_per_checkpoint": 18.152173913043477,
+          "pilot_forced_per_round_llm": 230,
+          "pilot_forced_cum_llm": 118,
+          "pilot_perm_cum_llm": 1670,
+          "pilot_forced_unit_rounds": 240,
+          "pilot_forced_cum_checkpoints": 36,
+          "pilot_perm_cum_checkpoints": 92
+        },
+        "gpt54_n_transitions_est": 16945.748792270533,
+        "mimo_n_transitions_est": 2683.3333333333335,
+        "gpt54_usd_per_transition": 0.0014584898414271568,
+        "mimo_usd_per_transition": 9.728593846153846e-05,
+        "api_gpt54_usd": 24.715202468903083,
+        "api_mimo_usd": 0.26105060153846155,
+        "api_usd": 24.976253070441544,
+        "api_cap_usd": "TBD (to be approved)"
+      },
+      "h3_behaviour_battery_modal_usd": {
+        "low": 10.0,
+        "high": 15.0,
+        "note": "placeholder"
+      },
+      "budget": {
+        "modal_hard_cap_usd": 100.0,
+        "spent_modal_usd_ledger": 22.431896684844197,
+        "remaining_modal_usd": 77.56810331515581,
+        "pending_4f_modal_usd": 2.089098,
+        "pending_4f_api_usd": 4.661565500000001,
+        "generation_fits_remaining_modal": true,
+        "generation_plus_h3_high_fits": true
+      },
+      "totals": {
+        "modal_generation_usd": 54.7808912,
+        "modal_with_h3_high_usd": 69.7808912,
+        "api_judging_usd": 24.976253070441544
+      }
+    },
+    "25": {
+      "decision": "D49",
+      "n_forced": 25,
+      "n_permissive": 5,
+      "rounds_forced": 20,
+      "rounds_permissive": 10,
+      "free_arm": "dropped",
+      "scope": {
+        "FORCED": "7 configs \u00d7 4 conditions \u00d7 25 chains (idx 0..) \u00d7 20 rounds",
+        "PERMISSIVE": "7 configs \u00d7 4 conditions \u00d7 5 chains (idx 0\u20134) \u00d7 10 rounds",
+        "FREE": "dropped (limitation)"
+      },
+      "piloted_gpu_seconds_per_unit_round": {
+        "olmo3_7b_final|FORCED": 2.5914035351039857,
+        "olmo3_7b_final|PERMISSIVE": 4.279070820579056,
+        "qwen38_27b_nothink|FORCED": 6.0772554564236065,
+        "qwen38_27b_nothink|PERMISSIVE": 5.964909643488888
+      },
+      "scaled_gpu_seconds_per_unit_round": {
+        "gemma4_12b|FORCED": 1.0123790797480183,
+        "gemma4_12b|PERMISSIVE": 1.6716971019106794,
+        "gemma4_31b|FORCED": 6.777939021382973,
+        "gemma4_31b|PERMISSIVE": 6.652640179687196,
+        "olmo3_7b_dpo|FORCED": 2.5914035351039857,
+        "olmo3_7b_dpo|PERMISSIVE": 4.279070820579056,
+        "olmo3_7b_final|FORCED": 2.5914035351039857,
+        "olmo3_7b_final|PERMISSIVE": 4.279070820579056,
+        "olmo3_7b_sft|FORCED": 2.5914035351039857,
+        "olmo3_7b_sft|PERMISSIVE": 4.279070820579056,
+        "qwen38_27b_nothink|FORCED": 6.0772554564236065,
+        "qwen38_27b_nothink|PERMISSIVE": 5.964909643488888,
+        "qwen38_27b_think|FORCED": 10.939059821562491,
+        "qwen38_27b_think|PERMISSIVE": 10.736837358279999
+      },
+      "dryrun_tok_s": {
+        "qwen38_27b_nothink": 67.81,
+        "qwen38_27b_think": 101.62,
+        "gemma4_31b": 60.8,
+        "gemma4_12b": 101.16,
+        "olmo3_7b_final": 39.52,
+        "olmo3_7b_sft": 39.52,
+        "olmo3_7b_dpo": 39.52
+      },
+      "model_load_seconds": {
+        "gemma4_12b": 206.17557061300002,
+        "gemma4_31b": 500.59354912500004,
+        "qwen38_27b_nothink": 180.0,
+        "qwen38_27b_think": 180.0,
+        "olmo3_7b_final": 90.0,
+        "olmo3_7b_sft": 90.0,
+        "olmo3_7b_dpo": 90.0
+      },
+      "generation": {
+        "unit_rounds": 15400,
+        "by_gpu": {
+          "A100-80GB": {
+            "seconds": 53119.979584154346,
+            "usd": 49.979545599999994
+          },
+          "L40S": {
+            "seconds": 20951.136853462518,
+            "usd": 16.52861376
+          }
+        },
+        "modal_usd": 66.50815936
+      },
+      "judging": {
+        "densities": {
+          "forced_per_round_llm_per_unit_round": 0.9583333333333334,
+          "forced_cumulative_llm_per_checkpoint": 3.2777777777777777,
+          "permissive_cumulative_llm_per_checkpoint": 18.152173913043477,
+          "pilot_forced_per_round_llm": 230,
+          "pilot_forced_cum_llm": 118,
+          "pilot_perm_cum_llm": 1670,
+          "pilot_forced_unit_rounds": 240,
+          "pilot_forced_cum_checkpoints": 36,
+          "pilot_perm_cum_checkpoints": 92
+        },
+        "gpt54_n_transitions_est": 20546.859903381643,
+        "mimo_n_transitions_est": 3354.166666666667,
+        "gpt54_usd_per_transition": 0.0014584898414271568,
+        "mimo_usd_per_transition": 9.728593846153846e-05,
+        "api_gpt54_usd": 29.9673864423091,
+        "api_mimo_usd": 0.326313251923077,
+        "api_usd": 30.293699694232178,
+        "api_cap_usd": "TBD (to be approved)"
+      },
+      "h3_behaviour_battery_modal_usd": {
+        "low": 10.0,
+        "high": 15.0,
+        "note": "placeholder"
+      },
+      "budget": {
+        "modal_hard_cap_usd": 100.0,
+        "spent_modal_usd_ledger": 22.431896684844197,
+        "remaining_modal_usd": 77.56810331515581,
+        "pending_4f_modal_usd": 2.089098,
+        "pending_4f_api_usd": 4.661565500000001,
+        "generation_fits_remaining_modal": true,
+        "generation_plus_h3_high_fits": false
+      },
+      "totals": {
+        "modal_generation_usd": 66.50815936,
+        "modal_with_h3_high_usd": 81.50815936,
+        "api_judging_usd": 30.293699694232178
+      }
+    }
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "stage": "d49_power_g4",
+  "state": "done",
+  "decision": "D49",
+  "recommended_n": 25,
+  "agent_baseline_hazard": 0.0051813471502590676,
+  "agent_hazard_ci95": [
+    0.0023767566862892358,
+    0.011258028593944876
+  ],
+  "agent_events": 6,
+  "agent_risk": 1158,
+  "timestamp_utc": "2026-10-06T19:33:02Z"
+}

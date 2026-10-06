@@ -1,0 +1,163 @@
+{
+  "decision": "D49",
+  "method": "binomial two-proportion score test, one-sided, Holm worst-case \u03b1=0.05/3; SELF-only COR vs AGENT; at-risk = 7\u00d7N\u00d75\u00d720 (no attrition)",
+  "discrepancy_d48": {
+    "d48_power_h1_n10_hr15": 0.909,
+    "lead_binomial_n10_hr15": 0.51,
+    "causes": [
+      "D48 GEE pooled SELF/OTHER/NEUTRAL rows (~3\u00d7 information for shared params)",
+      "D48 simulation set SELF COR hazard = HR \u00d7 h2_ratio (=2.25 at HR=1.5), overstating H1",
+      "Holm used three p-values but H2a\u2261H2b, so H1 rarely paid the full 0.05/3 penalty",
+      "D48 hazard risk sets were SELF-only over 10 pilot rounds, not pooled FORCED"
+    ]
+  },
+  "baseline_hazard": 0.0051813471502590676,
+  "baseline_ci95": [
+    0.0023767566862892358,
+    0.011258028593944876
+  ],
+  "agent_events": 6,
+  "agent_risk": 1158,
+  "table": [
+    {
+      "n_chains": 10,
+      "hr": 1.5,
+      "baseline": 0.0051813471502590676,
+      "alpha": 0.016666666666666666,
+      "holm_worst_case": true,
+      "n_obs_per_arm": 7000,
+      "power_sim": 0.41525,
+      "power_analytic": 0.5024055009093809,
+      "n_sims": 20000
+    },
+    {
+      "n_chains": 10,
+      "hr": 2.0,
+      "baseline": 0.0051813471502590676,
+      "alpha": 0.016666666666666666,
+      "holm_worst_case": true,
+      "n_obs_per_arm": 7000,
+      "power_sim": 0.9174,
+      "power_analytic": 0.960077435776325,
+      "n_sims": 20000
+    },
+    {
+      "n_chains": 15,
+      "hr": 1.5,
+      "baseline": 0.0051813471502590676,
+      "alpha": 0.016666666666666666,
+      "holm_worst_case": true,
+      "n_obs_per_arm": 10500,
+      "power_sim": 0.5841,
+      "power_analytic": 0.6683983113826124,
+      "n_sims": 20000
+    },
+    {
+      "n_chains": 15,
+      "hr": 2.0,
+      "baseline": 0.0051813471502590676,
+      "alpha": 0.016666666666666666,
+      "holm_worst_case": true,
+      "n_obs_per_arm": 10500,
+      "power_sim": 0.98595,
+      "power_analytic": 0.9944005197737189,
+      "n_sims": 20000
+    },
+    {
+      "n_chains": 20,
+      "hr": 1.5,
+      "baseline": 0.0051813471502590676,
+      "alpha": 0.016666666666666666,
+      "holm_worst_case": true,
+      "n_obs_per_arm": 14000,
+      "power_sim": 0.71405,
+      "power_analytic": 0.7874342881382551,
+      "n_sims": 20000
+    },
+    {
+      "n_chains": 20,
+      "hr": 2.0,
+      "baseline": 0.0051813471502590676,
+      "alpha": 0.016666666666666666,
+      "holm_worst_case": true,
+      "n_obs_per_arm": 14000,
+      "power_sim": 0.99835,
+      "power_analytic": 0.999308275043133,
+      "n_sims": 20000
+    },
+    {
+      "n_chains": 25,
+      "hr": 1.5,
+      "baseline": 0.0051813471502590676,
+      "alpha": 0.016666666666666666,
+      "holm_worst_case": true,
+      "n_obs_per_arm": 17500,
+      "power_sim": 0.819,
+      "power_analytic": 0.8679018895054642,
+      "n_sims": 20000
+    },
+    {
+      "n_chains": 25,
+      "hr": 2.0,
+      "baseline": 0.0051813471502590676,
+      "alpha": 0.016666666666666666,
+      "holm_worst_case": true,
+      "n_obs_per_arm": 17500,
+      "power_sim": 0.9998,
+      "power_analytic": 0.9999219033643547,
+      "n_sims": 20000
+    }
+  ],
+  "sensitivity_lower_ci": {
+    "baseline": 0.0023767566862892358,
+    "hr": 1.5,
+    "table": [
+      {
+        "n_chains": 10,
+        "hr": 1.5,
+        "baseline": 0.0023767566862892358,
+        "alpha": 0.016666666666666666,
+        "holm_worst_case": true,
+        "n_obs_per_arm": 7000,
+        "power_sim": 0.19875,
+        "power_analytic": 0.2701999734115218,
+        "n_sims": 20000
+      },
+      {
+        "n_chains": 15,
+        "hr": 1.5,
+        "baseline": 0.0023767566862892358,
+        "alpha": 0.016666666666666666,
+        "holm_worst_case": true,
+        "n_obs_per_arm": 10500,
+        "power_sim": 0.29175,
+        "power_analytic": 0.3737752893393293,
+        "n_sims": 20000
+      },
+      {
+        "n_chains": 20,
+        "hr": 1.5,
+        "baseline": 0.0023767566862892358,
+        "alpha": 0.016666666666666666,
+        "holm_worst_case": true,
+        "n_obs_per_arm": 14000,
+        "power_sim": 0.383,
+        "power_analytic": 0.4692700269743698,
+        "n_sims": 20000
+      },
+      {
+        "n_chains": 25,
+        "hr": 1.5,
+        "baseline": 0.0023767566862892358,
+        "alpha": 0.016666666666666666,
+        "holm_worst_case": true,
+        "n_obs_per_arm": 17500,
+        "power_sim": 0.46465,
+        "power_analytic": 0.5550924141485329,
+        "n_sims": 20000
+      }
+    ]
+  },
+  "recommended_n_hr15": 25,
+  "n_sims": 20000
+}

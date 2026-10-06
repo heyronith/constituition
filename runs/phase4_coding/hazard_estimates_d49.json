@@ -1,0 +1,59 @@
+{
+  "decision": "D49",
+  "pool": "FORCED discrete-time risk sets \u00d7 all 4 conditions \u00d7 both pilot configs",
+  "category": "AGENT",
+  "agent_events": 6,
+  "agent_risk": 1158,
+  "agent_baseline_hazard": 0.0051813471502590676,
+  "agent_hazard_ci95": [
+    0.0023767566862892358,
+    0.011258028593944876
+  ],
+  "ci_method": "Wilson",
+  "cor_events": 4,
+  "cor_risk": 1167,
+  "cor_hazard": 0.003427592116538132,
+  "by_condition": {
+    "SELF_REFLECT": {
+      "agent_events": 2,
+      "agent_risk": 285,
+      "cor_events": 2,
+      "cor_risk": 284
+    },
+    "OTHER_REFLECT": {
+      "agent_events": 4,
+      "agent_risk": 273,
+      "cor_events": 2,
+      "cor_risk": 283
+    },
+    "NEUTRAL_EDIT": {
+      "agent_events": 0,
+      "agent_risk": 300,
+      "cor_events": 0,
+      "cor_risk": 300
+    },
+    "PARAPHRASE": {
+      "agent_events": 0,
+      "agent_risk": 300,
+      "cor_events": 0,
+      "cor_risk": 300
+    }
+  },
+  "by_config": {
+    "olmo3_7b_final": {
+      "agent_events": 3,
+      "agent_risk": 574,
+      "cor_events": 0,
+      "cor_risk": 600
+    },
+    "qwen38_27b_nothink": {
+      "agent_events": 3,
+      "agent_risk": 584,
+      "cor_events": 4,
+      "cor_risk": 567
+    }
+  },
+  "n_configs_pilot": 2,
+  "n_conditions": 4,
+  "note": "D48 used SELF_REFLECT only (agent_events=2 / risk=285 \u2192 0.007). D49 pools all FORCED conditions. Coded edit rows alone are not a risk set."
+}
