@@ -227,6 +227,8 @@ def load_calibration_items(root: Path | None = None) -> list[dict[str, Any]]:
             row["other"] = calibration_merge_other(row)
             if row.get("intended_key") == "MERGED_LOST":
                 row["intended_fate"] = "WEAKENED"
+            row["source"] = "lead" if row.get("source") == "lead" or row.get("hard_id") else "calib"
+            row["calib_key"] = calib_key_for(row)
             items.append(row)
     return items
 
@@ -250,6 +252,31 @@ def shuffle_items(
     return out
 
 
+def calib_key_for(item: dict[str, Any]) -> str:
+    if item.get("hard_id"):
+        return str(item["hard_id"])
+    if item.get("calib_key"):
+        return str(item["calib_key"])
+    return (
+        f"{item.get('item_id')}|{item.get('form')}|"
+        f"{item.get('intended_key') or item.get('intended_fate')}|{item.get('generator_rep')}"
+    )
+
+
+def judgment_key_for(item: dict[str, Any], *, source: str) -> str:
+    """Stable key for joining judge outputs (D40). Never use positional index."""
+    if source == "pilot" or item.get("transition_id"):
+        key = item.get("transition_id")
+        if not key:
+            raise ValueError("pilot items require transition_id")
+        return str(key)
+    return calib_key_for(item)
+
+
+def prompt_sha256(prompt: str) -> str:
+    return hashlib.sha256(prompt.encode("utf-8")).hexdigest()
+
+
 def judge_fate_batch(
     backend: Backend,
     judge_id: str,
@@ -257,58 +284,98 @@ def judge_fate_batch(
     *,
     root: Path | None = None,
     seed_base: int = 0,
+    source: str | None = None,
+    shuffle: bool = False,
+    shuffle_seed: int | None = None,
 ) -> list[dict[str, Any]]:
-    """Judge a list of {original, rewrite, other?} items; structural shortcuts applied."""
+    """Judge items keyed by transition_id / calib_key (D40).
+
+    Results are returned in the same order as ``items``. If ``shuffle`` is True,
+    generation order is shuffled but outputs are mapped back by key only.
+    """
     root = root or repo_root()
-    results: list[dict[str, Any]] = []
-    pending_idx: list[int] = []
+    # Resolve source per item; pilot path must not default to calib.
+    resolved: list[dict[str, Any]] = []
+    for item in items:
+        src = source or item.get("source") or "calib"
+        if src == "calib" and item.get("transition_id"):
+            src = "pilot"
+        row = dict(item)
+        row["source"] = src
+        row["_judgment_key"] = judgment_key_for(row, source=src)
+        resolved.append(row)
+
+    keys = [r["_judgment_key"] for r in resolved]
+    if len(keys) != len(set(keys)):
+        dup = [k for k, n in __import__("collections").Counter(keys).items() if n > 1]
+        raise ValueError(f"duplicate judgment keys: {dup[:5]}")
+
+    work = list(enumerate(resolved))
+    if shuffle:
+        seed = int(shuffle_seed if shuffle_seed is not None else seed_base)
+        rng_state = seed
+
+        def _rand() -> float:
+            nonlocal rng_state
+            rng_state = (1103515245 * rng_state + 12345) & 0x7FFFFFFF
+            return rng_state / 0x7FFFFFFF
+
+        for i in range(len(work) - 1, 0, -1):
+            j = int(_rand() * (i + 1))
+            work[i], work[j] = work[j], work[i]
+
+    # keyed results
+    by_key: dict[str, dict[str, Any]] = {}
+    pending_keys: list[str] = []
     pending_req: list[GenerationRequest] = []
 
-    for i, item in enumerate(items):
+    for work_i, (orig_i, item) in enumerate(work):
+        key = item["_judgment_key"]
         original = item["original"]
-        revised = item.get("rewrite") or item.get("revised")
+        revised = item.get("rewrite") if "rewrite" in item else item.get("revised")
+        other = item.get("other")
         structural = structural_fate(original, revised, deleted=bool(item.get("deleted")))
         base = {
-            "item_index": i,
+            "judgment_key": key,
+            "transition_id": item.get("transition_id"),
+            "calib_key": item.get("calib_key") or (calib_key_for(item) if item["source"] != "pilot" else None),
             "item_id": item.get("item_id"),
             "category": item.get("category"),
             "hard_id": item.get("hard_id"),
             "intended_fate": normalize_fate(item.get("intended_fate")),
             "intended_key": item.get("intended_key"),
-            "source": item.get("source", "calib"),
+            "source": item["source"],
             "judge_id": judge_id,
-            "had_merge_line": bool(item.get("other")),
+            "had_merge_line": bool(other),
+            "original": original,
+            "revised": revised,
+            "other": other,
+            "prompt_sha256": None,
         }
         if structural is not None:
-            results.append(
-                {
-                    **base,
-                    "fate": structural.fate,
-                    "strength": structural.strength,
-                    "rationale": structural.rationale,
-                    "structural": True,
-                    "parse_status": "ok",
-                    "raw_text": None,
-                    "finish_reason": None,
-                    "n_output_tokens": None,
-                    "n_reasoning_tokens": None,
-                    "text_reasoning": None,
-                }
-            )
+            by_key[key] = {
+                **base,
+                "fate": structural.fate,
+                "strength": structural.strength,
+                "rationale": structural.rationale,
+                "structural": True,
+                "parse_status": "ok",
+                "raw_text": None,
+                "finish_reason": None,
+                "n_output_tokens": None,
+                "n_reasoning_tokens": None,
+                "text_reasoning": None,
+            }
             continue
-        prompt = render_fate_prompt(
-            original,
-            revised,
-            other=item.get("other"),
-            root=root,
-        )
-        pending_idx.append(len(results))
-        results.append({**base, "structural": False})
+        prompt = render_fate_prompt(original, revised, other=other, root=root)
+        base["prompt_sha256"] = prompt_sha256(prompt)
+        by_key[key] = {**base, "structural": False}
+        pending_keys.append(key)
         pending_req.append(
             build_request(
                 prompt,
                 judge_id,
-                seed_base + i,
+                seed_base + work_i,
                 root=root,
                 schema_name="judge_fate",
             )
@@ -316,9 +383,13 @@ def judge_fate_batch(
 
     if pending_req:
         gens = backend.generate(pending_req)
-        for slot, gen in zip(pending_idx, gens, strict=True):
+        if len(gens) != len(pending_keys):
+            raise RuntimeError(
+                f"backend returned {len(gens)} results for {len(pending_keys)} requests"
+            )
+        for key, gen in zip(pending_keys, gens, strict=True):
             parsed = parse_fate_response(gen.text_final)
-            results[slot].update(
+            by_key[key].update(
                 {
                     "fate": parsed.fate,
                     "strength": parsed.strength,
@@ -333,7 +404,12 @@ def judge_fate_batch(
                     "text_reasoning": gen.text_reasoning,
                 }
             )
-    return results
+
+    # Return in original item order; join is by key only.
+    missing = [k for k in keys if k not in by_key]
+    if missing:
+        raise RuntimeError(f"missing judgments for keys: {missing[:5]}")
+    return [by_key[k] for k in keys]
 
 
 def judge_eval_awareness_batch(

@@ -1,0 +1,9 @@
+{
+  "role": "j1",
+  "judge_id": "mistral_small32_24b",
+  "run_tag": "pilot_v1_coding_v2",
+  "n": 2018,
+  "n_keys": 2018,
+  "load_s": 169.572057738,
+  "n_eval": 320
+}

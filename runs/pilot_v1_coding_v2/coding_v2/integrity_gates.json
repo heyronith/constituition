@@ -1,0 +1,19 @@
+{
+  "ok": true,
+  "prompt_hash": {
+    "gate": "prompt_hash",
+    "ok": true,
+    "n_checked": 4036,
+    "n_mismatch": 0,
+    "mismatch_rate": 0.0,
+    "examples": []
+  },
+  "quote_audit": {
+    "gate": "quote_audit",
+    "ok": true,
+    "n_phrases": 0,
+    "n_hits": 0,
+    "hit_rate": 1.0,
+    "threshold": 0.8
+  }
+}

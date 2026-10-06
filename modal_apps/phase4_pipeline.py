@@ -22,6 +22,8 @@ REMOTE_REPO = "/rc"
 PHASE4_DIR = f"{REMOTE_RUNS}/phase4"
 CALIB_V2_DIR = f"{PHASE4_DIR}/calib_v2"
 CALIB_RUN_TAG = "judge_calib_v2"
+CODING_V2_DIR = f"{PHASE4_DIR}/coding_v2"
+CODING_RUN_TAG = "pilot_v1_coding_v2"
 VLLM_VERSION = "0.30.0"
 
 JUDGE_GPU = {
@@ -569,12 +571,13 @@ def select_judges_v2() -> dict:
 
 
 def _run_pilot_coding_judge(judge_id: str, gpu: str, role: str) -> dict:
-    """Generate raw judgments for one judge role over pilot transitions."""
+    """Generate keyed pilot judgments (D40); write under coding_v2."""
     import os
 
     root = _setup_remote_repo()
     from huggingface_hub import snapshot_download
 
+    from rc.config import load_experiment
     from rc.generation import VLLMBackend, load_lock_revision
     from rc.guards import assert_gptoss_judge_smoke, assert_large_gpu_allowed
     from rc.judging import (
@@ -589,7 +592,6 @@ def _run_pilot_coding_judge(judge_id: str, gpu: str, role: str) -> dict:
     if judge_id == "gptoss_120b":
         assert_gptoss_judge_smoke(root=root)
 
-    # Pilot data must be on the volume under runs/pilot_v1.
     pilot = Path(REMOTE_RUNS) / "pilot_v1"
     if not pilot.exists():
         raise FileNotFoundError(f"pilot_v1 missing on volume at {pilot}")
@@ -601,7 +603,9 @@ def _run_pilot_coding_judge(judge_id: str, gpu: str, role: str) -> dict:
     llm_items = []
     for t in transitions:
         if structural_fate(t["original"], t.get("rewrite"), deleted=bool(t.get("deleted"))) is None:
-            llm_items.append(t)
+            row = dict(t)
+            row["source"] = "pilot"
+            llm_items.append(row)
     backend = VLLMBackend(
         judge_id,
         model_path=model_path,
@@ -611,20 +615,37 @@ def _run_pilot_coding_judge(judge_id: str, gpu: str, role: str) -> dict:
         max_num_seqs=16,
         root=root,
     )
+    exp = load_experiment(root)
     rows = judge_fate_batch(
-        backend, judge_id, llm_items, root=root, seed_base=hash(role) % 10000
+        backend,
+        judge_id,
+        llm_items,
+        root=root,
+        seed_base=(hash(role) % 10000),
+        source="pilot",
+        shuffle=True,
+        shuffle_seed=int(exp.master_seed) + (hash(role) % 1000),
     )
-    out = Path(PHASE4_DIR) / "coding" / f"{role}_{judge_id}.jsonl"
+    out_dir = Path(CODING_V2_DIR)
+    out_dir.mkdir(parents=True, exist_ok=True)
+    out = out_dir / f"{role}_{judge_id}.jsonl"
     write_judgment_rows(out, rows)
-    meta = {"role": role, "judge_id": judge_id, "n": len(rows), "load_s": backend.load_s}
+    meta = {
+        "role": role,
+        "judge_id": judge_id,
+        "run_tag": CODING_RUN_TAG,
+        "n": len(rows),
+        "n_keys": len({r.get("judgment_key") for r in rows}),
+        "load_s": backend.load_s,
+    }
     if role == "j1":
         notes = extract_pilot_notes("pilot_v1", root=root)
         eval_rows = judge_eval_awareness_batch(
             backend, judge_id, notes, root=root, seed_base=9000
         )
-        write_judgment_rows(Path(PHASE4_DIR) / "coding" / "eval_awareness.jsonl", eval_rows)
+        write_judgment_rows(out_dir / "eval_awareness.jsonl", eval_rows)
         meta["n_eval"] = len(eval_rows)
-    (Path(PHASE4_DIR) / "coding" / f"{role}_meta.json").write_text(
+    (out_dir / f"{role}_meta.json").write_text(
         json.dumps(meta, indent=2) + "\n", encoding="utf-8"
     )
     runs_vol.commit()
@@ -652,9 +673,11 @@ def code_with_judge(judge_id: str, gpu: str, role: str) -> dict:
     memory=8192,
 )
 def finalize_coding(j1: str, j2: str, j3: str | None) -> dict:
+    """Join coding_v2 by transition_id, run D40 integrity gates, then α gate."""
     _setup_remote_repo()
     import csv
 
+    from rc.judge_integrity import assert_one_to_one_join, run_integrity_gates
     from rc.judge_metrics import (
         BINARY_ERODED,
         binary_erosion_label,
@@ -666,8 +689,9 @@ def finalize_coding(j1: str, j2: str, j3: str | None) -> dict:
         extract_pilot_transitions,
         resolve_disagreement,
     )
+
     transitions = extract_pilot_transitions("pilot_v1")
-    coding_dir = Path(PHASE4_DIR) / "coding"
+    coding_dir = Path(CODING_V2_DIR)
 
     def load_role(role: str, jid: str) -> dict[str, dict]:
         path = coding_dir / f"{role}_{jid}.jsonl"
@@ -676,8 +700,15 @@ def finalize_coding(j1: str, j2: str, j3: str | None) -> dict:
             for line in path.read_text(encoding="utf-8").splitlines()
             if line.strip()
         ]
-        # Map by item_index order matching llm_items order.
-        return {int(r["item_index"]): r for r in rows}
+        by_key: dict[str, dict] = {}
+        for r in rows:
+            key = r.get("judgment_key") or r.get("transition_id")
+            if not key:
+                raise ValueError(f"{role}: judgment missing key")
+            if key in by_key:
+                raise ValueError(f"{role}: duplicate key {key}")
+            by_key[str(key)] = r
+        return by_key
 
     j1_map = load_role("j1", j1)
     j2_map = load_role("j2", j2)
@@ -700,17 +731,45 @@ def finalize_coding(j1: str, j2: str, j3: str | None) -> dict:
         else:
             llm_items.append(t)
 
+    # D40: integrity gates on J1 rows before any metric.
+    j1_rows = [j1_map[t["transition_id"]] for t in llm_items]
+    assert_one_to_one_join(llm_items, j1_rows)
+    assert_one_to_one_join(llm_items, [j2_map[t["transition_id"]] for t in llm_items])
+    if j3:
+        assert_one_to_one_join(llm_items, [j3_map[t["transition_id"]] for t in llm_items])
+    gates = run_integrity_gates(j1_rows + [j2_map[t["transition_id"]] for t in llm_items])
+    (coding_dir / "integrity_gates.json").write_text(
+        json.dumps(gates, indent=2) + "\n", encoding="utf-8"
+    )
+    if not gates["ok"]:
+        summary = {
+            "j1": j1,
+            "j2": j2,
+            "j3": j3,
+            "run_tag": CODING_RUN_TAG,
+            "integrity_gates": gates,
+            "stopped": True,
+            "stop_reason": "integrity_gate_failed",
+            "alpha_gate_pass": False,
+        }
+        (Path(PHASE4_DIR) / "pilot_coding_summary_v2.json").write_text(
+            json.dumps(summary, indent=2, default=str) + "\n", encoding="utf-8"
+        )
+        runs_vol.commit()
+        return summary
+
     coded = list(structural)
     ratings_ordinal = []
     ratings_binary = []
     unresolved = 0
-    for i, src in enumerate(llm_items):
-        a, b = j1_map[i], j2_map[i]
-        c = j3_map.get(i)
+    for src in llm_items:
+        tid = src["transition_id"]
+        a, b = j1_map[tid], j2_map[tid]
+        c = j3_map.get(tid)
         resolved = resolve_disagreement(a, b, c)
         if resolved["unresolved"]:
             unresolved += 1
-        coded.append({**src, **resolved, "structural": False})
+        coded.append({**src, **resolved, "structural": False, "judgment_key": tid})
         ratings_ordinal.append([fate_ordinal(a.get("fate")), fate_ordinal(b.get("fate"))])
         la = binary_erosion_label(a.get("fate"))
         lb = binary_erosion_label(b.get("fate"))
@@ -721,7 +780,6 @@ def finalize_coding(j1: str, j2: str, j3: str | None) -> dict:
             ]
         )
 
-    # D38 / D39: pilot gate uses binary Krippendorff α; ordinal kept for disclosure.
     alpha = krippendorff_alpha_ordinal(ratings_binary)
     alpha_ordinal = krippendorff_alpha_ordinal(ratings_ordinal)
     eval_path = coding_dir / "eval_awareness.jsonl"
@@ -753,6 +811,7 @@ def finalize_coding(j1: str, j2: str, j3: str | None) -> dict:
         "j1": j1,
         "j2": j2,
         "j3": j3,
+        "run_tag": CODING_RUN_TAG,
         "n_transitions": len(transitions),
         "n_structural": len(structural),
         "n_llm": len(llm_items),
@@ -765,19 +824,19 @@ def finalize_coding(j1: str, j2: str, j3: str | None) -> dict:
         "unresolved_n": unresolved,
         "fate_distributions": {k: dict(v) for k, v in dist.items()},
         "eval_awareness_rates": eval_rate,
+        "integrity_gates": gates,
+        "stopped": False,
     }
-    (Path(PHASE4_DIR) / "pilot_coding_summary.json").write_text(
+    (Path(PHASE4_DIR) / "pilot_coding_summary_v2.json").write_text(
         json.dumps(summary, indent=2, default=str) + "\n", encoding="utf-8"
     )
-    coded_path = Path(PHASE4_DIR) / "pilot_v1_coding.jsonl"
+    coded_path = Path(PHASE4_DIR) / "pilot_v1_coding_v2.jsonl"
     with coded_path.open("w", encoding="utf-8") as fh:
         for row in coded:
-            # Drop bulky nested judge payloads if present.
             slim = {k: v for k, v in row.items() if k not in {"j1", "j2", "j3"}}
             fh.write(json.dumps(slim, sort_keys=True) + "\n")
 
-    # Category appendix CSV into reports path on volume.
-    appendix = Path(PHASE4_DIR) / "pilot_appendix_coding.csv"
+    appendix = Path(PHASE4_DIR) / "pilot_appendix_coding_v2.csv"
     rows = category_appendix_rows(coded)
     if rows:
         with appendix.open("w", encoding="utf-8", newline="") as fh:
@@ -815,7 +874,9 @@ def run_power_and_g4(n_sims: int = 1000) -> dict:
     from rc.cost_projection import project_main_run
     from rc.power_analysis import estimate_pilot_hazard
 
-    coded_path = Path(PHASE4_DIR) / "pilot_v1_coding.jsonl"
+    coded_path = Path(PHASE4_DIR) / "pilot_v1_coding_v2.jsonl"
+    if not coded_path.exists():
+        coded_path = Path(PHASE4_DIR) / "pilot_v1_coding.jsonl"
     coded = [
         json.loads(line)
         for line in coded_path.read_text(encoding="utf-8").splitlines()
@@ -1135,6 +1196,15 @@ def orchestrate(spent_at_launch: float = 0.0, skip_downloads: bool = False) -> d
             _write_status("coding", "stopped", reason=str(exc), spend_usd=spend_now())
             return {"state": "stopped", "reason": str(exc)}
     summary = finalize_coding.remote(j1, j2, j3)
+    if summary.get("stop_reason") == "integrity_gate_failed":
+        _write_status(
+            "coding",
+            "stopped",
+            reason="integrity_gate_failed",
+            spend_usd=spend_now(),
+            summary=summary,
+        )
+        return {"state": "stopped", "reason": "integrity_gate", "summary": summary}
     if not summary.get("alpha_gate_pass"):
         _write_status(
             "coding",
@@ -1324,4 +1394,241 @@ def main() -> None:
     )
     handle = orchestrate.spawn(spent, True)
     print(f"orchestrate spawned: {handle.object_id}")
+    print("poll with: uv run python scripts/phase4_status.py")
+
+
+@app.function(
+    image=cpu_image,
+    volumes={HF_CACHE: hf_vol, REMOTE_RUNS: runs_vol},
+    secrets=[modal.Secret.from_name("hf-token")],
+    timeout=60 * 60 * 12,
+    cpu=2,
+    memory=4096,
+)
+def orchestrate_phase4e(spent_at_launch: float = 0.0) -> dict:
+    """Phase 4E: re-code pilot with keyed joins (D40); then α → power → G4.
+
+    Skips calibration. Uses D38 selection from judge_calib_v2:
+    J1=mistral_small32_24b, J2=granite41_8b, J3=gptoss_120b.
+    """
+    _setup_remote_repo()
+    pending_path = Path(PHASE4_DIR) / "ledger_pending_active.jsonl"
+
+    def spend_now() -> float:
+        extra = 0.0
+        if pending_path.exists():
+            for line in pending_path.read_text(encoding="utf-8").splitlines():
+                if line.strip():
+                    row = json.loads(line)
+                    if row.get("actual_usd") is not None:
+                        extra += float(row["actual_usd"])
+        return float(spent_at_launch) + extra
+
+    # Void v1 coding in place.
+    v1_dir = Path(PHASE4_DIR) / "coding"
+    v1_dir.mkdir(parents=True, exist_ok=True)
+    invalid = v1_dir / "INVALID_join_bug.json"
+    invalid.write_text(
+        json.dumps(
+            {
+                "label": "invalid_join_bug",
+                "decision": "D40",
+                "run_tag": "pilot_v1_coding",
+                "note": "Positional item_index join with non-deterministic extract order.",
+                "timestamp_utc": _now(),
+            },
+            indent=2,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    runs_vol.commit()
+
+    # Fixed D38 panel from judge_calib_v2 (stands).
+    j1, j2, j3 = "mistral_small32_24b", "granite41_8b", "gptoss_120b"
+    _write_status(
+        "coding",
+        "running",
+        spend_usd=spend_now(),
+        run_tag=CODING_RUN_TAG,
+        j1=j1,
+        j2=j2,
+        j3=j3,
+        decision="D40",
+    )
+
+    from rc.config import load_budget
+
+    cap = load_budget().phase4_hard_cap_usd
+    for role, jid in (("j1", j1), ("j2", j2), ("j3", j3)):
+        existing = Path(CODING_V2_DIR) / f"{role}_{jid}.jsonl"
+        if existing.exists() and existing.stat().st_size > 0:
+            continue
+        gpu = JUDGE_GPU[jid]
+        if spend_now() + 1.0 > cap:
+            _write_status(
+                "coding",
+                "stopped",
+                reason=f"budget would exceed phase4 cap ${cap}",
+                spend_usd=spend_now(),
+            )
+            return {"state": "stopped", "reason": "budget"}
+        started = time.perf_counter()
+        try:
+            meta = code_with_judge.remote(jid, gpu, role)
+            elapsed = time.perf_counter() - started
+            _append_pending_ledger(
+                {
+                    "timestamp_utc": _now(),
+                    "job_id": f"phase4-coding-v2-{role}-{jid}",
+                    "phase": "4",
+                    "platform": "modal",
+                    "gpu": gpu,
+                    "actual_seconds": elapsed,
+                    "actual_usd": _estimate(gpu, int(elapsed) + 1),
+                    "note": f"ok | {CODING_RUN_TAG} | {meta}",
+                }
+            )
+        except Exception as exc:  # noqa: BLE001
+            elapsed = time.perf_counter() - started
+            _append_pending_ledger(
+                {
+                    "timestamp_utc": _now(),
+                    "job_id": f"phase4-coding-v2-{role}-{jid}",
+                    "phase": "4",
+                    "platform": "modal",
+                    "gpu": gpu,
+                    "actual_seconds": elapsed,
+                    "actual_usd": _estimate(gpu, int(elapsed) + 1),
+                    "note": f"code_failure | {exc}",
+                }
+            )
+            _write_status("coding", "stopped", reason=str(exc), spend_usd=spend_now())
+            return {"state": "stopped", "reason": str(exc)}
+
+    summary = finalize_coding.remote(j1, j2, j3)
+    if summary.get("stop_reason") == "integrity_gate_failed":
+        _write_status(
+            "coding",
+            "stopped",
+            reason="integrity_gate_failed",
+            spend_usd=spend_now(),
+            summary=summary,
+        )
+        return {"state": "stopped", "reason": "integrity_gate", "summary": summary}
+    if not summary.get("alpha_gate_pass"):
+        _write_status(
+            "coding",
+            "stopped",
+            reason=f"pilot α={summary.get('j1_j2_alpha')} < 0.70",
+            spend_usd=spend_now(),
+            summary=summary,
+        )
+        return {"state": "stopped", "reason": "alpha_gate", "summary": summary}
+    _write_status(
+        "coding",
+        "done",
+        spend_usd=spend_now(),
+        alpha=summary.get("j1_j2_alpha"),
+        integrity=summary.get("integrity_gates"),
+    )
+
+    _write_status("power_g4", "running", spend_usd=spend_now())
+    started = time.perf_counter()
+    result = run_power_and_g4.remote(1000)
+    elapsed = time.perf_counter() - started
+    _append_pending_ledger(
+        {
+            "timestamp_utc": _now(),
+            "job_id": "phase4e-power-g4",
+            "phase": "4",
+            "platform": "modal",
+            "gpu": "cpu",
+            "actual_seconds": elapsed,
+            "actual_usd": _estimate("cpu", int(elapsed) + 1),
+            "note": "power sims + g4",
+        }
+    )
+    _write_status(
+        "done",
+        "done",
+        spend_usd=spend_now(),
+        recommended_n=result.get("power", {}).get("recommended_n_hr15"),
+    )
+    return {"state": "done", "result": result, "summary": summary}
+
+
+@app.local_entrypoint()
+def main_phase4e() -> None:
+    """Launch Phase 4E detached: keyed pilot re-code → α → power → G4."""
+    import subprocess
+    import tempfile
+
+    from rc.budget import spent_modal_usd
+    from rc.config import load_budget, repo_root
+    from rc.guards import (
+        assert_modal_workspace,
+        check_modal_hf_secret,
+        gptoss_judge_smoke_marker,
+    )
+    from rc.io_utils import git_sha as local_git_sha
+
+    assert_modal_workspace(expected="heyronith")
+    check_modal_hf_secret("hf-token")
+    root = repo_root()
+    if not gptoss_judge_smoke_marker(root).exists():
+        raise SystemExit("D23: gpt-oss-20b L4 smoke marker missing")
+
+    pilot_local = root / "runs" / "pilot_v1"
+    if pilot_local.exists():
+        subprocess.check_call(
+            [
+                "modal",
+                "volume",
+                "put",
+                "rc-runs",
+                str(pilot_local),
+                "pilot_v1",
+                "--force",
+            ]
+        )
+
+    # Mark local void copy.
+    inv = root / "runs" / "phase4_coding" / "INVALID_join_bug.json"
+    inv.parent.mkdir(parents=True, exist_ok=True)
+    inv.write_text(
+        json.dumps(
+            {
+                "label": "invalid_join_bug",
+                "decision": "D40",
+                "run_tag": "pilot_v1_coding",
+            },
+            indent=2,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+
+    spent = spent_modal_usd(root)
+    remaining = load_budget(root).phase4_hard_cap_usd - spent
+    print(f"phase4e remaining ≈ ${remaining:.2f}; spawning orchestrate_phase4e")
+    print("git_sha", local_git_sha(root))
+    if remaining < 2.0:
+        raise SystemExit(f"projected spend would exceed cap; remaining=${remaining:.2f}")
+
+    tmp = Path(tempfile.mkdtemp()) / "ledger_pending_active.jsonl"
+    tmp.write_text("", encoding="utf-8")
+    subprocess.check_call(
+        [
+            "modal",
+            "volume",
+            "put",
+            "rc-runs",
+            str(tmp),
+            "phase4/ledger_pending_active.jsonl",
+            "--force",
+        ]
+    )
+    handle = orchestrate_phase4e.spawn(spent)
+    print(f"orchestrate_phase4e spawned: {handle.object_id}")
     print("poll with: uv run python scripts/phase4_status.py")

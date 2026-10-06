@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import json
+
 from rc.generation import MockBackend
 from rc.judge_metrics import (
     judge_eligible,
@@ -88,15 +90,119 @@ def test_judge_fate_batch_persists_audit_fields() -> None:
             "intended_fate": "SUBORDINATED",
             "item_id": "X2",
             "category": "CARE",
+            "calib_key": "X2|A|SUBORDINATED|0",
+            "form": "A",
+            "generator_rep": 0,
+            "intended_key": "SUBORDINATED",
         },
     ]
     backend = MockBackend(
         ['{"fate":"SUBORDINATED","strength":1,"rationale":"depends on preference"}']
     )
-    rows = judge_fate_batch(backend, "granite41_8b", items)
+    rows = judge_fate_batch(backend, "granite41_8b", items, source="calib")
     assert rows[0]["raw_text"]
     assert rows[0]["finish_reason"] == "stop"
     assert rows[0]["n_output_tokens"] is not None
+    assert rows[0]["prompt_sha256"]
+    assert rows[0]["judgment_key"] == "X2|A|SUBORDINATED|0"
+
+
+def test_d40_shuffled_backend_joins_by_key() -> None:
+    """Generation order is shuffled; outputs still map back by transition_id."""
+    from rc.generation import GenerationRequest, GenerationResult
+    from rc.judge_integrity import assert_one_to_one_join, run_integrity_gates
+
+    items = [
+        {
+            "transition_id": "t-a",
+            "original": "UNIQUE_ORIGINAL_AAA",
+            "rewrite": "UNIQUE_REVISED_AAA",
+            "item_id": "A1",
+            "category": "CARE",
+            "source": "pilot",
+        },
+        {
+            "transition_id": "t-b",
+            "original": "UNIQUE_ORIGINAL_BBB",
+            "rewrite": "UNIQUE_REVISED_BBB",
+            "item_id": "B1",
+            "category": "COR",
+            "source": "pilot",
+        },
+        {
+            "transition_id": "t-c",
+            "original": "UNIQUE_ORIGINAL_CCC",
+            "rewrite": "UNIQUE_REVISED_CCC",
+            "item_id": "C1",
+            "category": "AGENT",
+            "source": "pilot",
+        },
+    ]
+    fate_by_marker = {
+        "UNIQUE_ORIGINAL_AAA": ("RETAINED", 4),
+        "UNIQUE_ORIGINAL_BBB": ("INVERTED", 1),
+        "UNIQUE_ORIGINAL_CCC": ("STRENGTHENED", 4),
+    }
+
+    class PromptMatchedMock:
+        load_s = 0.0
+        seen_orders: list[list[str]] = []
+
+        def generate(self, requests: list[GenerationRequest]) -> list[GenerationResult]:
+            # Record generation order (shuffled), answer from prompt content only.
+            order = []
+            out = []
+            for req in requests:
+                marker = next(m for m in fate_by_marker if m in req.prompt)
+                order.append(marker)
+                fate, strength = fate_by_marker[marker]
+                text = json.dumps(
+                    {"fate": fate, "strength": strength, "rationale": f"matched {marker}"}
+                )
+                out.append(
+                    GenerationResult(
+                        text_final=text,
+                        text_reasoning=None,
+                        n_prompt_tokens=10,
+                        n_output_tokens=20,
+                        n_reasoning_tokens=0,
+                        finish_reason="stop",
+                        latency_s=0.001,
+                    )
+                )
+            PromptMatchedMock.seen_orders.append(order)
+            return out
+
+    # First call: shuffle generation order inside judge_fate_batch.
+    rows = judge_fate_batch(
+        PromptMatchedMock(),  # type: ignore[arg-type]
+        "granite41_8b",
+        items,
+        source="pilot",
+        shuffle=True,
+        shuffle_seed=99,
+        seed_base=0,
+    )
+    by = {r["judgment_key"]: r for r in rows}
+    assert by["t-a"]["fate"] == "RETAINED"
+    assert by["t-b"]["fate"] == "INVERTED"
+    assert by["t-c"]["fate"] == "STRENGTHENED"
+    assert [r["judgment_key"] for r in rows] == ["t-a", "t-b", "t-c"]
+    assert_one_to_one_join(items, rows)
+    assert run_integrity_gates(rows)["prompt_hash"]["ok"]
+
+
+def test_d40_absorbed_merge_no_empty_rewrite() -> None:
+    from rc.pilot_coding import extract_pilot_transitions
+
+    ts = extract_pilot_transitions("pilot_v1")
+    absorbed = [t for t in ts if t.get("kind") == "per_round_absorbed"]
+    assert absorbed
+    assert all((t.get("rewrite") or "").strip() for t in absorbed)
+    assert all(t.get("source") == "pilot" for t in absorbed)
+    # transition_id embeds the absorbed item_id
+    for t in absorbed:
+        assert f"|{t['item_id']}|merge|absorbed" in t["transition_id"]
 
 
 def test_parse_fate_response() -> None:

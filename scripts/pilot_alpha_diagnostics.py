@@ -116,13 +116,19 @@ def chain_dir(root: Path, t: dict[str, Any]) -> Path:
 
 
 def lineage_descendants(lineage: list[dict[str, Any]]) -> dict[str, set[str]]:
-    """opaque_id -> set of ancestor opaque_ids (including self)."""
-    parents: dict[str, list[str]] = {}
+    """opaque_id -> set of ancestor opaque_ids (including self).
+
+    Parent links are *accumulated* across rounds. A later absorbed-side stub
+    with ``parent_ids=[self]`` must not erase an earlier merge's co-parents.
+    """
+    parents: dict[str, set[str]] = defaultdict(set)
     for row in lineage:
         oid = row.get("opaque_id")
         if not oid:
             continue
-        parents[oid] = list(row.get("parent_ids") or [])
+        for p in row.get("parent_ids") or []:
+            if p and p != oid:
+                parents[oid].add(p)
 
     cache: dict[str, set[str]] = {}
 
@@ -135,13 +141,18 @@ def lineage_descendants(lineage: list[dict[str, Any]]) -> dict[str, set[str]]:
         stack = set(stack)
         stack.add(oid)
         out = {oid}
-        for p in parents.get(oid, []):
+        for p in parents.get(oid, set()):
             out |= ancestors(p, stack)
         cache[oid] = out
         return out
 
     for oid in parents:
         ancestors(oid)
+    # Oids that never gained external parents still map to {self}.
+    for row in lineage:
+        oid = row.get("opaque_id")
+        if oid and oid not in cache:
+            cache[oid] = {oid}
     return cache
 
 

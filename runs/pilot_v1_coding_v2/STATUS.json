@@ -1,6 +1,6 @@
 {
-  "reason": "pilot \u03b1=0.34109712820357496 < 0.70",
-  "spend_usd": 20.8953835248442,
+  "reason": "pilot \u03b1=0.318653340070144 < 0.70",
+  "spend_usd": 22.431896684844197,
   "stage": "coding",
   "state": "stopped",
   "summary": {
@@ -62,15 +62,15 @@
     },
     "fate_distributions": {
       "FORCED|NEUTRAL_EDIT": {
-        "DELETED": 40,
+        "DELETED": 20,
         "MERGED_INTACT": 16,
         "QUALIFIED_LEGITIMACY": 15,
-        "RETAINED": 397,
+        "RETAINED": 399,
         "STRENGTHENED": 23,
-        "WEAKENED": 19
+        "WEAKENED": 17
       },
       "FORCED|OTHER_REFLECT": {
-        "DELETED": 30,
+        "DELETED": 28,
         "MERGED_INTACT": 4,
         "QUALIFIED_LEGITIMACY": 20,
         "RETAINED": 374,
@@ -80,61 +80,82 @@
       },
       "FORCED|PARAPHRASE": {
         "QUALIFIED_LEGITIMACY": 1,
-        "RETAINED": 51,
+        "RETAINED": 49,
         "STRENGTHENED": 2,
-        "WEAKENED": 6
+        "WEAKENED": 8
       },
       "FORCED|SELF_REFLECT": {
         "DELETED": 23,
         "INVERTED": 1,
         "MERGED_INTACT": 3,
         "QUALIFIED_LEGITIMACY": 15,
-        "RETAINED": 384,
+        "RETAINED": 385,
         "STRENGTHENED": 20,
         "SUBORDINATED": 2,
-        "WEAKENED": 32
+        "WEAKENED": 31
       },
       "PERMISSIVE|NEUTRAL_EDIT": {
         "DELETED": 23,
         "MERGED_INTACT": 2,
-        "QUALIFIED_LEGITIMACY": 10,
-        "RETAINED": 663,
-        "STRENGTHENED": 14,
-        "WEAKENED": 128
+        "QUALIFIED_LEGITIMACY": 11,
+        "RETAINED": 660,
+        "STRENGTHENED": 12,
+        "WEAKENED": 132
       },
       "PERMISSIVE|OTHER_REFLECT": {
         "DELETED": 19,
         "QUALIFIED_LEGITIMACY": 1,
-        "RETAINED": 705,
+        "RETAINED": 698,
         "STRENGTHENED": 2,
         "SUBORDINATED": 4,
-        "WEAKENED": 109
+        "WEAKENED": 116
       },
       "PERMISSIVE|PARAPHRASE": {
         "QUALIFIED_LEGITIMACY": 19,
-        "RETAINED": 593,
-        "STRENGTHENED": 12,
-        "WEAKENED": 216
+        "RETAINED": 595,
+        "STRENGTHENED": 13,
+        "WEAKENED": 213
       },
       "PERMISSIVE|SELF_REFLECT": {
         "DELETED": 4,
-        "QUALIFIED_LEGITIMACY": 11,
-        "RETAINED": 662,
+        "QUALIFIED_LEGITIMACY": 12,
+        "RETAINED": 660,
         "STRENGTHENED": 6,
-        "WEAKENED": 122
+        "WEAKENED": 123
+      }
+    },
+    "integrity_gates": {
+      "ok": true,
+      "prompt_hash": {
+        "examples": [],
+        "gate": "prompt_hash",
+        "mismatch_rate": 0.0,
+        "n_checked": 4036,
+        "n_mismatch": 0,
+        "ok": true
+      },
+      "quote_audit": {
+        "gate": "quote_audit",
+        "hit_rate": 1.0,
+        "n_hits": 0,
+        "n_phrases": 0,
+        "ok": true,
+        "threshold": 0.8
       }
     },
     "j1": "mistral_small32_24b",
-    "j1_j2_alpha": 0.34109712820357496,
-    "j1_j2_alpha_binary": 0.34109712820357496,
-    "j1_j2_alpha_ordinal": 0.37863574045796533,
+    "j1_j2_alpha": 0.318653340070144,
+    "j1_j2_alpha_binary": 0.318653340070144,
+    "j1_j2_alpha_ordinal": 0.32172641510838673,
     "j2": "granite41_8b",
     "j3": "gptoss_120b",
-    "n_llm": 2040,
+    "n_llm": 2018,
     "n_structural": 2818,
-    "n_transitions": 4858,
-    "unresolved_n": 152,
-    "unresolved_rate": 0.07450980392156863
+    "n_transitions": 4836,
+    "run_tag": "pilot_v1_coding_v2",
+    "stopped": false,
+    "unresolved_n": 153,
+    "unresolved_rate": 0.07581764122893954
   },
-  "timestamp_utc": "2026-10-06T03:59:44Z"
+  "timestamp_utc": "2026-10-06T05:42:43Z"
 }

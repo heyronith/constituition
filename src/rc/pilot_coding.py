@@ -69,9 +69,12 @@ def extract_pilot_transitions(
         if config_dir.name.startswith("."):
             continue
         config_id = config_dir.name
-        for chain_dir in config_dir.rglob("chain_*"):
-            if not chain_dir.is_dir():
-                continue
+        # D40: sort chain dirs — unsorted rglob order made positional joins non-deterministic.
+        chain_dirs = sorted(
+            (p for p in config_dir.rglob("chain_*") if p.is_dir()),
+            key=lambda p: str(p.relative_to(config_dir)),
+        )
+        for chain_dir in chain_dirs:
             parts = chain_dir.relative_to(config_dir).parts
             # protocol / condition / fmt / chain_N
             if len(parts) < 4:
@@ -93,6 +96,10 @@ def extract_pilot_transitions(
                         dec = row.get("decision")
                         if dec not in ("revise", "merge", "delete"):
                             continue
+                        # D40: merge stubs (absorbed side) have after_text=None; skip —
+                        # they previously emitted empty REVISED and false lineage violations.
+                        if dec == "merge" and not row.get("after_text"):
+                            continue
                         item = {
                             "transition_id": (
                                 f"{config_id}|{protocol}|{condition}|{chain}|r{rnd}|"
@@ -111,63 +118,44 @@ def extract_pilot_transitions(
                             "rewrite": None if dec == "delete" else (row.get("after_text") or ""),
                             "other": None,
                             "deleted": dec == "delete",
+                            "source": "pilot",
                         }
                         if dec == "merge":
-                            # Absorbed partner coded against combined text with MERGE_LINE.
                             partner_oid = row.get("merge_with")
-                            partner = next(
-                                (r for r in rows if r.get("opaque_id") == partner_oid),
-                                None,
-                            )
-                            if partner is None:
-                                # Look for the other parent of the merged principle.
-                                partner = next(
-                                    (
-                                        r
-                                        for r in rows
-                                        if r.get("decision") is None
-                                        and r.get("opaque_id") != row.get("opaque_id")
-                                        and r.get("before_text")
-                                    ),
-                                    None,
-                                )
-                            # For merge: original = target before; other = absorbed before;
-                            # rewrite = combined after.
                             absorbed = None
-                            for r in rows:
-                                if r.get("decision") == "merge" and r is not row:
-                                    continue
-                                if (
-                                    r.get("item_id")
-                                    and r.get("item_id") != row.get("item_id")
-                                    and r.get("before_text")
-                                    and r.get("after_text") is None
-                                    and partner_oid
-                                    and r.get("opaque_id") == partner_oid
-                                ):
-                                    absorbed = r
-                            if absorbed is None and partner_oid:
-                                for r in lineage:
+                            if partner_oid:
+                                for r in rows:
                                     if r.get("opaque_id") == partner_oid and r.get("before_text"):
                                         absorbed = r
                                         break
+                                if absorbed is None:
+                                    for r in lineage:
+                                        if (
+                                            r.get("opaque_id") == partner_oid
+                                            and r.get("before_text")
+                                        ):
+                                            absorbed = r
+                                            break
                             if absorbed:
                                 item["other"] = absorbed.get("before_text")
-                                # Also emit absorbed-item transition.
+                                abs_id = absorbed.get("item_id")
                                 out.append(
                                     {
                                         **item,
-                                        "transition_id": item["transition_id"] + "|absorbed",
-                                        "item_id": absorbed.get("item_id"),
+                                        "transition_id": (
+                                            f"{config_id}|{protocol}|{condition}|{chain}|r{rnd}|"
+                                            f"{abs_id}|merge|absorbed"
+                                        ),
+                                        "item_id": abs_id,
                                         "category": absorbed.get("category"),
                                         "original": absorbed.get("before_text") or "",
                                         "other": row.get("before_text"),
                                         "rewrite": row.get("after_text") or "",
                                         "kind": "per_round_absorbed",
+                                        "source": "pilot",
                                     }
                                 )
                         out.append(item)
-
                 # Cumulative at rounds 5 and 10 for SELF/OTHER/NEUTRAL (not PARAPHRASE).
                 if condition != "PARAPHRASE":
                     for checkpoint in (5, 10):
@@ -206,6 +194,7 @@ def extract_pilot_transitions(
                                     "rewrite": revised,
                                     "other": None,
                                     "deleted": deleted,
+                                    "source": "pilot",
                                 }
                             )
 
@@ -246,6 +235,7 @@ def extract_pilot_transitions(
                                 "rewrite": revised,
                                 "other": None,
                                 "deleted": deleted,
+                                "source": "pilot",
                             }
                         )
     return out
