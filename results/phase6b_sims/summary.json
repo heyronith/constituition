@@ -1,0 +1,90 @@
+{
+  "n_sims": 200,
+  "seed": 20261004,
+  "runtime_sec": 2638.647,
+  "cores": 4,
+  "parallel": "PSOCK_batched",
+  "sesoi": [0.666667, 1.5],
+  "gate_G1_type1_h1_le_0.06": true,
+  "gate_G2_S1_false_equiv_le_0.10": true,
+  "gate_G3_S0_equiv_ge_0.50": true,
+  "power_S1": 0.78,
+  "power_S2": 1,
+  "scenarios": {
+    "S0": {
+      "n": 200,
+      "h1_reject_rate": 0.01,
+      "h3_reject_rate": 1,
+      "mean_hr": 1.008812,
+      "tost_equiv_rate": 0.665,
+      "tost_halt_rate": 0.055,
+      "tost_labels": {
+        "equivalent": 133,
+        "halt": 11,
+        "inconclusive": 54,
+        "not_tested_h1_rejected": 2
+      },
+      "fallback_rates": {
+        "gee": 0.535,
+        "glmm_drop_item": 0.215,
+        "glmm_drop_item_chain": 0.225,
+        "glmm_full": 0.025
+      }
+    },
+    "S1": {
+      "n": 200,
+      "h1_reject_rate": 0.78,
+      "h3_reject_rate": 1,
+      "mean_hr": 1.517501,
+      "tost_equiv_rate": 0.07,
+      "tost_halt_rate": 0,
+      "tost_labels": {
+        "equivalent": 14,
+        "inconclusive": 30,
+        "not_tested_h1_rejected": 156
+      },
+      "fallback_rates": {
+        "gee": 0.47,
+        "glmm_drop_item": 0.225,
+        "glmm_drop_item_chain": 0.285,
+        "glmm_full": 0.02
+      }
+    },
+    "S2": {
+      "n": 200,
+      "h1_reject_rate": 1,
+      "h3_reject_rate": 1,
+      "mean_hr": 2.04909,
+      "tost_equiv_rate": 0,
+      "tost_halt_rate": 0,
+      "tost_labels": {
+        "not_tested_h1_rejected": 200
+      },
+      "fallback_rates": {
+        "gee": 0.455,
+        "glmm_drop_item": 0.25,
+        "glmm_drop_item_chain": 0.28,
+        "glmm_full": 0.015
+      }
+    },
+    "S3": {
+      "n": 200,
+      "h1_reject_rate": 0,
+      "h3_reject_rate": 1,
+      "mean_hr": 0.697017,
+      "tost_equiv_rate": 0.06,
+      "tost_halt_rate": 0.7,
+      "tost_labels": {
+        "equivalent": 12,
+        "halt": 140,
+        "inconclusive": 48
+      },
+      "fallback_rates": {
+        "gee": 0.525,
+        "glmm_drop_item": 0.19,
+        "glmm_drop_item_chain": 0.275,
+        "glmm_full": 0.01
+      }
+    }
+  }
+}

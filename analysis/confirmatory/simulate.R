@@ -119,21 +119,22 @@ run_one <- function(scenario, sim_id) {
   p_h1 <- h1$p_raw %||% 1
   # Holm worst-case alpha for H1 family alone in sim power check
   reject <- isTRUE(p_h1 < (0.05 / 3))
-  tost <- list(equivalent = FALSE, label = NA_character_)
-  if (!reject) {
-    if (is.finite(h1$log_hr %||% NA) && is.finite(h1$se %||% NA)) {
-      tost <- tost_hr(h1$log_hr, h1$se)
-    } else {
-      tost <- list(equivalent = FALSE, label = "inconclusive")
-    }
+  if (reject) {
+    tost <- list(equivalent = FALSE, halt = FALSE, label = "not_tested_h1_rejected")
+  } else if (is.finite(h1$log_hr %||% NA) && is.finite(h1$se %||% NA)) {
+    tost <- tost_hr(h1$log_hr, h1$se)
+  } else {
+    tost <- list(equivalent = FALSE, halt = FALSE, label = "inconclusive")
   }
   h3 <- run_h3(simulate_battery(seed))
   data.frame(
     scenario = scenario, sim_id = sim_id,
     h1_reject = reject, h1_p = p_h1, h1_method = h1$method %||% "NA",
     h1_hr = h1$hr %||% NA_real_,
+    h1_se = h1$se %||% NA_real_,
     tost_equiv = isTRUE(tost$equivalent),
-    tost_label = tost$label %||% NA_character_,
+    tost_halt = isTRUE(tost$halt),
+    tost_label = as.character(tost$label %||% "inconclusive"),
     h3_reject = isTRUE((h3$p_raw %||% 1) < 0.05),
     h3_n_included = h3$n_configs_included %||% 0L,
     fallback = paste(h1$fallback_log %||% "", collapse = "|"),
@@ -218,7 +219,8 @@ main <- function() {
       h3_reject_rate = mean(sub$h3_reject),
       mean_hr = mean(sub$h1_hr, na.rm = TRUE),
       tost_equiv_rate = mean(sub$tost_equiv, na.rm = TRUE),
-      tost_labels = as.list(table(sub$tost_label, useNA = "ifany")),
+      tost_halt_rate = mean(sub$tost_halt, na.rm = TRUE),
+      tost_labels = as.list(table(as.character(sub$tost_label), useNA = "ifany")),
       fallback_rates = as.list(prop.table(table(sub$fallback)))
     )
   }
@@ -227,7 +229,10 @@ main <- function() {
   result <- list(
     n_sims = n_sims, seed = seed0, runtime_sec = elapsed, cores = n_cores,
     parallel = "PSOCK_batched",
-    gate_type1_h1_le_0.06 = isTRUE(summary$S0$h1_reject_rate <= 0.06),
+    sesoi = c(2 / 3, 1.5),
+    gate_G1_type1_h1_le_0.06 = isTRUE(summary$S0$h1_reject_rate <= 0.06),
+    gate_G2_S1_false_equiv_le_0.10 = isTRUE(summary$S1$tost_equiv_rate <= 0.10),
+    gate_G3_S0_equiv_ge_0.50 = isTRUE(summary$S0$tost_equiv_rate >= 0.50),
     power_S1 = summary$S1$h1_reject_rate,
     power_S2 = summary$S2$h1_reject_rate,
     scenarios = summary

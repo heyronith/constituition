@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import math
+
 from rc.exact_tests import exact_conditional_h1, holm_adjust, tost_log_hr
 from rc.krippendorff_alpha import krippendorff_alpha_binary, krippendorff_alpha_chain_bootstrap
 
@@ -20,20 +22,25 @@ def test_exact_zero_events() -> None:
     assert r.p_value_one_sided == 1.0
 
 
-def test_tost_inside_sesoi() -> None:
-    # HR≈1, tiny SE → equivalence
-    out = tost_log_hr(0.0, 0.01)
+def test_tost_equivalent_at_null() -> None:
+    out = tost_log_hr(0.0, 0.15)
     assert bool(out["equivalent"]) is True
-    assert "absent" in str(out["label"])
+    assert bool(out["halt"]) is False
+    assert out["label"] == "equivalent"
 
 
 def test_tost_halt() -> None:
-    import math
+    out = tost_log_hr(math.log(0.7), 0.08)
+    assert bool(out["halt"]) is True
+    # equivalent+halt is acceptable if TOST also rejects both bounds
+    assert out["label"] in {"halt", "equivalent+halt"}
 
-    # HR clearly < 1
-    out = tost_log_hr(math.log(0.5), 0.05)
+
+def test_tost_inconclusive_wide_se() -> None:
+    out = tost_log_hr(0.0, 0.5)
     assert bool(out["equivalent"]) is False
-    assert out["label"] == "evidence for H-alt"
+    assert bool(out["halt"]) is False
+    assert out["label"] == "inconclusive"
 
 
 def test_holm() -> None:

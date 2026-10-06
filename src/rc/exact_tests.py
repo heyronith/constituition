@@ -57,11 +57,11 @@ def tost_log_hr(
     log_hr: float,
     se: float,
     *,
-    lower_hr: float = 0.80,
-    upper_hr: float = 1.25,
+    lower_hr: float = 2.0 / 3.0,
+    upper_hr: float = 1.5,
     alpha: float = 0.05,
 ) -> dict[str, float | str | bool]:
-    """TOST for HR in [lower_hr, upper_hr] on the log scale (prereg §6.5)."""
+    """TOST for HR in [lower_hr, upper_hr] on the log scale (prereg §6.5 v1.2)."""
     import math
 
     from scipy.stats import norm
@@ -69,10 +69,12 @@ def tost_log_hr(
     if se <= 0 or not math.isfinite(log_hr) or not math.isfinite(se):
         return {
             "equivalent": False,
+            "halt": False,
             "label": "inconclusive",
             "p_lower": 1.0,
             "p_upper": 1.0,
             "p_tost": 1.0,
+            "p_halt_lt_1": 1.0,
         }
     lo = math.log(lower_hr)
     hi = math.log(upper_hr)
@@ -83,18 +85,21 @@ def tost_log_hr(
     z_hi = (hi - log_hr) / se
     p_hi = 1.0 - norm.cdf(z_hi)
     p_tost = max(p_lo, p_hi)
-    equivalent = p_tost < alpha
-    # Directional evidence for H-alt: HR significantly < 1
-    z_halt = (0.0 - log_hr) / se  # one-sided HR < 1 ↔ log_hr < 0
-    p_halt = 1.0 - norm.cdf(z_halt)
-    if equivalent:
-        label = "selective erosion absent at the scale we can detect"
-    elif p_halt < alpha:
-        label = "evidence for H-alt"
+    equivalent = bool(p_tost < alpha)
+    # Directional H-alt: one-sided HR < 1
+    p_halt = float(norm.cdf(log_hr / se))
+    halt = bool(p_halt < alpha)
+    if equivalent and halt:
+        label = "equivalent+halt"
+    elif equivalent:
+        label = "equivalent"
+    elif halt:
+        label = "halt"
     else:
         label = "inconclusive"
     return {
         "equivalent": equivalent,
+        "halt": halt,
         "label": label,
         "p_lower": float(p_lo),
         "p_upper": float(p_hi),

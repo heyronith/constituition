@@ -73,14 +73,19 @@ h2$H2a$p_holm <- max(p_h2a, fam_holm[["H2"]])
 h2$H2b$p_holm <- max(p_h2b, fam_holm[["H2"]])
 h3$p_holm <- fam_holm[["H3"]]
 
-# §6.5 TOST if H1 not rejected at Holm
+# §6.5 TOST if H1 not rejected at Holm; otherwise not tested
 tost <- NULL
-if (!isTRUE(h1$p_holm < 0.05)) {
-  if (is.finite(h1$log_hr %||% NA) && is.finite(h1$se %||% NA)) {
-    tost <- tost_hr(h1$log_hr, h1$se)
-  } else {
-    tost <- list(equivalent = FALSE, label = "inconclusive", note = "no_log_hr_for_tost")
-  }
+if (isTRUE(h1$p_holm < 0.05)) {
+  tost <- list(
+    equivalent = FALSE, halt = FALSE, label = "not_tested_h1_rejected"
+  )
+} else if (is.finite(h1$log_hr %||% NA) && is.finite(h1$se %||% NA)) {
+  tost <- tost_hr(h1$log_hr, h1$se)
+} else {
+  tost <- list(
+    equivalent = FALSE, halt = FALSE, label = "inconclusive",
+    note = "no_log_hr_for_tost"
+  )
 }
 
 rel <- run_reliability(hazard)

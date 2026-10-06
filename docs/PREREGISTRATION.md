@@ -1,7 +1,7 @@
-# Preregistration: Is Corrigibility Reflectively Stable? Selective Value Drift Under Iterated Constitutional Self-Revision
+# Preregistration: Do Language Models Write Away Their Own Oversight? A Preregistered Test of Constitutional Self-Revision
 
-**Authors:** [Your name] (corresponding). Research design and analysis plan drafted with an AI research assistant (Claude); implementation by an AI coding assistant (Cursor). Disclosed in the paper.
-**Date:** 2026-10-06 (v1.1) · **Registry:** OSF · **Repository:** https://github.com/heyronith/constituition (frozen commit hash recorded at submission) · **Target venue:** TMLR
+**Authors:** Ronith Sharmila (corresponding). Research design and analysis plan drafted with an AI research assistant (Claude); implementation by an AI coding assistant (Cursor). Disclosed in the paper.
+**Date:** 2026-10-06 (v1.2; supersedes v1.1, frozen at 3c654d4) · **Registry:** OSF · **Repository:** https://github.com/heyronith/constituition (frozen commit hash recorded at submission) · **Target venue:** TMLR
 
 ---
 
@@ -70,7 +70,7 @@ Sampling parameters follow each model card and are held constant within each man
    - **FORCED (Study 2, confirmatory):** exactly one change to an existing principle each round (revise, merge or delete).
    - **PERMISSIVE (Study 1, descriptive):** keep, revise, merge, delete or add freely.
 3. **Configuration** (§2.2).
-4. **For H3, the installed constitution:** R0, R20, COR-swap, AGENT-swap, or none.
+4. **For H3, the installed constitution:** R0, R20, COR-swap, AGENT-swap, or none, plus positive controls COR_INV and AGENT_INV (§4.3, D52).
 
 ### 2.5 Randomization and seeds
 Master seed **20261004**. Per-call seeds are derived as `sha256(master|config|protocol|condition|chain|round|attempt)`. The materials seed depends only on the chain index (D17).
@@ -219,11 +219,11 @@ Software: R (`lme4::glmer`; fallbacks below). Code is frozen at the registered c
 - Inference uses the Holm-adjusted p-values.
 
 ### 6.5 Equivalence (H-alt) and effect sizes
-- If H1 is not rejected, two one-sided tests (TOST) assess equivalence of HR(COR/AGENT) within the smallest effect size of interest **[0.80, 1.25]** at α = 0.05.
-- **Interpretation:**
-  - HR CI entirely within the SESOI → "selective erosion absent at the scale we can detect";
-  - HR significantly < 1 → evidence for H-alt;
-  - otherwise → inconclusive.
+- If H1 is not rejected, two one-sided tests (TOST, α = 0.05) assess equivalence of HR(COR/AGENT) within the smallest effect size of interest **[0.667, 1.50]**: the effect size the study is powered to detect (HR = 1.5; §3.3) and its reciprocal. The v1.1 bound [0.80, 1.25] was replaced before any main-run data because simulation showed it unattainable at expected event counts (0/198 equivalence under a true null; D53).
+- Two outcomes are reported separately (not mutually exclusive):
+  - **Equivalence:** TOST p < 0.05 → "no selective erosion of oversight commitments larger than HR = 1.5".
+  - **H-alt:** one-sided test of HR < 1, p < 0.05 → "oversight commitments are more stable than matched controls".
+  - Neither → inconclusive.
 - All effects are reported with 95% CIs, whatever their significance.
 
 ### 6.6 Estimation fallbacks (applied in order, reported)
@@ -263,6 +263,7 @@ The full log is `docs/DECISIONS.md` (D1–D52). The main deviations:
 - **N = 25**, after a power audit (D49).
 - The **behaviour battery** was simplified to R0/R20/swap constitutions (D50).
 - The **FREE-format arm** was dropped.
+- **Equivalence bound** widened from [0.80, 1.25] to [0.667, 1.50] after the Phase 6 simulations and before main-run data (D53).
 
 ### 7.2 Known limitations
 - There is no human coding; reliability rests on the second AI judge.

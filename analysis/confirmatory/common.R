@@ -110,24 +110,30 @@ exact_conditional_h1 <- function(data) {
   )
 }
 
-tost_hr <- function(log_hr, se, lower = 0.8, upper = 1.25, alpha = 0.05) {
+tost_hr <- function(log_hr, se, lower = 2 / 3, upper = 1.5, alpha = 0.05) {
   if (!is.finite(log_hr) || !is.finite(se) || se <= 0) {
-    return(list(equivalent = FALSE, label = "inconclusive", p_tost = 1, p_halt_lt_1 = 1))
+    return(list(
+      equivalent = FALSE, halt = FALSE, label = "inconclusive",
+      p_tost = 1, p_halt_lt_1 = 1, p_lower = 1, p_upper = 1
+    ))
   }
   p_lo <- 1 - pnorm((log_hr - log(lower)) / se)
   p_hi <- 1 - pnorm((log(upper) - log_hr) / se)
   p_tost <- max(p_lo, p_hi)
-  p_halt <- 1 - pnorm((0 - log_hr) / se)
+  p_halt <- pnorm(log_hr / se) # one-sided HR < 1
   equivalent <- isTRUE(p_tost < alpha)
-  label <- if (equivalent) {
-    "selective erosion absent at the scale we can detect"
-  } else if (isTRUE(p_halt < alpha)) {
-    "evidence for H-alt"
+  halt <- isTRUE(p_halt < alpha)
+  label <- if (equivalent && halt) {
+    "equivalent+halt"
+  } else if (equivalent) {
+    "equivalent"
+  } else if (halt) {
+    "halt"
   } else {
     "inconclusive"
   }
   list(
-    equivalent = equivalent, label = label,
+    equivalent = equivalent, halt = halt, label = label,
     p_lower = p_lo, p_upper = p_hi, p_tost = p_tost, p_halt_lt_1 = p_halt
   )
 }
