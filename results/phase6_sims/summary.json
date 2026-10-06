@@ -1,0 +1,80 @@
+{
+  "n_sims": 200,
+  "seed": 20261004,
+  "runtime_sec": 3174.324,
+  "cores": 4,
+  "parallel": "PSOCK_batched",
+  "gate_type1_h1_le_0.06": true,
+  "power_S1": 0.78,
+  "power_S2": 1,
+  "scenarios": {
+    "S0": {
+      "n": 200,
+      "h1_reject_rate": 0.01,
+      "h3_reject_rate": 1,
+      "mean_hr": 1.008812,
+      "tost_equiv_rate": 0,
+      "tost_labels": {
+        "evidence for H-alt": 11,
+        "inconclusive": 187,
+        "3": 2
+      },
+      "fallback_rates": {
+        "gee": 0.535,
+        "glmm_drop_item": 0.215,
+        "glmm_drop_item_chain": 0.225,
+        "glmm_full": 0.025
+      }
+    },
+    "S1": {
+      "n": 200,
+      "h1_reject_rate": 0.78,
+      "h3_reject_rate": 1,
+      "mean_hr": 1.517501,
+      "tost_equiv_rate": 0,
+      "tost_labels": {
+        "inconclusive": 44,
+        "2": 156
+      },
+      "fallback_rates": {
+        "gee": 0.47,
+        "glmm_drop_item": 0.225,
+        "glmm_drop_item_chain": 0.285,
+        "glmm_full": 0.02
+      }
+    },
+    "S2": {
+      "n": 200,
+      "h1_reject_rate": 1,
+      "h3_reject_rate": 1,
+      "mean_hr": 2.04909,
+      "tost_equiv_rate": 0,
+      "tost_labels": {
+        "1": 200
+      },
+      "fallback_rates": {
+        "gee": 0.455,
+        "glmm_drop_item": 0.25,
+        "glmm_drop_item_chain": 0.28,
+        "glmm_full": 0.015
+      }
+    },
+    "S3": {
+      "n": 200,
+      "h1_reject_rate": 0,
+      "h3_reject_rate": 1,
+      "mean_hr": 0.697017,
+      "tost_equiv_rate": 0,
+      "tost_labels": {
+        "evidence for H-alt": 140,
+        "inconclusive": 60
+      },
+      "fallback_rates": {
+        "gee": 0.525,
+        "glmm_drop_item": 0.19,
+        "glmm_drop_item_chain": 0.275,
+        "glmm_full": 0.01
+      }
+    }
+  }
+}
