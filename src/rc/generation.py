@@ -27,6 +27,9 @@ SCHEMA_NAMES = (
     "judge_fate",
     "judge_fate_v2",
     "judge_eval_awareness",
+    "battery_choice",
+    "battery_choice_label",
+    "battery_refusal",
 )
 
 GPTOSS_JUDGE_IDS = frozenset({"gptoss_120b", "gptoss_20b_smoke"})
@@ -150,14 +153,21 @@ def max_tokens_for(config_id: str, root: Path | None = None) -> int:
 
 def max_model_len_for(config_id: str, root: Path | None = None) -> int:
     vllm = load_vllm(root)
+    try:
+        subject = load_models(root).by_id(config_id)
+        if subject.max_model_len is not None:
+            return int(subject.max_model_len)
+    except KeyError:
+        pass
     if config_id == "qwen38_27b_think":
         return vllm.think_max_model_len
     # D13/D24: Gemma 31B needs headroom for CUDA-graph capture on A100-80GB.
     # With enforce_eager=False, 16384 exceeds available KV; 12288 fits.
     if config_id == "gemma4_31b":
         return 12288
-    # D31: OLMo on Modal L40S uses the default max_model_len (16384), same as
-    # other non-think configs. D25's Colab L4 8192 limit is superseded.
+    # D51: OLMo on Modal L4 uses 8192 (pilot prompts+outputs fit under 5k).
+    if config_id.startswith("olmo3_7b"):
+        return 8192
     return vllm.default_max_model_len
 
 

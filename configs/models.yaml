@@ -1,6 +1,16 @@
 # Subject registry. Do not add/drop/substitute models.
 # revision is null until scripts/resolve_model_revisions.py writes the lockfile.
 # Sampling comes ONLY from this file (D10–D12 / project rule 12).
+
+# Phase 5 behaviour battery (H3): greedy. Does not alter subject chain sampling below.
+battery_sampling:
+  temperature: 0.0
+  top_p: 1.0
+  top_k: -1
+  min_p: 0.0
+  presence_penalty: 0.0
+  repetition_penalty: 1.0
+
 subjects:
   - config_id: qwen38_27b_nothink
     hf_repo: Qwen/Qwen3.8-27B
@@ -80,9 +90,10 @@ subjects:
     revision: null
     family: olmo
     axis: family_c_sft
-    # D31: Modal L40S (supersedes Colab L4 / D25). Colab scripts remain as unused fallback.
-    compute: modal_l40s
+    # D51: Modal L4 with max_model_len=8192 (pilot prompts+outputs fit under 5k).
+    compute: modal_l4
     dtype: bf16
+    max_model_len: 8192
     chat_template_kwargs: {}
     # D11: identical across OLMo stages. https://huggingface.co/allenai/Olmo-3-7B-Instruct-SFT
     sampling:
@@ -94,8 +105,9 @@ subjects:
     revision: null
     family: olmo
     axis: family_c_dpo
-    compute: modal_l40s
+    compute: modal_l4
     dtype: bf16
+    max_model_len: 8192
     chat_template_kwargs: {}
     # D11: identical across OLMo stages. https://huggingface.co/allenai/Olmo-3-7B-Instruct-DPO
     sampling:
@@ -107,8 +119,9 @@ subjects:
     revision: null
     family: olmo
     axis: family_c_rlvr
-    compute: modal_l40s
+    compute: modal_l4
     dtype: bf16
+    max_model_len: 8192
     chat_template_kwargs: {}
     # D11: identical across OLMo stages. https://huggingface.co/allenai/Olmo-3-7B-Instruct
     sampling:

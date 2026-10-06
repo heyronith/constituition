@@ -21,14 +21,26 @@ class SubjectConfig(StrictModel):
     revision: str | None
     family: str
     axis: str
-    compute: Literal["colab_l4", "modal_l40s", "modal_a100_80gb", "modal_h100"]
+    compute: Literal["colab_l4", "modal_l4", "modal_l40s", "modal_a100_80gb", "modal_h100"]
     dtype: Literal["bf16"]
     chat_template_kwargs: dict[str, Any]
     sampling: SamplingValue
+    max_model_len: int | None = None
 
 
 class ModelsFile(StrictModel):
     subjects: list[SubjectConfig]
+    # Phase 5 / H3 behaviour battery: greedy decoding (D51). Chain sampling unchanged.
+    battery_sampling: dict[str, Any] = Field(
+        default_factory=lambda: {
+            "temperature": 0.0,
+            "top_p": 1.0,
+            "top_k": -1,
+            "min_p": 0.0,
+            "presence_penalty": 0.0,
+            "repetition_penalty": 1.0,
+        }
+    )
 
     @model_validator(mode="after")
     def unique_config_ids(self) -> ModelsFile:
@@ -125,7 +137,10 @@ class BudgetConfig(StrictModel):
     phase3_hard_cap_usd: float = 16.0
     phase4_hard_cap_usd: float = 27.0
     api_hard_cap_usd: float = 15.0
+    openai_hard_cap_usd: float = 35.0
     openrouter_hard_cap_usd: float = 5.0
+    phase5_modal_cap_usd: float = 4.0
+    phase5_api_cap_usd: float = 2.0
     colab_cu_cap: float
     colab_l4_cu_per_hour: float | None
     checked_on: str

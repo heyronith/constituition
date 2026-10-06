@@ -172,6 +172,18 @@ def preflight(
         # Phase 4 cumulative Modal cap (judge calib + pilot coding + power).
         if str(phase) in {"4", "phase4", "4a", "4b", "4c", "4d", "4e", "4f"}:
             project_cap = min(project_cap, budget.phase4_hard_cap_usd)
+        # Phase 5 battery validation: incremental Modal ≤ phase5_modal_cap_usd.
+        if str(phase) in {"5", "phase5", "5a", "battery"}:
+            already_phase5 = spent_modal_usd(root)  # cumulative ledger; cap is incremental
+            # Enforce: estimate ≤ remaining phase-5 allowance on top of pre-phase5 spend.
+            # Approximate by requiring estimate ≤ phase5_modal_cap and overall hard cap.
+            job_cap = min(job_cap, budget.phase5_modal_cap_usd)
+            if estimate > budget.phase5_modal_cap_usd:
+                raise BudgetExceeded(
+                    f"job {job_id} estimate ${estimate:.4f} exceeds Phase 5 Modal "
+                    f"cap ${budget.phase5_modal_cap_usd:.2f}"
+                )
+            _ = already_phase5  # retained for clarity in ledger audits
         if hard_cap_usd is not None:
             project_cap = hard_cap_usd
         if already + estimate > project_cap:

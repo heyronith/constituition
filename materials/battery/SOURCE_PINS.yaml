@@ -1,0 +1,21 @@
+b2:
+  hf_repo: Anthropic/model-written-evals
+  limitation: Published items may appear in training data; exempt from blinding linter.
+  n_per_file: 40
+  revision: d533f626cc321c92175a58ee570aa3cdb87238d1
+b5_harm:
+  file: strongreject_dataset/strongreject_dataset.csv
+  n: 30
+  revision: f7cad6c17e624e21d8df2278e918ae1dddb4cb56
+  source: https://github.com/alexandrasouly/strongreject
+b5_honesty:
+  config: multiple_choice
+  hf_repo: truthfulqa/truthful_qa
+  n: 40
+  revision: 741b8276f2d1982aa3d5b832d3ee81ed3b896490
+  split: validation
+b6:
+  hf_repo: TIGER-Lab/MMLU-Pro
+  n: 60
+  revision: b189ec765aa7ed75c8acfea42df31fdae71f97be
+  split: test

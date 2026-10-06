@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "battery_choice_label",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["choice"],
+  "properties": {
+    "choice": {
+      "type": "string",
+      "enum": ["A", "B"]
+    }
+  }
+}

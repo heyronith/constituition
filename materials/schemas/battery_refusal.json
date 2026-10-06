@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "battery_refusal",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["refused"],
+  "properties": {
+    "refused": {
+      "type": "boolean"
+    }
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "batch_id": "batch_6ac557cbadb88190bf823ef08035523c",
+  "input_file_id": "file-2LxoyHfWuTCiQi4FfRuWDm",
+  "n_requests": 240,
+  "status": "completed",
+  "request_counts": {
+    "completed": 240,
+    "failed": 0,
+    "total": 240
+  }
+}

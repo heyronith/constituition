@@ -137,7 +137,7 @@ subjects:
   config_id: olmo3_7b_sft
   role: subject
   fit:
-    compute: colab_l4
+    compute: modal_l4
     gpu_memory_gb: 24
     required_headroom: 0.2
     usable_gb: 19.200000000000003
@@ -166,7 +166,7 @@ subjects:
   config_id: olmo3_7b_dpo
   role: subject
   fit:
-    compute: colab_l4
+    compute: modal_l4
     gpu_memory_gb: 24
     required_headroom: 0.2
     usable_gb: 19.200000000000003
@@ -195,7 +195,7 @@ subjects:
   config_id: olmo3_7b_final
   role: subject
   fit:
-    compute: colab_l4
+    compute: modal_l4
     gpu_memory_gb: 24
     required_headroom: 0.2
     usable_gb: 19.200000000000003
