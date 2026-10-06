@@ -25,6 +25,7 @@ SCHEMA_NAMES = (
     "calib_generator",
     "calib_verifier",
     "judge_fate",
+    "judge_fate_v2",
     "judge_eval_awareness",
 )
 
@@ -53,6 +54,7 @@ class GenerationRequest:
     seed: int
     json_schema: dict[str, Any] | None = None
     schema_name: str | None = None
+    system_prompt: str | None = None
 
 
 def schemas_root(root: Path | None = None) -> Path:
@@ -186,6 +188,7 @@ def build_request(
     root: Path | None = None,
     schema_name: str | None = None,
     opaque_ids: list[str] | None = None,
+    system_prompt: str | None = None,
 ) -> GenerationRequest:
     sampling: dict[str, Any]
     kwargs: dict[str, Any]
@@ -228,6 +231,7 @@ def build_request(
         seed=safe_seed,
         json_schema=schema,
         schema_name=schema_name,
+        system_prompt=system_prompt,
     )
 
 
@@ -419,7 +423,13 @@ class VLLMBackend:
     def _generate_group(self, requests: list[GenerationRequest], sampling_cls: Any) -> list:
         from vllm.sampling_params import StructuredOutputsParams
 
-        conversations = [[{"role": "user", "content": req.prompt}] for req in requests]
+        conversations = []
+        for req in requests:
+            msgs: list[dict[str, str]] = []
+            if req.system_prompt:
+                msgs.append({"role": "system", "content": req.system_prompt})
+            msgs.append({"role": "user", "content": req.prompt})
+            conversations.append(msgs)
         sampling_params = []
         for req in requests:
             so = None

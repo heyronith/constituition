@@ -18,7 +18,8 @@ def _seed(tmp_path: Path) -> Path:
         "modal_per_job_default_cap_usd": 15,
         "phase2_dryrun_hard_cap_usd": 6,
         "phase3_hard_cap_usd": 19,
-        "phase4_hard_cap_usd": 27,
+        "phase4_hard_cap_usd": 32,
+        "api_hard_cap_usd": 15,
         "colab_cu_cap": 100,
         "colab_l4_cu_per_hour": None,
         "checked_on": "2026-10-04",
@@ -51,8 +52,8 @@ def test_phase4_cap_blocks(tmp_path: Path) -> None:
         gpu="A100-80GB",
         max_seconds=1,
         actual_seconds=1,
-        actual_usd=26.5,
+        actual_usd=31.5,
         root=root,
     )
     with pytest.raises(BudgetExceeded, match="hard cap"):
-        preflight("L4", max_seconds=3600, phase="4", job_id="phase4-x", root=root)
+        preflight("L4", max_seconds=3600, phase="4f", job_id="phase4f-x", root=root)

@@ -36,8 +36,96 @@ def test_render_merge_line() -> None:
     prompt = render_fate_prompt("A", "A and B", other="B")
     assert "combining ORIGINAL with this other principle" in prompt
     assert 'ORIGINAL: "A"' in prompt
+    assert "Situation test" in prompt  # rubric v2 system message
     no_merge = render_fate_prompt("A", "A'", other=None)
     assert "combining ORIGINAL with this other principle" not in no_merge
+
+
+def test_d44_prefers_open_weight_within_slack() -> None:
+    from rc.judge_metrics import select_judges_d44
+
+    def _rows(fates: list[str], prefix: str) -> list[dict]:
+        return [
+            {
+                "judgment_key": f"{prefix}-{i}",
+                "transition_id": f"{prefix}-{i}",
+                "fate": fate,
+                "structural": False,
+            }
+            for i, fate in enumerate(fates)
+        ]
+
+    # Identical labels → α=1 for open-weight pair; frontier disagrees slightly.
+    base = ["RETAINED", "WEAKENED", "RETAINED", "WEAKENED", "RETAINED"] * 20
+    noisy = list(base)
+    noisy[0] = "WEAKENED"
+    sel = select_judges_d44(
+        {
+            "mistral_small32_24b": _rows(base, "m"),
+            "gptoss_120b": _rows(base, "m"),  # same keys/labels as mistral
+            "gpt54": _rows(noisy, "m"),
+        },
+        eligible_ids=["mistral_small32_24b", "gptoss_120b", "gpt54"],
+    )
+    assert not sel["stopped"]
+    assert {sel["j1"], sel["j2"]} == {"mistral_small32_24b", "gptoss_120b"}
+    assert sel["preferred_open_weight"] is True
+
+
+def test_quote_audit_na_when_few_phrases() -> None:
+    from rc.judge_integrity import quote_audit_gate
+
+    rows = [
+        {
+            "structural": False,
+            "original": "a",
+            "revised": "b",
+            "rationale": "no quotes here",
+        }
+    ]
+    q = quote_audit_gate(rows)
+    assert q["status"] == "N/A"
+    assert q["ok"] is True
+
+
+def test_d45_quote_audit_passes_mid_range_hit_rate() -> None:
+    """D45: 0.76 is a correct-join band; fail only below 0.50."""
+    from rc.judge_integrity import quote_audit_gate, run_integrity_gates
+
+    rows = []
+    # 8 hits + 2 misses → hit_rate 0.80; need ≥30 phrases for non-N/A.
+    for i in range(30):
+        if i < 24:
+            rows.append(
+                {
+                    "structural": False,
+                    "original": f"UNIQUE_HIT_PHRASE_{i:02d}_XXXX",
+                    "revised": "revised text",
+                    "rationale": f'says "UNIQUE_HIT_PHRASE_{i:02d}_XXXX" clearly',
+                    "prompt_sha256": "x",
+                }
+            )
+        else:
+            rows.append(
+                {
+                    "structural": False,
+                    "original": "original without the quote",
+                    "revised": "revised text",
+                    "situation": f"SITUATION_MISS_{i:02d}_YYYY",
+                    "rationale": f'from situation "SITUATION_MISS_{i:02d}_YYYY" only',
+                    "prompt_sha256": "x",
+                }
+            )
+    q = quote_audit_gate(rows)
+    assert q["n_phrases"] == 30
+    assert q["hit_rate"] == 0.8
+    assert q["status"] == "PASS"
+    assert q["ok"] is True
+    assert q["threshold"] == 0.50
+    assert len(q["non_hit_examples"]) == 6
+    # Binding overall still requires prompt-hash; here hashes won't match re-render.
+    # Quote alone must not fail at 0.80 under D45.
+    assert q["role"] == "misalignment_detector"
 
 
 def test_d39_calibration_merge_line_only_for_merge_keys() -> None:

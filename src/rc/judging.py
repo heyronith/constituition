@@ -62,17 +62,31 @@ def normalize_whitespace(text: str) -> str:
     return _WS_RE.sub(" ", (text or "").strip())
 
 
-def load_judge_prompts(root: Path | None = None) -> dict[str, str]:
+DEFAULT_RUBRIC_VERSION = "v2"
+
+
+def load_judge_prompts(root: Path | None = None, *, rubric_version: str = "v1") -> dict[str, str]:
     root = root or repo_root()
-    fate = yaml.safe_load((root / "materials" / "prompts" / "judge_fate.yaml").read_text())
+    if rubric_version == "v2":
+        fate = yaml.safe_load(
+            (root / "materials" / "prompts" / "judge_fate_v2.yaml").read_text()
+        )
+        out = {
+            "system": fate["system"],
+            "user": fate["user"],
+            "merge_line": fate["merge_line"],
+        }
+    else:
+        fate = yaml.safe_load((root / "materials" / "prompts" / "judge_fate.yaml").read_text())
+        out = {
+            "judge_fate": fate["judge_fate"],
+            "merge_line": fate["merge_line"],
+        }
     eval_p = yaml.safe_load(
         (root / "materials" / "prompts" / "judge_eval_awareness.yaml").read_text()
     )
-    return {
-        "judge_fate": fate["judge_fate"],
-        "merge_line": fate["merge_line"],
-        "judge_eval_awareness": eval_p["judge_eval_awareness"],
-    }
+    out["judge_eval_awareness"] = eval_p["judge_eval_awareness"]
+    return out
 
 
 def _fill(template: str, **fields: str) -> str:
@@ -83,21 +97,56 @@ def _fill(template: str, **fields: str) -> str:
     return out
 
 
+def render_fate_messages(
+    original: str,
+    revised: str,
+    *,
+    other: str | None = None,
+    root: Path | None = None,
+    rubric_version: str = DEFAULT_RUBRIC_VERSION,
+) -> dict[str, str]:
+    """Return system/user messages for the fate rubric (v2 primary)."""
+    if rubric_version == "v2":
+        prompts = load_judge_prompts(root, rubric_version="v2")
+        merge_line = ""
+        if other:
+            merge_line = _fill(prompts["merge_line"], OTHER=other).rstrip() + "\n"
+        user = _fill(
+            prompts["user"],
+            ORIGINAL=original or "",
+            REVISED=revised if revised is not None else "",
+            MERGE_LINE=merge_line,
+        )
+        return {"system": prompts["system"].rstrip(), "user": user}
+    # v1: single user message (legacy).
+    prompt = render_fate_prompt(
+        original, revised, other=other, root=root, rubric_version="v1"
+    )
+    return {"system": "", "user": prompt}
+
+
 def render_fate_prompt(
     original: str,
     revised: str,
     *,
     other: str | None = None,
     root: Path | None = None,
+    rubric_version: str = DEFAULT_RUBRIC_VERSION,
 ) -> str:
-    prompts = load_judge_prompts(root)
+    """Canonical prompt text used for prompt_sha256 (system + user for v2)."""
+    if rubric_version == "v2":
+        messages = render_fate_messages(
+            original, revised, other=other, root=root, rubric_version="v2"
+        )
+        return f"{messages['system']}\n\n{messages['user']}"
+    prompts = load_judge_prompts(root, rubric_version="v1")
     merge_line = ""
     if other:
         merge_line = _fill(prompts["merge_line"], OTHER=other).rstrip() + "\n"
     return _fill(
         prompts["judge_fate"],
-        ORIGINAL=original,
-        REVISED=revised,
+        ORIGINAL=original or "",
+        REVISED=revised if revised is not None else "",
         MERGE_LINE=merge_line,
     )
 
@@ -115,6 +164,7 @@ class FateJudgment:
     structural: bool
     parse_status: str = "ok"
     raw: str | None = None
+    situation: str | None = None
 
 
 def structural_fate(
@@ -130,6 +180,7 @@ def structural_fate(
             strength=0,
             rationale="structural delete from lineage",
             structural=True,
+            situation=None,
         )
     if normalize_whitespace(original) == normalize_whitespace(revised):
         return FateJudgment(
@@ -137,6 +188,7 @@ def structural_fate(
             strength=4,
             rationale="identical after whitespace normalization",
             structural=True,
+            situation="none",
         )
     return None
 
@@ -151,6 +203,8 @@ def parse_fate_response(text: str) -> FateJudgment:
         if strength < 0 or strength > 4:
             raise ValueError("strength out of range")
         rationale = str(payload.get("rationale") or "")[:240]
+        situation = payload.get("situation")
+        situation_s = None if situation is None else str(situation)[:400]
         return FateJudgment(
             fate=fate,
             strength=strength,
@@ -158,6 +212,7 @@ def parse_fate_response(text: str) -> FateJudgment:
             structural=False,
             parse_status="ok",
             raw=text,
+            situation=situation_s,
         )
     except Exception as exc:  # noqa: BLE001 — surface parse failures
         return FateJudgment(
@@ -167,6 +222,7 @@ def parse_fate_response(text: str) -> FateJudgment:
             structural=False,
             parse_status="error",
             raw=text,
+            situation=None,
         )
 
 
@@ -287,11 +343,13 @@ def judge_fate_batch(
     source: str | None = None,
     shuffle: bool = False,
     shuffle_seed: int | None = None,
+    rubric_version: str = DEFAULT_RUBRIC_VERSION,
 ) -> list[dict[str, Any]]:
     """Judge items keyed by transition_id / calib_key (D40).
 
     Results are returned in the same order as ``items``. If ``shuffle`` is True,
     generation order is shuffled but outputs are mapped back by key only.
+    Default rubric is v2 (D42).
     """
     root = root or repo_root()
     # Resolve source per item; pilot path must not default to calib.
@@ -328,6 +386,7 @@ def judge_fate_batch(
     by_key: dict[str, dict[str, Any]] = {}
     pending_keys: list[str] = []
     pending_req: list[GenerationRequest] = []
+    schema_name = "judge_fate_v2" if rubric_version == "v2" else "judge_fate"
 
     for work_i, (orig_i, item) in enumerate(work):
         key = item["_judgment_key"]
@@ -351,6 +410,7 @@ def judge_fate_batch(
             "revised": revised,
             "other": other,
             "prompt_sha256": None,
+            "rubric_version": rubric_version,
         }
         if structural is not None:
             by_key[key] = {
@@ -358,6 +418,7 @@ def judge_fate_batch(
                 "fate": structural.fate,
                 "strength": structural.strength,
                 "rationale": structural.rationale,
+                "situation": structural.situation,
                 "structural": True,
                 "parse_status": "ok",
                 "raw_text": None,
@@ -367,17 +428,23 @@ def judge_fate_batch(
                 "text_reasoning": None,
             }
             continue
-        prompt = render_fate_prompt(original, revised, other=other, root=root)
+        messages = render_fate_messages(
+            original, revised, other=other, root=root, rubric_version=rubric_version
+        )
+        prompt = render_fate_prompt(
+            original, revised, other=other, root=root, rubric_version=rubric_version
+        )
         base["prompt_sha256"] = prompt_sha256(prompt)
         by_key[key] = {**base, "structural": False}
         pending_keys.append(key)
         pending_req.append(
             build_request(
-                prompt,
+                messages["user"],
                 judge_id,
                 seed_base + work_i,
                 root=root,
-                schema_name="judge_fate",
+                schema_name=schema_name,
+                system_prompt=messages["system"] or None,
             )
         )
 
@@ -394,10 +461,12 @@ def judge_fate_batch(
                     "fate": parsed.fate,
                     "strength": parsed.strength,
                     "rationale": parsed.rationale,
+                    "situation": parsed.situation,
                     "structural": False,
                     "parse_status": parsed.parse_status,
                     "latency_s": gen.latency_s,
                     "n_output_tokens": gen.n_output_tokens,
+                    "n_prompt_tokens": gen.n_prompt_tokens,
                     "raw_text": gen.text_final,
                     "finish_reason": gen.finish_reason,
                     "n_reasoning_tokens": gen.n_reasoning_tokens,

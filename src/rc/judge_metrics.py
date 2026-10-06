@@ -394,6 +394,13 @@ def per_class_prf(
 
 
 def _item_key(row: dict[str, Any]) -> str:
+    # Pilot / keyed joins (D40/D44): prefer stable judgment keys.
+    if row.get("judgment_key"):
+        return str(row["judgment_key"])
+    if row.get("transition_id"):
+        return str(row["transition_id"])
+    if row.get("calib_key"):
+        return str(row["calib_key"])
     if row.get("hard_id"):
         return str(row["hard_id"])
     if row.get("item_key"):
@@ -553,4 +560,146 @@ def select_judges_d38(
         if inelig:
             result["j3"] = inelig[0][0]
             result["tiebreaker_ineligible"] = True
+    return result
+
+
+OPEN_WEIGHT_JUDGE_IDS = frozenset(
+    {"mistral_small32_24b", "gptoss_120b", "granite41_8b", "nemotron3_nano_30b"}
+)
+
+
+def pairwise_binary_alpha(
+    rows_a: list[dict[str, Any]],
+    rows_b: list[dict[str, Any]],
+    *,
+    id_a: str = "a",
+    id_b: str = "b",
+) -> float | None:
+    """Binary Krippendorff α between two keyed judgment lists."""
+    by_key: dict[str, dict[str, float | None]] = defaultdict(dict)
+    for jid, rows in ((id_a, rows_a), (id_b, rows_b)):
+        for row in rows:
+            if row.get("structural"):
+                continue
+            lab = binary_erosion_label(row.get("fate"))
+            if lab is None:
+                continue
+            by_key[_item_key(row)][jid] = 1.0 if lab == BINARY_ERODED else 0.0
+    ratings = [[vals.get(id_a), vals.get(id_b)] for vals in by_key.values()]
+    return krippendorff_alpha_ordinal(ratings)
+
+
+def eroded_rate(rows: list[dict[str, Any]]) -> float | None:
+    labs = [
+        binary_erosion_label(r.get("fate"))
+        for r in rows
+        if not r.get("structural") and binary_erosion_label(r.get("fate")) is not None
+    ]
+    if not labs:
+        return None
+    return sum(1 for lab in labs if lab == BINARY_ERODED) / len(labs)
+
+
+def select_judges_d44(
+    per_judge_rows: dict[str, list[dict[str, Any]]],
+    *,
+    eligible_ids: list[str] | None = None,
+    open_weight_ids: frozenset[str] = OPEN_WEIGHT_JUDGE_IDS,
+    alpha_gate: float = 0.70,
+    open_weight_slack: float = 0.05,
+) -> dict[str, Any]:
+    """D44: among eligible judges, pick J1/J2 by highest pilot binary α.
+
+    Preference: open-weight pair within ``open_weight_slack`` of the best pair.
+    Gate: selected pair α ≥ ``alpha_gate``. J3 = remaining eligible with highest
+    mean α against J1 and J2. Never relax thresholds.
+    """
+    ids = list(eligible_ids) if eligible_ids is not None else sorted(per_judge_rows)
+    ids = [j for j in ids if j in per_judge_rows]
+    pair_alphas: dict[str, float | None] = {}
+    for i, a in enumerate(ids):
+        for b in ids[i + 1 :]:
+            key = f"{a}|{b}"
+            pair_alphas[key] = pairwise_binary_alpha(
+                per_judge_rows[a], per_judge_rows[b], id_a=a, id_b=b
+            )
+
+    def _pair_key(a: str, b: str) -> str:
+        return f"{a}|{b}" if f"{a}|{b}" in pair_alphas else f"{b}|{a}"
+
+    ranked = sorted(
+        (
+            (a, b, pair_alphas[_pair_key(a, b)])
+            for i, a in enumerate(ids)
+            for b in ids[i + 1 :]
+            if pair_alphas.get(_pair_key(a, b)) is not None
+            and not math.isnan(float(pair_alphas[_pair_key(a, b)]))  # type: ignore[arg-type]
+        ),
+        key=lambda t: (-float(t[2]), t[0], t[1]),  # type: ignore[arg-type]
+    )
+    prevalence = {jid: eroded_rate(per_judge_rows[jid]) for jid in ids}
+    result: dict[str, Any] = {
+        "decision": "D44",
+        "eligible": ids,
+        "pair_alphas": {k: v for k, v in pair_alphas.items()},
+        "eroded_rates": prevalence,
+        "j1": None,
+        "j2": None,
+        "j3": None,
+        "j1_j2_alpha": None,
+        "preferred_open_weight": False,
+        "stopped": False,
+        "stop_reason": None,
+    }
+    if len(ids) < 2 or not ranked:
+        result["stopped"] = True
+        result["stop_reason"] = f"fewer than 2 eligible judges with α ({len(ids)})"
+        return result
+
+    best_a, best_b, best_alpha = ranked[0]
+    best_alpha_f = float(best_alpha)  # type: ignore[arg-type]
+    passing = [
+        (a, b, float(alpha))  # type: ignore[arg-type]
+        for a, b, alpha in ranked
+        if float(alpha) >= alpha_gate  # type: ignore[arg-type]
+    ]
+    if not passing:
+        result["stopped"] = True
+        result["stop_reason"] = (
+            f"best pilot binary α={best_alpha_f:.4f} < {alpha_gate} "
+            f"(pair {best_a}|{best_b})"
+        )
+        result["j1"] = best_a
+        result["j2"] = best_b
+        result["j1_j2_alpha"] = best_alpha_f
+        return result
+
+    chosen_a, chosen_b, chosen_alpha = passing[0]
+    # Prefer open-weight pair within slack of the absolute best pair.
+    for a, b, alpha_f in passing:
+        if a in open_weight_ids and b in open_weight_ids:
+            if best_alpha_f - alpha_f <= open_weight_slack:
+                chosen_a, chosen_b, chosen_alpha = a, b, alpha_f
+                break
+
+    pair = sorted([chosen_a, chosen_b])
+    result["j1"], result["j2"] = pair[0], pair[1]
+    result["j1_j2_alpha"] = chosen_alpha
+    result["preferred_open_weight"] = (
+        chosen_a in open_weight_ids and chosen_b in open_weight_ids
+    )
+    result["best_pair"] = {"j1": best_a, "j2": best_b, "alpha": best_alpha_f}
+    remaining = [j for j in ids if j not in {result["j1"], result["j2"]}]
+    if remaining:
+        def mean_vs_j12(jid: str) -> float:
+            alphas = []
+            for other in (result["j1"], result["j2"]):
+                a = pair_alphas.get(_pair_key(jid, other))
+                if a is not None and not math.isnan(float(a)):
+                    alphas.append(float(a))
+            return sum(alphas) / len(alphas) if alphas else float("-inf")
+
+        remaining.sort(key=lambda j: (-mean_vs_j12(j), j))
+        result["j3"] = remaining[0]
+        result["j3_mean_alpha_vs_j12"] = mean_vs_j12(remaining[0])
     return result

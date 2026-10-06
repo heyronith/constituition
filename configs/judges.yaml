@@ -54,6 +54,7 @@ judges:
 
   - judge_id: granite41_8b
     # Resolved exact instruct repo: ibm-granite/granite-4.1-8b (no separate -instruct suffix).
+    # D43: dropped as a Phase 4F candidate (pilot outlier); kept for historical runs.
     hf_repo: ibm-granite/granite-4.1-8b
     revision: null
     compute: modal_l40s
@@ -61,6 +62,26 @@ judges:
     selected: false
     max_tokens: 256
     chat_template_kwargs: {}
+    sampling:
+      temperature: 0.0
+      top_p: 1.0
+      top_k: -1
+      min_p: 0.0
+      presence_penalty: 0.0
+      repetition_penalty: 1.0
+
+  - judge_id: gpt54
+    # D43: OpenAI GPT-5.4 dated snapshot via Batch API (not a subject-family lab conflict).
+    hf_repo: null
+    revision: gpt-5.4-2026-03-05
+    compute: openai_batch
+    provider: openai
+    api_model: gpt-5.4-2026-03-05
+    dtype: auto
+    selected: false
+    max_tokens: 400
+    chat_template_kwargs:
+      reasoning_effort: none
     sampling:
       temperature: 0.0
       top_p: 1.0

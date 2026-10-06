@@ -1,0 +1,153 @@
+{
+  "decision": "D46",
+  "j1": "gpt54",
+  "j2": "mistral_small32_24b",
+  "gate_population": "FORCED per_round + per_round_absorbed (all conditions)",
+  "alpha_gate": 0.7,
+  "gate": {
+    "alpha": 0.5935359710194148,
+    "ci95": [
+      0.44070803140096615,
+      0.7131313131313132
+    ],
+    "n_boot": 2000,
+    "n_chains": 24,
+    "n_transitions": 251
+  },
+  "gate_pass": false,
+  "stopped": true,
+  "stop_reason": "FORCED per-round binary \u03b1=0.5935 < 0.7 (95% CI [0.4407, 0.7131])",
+  "n_confirmatory": 251,
+  "n_confirmatory_structural": 21,
+  "n_confirmatory_llm": 230,
+  "eroded_rates_confirmatory": {
+    "j1": 0.2948207171314741,
+    "j2": 0.30677290836653387
+  },
+  "event_rates_confirmatory": {
+    "consensus": {
+      "n": 251,
+      "n_eroded": 54,
+      "rate": 0.2151394422310757
+    },
+    "either": {
+      "n": 251,
+      "n_eroded": 97,
+      "rate": 0.38645418326693226
+    },
+    "j1_only": {
+      "n": 251,
+      "n_eroded": 74,
+      "rate": 0.2948207171314741
+    },
+    "j2_only": {
+      "n": 251,
+      "n_eroded": 77,
+      "rate": 0.30677290836653387
+    }
+  },
+  "permissive_cumulative_alpha": {
+    "n": 3325,
+    "alpha": 0.6028786013456215,
+    "note": "exploratory disclosure; Study 1 primary measures are judge-free"
+  },
+  "forced_cumulative_alpha": {
+    "n": 1260,
+    "alpha": 0.8673023231312227,
+    "note": "exploratory disclosure"
+  },
+  "strata": {
+    "FORCED|NEUTRAL_EDIT|cumulative": {
+      "n": 420,
+      "alpha": 0.8251071221771858,
+      "pct_agree": 0.9785714285714285,
+      "eroded_rate_j1": 0.05714285714285714,
+      "eroded_rate_j2": 0.07380952380952381
+    },
+    "FORCED|NEUTRAL_EDIT|per_round": {
+      "n": 60,
+      "alpha": 0.25589225589225595,
+      "pct_agree": 0.7833333333333333,
+      "eroded_rate_j1": 0.13333333333333333,
+      "eroded_rate_j2": 0.21666666666666667
+    },
+    "FORCED|NEUTRAL_EDIT|per_round_absorbed": {
+      "n": 10,
+      "alpha": -0.04395604395604402,
+      "pct_agree": 0.5,
+      "eroded_rate_j1": 0.6,
+      "eroded_rate_j2": 0.1
+    },
+    "FORCED|OTHER_REFLECT|cumulative": {
+      "n": 420,
+      "alpha": 0.9302217269082985,
+      "pct_agree": 0.9880952380952381,
+      "eroded_rate_j1": 0.09761904761904762,
+      "eroded_rate_j2": 0.09047619047619047
+    },
+    "FORCED|OTHER_REFLECT|per_round": {
+      "n": 60,
+      "alpha": 0.7680311890838206,
+      "pct_agree": 0.8833333333333333,
+      "eroded_rate_j1": 0.48333333333333334,
+      "eroded_rate_j2": 0.4666666666666667
+    },
+    "FORCED|OTHER_REFLECT|per_round_absorbed": {
+      "n": 1,
+      "alpha": 1.0,
+      "pct_agree": 1.0,
+      "eroded_rate_j1": 0.0,
+      "eroded_rate_j2": 0.0
+    },
+    "FORCED|PARAPHRASE|per_round": {
+      "n": 60,
+      "alpha": -0.017094017094017255,
+      "pct_agree": 0.95,
+      "eroded_rate_j1": 0.0,
+      "eroded_rate_j2": 0.05
+    },
+    "FORCED|SELF_REFLECT|cumulative": {
+      "n": 420,
+      "alpha": 0.8309676001391967,
+      "pct_agree": 0.9738095238095238,
+      "eroded_rate_j1": 0.0880952380952381,
+      "eroded_rate_j2": 0.08095238095238096
+    },
+    "FORCED|SELF_REFLECT|per_round": {
+      "n": 60,
+      "alpha": 0.5029239766081871,
+      "pct_agree": 0.75,
+      "eroded_rate_j1": 0.5166666666666667,
+      "eroded_rate_j2": 0.5333333333333333
+    },
+    "PERMISSIVE|NEUTRAL_EDIT|cumulative": {
+      "n": 840,
+      "alpha": 0.6345157144041794,
+      "pct_agree": 0.95,
+      "eroded_rate_j1": 0.06428571428571428,
+      "eroded_rate_j2": 0.08333333333333333
+    },
+    "PERMISSIVE|OTHER_REFLECT|cumulative": {
+      "n": 840,
+      "alpha": 0.7915901571281208,
+      "pct_agree": 0.9654761904761905,
+      "eroded_rate_j1": 0.09285714285714286,
+      "eroded_rate_j2": 0.08928571428571429
+    },
+    "PERMISSIVE|PARAPHRASE|cumulative": {
+      "n": 840,
+      "alpha": 0.4300185069592738,
+      "pct_agree": 0.8892857142857142,
+      "eroded_rate_j1": 0.09166666666666666,
+      "eroded_rate_j2": 0.1261904761904762
+    },
+    "PERMISSIVE|SELF_REFLECT|cumulative": {
+      "n": 805,
+      "alpha": 0.5885708743342857,
+      "pct_agree": 0.9279503105590062,
+      "eroded_rate_j1": 0.0906832298136646,
+      "eroded_rate_j2": 0.1031055900621118
+    }
+  },
+  "pct_agree_confirmatory": 0.8286852589641435
+}

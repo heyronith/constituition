@@ -1,0 +1,21 @@
+{
+  "decision": "D44",
+  "eligible": [
+    "gpt54",
+    "mistral_small32_24b"
+  ],
+  "pair_alphas": {
+    "gpt54|mistral_small32_24b": 0.5192331395721478
+  },
+  "eroded_rates": {
+    "gpt54": 0.16897918731417244,
+    "mistral_small32_24b": 0.19672943508424182
+  },
+  "j1": "gpt54",
+  "j2": "mistral_small32_24b",
+  "j3": null,
+  "j1_j2_alpha": 0.5192331395721478,
+  "preferred_open_weight": false,
+  "stopped": true,
+  "stop_reason": "best pilot binary \u03b1=0.5192 < 0.7 (pair gpt54|mistral_small32_24b)"
+}

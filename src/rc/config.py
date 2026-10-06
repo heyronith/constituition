@@ -48,14 +48,23 @@ class ModelsFile(StrictModel):
 
 class JudgeConfig(StrictModel):
     judge_id: str
-    hf_repo: str
-    revision: str | None
-    compute: Literal["colab_l4", "modal_l4", "modal_l40s", "modal_a100_80gb", "modal_h100"]
+    hf_repo: str | None = None
+    revision: str | None = None
+    compute: Literal[
+        "colab_l4",
+        "modal_l4",
+        "modal_l40s",
+        "modal_a100_80gb",
+        "modal_h100",
+        "openai_batch",
+    ]
     dtype: Literal["bf16", "auto"] = "bf16"
     selected: bool
     max_tokens: int = 256
     chat_template_kwargs: dict[str, Any] = Field(default_factory=dict)
     sampling: dict[str, Any]
+    provider: Literal["modal", "openai"] | None = None
+    api_model: str | None = None
 
 
 class JudgesFile(StrictModel):
@@ -112,6 +121,7 @@ class BudgetConfig(StrictModel):
     phase2_dryrun_hard_cap_usd: float = 11.0
     phase3_hard_cap_usd: float = 16.0
     phase4_hard_cap_usd: float = 27.0
+    api_hard_cap_usd: float = 15.0
     colab_cu_cap: float
     colab_l4_cu_per_hour: float | None
     checked_on: str

@@ -11,7 +11,7 @@ from typing import Any, Literal
 from rc.config import load_budget, repo_root
 from rc.io_utils import append_jsonl, git_sha
 
-Platform = Literal["modal", "colab"]
+Platform = Literal["modal", "colab", "openai", "anthropic"]
 
 
 class BudgetExceeded(RuntimeError):
@@ -63,6 +63,29 @@ def spent_colab_cu(root: Path | None = None) -> float:
             total += float(actual)
             continue
         est = row.get("est_cu")
+        if est is not None:
+            total += float(est)
+    return total
+
+
+def spent_api_usd(
+    root: Path | None = None,
+    *,
+    platform: Literal["openai", "anthropic"] | None = None,
+) -> float:
+    """Sum OpenAI/Anthropic ledger rows (actual_usd, else est_usd)."""
+    total = 0.0
+    for row in _parse_ledger(ledger_path(root)):
+        plat = row.get("platform")
+        if plat not in {"openai", "anthropic"}:
+            continue
+        if platform is not None and plat != platform:
+            continue
+        actual = row.get("actual_usd")
+        if actual is not None:
+            total += float(actual)
+            continue
+        est = row.get("est_usd")
         if est is not None:
             total += float(est)
     return total
@@ -147,7 +170,7 @@ def preflight(
         if str(phase) in {"3", "phase3", "3a", "3b", "3c"}:
             project_cap = min(project_cap, budget.phase3_hard_cap_usd)
         # Phase 4 cumulative Modal cap (judge calib + pilot coding + power).
-        if str(phase) in {"4", "phase4", "4a", "4b", "4c", "4d", "4e"}:
+        if str(phase) in {"4", "phase4", "4a", "4b", "4c", "4d", "4e", "4f"}:
             project_cap = min(project_cap, budget.phase4_hard_cap_usd)
         if hard_cap_usd is not None:
             project_cap = hard_cap_usd
@@ -210,10 +233,13 @@ def summary(root: Path | None = None) -> str:
     budget = load_budget(root)
     modal_spent = spent_modal_usd(root)
     colab_spent = spent_colab_cu(root)
+    api_spent = spent_api_usd(root)
     lines = [
         f"Modal: ${modal_spent:.4f} / ${budget.modal_hard_cap_usd:.2f} hard cap "
         f"(per-job default ${budget.modal_per_job_default_cap_usd:.2f}; "
-        f"phase2 dry-run ${budget.phase2_dryrun_hard_cap_usd:.2f})",
+        f"phase2 dry-run ${budget.phase2_dryrun_hard_cap_usd:.2f}; "
+        f"phase4 ${budget.phase4_hard_cap_usd:.2f})",
+        f"API (OpenAI/Anthropic): ${api_spent:.4f} / ${budget.api_hard_cap_usd:.2f} hard cap",
         f"Colab: {colab_spent:.4f} / {budget.colab_cu_cap:.1f} CU "
         f"(L4 CU/hour={budget.colab_l4_cu_per_hour})",
     ]

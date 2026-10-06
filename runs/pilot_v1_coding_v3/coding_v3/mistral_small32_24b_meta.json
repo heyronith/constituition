@@ -1,0 +1,9 @@
+{
+  "judge_id": "mistral_small32_24b",
+  "run_tag": "pilot_v1_coding_v3",
+  "n": 2018,
+  "n_ok": 2018,
+  "load_s": 408.697308839,
+  "gpu": "A100-80GB",
+  "n_eval": 320
+}
