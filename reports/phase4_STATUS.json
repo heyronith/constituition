@@ -1,7 +1,7 @@
 {
   "reason": "Failed to serialize exception 1 validation error for ModelConfig\n  Value error, Model architectures ['PixtralForConditionalGeneration'] failed to be inspected. Please check the logs for more details. [type=value_error, input_value=ArgsKwargs((), {'model': ...nderer_num_workers': 1}), input_type=ArgsKwargs]\n    For further information visit https://errors.pydantic.dev/2.13/v/value_error of type <class 'pydantic_core._pydantic_core.ValidationError'>: cannot pickle 'pydantic_core._pydantic_core.ArgsKwargs' object",
-  "spend_usd": 0.33461927999999996,
+  "spend_usd": 14.888105124844198,
   "stage": "calibration",
   "state": "stopped",
-  "timestamp_utc": "2026-10-06T00:14:59Z"
+  "timestamp_utc": "2026-10-06T00:39:35Z"
 }
