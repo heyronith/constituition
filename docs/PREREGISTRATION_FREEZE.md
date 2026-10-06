@@ -2,7 +2,7 @@
 
 **Date:** 2026-10-06  
 **Preregistration:** `docs/PREREGISTRATION.md` v1.2  
-**Freeze commit:** `PENDING_COMMIT_HASH`  
+**Freeze commit:** `3e2ac05`  
 **Registry:** OSF (upload after this commit; no main-run until OSF timestamp confirmed)
 
 ## Document hashes (SHA-256) — v1.2

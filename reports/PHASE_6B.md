@@ -44,7 +44,7 @@ Fallback rates (S0): GEE 0.535; drop-item 0.215; drop-item+chain 0.225; full GLM
 
 ## Freeze
 
-- Commit: `PENDING_COMMIT_HASH` (`docs/PREREGISTRATION_FREEZE.md`)
+- Commit: `3e2ac05` (`docs/PREREGISTRATION_FREEZE.md`)
 - Prereg SHA-256: `af7ec96baa1c233c4a6944d9a1203df64d67f25b9e9d01fe33b483cc0a8ffa6a`
 - PDF re-exported; v1.1 hashes retained under “Superseded (v1.1, 3c654d4)”
 
