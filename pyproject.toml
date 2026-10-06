@@ -11,6 +11,8 @@ dependencies = [
     "huggingface_hub",
     "python-dotenv",
     "textstat>=0.7.13",
+    "openai>=3.24.0",
+    "httpx>=0.28.1",
 ]
 
 [dependency-groups]

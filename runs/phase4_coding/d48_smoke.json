@@ -1,0 +1,39 @@
+{
+  "ok": true,
+  "checks": [
+    {
+      "check": "power_sim_chunk.map",
+      "ok": true,
+      "n_results": 3,
+      "sample": {
+        "h1": true,
+        "h2a": false,
+        "h2b": false
+      }
+    },
+    {
+      "check": "openrouter_mimo_v26_pro",
+      "ok": true,
+      "fate": "INVERTED",
+      "parse_status": "ok",
+      "served_model": "xiaomi/mimo-v2.6-pro",
+      "served_provider": "Xiaomi",
+      "usd": 0.000361485,
+      "provider_order": [
+        "xiaomi"
+      ]
+    },
+    {
+      "check": "openrouter_glm53",
+      "ok": true,
+      "fate": "INVERTED",
+      "parse_status": "ok",
+      "served_model": "z-ai/glm-5.3",
+      "served_provider": "Z.AI",
+      "usd": 0.00132804,
+      "provider_order": [
+        "Z.AI"
+      ]
+    }
+  ]
+}

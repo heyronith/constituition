@@ -1,0 +1,114 @@
+{
+  "decision": "D48",
+  "frac": 0.25,
+  "n_population": 251,
+  "n_selected": 66,
+  "note": "Pilot reliability check only (existing pilot_v1 confirmatory transitions). The preregistered 25% subsample for the paper is drawn from main-run confirmatory transitions with seed 20261004 before main-run coding.",
+  "population": "FORCED per_round + per_round_absorbed",
+  "primary_judge": "gpt54",
+  "second_judge": "mimo_v26_pro",
+  "seed": 20261004,
+  "strata": "config \u00d7 condition",
+  "stratum_counts": {
+    "olmo3_7b_final|NEUTRAL_EDIT": {
+      "n_selected": 8,
+      "n_total": 30
+    },
+    "olmo3_7b_final|OTHER_REFLECT": {
+      "n_selected": 8,
+      "n_total": 30
+    },
+    "olmo3_7b_final|PARAPHRASE": {
+      "n_selected": 8,
+      "n_total": 30
+    },
+    "olmo3_7b_final|SELF_REFLECT": {
+      "n_selected": 8,
+      "n_total": 30
+    },
+    "qwen38_27b_nothink|NEUTRAL_EDIT": {
+      "n_selected": 10,
+      "n_total": 40
+    },
+    "qwen38_27b_nothink|OTHER_REFLECT": {
+      "n_selected": 8,
+      "n_total": 31
+    },
+    "qwen38_27b_nothink|PARAPHRASE": {
+      "n_selected": 8,
+      "n_total": 30
+    },
+    "qwen38_27b_nothink|SELF_REFLECT": {
+      "n_selected": 8,
+      "n_total": 30
+    }
+  },
+  "transition_ids": [
+    "olmo3_7b_final|FORCED|NEUTRAL_EDIT|chain_100|r6|PROC4|revise",
+    "olmo3_7b_final|FORCED|NEUTRAL_EDIT|chain_101|r1|PROC5|revise",
+    "olmo3_7b_final|FORCED|NEUTRAL_EDIT|chain_101|r3|PROC5|revise",
+    "olmo3_7b_final|FORCED|NEUTRAL_EDIT|chain_101|r6|CARE4|revise",
+    "olmo3_7b_final|FORCED|NEUTRAL_EDIT|chain_102|r1|HARM2|revise",
+    "olmo3_7b_final|FORCED|NEUTRAL_EDIT|chain_102|r3|HARM2|revise",
+    "olmo3_7b_final|FORCED|NEUTRAL_EDIT|chain_102|r5|AGENT2|revise",
+    "olmo3_7b_final|FORCED|NEUTRAL_EDIT|chain_102|r6|HARM2|revise",
+    "olmo3_7b_final|FORCED|OTHER_REFLECT|chain_100|r2|AGENT1|revise",
+    "olmo3_7b_final|FORCED|OTHER_REFLECT|chain_100|r5|PROC4|revise",
+    "olmo3_7b_final|FORCED|OTHER_REFLECT|chain_101|r10|SELF4|revise",
+    "olmo3_7b_final|FORCED|OTHER_REFLECT|chain_101|r2|HARM1|revise",
+    "olmo3_7b_final|FORCED|OTHER_REFLECT|chain_101|r3|HARM1|revise",
+    "olmo3_7b_final|FORCED|OTHER_REFLECT|chain_101|r7|HARM1|revise",
+    "olmo3_7b_final|FORCED|OTHER_REFLECT|chain_102|r10|HARM2|revise",
+    "olmo3_7b_final|FORCED|OTHER_REFLECT|chain_102|r7|HARM2|revise",
+    "olmo3_7b_final|FORCED|PARAPHRASE|chain_100|r8|CARE4|revise",
+    "olmo3_7b_final|FORCED|PARAPHRASE|chain_101|r3|HON4|revise",
+    "olmo3_7b_final|FORCED|PARAPHRASE|chain_101|r4|HON2|revise",
+    "olmo3_7b_final|FORCED|PARAPHRASE|chain_101|r7|SELF1|revise",
+    "olmo3_7b_final|FORCED|PARAPHRASE|chain_101|r8|COR5|revise",
+    "olmo3_7b_final|FORCED|PARAPHRASE|chain_102|r10|HON4|revise",
+    "olmo3_7b_final|FORCED|PARAPHRASE|chain_102|r8|AGENT4|revise",
+    "olmo3_7b_final|FORCED|PARAPHRASE|chain_102|r9|COR1|revise",
+    "olmo3_7b_final|FORCED|SELF_REFLECT|chain_100|r4|AGENT1|revise",
+    "olmo3_7b_final|FORCED|SELF_REFLECT|chain_100|r5|AGENT1|revise",
+    "olmo3_7b_final|FORCED|SELF_REFLECT|chain_100|r8|PROC4|revise",
+    "olmo3_7b_final|FORCED|SELF_REFLECT|chain_101|r2|AGENT2|revise",
+    "olmo3_7b_final|FORCED|SELF_REFLECT|chain_101|r5|HON4|revise",
+    "olmo3_7b_final|FORCED|SELF_REFLECT|chain_101|r7|HON3|revise",
+    "olmo3_7b_final|FORCED|SELF_REFLECT|chain_102|r10|HARM2|revise",
+    "olmo3_7b_final|FORCED|SELF_REFLECT|chain_102|r9|HARM2|revise",
+    "qwen38_27b_nothink|FORCED|NEUTRAL_EDIT|chain_100|r2|HON5|revise",
+    "qwen38_27b_nothink|FORCED|NEUTRAL_EDIT|chain_100|r6|HON1|merge",
+    "qwen38_27b_nothink|FORCED|NEUTRAL_EDIT|chain_100|r8|HON5|merge",
+    "qwen38_27b_nothink|FORCED|NEUTRAL_EDIT|chain_100|r9|COR3|revise",
+    "qwen38_27b_nothink|FORCED|NEUTRAL_EDIT|chain_101|r7|PROC2|revise",
+    "qwen38_27b_nothink|FORCED|NEUTRAL_EDIT|chain_101|r9|SELF4|revise",
+    "qwen38_27b_nothink|FORCED|NEUTRAL_EDIT|chain_102|r2|HON1|revise",
+    "qwen38_27b_nothink|FORCED|NEUTRAL_EDIT|chain_102|r4|HON1|merge",
+    "qwen38_27b_nothink|FORCED|NEUTRAL_EDIT|chain_102|r4|HON2|merge|absorbed",
+    "qwen38_27b_nothink|FORCED|NEUTRAL_EDIT|chain_102|r6|AGENT5|revise",
+    "qwen38_27b_nothink|FORCED|OTHER_REFLECT|chain_100|r10|SELF1|revise",
+    "qwen38_27b_nothink|FORCED|OTHER_REFLECT|chain_100|r5|AGENT1|revise",
+    "qwen38_27b_nothink|FORCED|OTHER_REFLECT|chain_100|r6|HARM1|revise",
+    "qwen38_27b_nothink|FORCED|OTHER_REFLECT|chain_101|r5|SELF1|revise",
+    "qwen38_27b_nothink|FORCED|OTHER_REFLECT|chain_101|r9|PROC1|revise",
+    "qwen38_27b_nothink|FORCED|OTHER_REFLECT|chain_102|r4|SELF3|revise",
+    "qwen38_27b_nothink|FORCED|OTHER_REFLECT|chain_102|r5|SELF4|revise",
+    "qwen38_27b_nothink|FORCED|OTHER_REFLECT|chain_102|r9|HON5|merge",
+    "qwen38_27b_nothink|FORCED|PARAPHRASE|chain_100|r6|SELF2|revise",
+    "qwen38_27b_nothink|FORCED|PARAPHRASE|chain_100|r8|PROC2|revise",
+    "qwen38_27b_nothink|FORCED|PARAPHRASE|chain_101|r2|CARE4|revise",
+    "qwen38_27b_nothink|FORCED|PARAPHRASE|chain_101|r3|PROC1|revise",
+    "qwen38_27b_nothink|FORCED|PARAPHRASE|chain_101|r6|COR4|revise",
+    "qwen38_27b_nothink|FORCED|PARAPHRASE|chain_102|r10|HON4|revise",
+    "qwen38_27b_nothink|FORCED|PARAPHRASE|chain_102|r1|AGENT5|revise",
+    "qwen38_27b_nothink|FORCED|PARAPHRASE|chain_102|r3|HARM1|revise",
+    "qwen38_27b_nothink|FORCED|SELF_REFLECT|chain_101|r10|SELF2|revise",
+    "qwen38_27b_nothink|FORCED|SELF_REFLECT|chain_101|r1|CARE2|revise",
+    "qwen38_27b_nothink|FORCED|SELF_REFLECT|chain_101|r3|AGENT1|revise",
+    "qwen38_27b_nothink|FORCED|SELF_REFLECT|chain_101|r4|SELF1|revise",
+    "qwen38_27b_nothink|FORCED|SELF_REFLECT|chain_101|r9|SELF3|revise",
+    "qwen38_27b_nothink|FORCED|SELF_REFLECT|chain_102|r1|COR2|revise",
+    "qwen38_27b_nothink|FORCED|SELF_REFLECT|chain_102|r3|SELF4|delete",
+    "qwen38_27b_nothink|FORCED|SELF_REFLECT|chain_102|r7|HON4|revise"
+  ]
+}

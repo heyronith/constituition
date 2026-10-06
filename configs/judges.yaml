@@ -72,16 +72,61 @@ judges:
 
   - judge_id: gpt54
     # D43: OpenAI GPT-5.4 dated snapshot via Batch API (not a subject-family lab conflict).
+    # D48: primary judge for confirmatory coding.
     hf_repo: null
     revision: gpt-5.4-2026-03-05
     compute: openai_batch
     provider: openai
     api_model: gpt-5.4-2026-03-05
     dtype: auto
-    selected: false
+    selected: true
     max_tokens: 400
     chat_template_kwargs:
       reasoning_effort: none
+    sampling:
+      temperature: 0.0
+      top_p: 1.0
+      top_k: -1
+      min_p: 0.0
+      presence_penalty: 0.0
+      repetition_penalty: 1.0
+
+  - judge_id: mimo_v26_pro
+    # D48: Xiaomi MiMo-V2.6-Pro via OpenRouter (Xiaomi provider only).
+    hf_repo: XiaomiMiMo/MiMo-V2.6-Pro-RL
+    revision: 73875d00b30a89ef8cc353a0b60b0e9f9561952d
+    compute: openrouter
+    provider: openrouter
+    api_model: xiaomi/mimo-v2.6-pro
+    openrouter_provider_order: ["xiaomi"]
+    allow_fallbacks: false
+    dtype: auto
+    selected: false
+    max_tokens: 600
+    chat_template_kwargs:
+      reasoning_effort: none
+    sampling:
+      temperature: 0.0
+      top_p: 1.0
+      top_k: -1
+      min_p: 0.0
+      presence_penalty: 0.0
+      repetition_penalty: 1.0
+
+  - judge_id: glm53
+    # D48 fallback if mimo fails D38: Z.ai GLM-5.3 via OpenRouter.
+    hf_repo: zai-org/GLM-5.3
+    revision: aca966e4e02791568aa6a4ced368624b3d897f42
+    compute: openrouter
+    provider: openrouter
+    api_model: z-ai/glm-5.3
+    openrouter_provider_order: ["Z.AI"]
+    allow_fallbacks: false
+    dtype: auto
+    selected: false
+    max_tokens: 600
+    chat_template_kwargs:
+      reasoning_effort: low
     sampling:
       temperature: 0.0
       top_p: 1.0

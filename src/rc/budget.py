@@ -11,7 +11,7 @@ from typing import Any, Literal
 from rc.config import load_budget, repo_root
 from rc.io_utils import append_jsonl, git_sha
 
-Platform = Literal["modal", "colab", "openai", "anthropic"]
+Platform = Literal["modal", "colab", "openai", "anthropic", "openrouter"]
 
 
 class BudgetExceeded(RuntimeError):
@@ -71,13 +71,13 @@ def spent_colab_cu(root: Path | None = None) -> float:
 def spent_api_usd(
     root: Path | None = None,
     *,
-    platform: Literal["openai", "anthropic"] | None = None,
+    platform: Literal["openai", "anthropic", "openrouter"] | None = None,
 ) -> float:
-    """Sum OpenAI/Anthropic ledger rows (actual_usd, else est_usd)."""
+    """Sum OpenAI/Anthropic/OpenRouter ledger rows (actual_usd, else est_usd)."""
     total = 0.0
     for row in _parse_ledger(ledger_path(root)):
         plat = row.get("platform")
-        if plat not in {"openai", "anthropic"}:
+        if plat not in {"openai", "anthropic", "openrouter"}:
             continue
         if platform is not None and plat != platform:
             continue
@@ -239,7 +239,8 @@ def summary(root: Path | None = None) -> str:
         f"(per-job default ${budget.modal_per_job_default_cap_usd:.2f}; "
         f"phase2 dry-run ${budget.phase2_dryrun_hard_cap_usd:.2f}; "
         f"phase4 ${budget.phase4_hard_cap_usd:.2f})",
-        f"API (OpenAI/Anthropic): ${api_spent:.4f} / ${budget.api_hard_cap_usd:.2f} hard cap",
+        f"API (OpenAI/Anthropic/OpenRouter): ${api_spent:.4f} / ${budget.api_hard_cap_usd:.2f} "
+        f"(OpenRouter ≤ ${budget.openrouter_hard_cap_usd:.2f})",
         f"Colab: {colab_spent:.4f} / {budget.colab_cu_cap:.1f} CU "
         f"(L4 CU/hour={budget.colab_l4_cu_per_hour})",
     ]

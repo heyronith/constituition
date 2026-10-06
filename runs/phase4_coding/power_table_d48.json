@@ -1,0 +1,74 @@
+{
+  "decision": "D48",
+  "event_mode": "primary_gpt54",
+  "baseline_hazard": 0.007017543859649123,
+  "icc": 0.00650992648001544,
+  "table": [
+    {
+      "n_chains": 10,
+      "hr": 1.5,
+      "power_h1": 0.909,
+      "power_h2a": 0.725,
+      "power_h2b": 0.725,
+      "n_sims": 1000
+    },
+    {
+      "n_chains": 10,
+      "hr": 2.0,
+      "power_h1": 0.999,
+      "power_h2a": 0.768,
+      "power_h2b": 0.768,
+      "n_sims": 1000
+    },
+    {
+      "n_chains": 15,
+      "hr": 1.5,
+      "power_h1": 0.995,
+      "power_h2a": 0.891,
+      "power_h2b": 0.891,
+      "n_sims": 1000
+    },
+    {
+      "n_chains": 15,
+      "hr": 2.0,
+      "power_h1": 1.0,
+      "power_h2a": 0.907,
+      "power_h2b": 0.907,
+      "n_sims": 1000
+    },
+    {
+      "n_chains": 20,
+      "hr": 1.5,
+      "power_h1": 1.0,
+      "power_h2a": 0.965,
+      "power_h2b": 0.965,
+      "n_sims": 1000
+    },
+    {
+      "n_chains": 20,
+      "hr": 2.0,
+      "power_h1": 1.0,
+      "power_h2a": 0.98,
+      "power_h2b": 0.98,
+      "n_sims": 1000
+    },
+    {
+      "n_chains": 25,
+      "hr": 1.5,
+      "power_h1": 1.0,
+      "power_h2a": 0.985,
+      "power_h2b": 0.985,
+      "n_sims": 1000
+    },
+    {
+      "n_chains": 25,
+      "hr": 2.0,
+      "power_h1": 1.0,
+      "power_h2a": 0.994,
+      "power_h2b": 0.994,
+      "n_sims": 1000
+    }
+  ],
+  "recommended_n_hr15": 10,
+  "permissive_erosion_rate": 0.08481203007518796
+}

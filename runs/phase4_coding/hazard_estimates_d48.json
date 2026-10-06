@@ -1,0 +1,12 @@
+{
+  "agent_baseline_hazard": 0.007017543859649123,
+  "agent_events": 2,
+  "agent_risk": 285,
+  "cor_events": 2,
+  "cor_risk": 284,
+  "icc": 0.00650992648001544,
+  "var_between": 7.671567747238876e-05,
+  "permissive_erosion_rate": 0.08481203007518796,
+  "permissive_n": 3325,
+  "n_chains": 6
+}

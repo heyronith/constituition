@@ -1,0 +1,68 @@
+{
+  "spent_modal_usd": 22.431896684844197,
+  "remaining_budget_usd": 77.56810331515581,
+  "hard_cap_usd": 100.0,
+  "gpu_seconds_per_unit_round": {
+    "gemma4_12b|FORCED": 4.254078819496525,
+    "gemma4_12b|PERMISSIVE": 4.175436750442222,
+    "gemma4_31b|FORCED": 7.900432093350688,
+    "gemma4_31b|PERMISSIVE": 7.754382536535555,
+    "olmo3_7b_dpo|FORCED": 3.3424905010329837,
+    "olmo3_7b_dpo|PERMISSIVE": 3.2807003039188887,
+    "olmo3_7b_final|FORCED": 2.5914035351039857,
+    "olmo3_7b_final|PERMISSIVE": 4.279070820579056,
+    "olmo3_7b_sft|FORCED": 3.3424905010329837,
+    "olmo3_7b_sft|PERMISSIVE": 3.2807003039188887,
+    "qwen38_27b_nothink|FORCED": 6.0772554564236065,
+    "qwen38_27b_nothink|PERMISSIVE": 5.964909643488888,
+    "qwen38_27b_think|FORCED": 10.939059821562491,
+    "qwen38_27b_think|PERMISSIVE": 10.736837358279999
+  },
+  "judging_usd_per_transition": 0.0015484898414271568,
+  "projections": [
+    {
+      "n_chains": 10,
+      "generation_usd": 58.99978344,
+      "judging_usd": 104.05851734390494,
+      "total_usd": 163.05830078390494,
+      "unit_rounds": 12000,
+      "fits_remaining_budget": false
+    },
+    {
+      "n_chains": 15,
+      "generation_usd": 87.90781376,
+      "judging_usd": 156.0877760158574,
+      "total_usd": 243.9955897758574,
+      "unit_rounds": 18000,
+      "fits_remaining_budget": false
+    },
+    {
+      "n_chains": 20,
+      "generation_usd": 116.8149032,
+      "judging_usd": 208.11703468780988,
+      "total_usd": 324.9319378878099,
+      "unit_rounds": 24000,
+      "fits_remaining_budget": false
+    },
+    {
+      "n_chains": 25,
+      "generation_usd": 145.72120375999998,
+      "judging_usd": 260.14629335976235,
+      "total_usd": 405.86749711976233,
+      "unit_rounds": 30000,
+      "fits_remaining_budget": false
+    }
+  ],
+  "decision": "D48",
+  "event_mode": "primary_gpt54_plus_25pct_second",
+  "judging_api_usd_pilot_gpt54": 2.9432325000000024,
+  "judging_usd_per_transition_breakdown": {
+    "gpt54_per_transition": 0.0014584898414271568,
+    "mimo_per_transition_est": 0.00036,
+    "second_frac": 0.25,
+    "total": 0.0015484898414271568
+  },
+  "phase4_spent_modal_usd": 22.431896684844197,
+  "phase4_spent_api_usd": 0.0,
+  "phase4_hard_cap_usd": 32.0
+}

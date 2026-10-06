@@ -5,7 +5,9 @@ phase2_dryrun_hard_cap_usd: 11
 phase3_hard_cap_usd: 19
 # Phase 4F: cumulative Modal cap $32 (was $27); API (OpenAI Batch) hard cap $15.
 phase4_hard_cap_usd: 32
-api_hard_cap_usd: 15
+# D48: total API (OpenAI + OpenRouter) hard cap $20; OpenRouter alone ≤ $5.
+api_hard_cap_usd: 20
+openrouter_hard_cap_usd: 5
 colab_cu_cap: 100
 # D31: Colab abandoned; leave null. Do not block on CU balances.
 colab_l4_cu_per_hour: null

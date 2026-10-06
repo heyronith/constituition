@@ -57,14 +57,17 @@ class JudgeConfig(StrictModel):
         "modal_a100_80gb",
         "modal_h100",
         "openai_batch",
+        "openrouter",
     ]
     dtype: Literal["bf16", "auto"] = "bf16"
     selected: bool
     max_tokens: int = 256
     chat_template_kwargs: dict[str, Any] = Field(default_factory=dict)
     sampling: dict[str, Any]
-    provider: Literal["modal", "openai"] | None = None
+    provider: Literal["modal", "openai", "openrouter"] | None = None
     api_model: str | None = None
+    openrouter_provider_order: list[str] | None = None
+    allow_fallbacks: bool | None = None
 
 
 class JudgesFile(StrictModel):
@@ -122,6 +125,7 @@ class BudgetConfig(StrictModel):
     phase3_hard_cap_usd: float = 16.0
     phase4_hard_cap_usd: float = 27.0
     api_hard_cap_usd: float = 15.0
+    openrouter_hard_cap_usd: float = 5.0
     colab_cu_cap: float
     colab_l4_cu_per_hour: float | None
     checked_on: str

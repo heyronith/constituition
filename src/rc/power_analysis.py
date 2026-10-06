@@ -263,11 +263,17 @@ def run_power_table(
         adj = _holm([p_h1, p_h2a, p_h2b])
         return {"h1": adj[0] < 0.05, "h2a": adj[1] < 0.05, "h2b": adj[2] < 0.05}
 
-    # Serial or map-style (Modal will parallelize via .map).
+    # Parallel local workers via processes (GEE is CPU-bound / GIL-bound).
     tasks = [(n, hr, i) for n in n_values for hr in hrs for i in range(n_sims)]
     if workers > 1:
-        # Local multiprocess optional; default serial for tests.
-        results = [one_sim(t) for t in tasks]
+        from concurrent.futures import ProcessPoolExecutor
+
+        chunk_size = max(1, (len(tasks) + workers - 1) // workers)
+        chunks = [tasks[i : i + chunk_size] for i in range(0, len(tasks), chunk_size)]
+        payload = [(c, hazard, master_seed) for c in chunks]
+        with ProcessPoolExecutor(max_workers=workers) as pool:
+            nested = list(pool.map(_power_chunk_job, payload))
+        results = [r for chunk in nested for r in chunk]
     else:
         results = [one_sim(t) for t in tasks]
 
@@ -302,6 +308,14 @@ def run_power_table(
         "recommended_n_hr15": recommended,
         "permissive_erosion_rate": hazard.get("permissive_erosion_rate"),
     }
+
+
+def _power_chunk_job(
+    args: tuple[list[tuple[int, float, int]], dict[str, Any], int],
+) -> list[dict[str, bool]]:
+    """Picklable ProcessPool entry: (tasks, hazard, master_seed)."""
+    tasks, hazard, master_seed = args
+    return run_power_tasks(tasks, hazard, master_seed)
 
 
 def run_power_tasks(

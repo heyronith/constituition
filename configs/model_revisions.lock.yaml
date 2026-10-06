@@ -319,6 +319,54 @@ judges:
     weights_gb: 16.375657312572002
     fits: true
     flag: null
+- requested_id: XiaomiMiMo/MiMo-V2.6-Pro-RL
+  exact_repo_id: XiaomiMiMo/MiMo-V2.6-Pro-RL
+  sha: 73875d00b30a89ef8cc353a0b60b0e9f9561952d
+  gated: false
+  token_has_access: true
+  license: null
+  license_name: null
+  safetensors_gb: null
+  all_safetensors_gb: null
+  weight_file_source: null
+  parameter_count: null
+  param_bytes_bf16_gb: null
+  status: OK
+  error: null
+  candidates: []
+  chat_template:
+    enable_thinking_supported: false
+    think_token_supported: false
+    chat_template_inspected: false
+  judge_id: mimo_v26_pro
+  role: judge
+  fit:
+    compute: openrouter
+    note: D48 open-weights pin; served via OpenRouter Xiaomi provider (not Modal GPU).
+- requested_id: zai-org/GLM-5.3
+  exact_repo_id: zai-org/GLM-5.3
+  sha: aca966e4e02791568aa6a4ced368624b3d897f42
+  gated: false
+  token_has_access: true
+  license: null
+  license_name: null
+  safetensors_gb: null
+  all_safetensors_gb: null
+  weight_file_source: null
+  parameter_count: null
+  param_bytes_bf16_gb: null
+  status: OK
+  error: null
+  candidates: []
+  chat_template:
+    enable_thinking_supported: true
+    think_token_supported: false
+    chat_template_inspected: false
+  judge_id: glm53
+  role: judge
+  fit:
+    compute: openrouter
+    note: D48 fallback open-weights pin; served via OpenRouter z-ai provider.
 
 smoke_models:
 - config_id: qwen35_08b_smoke
