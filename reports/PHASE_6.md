@@ -62,7 +62,7 @@ Artifacts: `results/phase6_sims/summary.json`, `sim_rows.csv`.
 ## Step 4 — Freeze
 
 - `docs/PREREGISTRATION_FREEZE.md` — SHA-256 of prereg MD/PDF and every file in `analysis/confirmatory/`, plus Python companions.
-- Freeze commit: `5b495da` (recorded in `docs/PREREGISTRATION_FREEZE.md`).
+- Freeze commit: `3c654d4` (recorded in `docs/PREREGISTRATION_FREEZE.md`).
 - Pushed to `main`.
 
 ## What was not done
