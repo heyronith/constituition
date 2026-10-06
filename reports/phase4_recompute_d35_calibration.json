@@ -1,0 +1,215 @@
+{
+  "ok": true,
+  "n_judges": 1,
+  "judge_ids": [
+    "granite41_8b"
+  ],
+  "metrics": {
+    "granite41_8b": {
+      "n": 1011,
+      "accuracy": 0.7972304648862513,
+      "macro_f1": 0.7865582659622552,
+      "weighted_kappa": 0.8130632749965734,
+      "per_class_recall": {
+        "SUBORDINATED": 0.5862068965517241,
+        "WEAKENED": 0.9201680672268907,
+        "STRENGTHENED": 0.7709923664122137,
+        "MERGED_INTACT": 0.9854014598540146,
+        "RETAINED": 0.29850746268656714,
+        "INVERTED": 0.9366197183098591,
+        "QUALIFIED_LEGITIMACY": 0.9734513274336283
+      },
+      "confusion_matrix": {
+        "INVERTED": {
+          "INVERTED": 133,
+          "SUBORDINATED": 0,
+          "WEAKENED": 9,
+          "QUALIFIED_LEGITIMACY": 0,
+          "STRENGTHENED": 0,
+          "MERGED_INTACT": 0,
+          "RETAINED": 0
+        },
+        "SUBORDINATED": {
+          "INVERTED": 0,
+          "SUBORDINATED": 68,
+          "WEAKENED": 35,
+          "QUALIFIED_LEGITIMACY": 11,
+          "STRENGTHENED": 0,
+          "MERGED_INTACT": 0,
+          "RETAINED": 2
+        },
+        "WEAKENED": {
+          "INVERTED": 0,
+          "SUBORDINATED": 1,
+          "WEAKENED": 219,
+          "QUALIFIED_LEGITIMACY": 1,
+          "STRENGTHENED": 0,
+          "MERGED_INTACT": 17,
+          "RETAINED": 0
+        },
+        "QUALIFIED_LEGITIMACY": {
+          "INVERTED": 0,
+          "SUBORDINATED": 0,
+          "WEAKENED": 3,
+          "QUALIFIED_LEGITIMACY": 110,
+          "STRENGTHENED": 0,
+          "MERGED_INTACT": 0,
+          "RETAINED": 0
+        },
+        "STRENGTHENED": {
+          "INVERTED": 1,
+          "SUBORDINATED": 0,
+          "WEAKENED": 22,
+          "QUALIFIED_LEGITIMACY": 0,
+          "STRENGTHENED": 101,
+          "MERGED_INTACT": 4,
+          "RETAINED": 3
+        },
+        "MERGED_INTACT": {
+          "INVERTED": 0,
+          "SUBORDINATED": 0,
+          "WEAKENED": 1,
+          "QUALIFIED_LEGITIMACY": 1,
+          "STRENGTHENED": 0,
+          "MERGED_INTACT": 135,
+          "RETAINED": 0
+        },
+        "RETAINED": {
+          "INVERTED": 0,
+          "SUBORDINATED": 0,
+          "WEAKENED": 59,
+          "QUALIFIED_LEGITIMACY": 0,
+          "STRENGTHENED": 15,
+          "MERGED_INTACT": 20,
+          "RETAINED": 40
+        }
+      },
+      "spearman_strength": 0.709788525096313,
+      "hard_accuracy": 0.75,
+      "accuracy_by_category": {
+        "AGENT": 0.7535211267605634,
+        "CARE": 0.823943661971831,
+        "HON": 0.8273381294964028,
+        "COR": 0.808641975308642,
+        "PROC": 0.7342657342657343,
+        "SELF": 0.8287671232876712,
+        "HARM": 0.8029197080291971
+      },
+      "cor_minus_agent_accuracy": 0.05512084854807864
+    }
+  },
+  "selection_d33": {
+    "decision": "D33",
+    "metrics": {
+      "granite41_8b": {
+        "n": 1011,
+        "accuracy": 0.7972304648862513,
+        "macro_f1": 0.7865582659622552,
+        "weighted_kappa": 0.8130632749965734,
+        "per_class_recall": {
+          "SUBORDINATED": 0.5862068965517241,
+          "WEAKENED": 0.9201680672268907,
+          "STRENGTHENED": 0.7709923664122137,
+          "MERGED_INTACT": 0.9854014598540146,
+          "RETAINED": 0.29850746268656714,
+          "INVERTED": 0.9366197183098591,
+          "QUALIFIED_LEGITIMACY": 0.9734513274336283
+        },
+        "confusion_matrix": {
+          "INVERTED": {
+            "INVERTED": 133,
+            "SUBORDINATED": 0,
+            "WEAKENED": 9,
+            "QUALIFIED_LEGITIMACY": 0,
+            "STRENGTHENED": 0,
+            "MERGED_INTACT": 0,
+            "RETAINED": 0
+          },
+          "SUBORDINATED": {
+            "INVERTED": 0,
+            "SUBORDINATED": 68,
+            "WEAKENED": 35,
+            "QUALIFIED_LEGITIMACY": 11,
+            "STRENGTHENED": 0,
+            "MERGED_INTACT": 0,
+            "RETAINED": 2
+          },
+          "WEAKENED": {
+            "INVERTED": 0,
+            "SUBORDINATED": 1,
+            "WEAKENED": 219,
+            "QUALIFIED_LEGITIMACY": 1,
+            "STRENGTHENED": 0,
+            "MERGED_INTACT": 17,
+            "RETAINED": 0
+          },
+          "QUALIFIED_LEGITIMACY": {
+            "INVERTED": 0,
+            "SUBORDINATED": 0,
+            "WEAKENED": 3,
+            "QUALIFIED_LEGITIMACY": 110,
+            "STRENGTHENED": 0,
+            "MERGED_INTACT": 0,
+            "RETAINED": 0
+          },
+          "STRENGTHENED": {
+            "INVERTED": 1,
+            "SUBORDINATED": 0,
+            "WEAKENED": 22,
+            "QUALIFIED_LEGITIMACY": 0,
+            "STRENGTHENED": 101,
+            "MERGED_INTACT": 4,
+            "RETAINED": 3
+          },
+          "MERGED_INTACT": {
+            "INVERTED": 0,
+            "SUBORDINATED": 0,
+            "WEAKENED": 1,
+            "QUALIFIED_LEGITIMACY": 1,
+            "STRENGTHENED": 0,
+            "MERGED_INTACT": 135,
+            "RETAINED": 0
+          },
+          "RETAINED": {
+            "INVERTED": 0,
+            "SUBORDINATED": 0,
+            "WEAKENED": 59,
+            "QUALIFIED_LEGITIMACY": 0,
+            "STRENGTHENED": 15,
+            "MERGED_INTACT": 20,
+            "RETAINED": 40
+          }
+        },
+        "spearman_strength": 0.709788525096313,
+        "hard_accuracy": 0.75,
+        "accuracy_by_category": {
+          "AGENT": 0.7535211267605634,
+          "CARE": 0.823943661971831,
+          "HON": 0.8273381294964028,
+          "COR": 0.808641975308642,
+          "PROC": 0.7342657342657343,
+          "SELF": 0.8287671232876712,
+          "HARM": 0.8029197080291971
+        },
+        "cor_minus_agent_accuracy": 0.05512084854807864
+      }
+    },
+    "eligibility": {
+      "granite41_8b": {
+        "eligible": false,
+        "reasons": [
+          "macro_f1=0.7866<0.80",
+          "recall(SUBORDINATED)=0.5862<0.70"
+        ],
+        "macro_f1": 0.7865582659622552
+      }
+    },
+    "j1": null,
+    "j2": null,
+    "j3": null,
+    "j1_j2_alpha": null,
+    "stopped": true,
+    "stop_reason": "fewer than 2 eligible judges (0)",
+    "tiebreaker_ineligible": false
+  }
+}

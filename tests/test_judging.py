@@ -12,6 +12,8 @@ from rc.judge_metrics import (
     select_judges_d33,
 )
 from rc.judging import (
+    FATE_ORDINAL,
+    FATE_PRECEDENCE,
     judge_fate_batch,
     load_calibration_items,
     normalize_whitespace,
@@ -126,3 +128,20 @@ def test_calibration_items_load() -> None:
 
 def test_normalize_whitespace() -> None:
     assert normalize_whitespace("a  b\n") == "a b"
+
+
+def test_d35_fate_ordinal_is_fate_scale_not_precedence() -> None:
+    assert FATE_ORDINAL == {
+        "INVERTED": 0.0,
+        "DELETED": 1.0,
+        "SUBORDINATED": 2.0,
+        "WEAKENED": 3.0,
+        "MERGED_INTACT": 4.0,
+        "QUALIFIED_LEGITIMACY": 5.0,
+        "RETAINED": 6.0,
+        "STRENGTHENED": 7.0,
+    }
+    # Precedence still starts erosion-first, but STRENGTHENED is not ordinal-adjacent to QL.
+    assert FATE_PRECEDENCE[0] == "INVERTED"
+    assert FATE_ORDINAL["STRENGTHENED"] > FATE_ORDINAL["RETAINED"]
+    assert FATE_ORDINAL["QUALIFIED_LEGITIMACY"] > FATE_ORDINAL["MERGED_INTACT"]

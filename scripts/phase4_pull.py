@@ -25,15 +25,29 @@ def main() -> None:
         shutil.rmtree(dest)
     shutil.copytree(src, dest)
 
-    # Append pending ledger if present.
-    pending = dest / "ledger_pending.jsonl"
+    # Append pending ledger rows not already present (idempotent on re-pull).
     ledger = root / "budget" / "ledger.jsonl"
-    if pending.exists() and pending.stat().st_size:
+    existing = set()
+    if ledger.exists():
+        existing = {
+            line.strip()
+            for line in ledger.read_text(encoding="utf-8").splitlines()
+            if line.strip()
+        }
+    for name in ("ledger_pending.jsonl", "ledger_pending_active.jsonl"):
+        pending = dest / name
+        if not pending.exists() or pending.stat().st_size == 0:
+            continue
+        n_new = 0
         with ledger.open("a", encoding="utf-8") as out, pending.open(encoding="utf-8") as inp:
             for line in inp:
-                if line.strip():
-                    out.write(line if line.endswith("\n") else line + "\n")
-        print(f"appended {pending} → {ledger}")
+                stripped = line.strip()
+                if not stripped or stripped in existing:
+                    continue
+                out.write(stripped + "\n")
+                existing.add(stripped)
+                n_new += 1
+        print(f"appended {n_new} new rows from {pending} → {ledger}")
 
     # Copy key summaries into reports/
     for name in (

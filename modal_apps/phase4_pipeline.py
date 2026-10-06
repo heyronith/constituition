@@ -53,6 +53,7 @@ image = (
         "pyyaml",
         "python-dotenv",
         "textstat>=0.7.13",
+        "mistral_common>=1.6.2",
     )
     .env(
         {
@@ -133,7 +134,9 @@ def _write_status(stage: str, state: str, **extra) -> dict:
 
 
 def _append_pending_ledger(row: dict) -> None:
-    path = Path(PHASE4_DIR) / "ledger_pending.jsonl"
+    """Append a spend row. Resume mode uses ledger_pending_active.jsonl only."""
+    active = Path(PHASE4_DIR) / "ledger_pending_active.jsonl"
+    path = active if active.exists() else Path(PHASE4_DIR) / "ledger_pending.jsonl"
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("a", encoding="utf-8") as fh:
         fh.write(json.dumps(row, sort_keys=True) + "\n")
@@ -692,22 +695,21 @@ def run_power_and_g4(n_sims: int = 1000) -> dict:
     cpu=2,
     memory=4096,
 )
-def orchestrate() -> dict:
-    """Unattended Phase 4 stages 1–6."""
+def orchestrate(spent_at_launch: float = 0.0, skip_downloads: bool = False) -> dict:
+    """Unattended Phase 4 stages 1–6.
+
+    ``spent_at_launch`` is the local ledger Modal total at spawn time (budget/
+    is not mounted on the worker). Pending rows on the volume are added on top.
+    """
     root = _setup_remote_repo()
-    from rc.budget import spent_modal_usd
     from rc.generation import load_lock_revision
 
-    spend0 = spent_modal_usd(root)
-    # Also count pending already on volume.
     pending_path = Path(PHASE4_DIR) / "ledger_pending.jsonl"
-    pending_spend = 0.0
-    if pending_path.exists():
-        for line in pending_path.read_text(encoding="utf-8").splitlines():
-            if line.strip():
-                row = json.loads(line)
-                if row.get("actual_usd") is not None:
-                    pending_spend += float(row["actual_usd"])
+    # Rows already merged into the local ledger before this resume should not
+    # be double-counted: prefer ledger_pending_active.jsonl if present.
+    active_pending = Path(PHASE4_DIR) / "ledger_pending_active.jsonl"
+    if active_pending.exists():
+        pending_path = active_pending
 
     def spend_now() -> float:
         extra = 0.0
@@ -717,33 +719,38 @@ def orchestrate() -> dict:
                     row = json.loads(line)
                     if row.get("actual_usd") is not None:
                         extra += float(row["actual_usd"])
-        return spend0 + extra
+        return float(spent_at_launch) + extra
 
     _write_status("download", "running", spend_usd=spend_now())
 
-    # Stage 1: parallel downloads
-    repos = []
-    for jid in JUDGE_GPU:
-        repo_id, sha = load_lock_revision(jid, root=root)
-        repos.append((repo_id, sha))
-    handles = [download_judge.spawn(r, s) for r, s in repos]
-    download_results = [h.get() for h in handles]
-    for (repo_id, _), res in zip(repos, download_results, strict=True):
-        _append_pending_ledger(
-            {
-                "timestamp_utc": _now(),
-                "job_id": f"phase4-download-{repo_id.replace('/', '_')}",
-                "phase": "4",
-                "platform": "modal",
-                "gpu": "cpu",
-                "actual_seconds": res["seconds"],
-                "actual_usd": _estimate("cpu", int(res["seconds"]) + 1),
-                "note": "judge weight download",
-            }
+    # Stage 1: parallel downloads (skippable on resume when cache is warm).
+    if skip_downloads:
+        _write_status("download", "done", spend_usd=spend_now(), downloads=0, skipped=True)
+    else:
+        repos = []
+        for jid in JUDGE_GPU:
+            repo_id, sha = load_lock_revision(jid, root=root)
+            repos.append((repo_id, sha))
+        handles = [download_judge.spawn(r, s) for r, s in repos]
+        download_results = [h.get() for h in handles]
+        for (repo_id, _), res in zip(repos, download_results, strict=True):
+            _append_pending_ledger(
+                {
+                    "timestamp_utc": _now(),
+                    "job_id": f"phase4-download-{repo_id.replace('/', '_')}",
+                    "phase": "4",
+                    "platform": "modal",
+                    "gpu": "cpu",
+                    "actual_seconds": res["seconds"],
+                    "actual_usd": _estimate("cpu", int(res["seconds"]) + 1),
+                    "note": "judge weight download",
+                }
+            )
+        _write_status(
+            "download", "done", spend_usd=spend_now(), downloads=len(download_results)
         )
-    _write_status("download", "done", spend_usd=spend_now(), downloads=len(download_results))
 
-    # Stage 2: calibration (sequential to keep spend predictable under $8)
+    # Stage 2: calibration (sequential; skip judges with existing jsonl).
     _write_status("calibration", "running", spend_usd=spend_now())
     calib_fns = [
         ("granite41_8b", "L40S", calib_granite),
@@ -752,6 +759,9 @@ def orchestrate() -> dict:
         ("gptoss_120b", "H100", calib_gptoss_120b),
     ]
     for jid, gpu, fn in calib_fns:
+        existing = Path(PHASE4_DIR) / "calib" / f"{jid}.jsonl"
+        if existing.exists() and existing.stat().st_size > 0:
+            continue
         # Soft preflight against cumulative $27 using pending spend.
         from rc.config import load_budget
 
@@ -1023,9 +1033,27 @@ def main() -> None:
             ]
         )
 
-    remaining = load_budget(root).phase4_hard_cap_usd - spent_modal_usd(root)
+    spent = spent_modal_usd(root)
+    remaining = load_budget(root).phase4_hard_cap_usd - spent
     print(f"phase4 remaining ≈ ${remaining:.2f}; spawning orchestrate")
     print("git_sha", local_git_sha(root))
-    handle = orchestrate.spawn()
+    # Fresh active pending file so resumed spend isn't double-counted.
+    import tempfile
+
+    # Touch empty active pending on the volume via a tiny put of empty file.
+    tmp = Path(tempfile.mkdtemp()) / "ledger_pending_active.jsonl"
+    tmp.write_text("", encoding="utf-8")
+    subprocess.check_call(
+        [
+            "modal",
+            "volume",
+            "put",
+            "rc-runs",
+            str(tmp),
+            "phase4/ledger_pending_active.jsonl",
+            "--force",
+        ]
+    )
+    handle = orchestrate.spawn(spent, True)
     print(f"orchestrate spawned: {handle.object_id}")
     print("poll with: uv run python scripts/phase4_status.py")

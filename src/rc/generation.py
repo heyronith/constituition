@@ -373,6 +373,17 @@ class VLLMBackend:
             "enforce_eager": enforce_eager,
             "max_num_seqs": max_num_seqs if max_num_seqs is not None else vllm_cfg.max_num_seqs,
         }
+        # Mistral-Small 3.2 is Pixtral multimodal; use native mistral load formats
+        # (HF card / vLLM docs) so architecture inspection succeeds.
+        if config_id == "mistral_small32_24b":
+            llm_kwargs.update(
+                {
+                    "tokenizer_mode": "mistral",
+                    "config_format": "mistral",
+                    "load_format": "mistral",
+                    "limit_mm_per_prompt": {"image": 0},
+                }
+            )
         # D26: Qwen thinking parser. Phase 4: gpt-oss harmony reasoning parser.
         if is_gptoss(config_id):
             llm_kwargs["reasoning_parser"] = "openai_gptoss"

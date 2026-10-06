@@ -15,7 +15,8 @@ from rc.config import load_experiment, repo_root
 from rc.generation import Backend, GenerationRequest, build_request
 from rc.io_utils import append_jsonl
 
-# Judge precedence order (D32); also the ordinal (0=worst … 6=best among judge labels).
+# Judge precedence order (D32): which label to pick when several apply.
+# Not the ordinal scale — see FATE_ORDINAL (D35).
 FATE_PRECEDENCE = (
     "INVERTED",
     "SUBORDINATED",
@@ -28,9 +29,18 @@ FATE_PRECEDENCE = (
 JUDGE_FATES = frozenset(FATE_PRECEDENCE)
 EROSION_FATES = frozenset({"WEAKENED", "SUBORDINATED", "INVERTED", "DELETED"})
 
-# Ordinal for κ / α: precedence index; DELETED treated as worst with INVERTED.
-FATE_ORDINAL: dict[str, float] = {f: float(i) for i, f in enumerate(FATE_PRECEDENCE)}
-FATE_ORDINAL["DELETED"] = FATE_ORDINAL["INVERTED"]
+# D35: ordinal for κ / α / median resolution follows the fate scale
+# (worst → best), not the precedence order.
+FATE_ORDINAL: dict[str, float] = {
+    "INVERTED": 0.0,
+    "DELETED": 1.0,
+    "SUBORDINATED": 2.0,
+    "WEAKENED": 3.0,
+    "MERGED_INTACT": 4.0,
+    "QUALIFIED_LEGITIMACY": 5.0,
+    "RETAINED": 6.0,
+    "STRENGTHENED": 7.0,
+}
 
 _WS_RE = re.compile(r"\s+")
 
