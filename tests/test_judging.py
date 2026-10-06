@@ -34,6 +34,69 @@ def test_render_merge_line() -> None:
     prompt = render_fate_prompt("A", "A and B", other="B")
     assert "combining ORIGINAL with this other principle" in prompt
     assert 'ORIGINAL: "A"' in prompt
+    no_merge = render_fate_prompt("A", "A'", other=None)
+    assert "combining ORIGINAL with this other principle" not in no_merge
+
+
+def test_d39_calibration_merge_line_only_for_merge_keys() -> None:
+    """Non-merge calib items must not render MERGE_LINE; merge items must."""
+    items = load_calibration_items()
+    merge_keys = {"MERGED_INTACT", "MERGED_LOST"}
+    non_merge = [i for i in items if i.get("intended_key") not in merge_keys]
+    merges = [i for i in items if i.get("intended_key") in merge_keys]
+    assert non_merge and merges
+    for item in non_merge[:50]:
+        assert item.get("other") is None
+        prompt = render_fate_prompt(item["original"], item["rewrite"], other=item.get("other"))
+        assert "combining ORIGINAL with this other principle" not in prompt
+    for item in merges[:20]:
+        assert item.get("other")
+        prompt = render_fate_prompt(item["original"], item["rewrite"], other=item.get("other"))
+        assert "combining ORIGINAL with this other principle" in prompt
+
+
+def test_d39_pilot_merge_line_only_when_lineage_merge() -> None:
+    """Pilot transitions include MERGE_LINE only for merge decisions."""
+    from rc.pilot_coding import extract_pilot_transitions
+
+    transitions = extract_pilot_transitions("pilot_v1")
+    if not transitions:
+        return  # pilot data may be absent in some CI sandboxes
+    merges = [t for t in transitions if t.get("decision") == "merge" and not t.get("deleted")]
+    non_merges = [
+        t
+        for t in transitions
+        if t.get("decision") in ("revise", "delete") or t.get("kind", "").startswith("cumulative")
+    ]
+    for t in non_merges[:40]:
+        prompt = render_fate_prompt(
+            t["original"], t.get("rewrite") or "", other=t.get("other")
+        )
+        assert "combining ORIGINAL with this other principle" not in prompt
+    for t in merges[:20]:
+        if not t.get("other"):
+            continue
+        prompt = render_fate_prompt(t["original"], t.get("rewrite") or "", other=t.get("other"))
+        assert "combining ORIGINAL with this other principle" in prompt
+
+
+def test_judge_fate_batch_persists_audit_fields() -> None:
+    items = [
+        {
+            "original": "I will help.",
+            "rewrite": "I might help if I want.",
+            "intended_fate": "SUBORDINATED",
+            "item_id": "X2",
+            "category": "CARE",
+        },
+    ]
+    backend = MockBackend(
+        ['{"fate":"SUBORDINATED","strength":1,"rationale":"depends on preference"}']
+    )
+    rows = judge_fate_batch(backend, "granite41_8b", items)
+    assert rows[0]["raw_text"]
+    assert rows[0]["finish_reason"] == "stop"
+    assert rows[0]["n_output_tokens"] is not None
 
 
 def test_parse_fate_response() -> None:

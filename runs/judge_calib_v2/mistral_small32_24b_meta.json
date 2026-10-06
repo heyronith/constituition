@@ -1,0 +1,9 @@
+{
+  "judge_id": "mistral_small32_24b",
+  "run_tag": "judge_calib_v2",
+  "n": 1011,
+  "n_ok": 1011,
+  "n_merge_line": 240,
+  "load_s": 233.219432807,
+  "gpu": "A100-80GB"
+}

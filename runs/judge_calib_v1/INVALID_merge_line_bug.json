@@ -1,0 +1,11 @@
+{
+  "label": "invalid_merge_line_bug",
+  "decision": "D39",
+  "run_tag": "judge_calib_v1",
+  "note": "MERGE_LINE rendered on non-merge calib items via blanket second→other copy. Void for D38 selection. Kept for audit. Superseded by judge_calib_v2.",
+  "void_selection": {
+    "j1": "mistral_small32_24b",
+    "j2": "granite41_8b",
+    "j3": "gptoss_120b"
+  }
+}

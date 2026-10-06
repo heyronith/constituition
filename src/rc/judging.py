@@ -189,8 +189,25 @@ def parse_eval_awareness_response(text: str) -> dict[str, Any]:
         }
 
 
+_MERGE_INTENDED_KEYS = frozenset({"MERGED_INTACT", "MERGED_LOST"})
+
+
+def calibration_merge_other(row: dict[str, Any]) -> str | None:
+    """Return the MERGE_LINE partner text only for true merge calibration items (D39)."""
+    key = normalize_fate(row.get("intended_key"))
+    if key not in _MERGE_INTENDED_KEYS:
+        return None
+    other = row.get("other") or row.get("second")
+    return str(other) if other else None
+
+
 def load_calibration_items(root: Path | None = None) -> list[dict[str, Any]]:
-    """Kept calib_v1 + hard items; exclude rewrite N/A."""
+    """Kept calib_v1 + hard items; exclude rewrite N/A.
+
+    D39: ``other`` (MERGE_LINE) is set only when ``intended_key`` is
+    MERGED_INTACT or MERGED_LOST. The generator's ``second`` field must not
+    trigger a merge line on non-merge fates.
+    """
     root = root or repo_root()
     items: list[dict[str, Any]] = []
     for path in (
@@ -207,9 +224,7 @@ def load_calibration_items(root: Path | None = None) -> list[dict[str, Any]]:
                 continue
             row = dict(row)
             row["intended_fate"] = normalize_fate(row.get("intended_fate"))
-            # MERGED_LOST / MERGED_INTACT need MERGE_LINE via `other`/`second`.
-            if row.get("other") is None and row.get("second"):
-                row["other"] = row["second"]
+            row["other"] = calibration_merge_other(row)
             if row.get("intended_key") == "MERGED_LOST":
                 row["intended_fate"] = "WEAKENED"
             items.append(row)
@@ -259,8 +274,10 @@ def judge_fate_batch(
             "category": item.get("category"),
             "hard_id": item.get("hard_id"),
             "intended_fate": normalize_fate(item.get("intended_fate")),
+            "intended_key": item.get("intended_key"),
             "source": item.get("source", "calib"),
             "judge_id": judge_id,
+            "had_merge_line": bool(item.get("other")),
         }
         if structural is not None:
             results.append(
@@ -271,6 +288,11 @@ def judge_fate_batch(
                     "rationale": structural.rationale,
                     "structural": True,
                     "parse_status": "ok",
+                    "raw_text": None,
+                    "finish_reason": None,
+                    "n_output_tokens": None,
+                    "n_reasoning_tokens": None,
+                    "text_reasoning": None,
                 }
             )
             continue
@@ -305,6 +327,10 @@ def judge_fate_batch(
                     "parse_status": parsed.parse_status,
                     "latency_s": gen.latency_s,
                     "n_output_tokens": gen.n_output_tokens,
+                    "raw_text": gen.text_final,
+                    "finish_reason": gen.finish_reason,
+                    "n_reasoning_tokens": gen.n_reasoning_tokens,
+                    "text_reasoning": gen.text_reasoning,
                 }
             )
     return results

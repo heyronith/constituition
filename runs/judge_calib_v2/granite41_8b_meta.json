@@ -1,0 +1,9 @@
+{
+  "judge_id": "granite41_8b",
+  "run_tag": "judge_calib_v2",
+  "n": 1011,
+  "n_ok": 1011,
+  "n_merge_line": 240,
+  "load_s": 152.754122666,
+  "gpu": "L40S"
+}

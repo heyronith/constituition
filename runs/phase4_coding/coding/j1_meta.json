@@ -1,0 +1,7 @@
+{
+  "role": "j1",
+  "judge_id": "mistral_small32_24b",
+  "n": 2040,
+  "load_s": 181.187044579,
+  "n_eval": 320
+}

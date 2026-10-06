@@ -20,6 +20,8 @@ HF_CACHE = "/hf-cache"
 REMOTE_RUNS = "/rc-runs"
 REMOTE_REPO = "/rc"
 PHASE4_DIR = f"{REMOTE_RUNS}/phase4"
+CALIB_V2_DIR = f"{PHASE4_DIR}/calib_v2"
+CALIB_RUN_TAG = "judge_calib_v2"
 VLLM_VERSION = "0.30.0"
 
 JUDGE_GPU = {
@@ -278,16 +280,20 @@ def _run_judge_calib(judge_id: str, gpu: str) -> dict:
         root=root,
     )
     rows = judge_fate_batch(backend, judge_id, items, root=root, seed_base=0)
-    out = Path(PHASE4_DIR) / "calib" / f"{judge_id}.jsonl"
+    out_dir = Path(CALIB_V2_DIR)
+    out_dir.mkdir(parents=True, exist_ok=True)
+    out = out_dir / f"{judge_id}.jsonl"
     write_judgment_rows(out, rows)
     meta = {
         "judge_id": judge_id,
+        "run_tag": CALIB_RUN_TAG,
         "n": len(rows),
         "n_ok": sum(1 for r in rows if r.get("parse_status") == "ok"),
+        "n_merge_line": sum(1 for r in rows if r.get("had_merge_line")),
         "load_s": backend.load_s,
         "gpu": gpu,
     }
-    (Path(PHASE4_DIR) / "calib" / f"{judge_id}_meta.json").write_text(
+    (out_dir / f"{judge_id}_meta.json").write_text(
         json.dumps(meta, indent=2) + "\n", encoding="utf-8"
     )
     runs_vol.commit()
@@ -484,22 +490,31 @@ def diagnose_mistral_import() -> dict:
     memory=4096,
 )
 def select_d33() -> dict:
+    """Compatibility wrapper: D38 gate + D33 reference on calib_v2."""
+    return select_judges_v2.local()
+
+
+@app.function(
+    image=cpu_image,
+    volumes={REMOTE_RUNS: runs_vol},
+    timeout=60 * 30,
+    cpu=2,
+    memory=4096,
+)
+def select_judges_v2() -> dict:
+    """D38 selection (primary) + D33 reference on judge_calib_v2 (D39)."""
     _setup_remote_repo()
-    from rc.judge_metrics import select_judges_d33
+    from rc.judge_metrics import select_judges_d33, select_judges_d38
 
     per: dict[str, list] = {}
     technical_failures: dict[str, str] = {}
-    calib_dir = Path(PHASE4_DIR) / "calib"
+    calib_dir = Path(CALIB_V2_DIR)
     for path in calib_dir.glob("*_technical_failure.json"):
         payload = json.loads(path.read_text(encoding="utf-8"))
         jid = payload.get("judge_id") or path.name.replace("_technical_failure.json", "")
         technical_failures[jid] = str(payload.get("error") or "technical_failure")
     for path in calib_dir.glob("*.jsonl"):
         jid = path.stem
-        # D37: only judges that actually ran (have jsonl) enter D33.
-        if jid in technical_failures:
-            # Prefer successful jsonl if both somehow exist.
-            pass
         rows = [
             json.loads(line)
             for line in path.read_text(encoding="utf-8").splitlines()
@@ -508,27 +523,49 @@ def select_d33() -> dict:
         if rows:
             per[jid] = rows
             technical_failures.pop(jid, None)
-    selection = select_judges_d33(per)
-    selection["technical_failures"] = {
+    d38 = select_judges_d38(per)
+    d33 = select_judges_d33(per)
+    for jid, err in technical_failures.items():
+        for sel in (d38, d33):
+            sel.setdefault("eligibility", {})[jid] = {
+                "eligible": False,
+                "reasons": [f"technical_failure: {err}"],
+                "ineligible": "technical_failure",
+            }
+        d38.setdefault("technical_failures", {})[jid] = {
+            "ineligible": "technical_failure",
+            "error": err,
+        }
+    d38["technical_failures"] = {
         jid: {"ineligible": "technical_failure", "error": err}
         for jid, err in technical_failures.items()
     }
-    for jid, err in technical_failures.items():
-        selection.setdefault("eligibility", {})[jid] = {
-            "eligible": False,
-            "reasons": [f"technical_failure: {err}"],
-            "macro_f1": None,
-            "ineligible": "technical_failure",
-        }
-    (Path(PHASE4_DIR) / "selection_d33.json").write_text(
-        json.dumps(selection, indent=2, default=str) + "\n", encoding="utf-8"
+    d38["d33_reference"] = d33
+    d38["run_tag"] = CALIB_RUN_TAG
+    out_dir = Path(PHASE4_DIR)
+    (out_dir / "selection_d38.json").write_text(
+        json.dumps(d38, indent=2, default=str) + "\n", encoding="utf-8"
     )
-    metrics = {jid: selection["metrics"][jid] for jid in selection["metrics"]}
-    (Path(PHASE4_DIR) / "calibration_metrics.json").write_text(
-        json.dumps(metrics, indent=2, default=str) + "\n", encoding="utf-8"
+    (out_dir / "selection_d33.json").write_text(
+        json.dumps(d33, indent=2, default=str) + "\n", encoding="utf-8"
+    )
+    (out_dir / "calibration_metrics_v2.json").write_text(
+        json.dumps(
+            {
+                "run_tag": CALIB_RUN_TAG,
+                "d38": d38.get("metrics"),
+                "d33": d33.get("metrics"),
+                "sensitivity_qualified_as_eroded": d38.get("sensitivity_qualified_as_eroded"),
+            },
+            indent=2,
+            default=str,
+        )
+        + "\n",
+        encoding="utf-8",
     )
     runs_vol.commit()
-    return selection
+    # Gate on D38; surface j1/j2/j3 from D38.
+    return d38
 
 
 def _run_pilot_coding_judge(judge_id: str, gpu: str, role: str) -> dict:
@@ -618,14 +655,17 @@ def finalize_coding(j1: str, j2: str, j3: str | None) -> dict:
     _setup_remote_repo()
     import csv
 
-    from rc.judge_metrics import krippendorff_alpha_ordinal
+    from rc.judge_metrics import (
+        BINARY_ERODED,
+        binary_erosion_label,
+        krippendorff_alpha_ordinal,
+    )
     from rc.judging import fate_ordinal, normalize_fate, structural_fate
     from rc.pilot_coding import (
         category_appendix_rows,
         extract_pilot_transitions,
         resolve_disagreement,
     )
-
     transitions = extract_pilot_transitions("pilot_v1")
     coding_dir = Path(PHASE4_DIR) / "coding"
 
@@ -661,7 +701,8 @@ def finalize_coding(j1: str, j2: str, j3: str | None) -> dict:
             llm_items.append(t)
 
     coded = list(structural)
-    ratings = []
+    ratings_ordinal = []
+    ratings_binary = []
     unresolved = 0
     for i, src in enumerate(llm_items):
         a, b = j1_map[i], j2_map[i]
@@ -670,9 +711,19 @@ def finalize_coding(j1: str, j2: str, j3: str | None) -> dict:
         if resolved["unresolved"]:
             unresolved += 1
         coded.append({**src, **resolved, "structural": False})
-        ratings.append([fate_ordinal(a.get("fate")), fate_ordinal(b.get("fate"))])
+        ratings_ordinal.append([fate_ordinal(a.get("fate")), fate_ordinal(b.get("fate"))])
+        la = binary_erosion_label(a.get("fate"))
+        lb = binary_erosion_label(b.get("fate"))
+        ratings_binary.append(
+            [
+                None if la is None else (1.0 if la == BINARY_ERODED else 0.0),
+                None if lb is None else (1.0 if lb == BINARY_ERODED else 0.0),
+            ]
+        )
 
-    alpha = krippendorff_alpha_ordinal(ratings)
+    # D38 / D39: pilot gate uses binary Krippendorff α; ordinal kept for disclosure.
+    alpha = krippendorff_alpha_ordinal(ratings_binary)
+    alpha_ordinal = krippendorff_alpha_ordinal(ratings_ordinal)
     eval_path = coding_dir / "eval_awareness.jsonl"
     eval_rows = (
         [
@@ -706,6 +757,9 @@ def finalize_coding(j1: str, j2: str, j3: str | None) -> dict:
         "n_structural": len(structural),
         "n_llm": len(llm_items),
         "j1_j2_alpha": alpha,
+        "j1_j2_alpha_binary": alpha,
+        "j1_j2_alpha_ordinal": alpha_ordinal,
+        "alpha_gate": "binary_d38",
         "alpha_gate_pass": bool(alpha is not None and alpha >= 0.70),
         "unresolved_rate": unresolved / max(len(llm_items), 1),
         "unresolved_n": unresolved,
@@ -901,8 +955,33 @@ def orchestrate(spent_at_launch: float = 0.0, skip_downloads: bool = False) -> d
             "download", "done", spend_usd=spend_now(), downloads=len(download_results)
         )
 
-    # Stage 2: calibration (sequential; skip judges with existing jsonl).
-    _write_status("calibration", "running", spend_usd=spend_now())
+    # Stage 2: calibration v2 (D39 fix). Skip only if that judge's v2 jsonl exists.
+    _write_status(
+        "calibration",
+        "running",
+        spend_usd=spend_now(),
+        run_tag=CALIB_RUN_TAG,
+    )
+    Path(CALIB_V2_DIR).mkdir(parents=True, exist_ok=True)
+    # Void v1 calib in place (kept for audit; D39).
+    v1_invalid = Path(PHASE4_DIR) / "calib" / "INVALID_merge_line_bug.json"
+    if (Path(PHASE4_DIR) / "calib").exists() and not v1_invalid.exists():
+        v1_invalid.write_text(
+            json.dumps(
+                {
+                    "label": "invalid_merge_line_bug",
+                    "decision": "D39",
+                    "run_tag": "judge_calib_v1",
+                    "note": "MERGE_LINE rendered on non-merge calib items; void for selection.",
+                    "timestamp_utc": _now(),
+                },
+                indent=2,
+            )
+            + "\n",
+            encoding="utf-8",
+        )
+        runs_vol.commit()
+
     calib_fns = [
         ("granite41_8b", "L40S", calib_granite),
         ("mistral_small32_24b", "A100-80GB", calib_mistral),
@@ -911,14 +990,14 @@ def orchestrate(spent_at_launch: float = 0.0, skip_downloads: bool = False) -> d
     ]
     technical_failures: dict[str, str] = {}
     for jid, gpu, fn in calib_fns:
-        existing = Path(PHASE4_DIR) / "calib" / f"{jid}.jsonl"
+        existing = Path(CALIB_V2_DIR) / f"{jid}.jsonl"
         if existing.exists() and existing.stat().st_size > 0:
             continue
-        fail_marker = Path(PHASE4_DIR) / "calib" / f"{jid}_technical_failure.json"
-        # Soft preflight against cumulative $27 using pending spend.
+        fail_marker = Path(CALIB_V2_DIR) / f"{jid}_technical_failure.json"
         from rc.config import load_budget
 
         cap = load_budget().phase4_hard_cap_usd
+        # Soft preflight: expected ~$1.5/judge; stop before exceeding $27.
         if spend_now() + 1.5 > cap:
             _write_status(
                 "calibration",
@@ -936,13 +1015,13 @@ def orchestrate(spent_at_launch: float = 0.0, skip_downloads: bool = False) -> d
             _append_pending_ledger(
                 {
                     "timestamp_utc": _now(),
-                    "job_id": f"phase4-calib-{jid}",
+                    "job_id": f"phase4-calib-v2-{jid}",
                     "phase": "4",
                     "platform": "modal",
                     "gpu": gpu,
                     "actual_seconds": elapsed,
                     "actual_usd": _estimate(gpu, int(elapsed) + 1),
-                    "note": f"ok | {meta}",
+                    "note": f"ok | {CALIB_RUN_TAG} | {meta}",
                 }
             )
         except Exception as exc:  # noqa: BLE001
@@ -958,6 +1037,7 @@ def orchestrate(spent_at_launch: float = 0.0, skip_downloads: bool = False) -> d
                         "ineligible": "technical_failure",
                         "error": err,
                         "timestamp_utc": _now(),
+                        "run_tag": CALIB_RUN_TAG,
                     },
                     indent=2,
                 )
@@ -968,7 +1048,7 @@ def orchestrate(spent_at_launch: float = 0.0, skip_downloads: bool = False) -> d
             _append_pending_ledger(
                 {
                     "timestamp_utc": _now(),
-                    "job_id": f"phase4-calib-{jid}",
+                    "job_id": f"phase4-calib-v2-{jid}",
                     "phase": "4",
                     "platform": "modal",
                     "gpu": gpu,
@@ -983,16 +1063,18 @@ def orchestrate(spent_at_launch: float = 0.0, skip_downloads: bool = False) -> d
                 spend_usd=spend_now(),
                 last_technical_failure=jid,
                 technical_failures=technical_failures,
+                run_tag=CALIB_RUN_TAG,
             )
     _write_status(
         "calibration",
         "done",
         spend_usd=spend_now(),
         technical_failures=technical_failures,
+        run_tag=CALIB_RUN_TAG,
     )
-    # Stage 3: D33
+    # Stage 3: D38 (primary) + D33 reference
     _write_status("selection", "running", spend_usd=spend_now())
-    selection = select_d33.remote()
+    selection = select_judges_v2.remote()
     if selection.get("stopped"):
         _write_status(
             "selection",
@@ -1000,11 +1082,20 @@ def orchestrate(spent_at_launch: float = 0.0, skip_downloads: bool = False) -> d
             reason=selection.get("stop_reason"),
             spend_usd=spend_now(),
             selection=selection,
+            decision="D38",
         )
         return {"state": "stopped", "reason": selection.get("stop_reason"), "selection": selection}
     j1, j2, j3 = selection["j1"], selection["j2"], selection.get("j3")
-    _write_status("selection", "done", spend_usd=spend_now(), j1=j1, j2=j2, j3=j3)
-
+    _write_status(
+        "selection",
+        "done",
+        spend_usd=spend_now(),
+        j1=j1,
+        j2=j2,
+        j3=j3,
+        decision="D38",
+        j1_j2_alpha=selection.get("j1_j2_alpha"),
+    )
     # Stage 4: pilot coding
     _write_status("coding", "running", spend_usd=spend_now())
     for role, jid in (("j1", j1), ("j2", j2), ("j3", j3)):
