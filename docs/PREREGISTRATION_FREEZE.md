@@ -2,7 +2,7 @@
 
 **Date:** 2026-10-06  
 **Preregistration:** `docs/PREREGISTRATION.md` v1.3  
-**Freeze commit:** `PENDING_COMMIT_HASH`  
+**Freeze commit:** `be75115`  
 **Registry:** OSF (upload after this commit; no main-run until OSF timestamp confirmed)
 
 v1.3 is editorial only (front matter and one limitations bullet); design and analysis unchanged from v1.2.

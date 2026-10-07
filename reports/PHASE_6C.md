@@ -44,6 +44,6 @@ All eleven analysis-code / companion hashes recomputed and **identical** to v1.2
 
 ## Freeze
 
-- Freeze commit: `PENDING_COMMIT_HASH`
+- Freeze commit: `be75115`
 - D54 logged in `docs/DECISIONS.md`
 - Pushed to `main`
