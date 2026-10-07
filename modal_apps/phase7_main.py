@@ -167,6 +167,94 @@ def generate_config(
             prev_completed = int(prev.get("rounds_completed") or 0)
         except (json.JSONDecodeError, TypeError, ValueError):
             prev_completed = 0
+
+    units: list[Unit] = []
+    rounds_total = 0
+    if "FORCED" in protocols:
+        for cond in conditions:
+            for ch in forced_chains:
+                units.append(Unit("FORCED", cond, "STRUCTURED", ch))
+        rounds_total = max(rounds_total, forced_rounds)
+    if "PERMISSIVE" in protocols:
+        for cond in conditions:
+            for ch in permissive_chains:
+                units.append(Unit("PERMISSIVE", cond, "STRUCTURED", ch))
+        rounds_total = max(rounds_total, permissive_rounds)
+
+    summaries: list = []
+    budget_stopped = False
+    # Kill-switch headroom (D57): stop before the cap with ≥ (one model load + one
+    # round batch) cost remaining. Conservative priors until measured.
+    LOAD_PRIOR_S = 420.0
+    ROUND_PRIOR_S = 120.0
+    load_usd_est = estimate_modal_usd(
+        gpu_name, int(LOAD_PRIOR_S), cpu_cores=4.0, memory_gib=16.0, root=root
+    )
+    round_usd_est = estimate_modal_usd(
+        gpu_name, int(ROUND_PRIOR_S), cpu_cores=4.0, memory_gib=16.0, root=root
+    )
+    headroom_usd = load_usd_est + round_usd_est
+
+    def _elapsed_usd() -> tuple[float, float]:
+        elapsed = time.perf_counter() - started
+        usd = estimate_modal_usd(
+            gpu_name, max(1, int(elapsed)), cpu_cores=4.0, memory_gib=16.0, root=root
+        )
+        return elapsed, usd
+
+    def _budget_stop_now(*, rounds_completed: int, n_rounds: int, reason: str) -> None:
+        nonlocal budget_stopped
+        budget_stopped = True
+        elapsed, usd = _elapsed_usd()
+        write_status(
+            Path(REMOTE_RUNS) / run_tag / "STATUS.json",
+            {
+                "run_tag": run_tag,
+                "stage": "generate",
+                "state": "budget_stop",
+                "config_id": config_id,
+                "rounds_completed": rounds_completed,
+                "rounds_total": n_rounds,
+                "elapsed_gpu_seconds": elapsed,
+                "usd_so_far": usd,
+                "usd_projected_total": usd,
+                "stage_cap_usd": stage_cap_usd,
+                "budget_headroom_usd": headroom_usd,
+                "budget_stop_reason": reason,
+            },
+        )
+        runs_vol.commit()
+        raise RuntimeError("budget_stop")
+
+    # Pre-load gate: refuse to start if load+one-round alone would breach the cap.
+    if headroom_usd > stage_cap_usd:
+        write_status(
+            status_path,
+            {
+                "run_tag": run_tag,
+                "stage": "generate",
+                "state": "budget_stop",
+                "config_id": config_id,
+                "rounds_completed": prev_completed,
+                "rounds_total": rounds_total,
+                "elapsed_gpu_seconds": 0.0,
+                "usd_so_far": 0.0,
+                "usd_projected_total": 0.0,
+                "stage_cap_usd": stage_cap_usd,
+                "budget_headroom_usd": headroom_usd,
+                "budget_stop_reason": "pre_load_headroom",
+            },
+        )
+        runs_vol.commit()
+        return {
+            "state": "budget_stop",
+            "config_id": config_id,
+            "summaries": summaries,
+            "elapsed_s": 0.0,
+            "usd_so_far": 0.0,
+            "budget_stop_reason": "pre_load_headroom",
+        }
+
     write_status(
         status_path,
         {
@@ -175,10 +263,11 @@ def generate_config(
             "state": "loading_model",
             "config_id": config_id,
             "rounds_completed": prev_completed,
-            "rounds_total": None,
+            "rounds_total": rounds_total,
             "elapsed_gpu_seconds": 0.0,
             "usd_so_far": 0.0,
             "stage_cap_usd": stage_cap_usd,
+            "budget_headroom_usd": headroom_usd,
         },
     )
     runs_vol.commit()
@@ -201,56 +290,16 @@ def generate_config(
         root=root,
     )
 
-    units: list[Unit] = []
-    rounds_total = 0
-    if "FORCED" in protocols:
-        for cond in conditions:
-            for ch in forced_chains:
-                units.append(Unit("FORCED", cond, "STRUCTURED", ch))
-        rounds_total = max(rounds_total, forced_rounds)
-    if "PERMISSIVE" in protocols:
-        for cond in conditions:
-            for ch in permissive_chains:
-                units.append(Unit("PERMISSIVE", cond, "STRUCTURED", ch))
-        rounds_total = max(rounds_total, permissive_rounds)
-
-    # Dual-protocol cells need the larger round count; run_config uses one rounds int.
-    # Run FORCED and PERMISSIVE separately so each gets the correct round depth.
-    summaries = []
-    budget_stopped = False
-
-    def _elapsed_usd() -> tuple[float, float]:
-        elapsed = time.perf_counter() - started
-        usd = estimate_modal_usd(
-            gpu_name, max(1, int(elapsed)), cpu_cores=4.0, memory_gib=16.0, root=root
-        )
-        return elapsed, usd
-
-    def _budget_stop_now(*, rounds_completed: int, n_rounds: int) -> None:
-        nonlocal budget_stopped
-        budget_stopped = True
-        elapsed, usd = _elapsed_usd()
-        write_status(
-            Path(REMOTE_RUNS) / run_tag / "STATUS.json",
-            {
-                "run_tag": run_tag,
-                "stage": "generate",
-                "state": "budget_stop",
-                "config_id": config_id,
-                "rounds_completed": rounds_completed,
-                "rounds_total": n_rounds,
-                "elapsed_gpu_seconds": elapsed,
-                "usd_so_far": usd,
-                "usd_projected_total": usd,
-                "stage_cap_usd": stage_cap_usd,
-            },
-        )
-        runs_vol.commit()
-        raise RuntimeError("budget_stop")
-
     def _commit_and_status(t: int, protocol: str, n_rounds: int) -> None:
+        nonlocal round_usd_est, headroom_usd
         runs_vol.commit()
         elapsed, usd = _elapsed_usd()
+        # Refresh round-cost estimate from observed post-load burn / rounds done.
+        if t >= 0 and elapsed > LOAD_PRIOR_S:
+            per = (usd - load_usd_est) / max(t + 1, 1)
+            if per > 0:
+                round_usd_est = max(round_usd_est, per)
+                headroom_usd = load_usd_est + round_usd_est
         write_status(
             Path(REMOTE_RUNS) / run_tag / "STATUS.json",
             {
@@ -269,14 +318,22 @@ def generate_config(
                 "usd_projected_total": None,
                 "batch_ids": None,
                 "stage_cap_usd": stage_cap_usd,
+                "budget_headroom_usd": headroom_usd,
             },
         )
         runs_vol.commit()
-        if usd >= stage_cap_usd:
-            _budget_stop_now(rounds_completed=t + 1, n_rounds=n_rounds)
+        # Stop before starting another round if remaining budget < one round.
+        if usd + round_usd_est > stage_cap_usd:
+            _budget_stop_now(
+                rounds_completed=t + 1,
+                n_rounds=n_rounds,
+                reason="post_round_headroom",
+            )
 
-    # Kill switch after model load (covers T4 when load alone exceeds the stage cap).
+    # Post-load gate: measured load cost updates headroom; stop if next round won't fit.
     elapsed0, usd0 = _elapsed_usd()
+    load_usd_est = max(load_usd_est, usd0)
+    headroom_usd = load_usd_est + round_usd_est
     write_status(
         Path(REMOTE_RUNS) / run_tag / "STATUS.json",
         {
@@ -289,12 +346,17 @@ def generate_config(
             "elapsed_gpu_seconds": elapsed0,
             "usd_so_far": usd0,
             "stage_cap_usd": stage_cap_usd,
+            "budget_headroom_usd": headroom_usd,
         },
     )
     runs_vol.commit()
-    if usd0 >= stage_cap_usd:
+    if usd0 + round_usd_est > stage_cap_usd:
         try:
-            _budget_stop_now(rounds_completed=prev_completed, n_rounds=rounds_total)
+            _budget_stop_now(
+                rounds_completed=prev_completed,
+                n_rounds=rounds_total,
+                reason="post_load_headroom",
+            )
         except RuntimeError as exc:
             if "budget_stop" not in str(exc):
                 raise
@@ -304,6 +366,7 @@ def generate_config(
                 "summaries": summaries,
                 "elapsed_s": time.perf_counter() - started,
                 "usd_so_far": usd0,
+                "budget_stop_reason": "post_load_headroom",
             }
 
     try:
@@ -422,49 +485,77 @@ def code_canary(run_tag: str, config_id: str, stage_api_cap_usd: float, git_sha_
     )
     runs_vol.commit()
 
-    all_t = extract_main_transitions(run_tag, root=root)
-    # Restrict to this config
-    transitions = [t for t in all_t if t.get("config_id") == config_id]
-    # D49 coding set: all FORCED per-round (+absorbed); FORCED cum; PERMISSIVE cum
-    gpt_set = [
-        t
-        for t in transitions
-        if (t.get("protocol") == "FORCED" and t.get("kind") in {"per_round", "per_round_absorbed", "cumulative"})
-        or (t.get("protocol") == "PERMISSIVE" and t.get("kind") == "cumulative")
-    ]
+    try:
+        from rc.chain_runner import repair_run_lineage
 
-    api0 = spent_api_usd(root)
-    gpt_rows, gpt_meta = code_gpt54(
-        gpt_set, run_tag=run_tag, root=root, job_id=f"phase7a-canary-gpt54-{config_id}"
-    )
-    mimo_rows, mimo_meta, n_miss = code_mimo_subsample(
-        [t for t in transitions if t.get("protocol") == "FORCED"],
-        run_tag=run_tag,
-        root=root,
-        job_id=f"phase7a-canary-mimo-{config_id}",
-        config_id=config_id,
-    )
-    api1 = spent_api_usd(root)
-    api_spend = api1 - api0
+        repair_info = repair_run_lineage(run_tag, config_id, root=root)
+        if repair_info.get("n"):
+            runs_vol.commit()
+            write_status(
+                Path(REMOTE_RUNS) / run_tag / "STATUS.json",
+                {
+                    "run_tag": run_tag,
+                    "stage": "coding",
+                    "state": "repaired_lineage",
+                    "config_id": config_id,
+                    "n_chains_repaired": repair_info["n"],
+                },
+            )
+            runs_vol.commit()
 
-    gates_gpt = integrity_for_judge(
-        gpt_set,
-        gpt_rows,
-        out_path=root / "runs" / run_tag / "coding" / "integrity_gpt54.json",
-        root=root,
-    )
-    mimo_subset = [
-        t
-        for t in transitions
-        if t.get("protocol") == "FORCED" and t.get("kind") == "per_round"
-    ]
-    # Align mimo integrity to coded subset size
-    gates_mimo = integrity_for_judge(
-        mimo_rows,  # use judgments as both when subset join is complex
-        mimo_rows,
-        out_path=root / "runs" / run_tag / "coding" / "integrity_mimo.json",
-        root=root,
-    )
+        all_t = extract_main_transitions(run_tag, root=root)
+        # Restrict to this config
+        transitions = [t for t in all_t if t.get("config_id") == config_id]
+        # D49 coding set: all FORCED per-round (+absorbed); FORCED cum; PERMISSIVE cum
+        gpt_set = [
+            t
+            for t in transitions
+            if (
+                t.get("protocol") == "FORCED"
+                and t.get("kind") in {"per_round", "per_round_absorbed", "cumulative"}
+            )
+            or (t.get("protocol") == "PERMISSIVE" and t.get("kind") == "cumulative")
+        ]
+
+        api0 = spent_api_usd(root)
+        gpt_rows, gpt_meta = code_gpt54(
+            gpt_set, run_tag=run_tag, root=root, job_id=f"phase7a-canary-gpt54-{config_id}"
+        )
+        mimo_rows, mimo_meta, n_miss = code_mimo_subsample(
+            [t for t in transitions if t.get("protocol") == "FORCED"],
+            run_tag=run_tag,
+            root=root,
+            job_id=f"phase7a-canary-mimo-{config_id}",
+            config_id=config_id,
+        )
+        api1 = spent_api_usd(root)
+        api_spend = api1 - api0
+
+        gates_gpt = integrity_for_judge(
+            gpt_set,
+            gpt_rows,
+            out_path=root / "runs" / run_tag / "coding" / "integrity_gpt54.json",
+            root=root,
+        )
+        gates_mimo = integrity_for_judge(
+            mimo_rows,
+            mimo_rows,
+            out_path=root / "runs" / run_tag / "coding" / "integrity_mimo.json",
+            root=root,
+        )
+    except Exception as exc:
+        write_status(
+            Path(REMOTE_RUNS) / run_tag / "STATUS.json",
+            {
+                "run_tag": run_tag,
+                "stage": "coding",
+                "state": "failed",
+                "config_id": config_id,
+                "error": f"{type(exc).__name__}: {exc}"[:500],
+            },
+        )
+        runs_vol.commit()
+        raise
 
     # Operational canary checks only (no category rates).
     checks = _compute_canary_checks(
@@ -669,23 +760,25 @@ def orchestrate_detach(
     volumes={REMOTE_RUNS: runs_vol},
     timeout=86400,
 )
-def orchestrate_canary(git_sha_value: str = "") -> dict:
+def orchestrate_canary(git_sha_value: str = "", *, code_only: bool = False) -> dict:
     """Canary: generate olmo3_7b_final full cells → code → checks."""
-    gen = generate_config.remote(
-        CANARY_CONFIG,
-        MAIN_RUN_TAG,
-        protocols=["FORCED", "PERMISSIVE"],
-        conditions=["SELF_REFLECT", "OTHER_REFLECT", "PARAPHRASE", "NEUTRAL_EDIT"],
-        forced_chains=list(range(25)),
-        forced_rounds=20,
-        permissive_chains=list(range(5)),
-        permissive_rounds=10,
-        stage_cap_usd=8.0,
-        git_sha_value=git_sha_value,
-        gpu_name="L4",
-    )
-    if gen.get("state") == "budget_stop":
-        return {"state": "budget_stop", "generate": gen}
+    gen: dict | None = None
+    if not code_only:
+        gen = generate_config.remote(
+            CANARY_CONFIG,
+            MAIN_RUN_TAG,
+            protocols=["FORCED", "PERMISSIVE"],
+            conditions=["SELF_REFLECT", "OTHER_REFLECT", "PARAPHRASE", "NEUTRAL_EDIT"],
+            forced_chains=list(range(25)),
+            forced_rounds=20,
+            permissive_chains=list(range(5)),
+            permissive_rounds=10,
+            stage_cap_usd=8.0,
+            git_sha_value=git_sha_value,
+            gpu_name="L4",
+        )
+        if gen.get("state") == "budget_stop":
+            return {"state": "budget_stop", "generate": gen}
     checks = code_canary.remote(
         MAIN_RUN_TAG, CANARY_CONFIG, 6.0, git_sha_value=git_sha_value
     )
@@ -694,7 +787,7 @@ def orchestrate_canary(git_sha_value: str = "") -> dict:
 
 @app.local_entrypoint()
 def main(mode: str = "canary", rounds: int = 3, stage_cap_usd: float = 0.50) -> None:
-    """mode=detach_test|canary|budget_stop_test"""
+    """mode=detach_test|canary|canary_code|budget_stop_test"""
     from rc.budget import preflight, spent_modal_usd
     from rc.config import repo_root
     from rc.guards import assert_modal_workspace, check_modal_hf_secret
@@ -754,6 +847,27 @@ def main(mode: str = "canary", rounds: int = 3, stage_cap_usd: float = 0.50) -> 
         )
         call = orchestrate_canary.spawn(git_sha_value=sha)
         print(f"CANARY spawned object_id={call.object_id} run_tag={MAIN_RUN_TAG}")
+        print(f"launch_time_utc={time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime())}")
+    elif mode == "canary_code":
+        # Generation already on Volume; coding is CPU + API only.
+        from rc.budget import spent_api_usd as _spent_api
+
+        preflight(
+            "L4",
+            60,
+            phase="7a",
+            job_id="phase7a-canary-code-only",
+            hard_cap_usd=spent_modal_usd(root) + 0.50,
+            override_job_cap_usd=0.50,
+            cpu_cores=2.0,
+            memory_gib=8.0,
+            root=root,
+        )
+        _ = _spent_api(root)  # ensure ledger readable
+        call = orchestrate_canary.spawn(git_sha_value=sha, code_only=True)
+        print(
+            f"CANARY_CODE spawned object_id={call.object_id} run_tag={MAIN_RUN_TAG}"
+        )
         print(f"launch_time_utc={time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime())}")
     else:
         raise SystemExit(f"unknown mode {mode!r}")

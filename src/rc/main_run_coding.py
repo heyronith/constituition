@@ -52,6 +52,19 @@ def extract_main_transitions(run_tag: str, *, root: Path | None = None) -> list[
     )
 
 
+def _dedupe_by_transition_id(transitions: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Keep first occurrence per transition_id (stable; after lineage repair should be unique)."""
+    seen: set[str] = set()
+    out: list[dict[str, Any]] = []
+    for t in transitions:
+        tid = t.get("transition_id")
+        if not tid or tid in seen:
+            continue
+        seen.add(str(tid))
+        out.append(t)
+    return out
+
+
 def code_gpt54(
     transitions: list[dict[str, Any]],
     *,
@@ -61,14 +74,15 @@ def code_gpt54(
 ) -> tuple[list[dict[str, Any]], dict[str, Any]]:
     work_dir = root / "runs" / run_tag / "coding" / "gpt54_batch"
     backend = OpenAIBatchBackend("gpt54", work_dir=work_dir, root=root, job_id=job_id)
+    transitions = _dedupe_by_transition_id(transitions)
     # judge_fate_batch expects source tagging
     for t in transitions:
         t.setdefault("source", "pilot")
         t.setdefault("rewrite", t.get("revised") or t.get("rewrite"))
     rows = judge_fate_batch(
-        transitions,
-        "gpt54",
         backend,
+        "gpt54",
+        transitions,
         root=root,
         rubric_version="v2",
         seed_base=20261004,
@@ -122,9 +136,9 @@ def code_mimo_subsample(
         "mimo_v26_pro", work_dir=work_dir, root=root, job_id=job_id
     )
     rows = judge_fate_batch(
-        subset,
-        "mimo_v26_pro",
         backend,
+        "mimo_v26_pro",
+        subset,
         root=root,
         rubric_version="v2",
         seed_base=20261004 + 17,

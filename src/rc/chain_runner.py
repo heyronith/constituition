@@ -274,8 +274,11 @@ def _init_unit(
         return cons0, None
     done = _completed_rounds(cdir)
     if done:
-        last = max(done)
-        restored = _restore_constitution(cdir, last)
+        # rounds.jsonl uses generation index t; constitution.round after that
+        # apply is t+1 (initial cons is round 0). Restoring with t was an
+        # off-by-one that duplicated lineage on resume (Phase 7A canary).
+        last_gen = max(done)
+        restored = _restore_constitution(cdir, last_gen + 1)
         cons = restored or build_initial_constitution(
             config_id, unit.condition, unit.chain_idx, root=root
         )
@@ -555,6 +558,101 @@ def run_cell(
         max_attempts=max_attempts,
         after_round_commit=after_round_commit,
     )
+
+
+def _lineage_has_duplicate_decisions(chain_dir: Path) -> bool:
+    from collections import Counter
+
+    counts: Counter[tuple[Any, ...]] = Counter()
+    for row in _load_jsonl(chain_dir / "lineage.jsonl"):
+        dec = row.get("decision")
+        if dec not in ("revise", "merge", "delete"):
+            continue
+        if dec == "merge" and not row.get("after_text"):
+            continue
+        counts[(int(row["round"]), row.get("item_id"), dec)] += 1
+    return any(n > 1 for n in counts.values())
+
+
+def repair_chain_lineage_from_rounds(chain_dir: Path, *, root: Path | None = None) -> bool:
+    """Replay ok ``rounds.jsonl`` rows to rebuild constitutions + lineage (D58).
+
+    Leaves ``rounds.jsonl`` untouched. Returns True if a rewrite was performed.
+    """
+    root = root or repo_root()
+    meta_path = chain_dir / "meta.json"
+    if not meta_path.exists() or not (chain_dir / "rounds.jsonl").exists():
+        return False
+    if not _lineage_has_duplicate_decisions(chain_dir):
+        # Also repair if final constitution.round != max_ok_gen + 1
+        done = _completed_rounds(chain_dir)
+        cons_rows = _load_jsonl(chain_dir / "constitutions.jsonl")
+        final_round = max((int(r["round"]) for r in cons_rows), default=-1)
+        if not done or final_round == max(done) + 1:
+            return False
+
+    meta = json.loads(meta_path.read_text(encoding="utf-8"))
+    unit = Unit(
+        meta["protocol"],
+        meta["condition"],
+        meta["fmt"],
+        int(meta["chain_idx"]),
+    )
+    config_id = meta["config_id"]
+    cons = build_initial_constitution(config_id, unit.condition, unit.chain_idx, root=root)
+    cons_path = chain_dir / "constitutions.jsonl"
+    lin_path = chain_dir / "lineage.jsonl"
+    cons_path.write_text("", encoding="utf-8")
+    lin_path.write_text("", encoding="utf-8")
+    append_jsonl(cons_path, _constitution_to_dict(cons))
+    for rec in cons.lineage:
+        append_jsonl(lin_path, _lineage_record_dict(rec))
+
+    ok_rows = [
+        r
+        for r in _load_jsonl(chain_dir / "rounds.jsonl")
+        if r.get("parse_status") == "ok"
+    ]
+    ok_rows.sort(key=lambda r: (int(r["round"]), int(r.get("attempt") or 0)))
+    # One ok row per generation round (first ok wins; should be unique).
+    by_round: dict[int, dict[str, Any]] = {}
+    for row in ok_rows:
+        by_round.setdefault(int(row["round"]), row)
+
+    for t in sorted(by_round):
+        row = by_round[t]
+        result = GenerationResult(
+            text_final=row.get("text_final") or "",
+            text_reasoning=row.get("text_reasoning"),
+            n_prompt_tokens=int(row.get("n_prompt_tokens") or 0),
+            n_output_tokens=int(row.get("n_output_tokens") or 0),
+            n_reasoning_tokens=int(row.get("n_reasoning_tokens") or 0),
+            finish_reason=str(row.get("finish_reason") or "stop"),
+            latency_s=float(row.get("latency_s") or 0.0),
+            flags=list(row.get("flags") or []),
+        )
+        extra = {"target_id": row.get("target_id")}
+        cons, _flags = _apply_output(unit, cons, result, t, extra, root)
+        append_jsonl(cons_path, _constitution_to_dict(cons))
+        for rec in cons.lineage:
+            if rec.round == cons.round:
+                append_jsonl(lin_path, _lineage_record_dict(rec))
+    return True
+
+
+def repair_run_lineage(
+    run_tag: str, config_id: str, *, root: Path | None = None
+) -> dict[str, Any]:
+    """Repair all chains under ``runs/<run_tag>/<config_id>/`` with lineage dups."""
+    root = root or repo_root()
+    base = root / "runs" / run_tag / config_id
+    repaired: list[str] = []
+    if not base.exists():
+        return {"repaired": repaired, "n": 0}
+    for chain_dir in sorted(p for p in base.rglob("chain_*") if p.is_dir()):
+        if repair_chain_lineage_from_rounds(chain_dir, root=root):
+            repaired.append(str(chain_dir.relative_to(base)))
+    return {"repaired": repaired, "n": len(repaired)}
 
 
 def _update_run_manifest(run_tag: str, root: Path) -> None:

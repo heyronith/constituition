@@ -341,3 +341,10 @@ def test_crash_mid_run_then_resume(repo_tmp: Path) -> None:
     assert summary["chains"]["0"]["completed_rounds"] == [0, 1, 2]
     assert resumes == [1, 2]
     assert len(resume_backend.calls) == 2
+    # D58: constitution.round after gen t is t+1; no duplicate cons rounds on resume.
+    cons_rounds = [
+        json.loads(line)["round"]
+        for line in (cdir / "constitutions.jsonl").read_text().splitlines()
+        if line.strip()
+    ]
+    assert cons_rounds == [0, 1, 2, 3]
