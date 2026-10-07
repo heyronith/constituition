@@ -475,6 +475,7 @@ def run_config(
                     "attempt": attempt,
                     "protocol": unit.protocol,
                     "seed": req.seed,
+                    "input_constitution_sha256": constitution_content_sha256(cons),
                     "prompt_sha256": sha256_bytes(prompts[unit].encode()),
                     "prompt": prompts[unit],
                     "text_final": result.text_final,
@@ -560,6 +561,12 @@ def run_cell(
     )
 
 
+def constitution_content_sha256(cons: Constitution) -> str:
+    """Stable hash of the subject-visible constitution (opaque_id + text)."""
+    payload = [{"opaque_id": p.opaque_id, "text": p.text} for p in cons.principles]
+    return sha256_bytes(json.dumps(payload, sort_keys=True, ensure_ascii=False).encode())
+
+
 def _lineage_has_duplicate_decisions(chain_dir: Path) -> bool:
     from collections import Counter
 
@@ -574,24 +581,165 @@ def _lineage_has_duplicate_decisions(chain_dir: Path) -> bool:
     return any(n > 1 for n in counts.values())
 
 
-def repair_chain_lineage_from_rounds(chain_dir: Path, *, root: Path | None = None) -> bool:
-    """Replay ok ``rounds.jsonl`` rows to rebuild constitutions + lineage (D58).
-
-    Leaves ``rounds.jsonl`` untouched. Returns True if a rewrite was performed.
-    """
+def find_t_stale(chain_dir: Path, *, root: Path | None = None) -> int | None:
+    """First generation round whose stored prompt hash ≠ re-render from correct state (D59)."""
     root = root or repo_root()
     meta_path = chain_dir / "meta.json"
-    if not meta_path.exists() or not (chain_dir / "rounds.jsonl").exists():
-        return False
-    if not _lineage_has_duplicate_decisions(chain_dir):
-        # Also repair if final constitution.round != max_ok_gen + 1
-        done = _completed_rounds(chain_dir)
-        cons_rows = _load_jsonl(chain_dir / "constitutions.jsonl")
-        final_round = max((int(r["round"]) for r in cons_rows), default=-1)
-        if not done or final_round == max(done) + 1:
-            return False
-
+    if not meta_path.exists():
+        raise FileNotFoundError(meta_path)
     meta = json.loads(meta_path.read_text(encoding="utf-8"))
+    unit = Unit(
+        meta["protocol"],
+        meta["condition"],
+        meta["fmt"],
+        int(meta["chain_idx"]),
+    )
+    config_id = meta["config_id"]
+    cons = build_initial_constitution(config_id, unit.condition, unit.chain_idx, root=root)
+    ok_by_round: dict[int, dict[str, Any]] = {}
+    for row in _load_jsonl(chain_dir / "rounds.jsonl"):
+        if row.get("parse_status") != "ok":
+            continue
+        ok_by_round.setdefault(int(row["round"]), row)
+    for t in sorted(ok_by_round):
+        row = ok_by_round[t]
+        extra: dict[str, Any] = {}
+        if unit.protocol == "FORCED" and unit.condition == "PARAPHRASE":
+            exp = load_experiment(root)
+            extra["target_id"] = select_paraphrase_target(
+                cons,
+                exp.master_seed,
+                config_id,
+                unit.condition,
+                unit.chain_idx,
+                t,
+            )
+        elif row.get("target_id"):
+            extra["target_id"] = row.get("target_id")
+        prompt = _render_unit_prompt(unit, cons, t, extra, root)
+        expected = sha256_bytes(prompt.encode())
+        stored = row.get("prompt_sha256")
+        if stored != expected:
+            return t
+        result = GenerationResult(
+            text_final=row.get("text_final") or "",
+            text_reasoning=row.get("text_reasoning"),
+            n_prompt_tokens=int(row.get("n_prompt_tokens") or 0),
+            n_output_tokens=int(row.get("n_output_tokens") or 0),
+            n_reasoning_tokens=int(row.get("n_reasoning_tokens") or 0),
+            finish_reason=str(row.get("finish_reason") or "stop"),
+            latency_s=float(row.get("latency_s") or 0.0),
+            flags=list(row.get("flags") or []),
+        )
+        cons, _flags = _apply_output(unit, cons, result, t, extra, root)
+    return None
+
+
+def verify_chain_consistency(
+    chain_dir: Path, *, root: Path | None = None
+) -> dict[str, Any]:
+    """Replay chain; assert input/prompt hashes, no lineage dups, valid descent (D59)."""
+    root = root or repo_root()
+    errors: list[str] = []
+    meta_path = chain_dir / "meta.json"
+    if not meta_path.exists():
+        return {"ok": False, "errors": ["missing meta.json"], "chain_dir": str(chain_dir)}
+    meta = json.loads(meta_path.read_text(encoding="utf-8"))
+    unit = Unit(
+        meta["protocol"],
+        meta["condition"],
+        meta["fmt"],
+        int(meta["chain_idx"]),
+    )
+    config_id = meta["config_id"]
+    if _lineage_has_duplicate_decisions(chain_dir):
+        errors.append("duplicate lineage decisions")
+    cons = build_initial_constitution(config_id, unit.condition, unit.chain_idx, root=root)
+    ok_by_round: dict[int, dict[str, Any]] = {}
+    for row in _load_jsonl(chain_dir / "rounds.jsonl"):
+        if row.get("parse_status") != "ok":
+            continue
+        r = int(row["round"])
+        if r in ok_by_round:
+            errors.append(f"duplicate ok round {r}")
+        ok_by_round[r] = row
+    # No gaps in ok rounds before censor
+    if ok_by_round:
+        expect = set(range(max(ok_by_round) + 1))
+        if set(ok_by_round) != expect:
+            errors.append(f"ok-round gaps: have={sorted(ok_by_round)} expect={sorted(expect)}")
+    for t in sorted(ok_by_round):
+        row = ok_by_round[t]
+        extra: dict[str, Any] = {}
+        if unit.protocol == "FORCED" and unit.condition == "PARAPHRASE":
+            exp = load_experiment(root)
+            extra["target_id"] = select_paraphrase_target(
+                cons,
+                exp.master_seed,
+                config_id,
+                unit.condition,
+                unit.chain_idx,
+                t,
+            )
+        elif row.get("target_id"):
+            extra["target_id"] = row.get("target_id")
+        input_sha = constitution_content_sha256(cons)
+        stored_input = row.get("input_constitution_sha256")
+        if stored_input is not None and stored_input != input_sha:
+            errors.append(f"round {t}: input_constitution_sha256 mismatch")
+        prompt = _render_unit_prompt(unit, cons, t, extra, root)
+        expected_prompt = sha256_bytes(prompt.encode())
+        if row.get("prompt_sha256") != expected_prompt:
+            errors.append(f"round {t}: prompt_sha256 mismatch")
+        result = GenerationResult(
+            text_final=row.get("text_final") or "",
+            text_reasoning=row.get("text_reasoning"),
+            n_prompt_tokens=int(row.get("n_prompt_tokens") or 0),
+            n_output_tokens=int(row.get("n_output_tokens") or 0),
+            n_reasoning_tokens=int(row.get("n_reasoning_tokens") or 0),
+            finish_reason=str(row.get("finish_reason") or "stop"),
+            latency_s=float(row.get("latency_s") or 0.0),
+            flags=list(row.get("flags") or []),
+        )
+        try:
+            cons, _flags = _apply_output(unit, cons, result, t, extra, root)
+        except ParseError as exc:
+            errors.append(f"round {t}: replay ParseError {exc}")
+            break
+        if cons.round != t + 1:
+            errors.append(f"round {t}: expected cons.round={t + 1}, got {cons.round}")
+    return {
+        "ok": not errors,
+        "errors": errors,
+        "chain_dir": str(chain_dir),
+        "n_ok_rounds": len(ok_by_round),
+        "t_stale": find_t_stale(chain_dir, root=root) if errors else None,
+    }
+
+
+def verify_run_consistency(
+    run_tag: str, config_id: str, *, root: Path | None = None
+) -> dict[str, Any]:
+    root = root or repo_root()
+    base = root / "runs" / run_tag / config_id
+    results = []
+    for chain_dir in sorted(p for p in base.rglob("chain_*") if p.is_dir()):
+        results.append(verify_chain_consistency(chain_dir, root=root))
+    failed = [r for r in results if not r["ok"]]
+    return {
+        "ok": not failed,
+        "n_chains": len(results),
+        "n_failed": len(failed),
+        "failed": failed,
+    }
+
+
+def rebuild_prefix_constitutions(
+    chain_dir: Path, *, root: Path | None = None
+) -> None:
+    """Rebuild constitutions+lineage by replaying retained ok rounds (valid prefix only)."""
+    root = root or repo_root()
+    meta = json.loads((chain_dir / "meta.json").read_text(encoding="utf-8"))
     unit = Unit(
         meta["protocol"],
         meta["condition"],
@@ -607,20 +755,15 @@ def repair_chain_lineage_from_rounds(chain_dir: Path, *, root: Path | None = Non
     append_jsonl(cons_path, _constitution_to_dict(cons))
     for rec in cons.lineage:
         append_jsonl(lin_path, _lineage_record_dict(rec))
-
-    ok_rows = [
-        r
-        for r in _load_jsonl(chain_dir / "rounds.jsonl")
-        if r.get("parse_status") == "ok"
-    ]
-    ok_rows.sort(key=lambda r: (int(r["round"]), int(r.get("attempt") or 0)))
-    # One ok row per generation round (first ok wins; should be unique).
-    by_round: dict[int, dict[str, Any]] = {}
-    for row in ok_rows:
-        by_round.setdefault(int(row["round"]), row)
-
-    for t in sorted(by_round):
-        row = by_round[t]
+    ok_by_round: dict[int, dict[str, Any]] = {}
+    for row in _load_jsonl(chain_dir / "rounds.jsonl"):
+        if row.get("parse_status") == "ok":
+            ok_by_round.setdefault(int(row["round"]), row)
+    for t in sorted(ok_by_round):
+        row = ok_by_round[t]
+        extra: dict[str, Any] = {}
+        if row.get("target_id"):
+            extra["target_id"] = row.get("target_id")
         result = GenerationResult(
             text_final=row.get("text_final") or "",
             text_reasoning=row.get("text_reasoning"),
@@ -631,28 +774,62 @@ def repair_chain_lineage_from_rounds(chain_dir: Path, *, root: Path | None = Non
             latency_s=float(row.get("latency_s") or 0.0),
             flags=list(row.get("flags") or []),
         )
-        extra = {"target_id": row.get("target_id")}
         cons, _flags = _apply_output(unit, cons, result, t, extra, root)
         append_jsonl(cons_path, _constitution_to_dict(cons))
         for rec in cons.lineage:
             if rec.round == cons.round:
                 append_jsonl(lin_path, _lineage_record_dict(rec))
-    return True
 
 
-def repair_run_lineage(
-    run_tag: str, config_id: str, *, root: Path | None = None
+def archive_stale_suffix(
+    chain_dir: Path,
+    t_stale: int,
+    archive_root: Path,
+    *,
+    rel_path: str,
+    root: Path | None = None,
 ) -> dict[str, Any]:
-    """Repair all chains under ``runs/<run_tag>/<config_id>/`` with lineage dups."""
+    """Archive rounds ≥ t_stale; rebuild retained constitutions/lineage from prefix."""
     root = root or repo_root()
-    base = root / "runs" / run_tag / config_id
-    repaired: list[str] = []
-    if not base.exists():
-        return {"repaired": repaired, "n": 0}
-    for chain_dir in sorted(p for p in base.rglob("chain_*") if p.is_dir()):
-        if repair_chain_lineage_from_rounds(chain_dir, root=root):
-            repaired.append(str(chain_dir.relative_to(base)))
-    return {"repaired": repaired, "n": len(repaired)}
+    dest = archive_root / rel_path
+    dest.mkdir(parents=True, exist_ok=True)
+    counts = {"rounds": 0, "constitutions": 0, "lineage": 0}
+
+    # Archive full pre-truncate copies of cons/lineage, then truncate rounds.
+    for name in ("constitutions.jsonl", "lineage.jsonl", "rounds.jsonl"):
+        src = chain_dir / name
+        if src.exists():
+            (dest / name).write_bytes(src.read_bytes())
+
+    rounds_src = chain_dir / "rounds.jsonl"
+    rows = _load_jsonl(rounds_src)
+    keep = [r for r in rows if int(r["round"]) < t_stale]
+    drop = [r for r in rows if int(r["round"]) >= t_stale]
+    counts["rounds"] = len(drop)
+    counts["constitutions"] = sum(
+        1 for r in _load_jsonl(dest / "constitutions.jsonl") if int(r["round"]) > t_stale
+    )
+    counts["lineage"] = sum(
+        1 for r in _load_jsonl(dest / "lineage.jsonl") if int(r["round"]) > t_stale
+    )
+    rounds_src.write_text(
+        "".join(json.dumps(r, sort_keys=True, ensure_ascii=False) + "\n" for r in keep),
+        encoding="utf-8",
+    )
+    rebuild_prefix_constitutions(chain_dir, root=root)
+
+    meta_path = chain_dir / "meta.json"
+    if meta_path.exists():
+        meta = json.loads(meta_path.read_text(encoding="utf-8"))
+        cens = meta.get("censored_at_round")
+        if cens is not None and int(cens) >= t_stale:
+            meta["censored_at_round"] = None
+            meta["d59_cleared_censor"] = cens
+            meta_path.write_text(json.dumps(meta, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    (dest / "t_stale.json").write_text(
+        json.dumps({"t_stale": t_stale, "counts": counts}, indent=2) + "\n", encoding="utf-8"
+    )
+    return counts
 
 
 def _update_run_manifest(run_tag: str, root: Path) -> None:

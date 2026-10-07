@@ -418,6 +418,34 @@ def generate_config(
     usd = estimate_modal_usd(
         gpu_name, max(1, int(elapsed)), cpu_cores=4.0, memory_gib=16.0, root=root
     )
+    from rc.chain_runner import verify_run_consistency
+
+    gate = verify_run_consistency(run_tag, config_id, root=root)
+    if not gate.get("ok"):
+        write_status(
+            Path(REMOTE_RUNS) / run_tag / "STATUS.json",
+            {
+                "run_tag": run_tag,
+                "stage": "generate",
+                "state": "failed",
+                "config_id": config_id,
+                "rounds_completed": rounds_total,
+                "rounds_total": rounds_total,
+                "elapsed_gpu_seconds": elapsed,
+                "usd_so_far": usd,
+                "error": f"consistency_gate n_failed={gate.get('n_failed')}",
+                "stage_cap_usd": stage_cap_usd,
+            },
+        )
+        runs_vol.commit()
+        return {
+            "state": "failed",
+            "config_id": config_id,
+            "summaries": summaries,
+            "elapsed_s": elapsed,
+            "usd_so_far": usd,
+            "consistency": gate,
+        }
     write_status(
         Path(REMOTE_RUNS) / run_tag / "STATUS.json",
         {
@@ -431,6 +459,7 @@ def generate_config(
             "usd_so_far": usd,
             "usd_projected_total": usd,
             "stage_cap_usd": stage_cap_usd,
+            "consistency_ok": True,
         },
     )
     runs_vol.commit()
@@ -454,7 +483,15 @@ def generate_config(
     cpu=2,
     memory=8192,
 )
-def code_canary(run_tag: str, config_id: str, stage_api_cap_usd: float, git_sha_value: str = "") -> dict:
+def code_canary(
+    run_tag: str,
+    config_id: str,
+    stage_api_cap_usd: float,
+    git_sha_value: str = "",
+    max_gpt: int | None = None,
+    max_mimo: int | None = None,
+    skip_canary_checks: bool = False,
+) -> dict:
     """GPT-5.4 Batch + MiMo subsample + integrity + canary_checks (operational only)."""
     import os
     import sys
@@ -472,6 +509,8 @@ def code_canary(run_tag: str, config_id: str, stage_api_cap_usd: float, git_sha_
         extract_main_transitions,
         integrity_for_judge,
     )
+    from rc.judging import judge_fate_batch
+    from rc.openrouter_backend import OpenRouterBackend
     from rc.phase7_status import write_status
 
     write_status(
@@ -486,22 +525,23 @@ def code_canary(run_tag: str, config_id: str, stage_api_cap_usd: float, git_sha_
     runs_vol.commit()
 
     try:
-        from rc.chain_runner import repair_run_lineage
+        from rc.chain_runner import verify_run_consistency
 
-        repair_info = repair_run_lineage(run_tag, config_id, root=root)
-        if repair_info.get("n"):
-            runs_vol.commit()
+        gate = verify_run_consistency(run_tag, config_id, root=root)
+        if not gate.get("ok"):
             write_status(
                 Path(REMOTE_RUNS) / run_tag / "STATUS.json",
                 {
                     "run_tag": run_tag,
                     "stage": "coding",
-                    "state": "repaired_lineage",
+                    "state": "failed",
                     "config_id": config_id,
-                    "n_chains_repaired": repair_info["n"],
+                    "error": f"consistency_gate n_failed={gate.get('n_failed')}",
+                    "consistency": {"n_failed": gate.get("n_failed"), "n_chains": gate.get("n_chains")},
                 },
             )
             runs_vol.commit()
+            raise RuntimeError(f"consistency_gate_failed n_failed={gate.get('n_failed')}")
 
         all_t = extract_main_transitions(run_tag, root=root)
         # Restrict to this config
@@ -516,18 +556,48 @@ def code_canary(run_tag: str, config_id: str, stage_api_cap_usd: float, git_sha_
             )
             or (t.get("protocol") == "PERMISSIVE" and t.get("kind") == "cumulative")
         ]
+        if max_gpt is not None:
+            gpt_set = gpt_set[: max(0, int(max_gpt))]
 
         api0 = spent_api_usd(root)
         gpt_rows, gpt_meta = code_gpt54(
             gpt_set, run_tag=run_tag, root=root, job_id=f"phase7a-canary-gpt54-{config_id}"
         )
-        mimo_rows, mimo_meta, n_miss = code_mimo_subsample(
-            [t for t in transitions if t.get("protocol") == "FORCED"],
-            run_tag=run_tag,
-            root=root,
-            job_id=f"phase7a-canary-mimo-{config_id}",
-            config_id=config_id,
-        )
+        if max_mimo is not None:
+            # Smoke path: direct MiMo on ≤5 transitions (not design-grid subsample).
+            mimo_src = [
+                t
+                for t in transitions
+                if t.get("protocol") == "FORCED" and t.get("kind") == "per_round"
+            ][: int(max_mimo)]
+            for t in mimo_src:
+                t.setdefault("source", "pilot")
+                t.setdefault("rewrite", t.get("revised") or t.get("rewrite"))
+            work_dir = root / "runs" / run_tag / "coding" / "mimo_batch"
+            mimo_backend = OpenRouterBackend(
+                "mimo_v26_pro",
+                work_dir=work_dir,
+                root=root,
+                job_id=f"phase7a-smoke-mimo-{config_id}",
+            )
+            mimo_rows = judge_fate_batch(
+                mimo_backend,
+                "mimo_v26_pro",
+                mimo_src,
+                root=root,
+                rubric_version="v2",
+                seed_base=20261004 + 17,
+            )
+            mimo_meta = {"n": len(mimo_rows), "api_usd": getattr(mimo_backend.last_cost, "usd", None)}
+            n_miss = 0
+        else:
+            mimo_rows, mimo_meta, n_miss = code_mimo_subsample(
+                [t for t in transitions if t.get("protocol") == "FORCED"],
+                run_tag=run_tag,
+                root=root,
+                job_id=f"phase7a-canary-mimo-{config_id}",
+                config_id=config_id,
+            )
         api1 = spent_api_usd(root)
         api_spend = api1 - api0
 
@@ -558,18 +628,32 @@ def code_canary(run_tag: str, config_id: str, stage_api_cap_usd: float, git_sha_
         raise
 
     # Operational canary checks only (no category rates).
-    checks = _compute_canary_checks(
-        root=root,
-        run_tag=run_tag,
-        config_id=config_id,
-        gpt_meta=gpt_meta,
-        mimo_meta=mimo_meta,
-        gates_gpt=gates_gpt,
-        gates_mimo=gates_mimo,
-        api_spend=api_spend,
-        stage_api_cap_usd=stage_api_cap_usd,
-        n_mimo_missing=n_miss,
-    )
+    if skip_canary_checks:
+        checks = {
+            "skip_canary_checks": True,
+            "all_pass": bool(gates_gpt.get("ok")) and bool(gates_mimo.get("ok")),
+            "C3_judge_integrity": {
+                "pass": bool(gates_gpt.get("ok")) and bool(gates_mimo.get("ok")),
+                "gpt54_ok": gates_gpt.get("ok"),
+                "mimo_ok": gates_mimo.get("ok"),
+            },
+            "api_spend_usd": api_spend,
+            "gpt_meta": gpt_meta,
+            "mimo_meta": mimo_meta,
+        }
+    else:
+        checks = _compute_canary_checks(
+            root=root,
+            run_tag=run_tag,
+            config_id=config_id,
+            gpt_meta=gpt_meta,
+            mimo_meta=mimo_meta,
+            gates_gpt=gates_gpt,
+            gates_mimo=gates_mimo,
+            api_spend=api_spend,
+            stage_api_cap_usd=stage_api_cap_usd,
+            n_mimo_missing=n_miss,
+        )
     out = root / "runs" / run_tag / "canary_checks.json"
     out.write_text(json.dumps(checks, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     write_status(
@@ -760,34 +844,134 @@ def orchestrate_detach(
     volumes={REMOTE_RUNS: runs_vol},
     timeout=86400,
 )
-def orchestrate_canary(git_sha_value: str = "", *, code_only: bool = False) -> dict:
-    """Canary: generate olmo3_7b_final full cells → code → checks."""
-    gen: dict | None = None
-    if not code_only:
-        gen = generate_config.remote(
-            CANARY_CONFIG,
-            MAIN_RUN_TAG,
-            protocols=["FORCED", "PERMISSIVE"],
-            conditions=["SELF_REFLECT", "OTHER_REFLECT", "PARAPHRASE", "NEUTRAL_EDIT"],
-            forced_chains=list(range(25)),
-            forced_rounds=20,
-            permissive_chains=list(range(5)),
-            permissive_rounds=10,
-            stage_cap_usd=8.0,
+def orchestrate_canary(
+    git_sha_value: str = "",
+    *,
+    code_only: bool = False,
+    stage_cap_usd: float = 8.0,
+    stage_api_cap_usd: float = 6.0,
+    run_tag: str = MAIN_RUN_TAG,
+) -> dict:
+    """Canary: generate olmo3_7b_final full cells → consistency → code → checks."""
+    import traceback
+
+    try:
+        gen: dict | None = None
+        if not code_only:
+            gen = generate_config.remote(
+                CANARY_CONFIG,
+                run_tag,
+                protocols=["FORCED", "PERMISSIVE"],
+                conditions=["SELF_REFLECT", "OTHER_REFLECT", "PARAPHRASE", "NEUTRAL_EDIT"],
+                forced_chains=list(range(25)),
+                forced_rounds=20,
+                permissive_chains=list(range(5)),
+                permissive_rounds=10,
+                stage_cap_usd=stage_cap_usd,
+                git_sha_value=git_sha_value,
+                gpu_name="L4",
+            )
+            if gen.get("state") in {"budget_stop", "failed"}:
+                return {"state": gen.get("state"), "generate": gen}
+        checks = code_canary.remote(
+            run_tag, CANARY_CONFIG, stage_api_cap_usd, git_sha_value=git_sha_value
+        )
+        return {"state": "done", "generate": gen, "checks": checks}
+    except Exception as exc:
+        import sys
+
+        sys.path.insert(0, f"{REMOTE_REPO}/src")
+        from rc.phase7_status import write_status
+
+        write_status(
+            Path(REMOTE_RUNS) / run_tag / "STATUS.json",
+            {
+                "run_tag": run_tag,
+                "stage": "orchestrate",
+                "state": "failed",
+                "error": f"{type(exc).__name__}: {exc}"[:500],
+                "traceback": traceback.format_exc()[-4000:],
+            },
+        )
+        runs_vol.commit()
+        raise
+
+
+@app.function(
+    image=cpu_image,
+    volumes={REMOTE_RUNS: runs_vol},
+    timeout=86400,
+)
+def orchestrate_smoke_d59(git_sha_value: str = "") -> dict:
+    """D59 §3.6: L4 smoke 2 chains × 4 rounds, stop/resume, consistency, tiny Batch+MiMo."""
+    import traceback
+
+    smoke_tag = "d59_smoke_v1"
+    try:
+        # First leg: 2 rounds
+        generate_config.remote(
+            SMOKE_ID,
+            smoke_tag,
+            protocols=["FORCED"],
+            conditions=["SELF_REFLECT"],
+            forced_chains=[0, 1],
+            forced_rounds=2,
+            permissive_chains=[],
+            permissive_rounds=0,
+            stage_cap_usd=0.45,
             git_sha_value=git_sha_value,
             gpu_name="L4",
         )
-        if gen.get("state") == "budget_stop":
-            return {"state": "budget_stop", "generate": gen}
-    checks = code_canary.remote(
-        MAIN_RUN_TAG, CANARY_CONFIG, 6.0, git_sha_value=git_sha_value
-    )
-    return {"state": "done", "generate": gen, "checks": checks}
+        # Resume to 4 rounds (simulates remote stop + relaunch)
+        gen = generate_config.remote(
+            SMOKE_ID,
+            smoke_tag,
+            protocols=["FORCED"],
+            conditions=["SELF_REFLECT"],
+            forced_chains=[0, 1],
+            forced_rounds=4,
+            permissive_chains=[],
+            permissive_rounds=0,
+            stage_cap_usd=0.45,
+            git_sha_value=git_sha_value,
+            gpu_name="L4",
+        )
+        if gen.get("state") == "failed":
+            return {"state": "failed", "generate": gen}
+        # Tiny real coding: ≤10 GPT Batch + ≤5 MiMo via canary coder restricted below
+        checks = code_canary.remote(
+            smoke_tag,
+            SMOKE_ID,
+            0.10,
+            git_sha_value=git_sha_value,
+            max_gpt=10,
+            max_mimo=5,
+            skip_canary_checks=True,
+        )
+        return {"state": "done", "generate": gen, "checks": checks}
+    except Exception as exc:
+        import sys
+
+        sys.path.insert(0, f"{REMOTE_REPO}/src")
+        from rc.phase7_status import write_status
+
+        write_status(
+            Path(REMOTE_RUNS) / smoke_tag / "STATUS.json",
+            {
+                "run_tag": smoke_tag,
+                "stage": "orchestrate",
+                "state": "failed",
+                "error": f"{type(exc).__name__}: {exc}"[:500],
+                "traceback": traceback.format_exc()[-4000:],
+            },
+        )
+        runs_vol.commit()
+        raise
 
 
 @app.local_entrypoint()
 def main(mode: str = "canary", rounds: int = 3, stage_cap_usd: float = 0.50) -> None:
-    """mode=detach_test|canary|canary_code|budget_stop_test"""
+    """mode=detach_test|canary|canary_d59|canary_code|budget_stop_test|smoke_d59"""
     from rc.budget import preflight, spent_modal_usd
     from rc.config import repo_root
     from rc.guards import assert_modal_workspace, check_modal_hf_secret
@@ -868,6 +1052,49 @@ def main(mode: str = "canary", rounds: int = 3, stage_cap_usd: float = 0.50) -> 
         print(
             f"CANARY_CODE spawned object_id={call.object_id} run_tag={MAIN_RUN_TAG}"
         )
+        print(f"launch_time_utc={time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime())}")
+    elif mode == "canary_d59":
+        # D59: regenerate stale suffixes on main_v1 then code. Modal +$4; API residual.
+        from rc.budget import spent_api_usd as _spent_api
+
+        api_spent = _spent_api(root)
+        api_cap = max(0.5, 6.0 - api_spent)
+        preflight(
+            "L4",
+            12_000,  # sized so estimate ≤ $4 stage top-up
+            phase="7a2",
+            job_id="phase7a2-canary-d59",
+            hard_cap_usd=spent_modal_usd(root) + 4.0,
+            override_job_cap_usd=4.0,
+            cpu_cores=4.0,
+            memory_gib=16.0,
+            root=root,
+        )
+        call = orchestrate_canary.spawn(
+            git_sha_value=sha,
+            code_only=False,
+            stage_cap_usd=4.0,
+            stage_api_cap_usd=api_cap,
+            run_tag=MAIN_RUN_TAG,
+        )
+        print(f"CANARY_D59 spawned object_id={call.object_id} run_tag={MAIN_RUN_TAG}")
+        print(f"stage_api_cap_usd={api_cap:.4f} (6.0 - spent {api_spent:.4f})")
+        print(f"launch_time_utc={time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime())}")
+    elif mode == "smoke_d59":
+        # Wall-clock prior sized so preflight estimate ≤ $0.50 (two short L4 legs).
+        preflight(
+            "L4",
+            1400,
+            phase="7a2",
+            job_id="phase7a2-smoke-d59",
+            hard_cap_usd=spent_modal_usd(root) + 0.50,
+            override_job_cap_usd=0.50,
+            cpu_cores=4.0,
+            memory_gib=16.0,
+            root=root,
+        )
+        call = orchestrate_smoke_d59.spawn(git_sha_value=sha)
+        print(f"SMOKE_D59 spawned object_id={call.object_id}")
         print(f"launch_time_utc={time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime())}")
     else:
         raise SystemExit(f"unknown mode {mode!r}")

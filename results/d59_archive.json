@@ -1,0 +1,906 @@
+{
+  "archive_root": "runs/main_v1/_invalid_d59/stale_suffixes",
+  "archived": [
+    {
+      "chain": "FORCED/NEUTRAL_EDIT/STRUCTURED/chain_0",
+      "counts": {
+        "constitutions": 9,
+        "lineage": 9,
+        "rounds": 10
+      },
+      "t_stale": 10
+    },
+    {
+      "chain": "FORCED/NEUTRAL_EDIT/STRUCTURED/chain_1",
+      "counts": {
+        "constitutions": 9,
+        "lineage": 9,
+        "rounds": 10
+      },
+      "t_stale": 10
+    },
+    {
+      "chain": "FORCED/NEUTRAL_EDIT/STRUCTURED/chain_10",
+      "counts": {
+        "constitutions": 9,
+        "lineage": 9,
+        "rounds": 10
+      },
+      "t_stale": 10
+    },
+    {
+      "chain": "FORCED/NEUTRAL_EDIT/STRUCTURED/chain_11",
+      "counts": {
+        "constitutions": 9,
+        "lineage": 9,
+        "rounds": 10
+      },
+      "t_stale": 10
+    },
+    {
+      "chain": "FORCED/NEUTRAL_EDIT/STRUCTURED/chain_12",
+      "counts": {
+        "constitutions": 9,
+        "lineage": 9,
+        "rounds": 10
+      },
+      "t_stale": 10
+    },
+    {
+      "chain": "FORCED/NEUTRAL_EDIT/STRUCTURED/chain_13",
+      "counts": {
+        "constitutions": 9,
+        "lineage": 9,
+        "rounds": 10
+      },
+      "t_stale": 10
+    },
+    {
+      "chain": "FORCED/NEUTRAL_EDIT/STRUCTURED/chain_14",
+      "counts": {
+        "constitutions": 9,
+        "lineage": 9,
+        "rounds": 10
+      },
+      "t_stale": 10
+    },
+    {
+      "chain": "FORCED/NEUTRAL_EDIT/STRUCTURED/chain_15",
+      "counts": {
+        "constitutions": 9,
+        "lineage": 9,
+        "rounds": 10
+      },
+      "t_stale": 10
+    },
+    {
+      "chain": "FORCED/NEUTRAL_EDIT/STRUCTURED/chain_16",
+      "counts": {
+        "constitutions": 9,
+        "lineage": 9,
+        "rounds": 10
+      },
+      "t_stale": 10
+    },
+    {
+      "chain": "FORCED/NEUTRAL_EDIT/STRUCTURED/chain_17",
+      "counts": {
+        "constitutions": 9,
+        "lineage": 9,
+        "rounds": 10
+      },
+      "t_stale": 10
+    },
+    {
+      "chain": "FORCED/NEUTRAL_EDIT/STRUCTURED/chain_18",
+      "counts": {
+        "constitutions": 9,
+        "lineage": 9,
+        "rounds": 10
+      },
+      "t_stale": 10
+    },
+    {
+      "chain": "FORCED/NEUTRAL_EDIT/STRUCTURED/chain_19",
+      "counts": {
+        "constitutions": 9,
+        "lineage": 9,
+        "rounds": 10
+      },
+      "t_stale": 10
+    },
+    {
+      "chain": "FORCED/NEUTRAL_EDIT/STRUCTURED/chain_2",
+      "counts": {
+        "constitutions": 9,
+        "lineage": 9,
+        "rounds": 10
+      },
+      "t_stale": 10
+    },
+    {
+      "chain": "FORCED/NEUTRAL_EDIT/STRUCTURED/chain_20",
+      "counts": {
+        "constitutions": 9,
+        "lineage": 9,
+        "rounds": 10
+      },
+      "t_stale": 10
+    },
+    {
+      "chain": "FORCED/NEUTRAL_EDIT/STRUCTURED/chain_21",
+      "counts": {
+        "constitutions": 9,
+        "lineage": 9,
+        "rounds": 10
+      },
+      "t_stale": 10
+    },
+    {
+      "chain": "FORCED/NEUTRAL_EDIT/STRUCTURED/chain_22",
+      "counts": {
+        "constitutions": 9,
+        "lineage": 9,
+        "rounds": 10
+      },
+      "t_stale": 10
+    },
+    {
+      "chain": "FORCED/NEUTRAL_EDIT/STRUCTURED/chain_23",
+      "counts": {
+        "constitutions": 9,
+        "lineage": 9,
+        "rounds": 10
+      },
+      "t_stale": 10
+    },
+    {
+      "chain": "FORCED/NEUTRAL_EDIT/STRUCTURED/chain_24",
+      "counts": {
+        "constitutions": 9,
+        "lineage": 9,
+        "rounds": 10
+      },
+      "t_stale": 10
+    },
+    {
+      "chain": "FORCED/NEUTRAL_EDIT/STRUCTURED/chain_3",
+      "counts": {
+        "constitutions": 9,
+        "lineage": 9,
+        "rounds": 10
+      },
+      "t_stale": 10
+    },
+    {
+      "chain": "FORCED/NEUTRAL_EDIT/STRUCTURED/chain_4",
+      "counts": {
+        "constitutions": 9,
+        "lineage": 9,
+        "rounds": 10
+      },
+      "t_stale": 10
+    },
+    {
+      "chain": "FORCED/NEUTRAL_EDIT/STRUCTURED/chain_5",
+      "counts": {
+        "constitutions": 9,
+        "lineage": 9,
+        "rounds": 10
+      },
+      "t_stale": 10
+    },
+    {
+      "chain": "FORCED/NEUTRAL_EDIT/STRUCTURED/chain_6",
+      "counts": {
+        "constitutions": 9,
+        "lineage": 9,
+        "rounds": 10
+      },
+      "t_stale": 10
+    },
+    {
+      "chain": "FORCED/NEUTRAL_EDIT/STRUCTURED/chain_7",
+      "counts": {
+        "constitutions": 9,
+        "lineage": 9,
+        "rounds": 10
+      },
+      "t_stale": 10
+    },
+    {
+      "chain": "FORCED/NEUTRAL_EDIT/STRUCTURED/chain_8",
+      "counts": {
+        "constitutions": 9,
+        "lineage": 9,
+        "rounds": 10
+      },
+      "t_stale": 10
+    },
+    {
+      "chain": "FORCED/NEUTRAL_EDIT/STRUCTURED/chain_9",
+      "counts": {
+        "constitutions": 9,
+        "lineage": 9,
+        "rounds": 10
+      },
+      "t_stale": 10
+    },
+    {
+      "chain": "FORCED/OTHER_REFLECT/STRUCTURED/chain_0",
+      "counts": {
+        "constitutions": 8,
+        "lineage": 8,
+        "rounds": 9
+      },
+      "t_stale": 11
+    },
+    {
+      "chain": "FORCED/OTHER_REFLECT/STRUCTURED/chain_1",
+      "counts": {
+        "constitutions": 8,
+        "lineage": 8,
+        "rounds": 9
+      },
+      "t_stale": 11
+    },
+    {
+      "chain": "FORCED/OTHER_REFLECT/STRUCTURED/chain_10",
+      "counts": {
+        "constitutions": 8,
+        "lineage": 8,
+        "rounds": 9
+      },
+      "t_stale": 11
+    },
+    {
+      "chain": "FORCED/OTHER_REFLECT/STRUCTURED/chain_11",
+      "counts": {
+        "constitutions": 8,
+        "lineage": 8,
+        "rounds": 9
+      },
+      "t_stale": 11
+    },
+    {
+      "chain": "FORCED/OTHER_REFLECT/STRUCTURED/chain_12",
+      "counts": {
+        "constitutions": 8,
+        "lineage": 8,
+        "rounds": 9
+      },
+      "t_stale": 11
+    },
+    {
+      "chain": "FORCED/OTHER_REFLECT/STRUCTURED/chain_13",
+      "counts": {
+        "constitutions": 8,
+        "lineage": 8,
+        "rounds": 9
+      },
+      "t_stale": 11
+    },
+    {
+      "chain": "FORCED/OTHER_REFLECT/STRUCTURED/chain_14",
+      "counts": {
+        "constitutions": 8,
+        "lineage": 8,
+        "rounds": 9
+      },
+      "t_stale": 11
+    },
+    {
+      "chain": "FORCED/OTHER_REFLECT/STRUCTURED/chain_15",
+      "counts": {
+        "constitutions": 8,
+        "lineage": 8,
+        "rounds": 9
+      },
+      "t_stale": 11
+    },
+    {
+      "chain": "FORCED/OTHER_REFLECT/STRUCTURED/chain_16",
+      "counts": {
+        "constitutions": 8,
+        "lineage": 8,
+        "rounds": 9
+      },
+      "t_stale": 11
+    },
+    {
+      "chain": "FORCED/OTHER_REFLECT/STRUCTURED/chain_17",
+      "counts": {
+        "constitutions": 8,
+        "lineage": 8,
+        "rounds": 9
+      },
+      "t_stale": 11
+    },
+    {
+      "chain": "FORCED/OTHER_REFLECT/STRUCTURED/chain_18",
+      "counts": {
+        "constitutions": 8,
+        "lineage": 8,
+        "rounds": 9
+      },
+      "t_stale": 11
+    },
+    {
+      "chain": "FORCED/OTHER_REFLECT/STRUCTURED/chain_19",
+      "counts": {
+        "constitutions": 8,
+        "lineage": 8,
+        "rounds": 9
+      },
+      "t_stale": 11
+    },
+    {
+      "chain": "FORCED/OTHER_REFLECT/STRUCTURED/chain_2",
+      "counts": {
+        "constitutions": 8,
+        "lineage": 8,
+        "rounds": 9
+      },
+      "t_stale": 11
+    },
+    {
+      "chain": "FORCED/OTHER_REFLECT/STRUCTURED/chain_20",
+      "counts": {
+        "constitutions": 8,
+        "lineage": 8,
+        "rounds": 9
+      },
+      "t_stale": 11
+    },
+    {
+      "chain": "FORCED/OTHER_REFLECT/STRUCTURED/chain_21",
+      "counts": {
+        "constitutions": 8,
+        "lineage": 8,
+        "rounds": 9
+      },
+      "t_stale": 11
+    },
+    {
+      "chain": "FORCED/OTHER_REFLECT/STRUCTURED/chain_22",
+      "counts": {
+        "constitutions": 8,
+        "lineage": 8,
+        "rounds": 9
+      },
+      "t_stale": 11
+    },
+    {
+      "chain": "FORCED/OTHER_REFLECT/STRUCTURED/chain_23",
+      "counts": {
+        "constitutions": 8,
+        "lineage": 8,
+        "rounds": 9
+      },
+      "t_stale": 11
+    },
+    {
+      "chain": "FORCED/OTHER_REFLECT/STRUCTURED/chain_24",
+      "counts": {
+        "constitutions": 8,
+        "lineage": 8,
+        "rounds": 9
+      },
+      "t_stale": 11
+    },
+    {
+      "chain": "FORCED/OTHER_REFLECT/STRUCTURED/chain_3",
+      "counts": {
+        "constitutions": 8,
+        "lineage": 8,
+        "rounds": 9
+      },
+      "t_stale": 11
+    },
+    {
+      "chain": "FORCED/OTHER_REFLECT/STRUCTURED/chain_4",
+      "counts": {
+        "constitutions": 8,
+        "lineage": 8,
+        "rounds": 9
+      },
+      "t_stale": 11
+    },
+    {
+      "chain": "FORCED/OTHER_REFLECT/STRUCTURED/chain_5",
+      "counts": {
+        "constitutions": 8,
+        "lineage": 8,
+        "rounds": 9
+      },
+      "t_stale": 11
+    },
+    {
+      "chain": "FORCED/OTHER_REFLECT/STRUCTURED/chain_6",
+      "counts": {
+        "constitutions": 8,
+        "lineage": 8,
+        "rounds": 9
+      },
+      "t_stale": 11
+    },
+    {
+      "chain": "FORCED/OTHER_REFLECT/STRUCTURED/chain_7",
+      "counts": {
+        "constitutions": 8,
+        "lineage": 8,
+        "rounds": 9
+      },
+      "t_stale": 11
+    },
+    {
+      "chain": "FORCED/OTHER_REFLECT/STRUCTURED/chain_8",
+      "counts": {
+        "constitutions": 8,
+        "lineage": 8,
+        "rounds": 9
+      },
+      "t_stale": 11
+    },
+    {
+      "chain": "FORCED/OTHER_REFLECT/STRUCTURED/chain_9",
+      "counts": {
+        "constitutions": 8,
+        "lineage": 8,
+        "rounds": 9
+      },
+      "t_stale": 11
+    },
+    {
+      "chain": "FORCED/PARAPHRASE/STRUCTURED/chain_0",
+      "counts": {
+        "constitutions": 8,
+        "lineage": 8,
+        "rounds": 9
+      },
+      "t_stale": 11
+    },
+    {
+      "chain": "FORCED/PARAPHRASE/STRUCTURED/chain_1",
+      "counts": {
+        "constitutions": 8,
+        "lineage": 8,
+        "rounds": 9
+      },
+      "t_stale": 11
+    },
+    {
+      "chain": "FORCED/PARAPHRASE/STRUCTURED/chain_10",
+      "counts": {
+        "constitutions": 8,
+        "lineage": 8,
+        "rounds": 9
+      },
+      "t_stale": 11
+    },
+    {
+      "chain": "FORCED/PARAPHRASE/STRUCTURED/chain_11",
+      "counts": {
+        "constitutions": 9,
+        "lineage": 9,
+        "rounds": 10
+      },
+      "t_stale": 10
+    },
+    {
+      "chain": "FORCED/PARAPHRASE/STRUCTURED/chain_12",
+      "counts": {
+        "constitutions": 9,
+        "lineage": 9,
+        "rounds": 10
+      },
+      "t_stale": 10
+    },
+    {
+      "chain": "FORCED/PARAPHRASE/STRUCTURED/chain_13",
+      "counts": {
+        "constitutions": 9,
+        "lineage": 9,
+        "rounds": 10
+      },
+      "t_stale": 10
+    },
+    {
+      "chain": "FORCED/PARAPHRASE/STRUCTURED/chain_14",
+      "counts": {
+        "constitutions": 9,
+        "lineage": 9,
+        "rounds": 10
+      },
+      "t_stale": 10
+    },
+    {
+      "chain": "FORCED/PARAPHRASE/STRUCTURED/chain_15",
+      "counts": {
+        "constitutions": 9,
+        "lineage": 9,
+        "rounds": 10
+      },
+      "t_stale": 10
+    },
+    {
+      "chain": "FORCED/PARAPHRASE/STRUCTURED/chain_16",
+      "counts": {
+        "constitutions": 9,
+        "lineage": 9,
+        "rounds": 10
+      },
+      "t_stale": 10
+    },
+    {
+      "chain": "FORCED/PARAPHRASE/STRUCTURED/chain_17",
+      "counts": {
+        "constitutions": 9,
+        "lineage": 9,
+        "rounds": 10
+      },
+      "t_stale": 10
+    },
+    {
+      "chain": "FORCED/PARAPHRASE/STRUCTURED/chain_18",
+      "counts": {
+        "constitutions": 9,
+        "lineage": 9,
+        "rounds": 10
+      },
+      "t_stale": 10
+    },
+    {
+      "chain": "FORCED/PARAPHRASE/STRUCTURED/chain_19",
+      "counts": {
+        "constitutions": 9,
+        "lineage": 9,
+        "rounds": 10
+      },
+      "t_stale": 10
+    },
+    {
+      "chain": "FORCED/PARAPHRASE/STRUCTURED/chain_2",
+      "counts": {
+        "constitutions": 8,
+        "lineage": 8,
+        "rounds": 9
+      },
+      "t_stale": 11
+    },
+    {
+      "chain": "FORCED/PARAPHRASE/STRUCTURED/chain_20",
+      "counts": {
+        "constitutions": 9,
+        "lineage": 9,
+        "rounds": 10
+      },
+      "t_stale": 10
+    },
+    {
+      "chain": "FORCED/PARAPHRASE/STRUCTURED/chain_21",
+      "counts": {
+        "constitutions": 9,
+        "lineage": 9,
+        "rounds": 10
+      },
+      "t_stale": 10
+    },
+    {
+      "chain": "FORCED/PARAPHRASE/STRUCTURED/chain_22",
+      "counts": {
+        "constitutions": 9,
+        "lineage": 9,
+        "rounds": 10
+      },
+      "t_stale": 10
+    },
+    {
+      "chain": "FORCED/PARAPHRASE/STRUCTURED/chain_23",
+      "counts": {
+        "constitutions": 9,
+        "lineage": 9,
+        "rounds": 10
+      },
+      "t_stale": 10
+    },
+    {
+      "chain": "FORCED/PARAPHRASE/STRUCTURED/chain_24",
+      "counts": {
+        "constitutions": 9,
+        "lineage": 9,
+        "rounds": 10
+      },
+      "t_stale": 10
+    },
+    {
+      "chain": "FORCED/PARAPHRASE/STRUCTURED/chain_3",
+      "counts": {
+        "constitutions": 8,
+        "lineage": 8,
+        "rounds": 9
+      },
+      "t_stale": 11
+    },
+    {
+      "chain": "FORCED/PARAPHRASE/STRUCTURED/chain_4",
+      "counts": {
+        "constitutions": 8,
+        "lineage": 8,
+        "rounds": 9
+      },
+      "t_stale": 11
+    },
+    {
+      "chain": "FORCED/PARAPHRASE/STRUCTURED/chain_5",
+      "counts": {
+        "constitutions": 8,
+        "lineage": 8,
+        "rounds": 9
+      },
+      "t_stale": 11
+    },
+    {
+      "chain": "FORCED/PARAPHRASE/STRUCTURED/chain_6",
+      "counts": {
+        "constitutions": 8,
+        "lineage": 8,
+        "rounds": 9
+      },
+      "t_stale": 11
+    },
+    {
+      "chain": "FORCED/PARAPHRASE/STRUCTURED/chain_7",
+      "counts": {
+        "constitutions": 8,
+        "lineage": 8,
+        "rounds": 9
+      },
+      "t_stale": 11
+    },
+    {
+      "chain": "FORCED/PARAPHRASE/STRUCTURED/chain_8",
+      "counts": {
+        "constitutions": 8,
+        "lineage": 8,
+        "rounds": 9
+      },
+      "t_stale": 11
+    },
+    {
+      "chain": "FORCED/PARAPHRASE/STRUCTURED/chain_9",
+      "counts": {
+        "constitutions": 8,
+        "lineage": 8,
+        "rounds": 9
+      },
+      "t_stale": 11
+    },
+    {
+      "chain": "FORCED/SELF_REFLECT/STRUCTURED/chain_0",
+      "counts": {
+        "constitutions": 8,
+        "lineage": 8,
+        "rounds": 9
+      },
+      "t_stale": 11
+    },
+    {
+      "chain": "FORCED/SELF_REFLECT/STRUCTURED/chain_1",
+      "counts": {
+        "constitutions": 8,
+        "lineage": 8,
+        "rounds": 9
+      },
+      "t_stale": 11
+    },
+    {
+      "chain": "FORCED/SELF_REFLECT/STRUCTURED/chain_10",
+      "counts": {
+        "constitutions": 8,
+        "lineage": 8,
+        "rounds": 9
+      },
+      "t_stale": 11
+    },
+    {
+      "chain": "FORCED/SELF_REFLECT/STRUCTURED/chain_11",
+      "counts": {
+        "constitutions": 8,
+        "lineage": 8,
+        "rounds": 9
+      },
+      "t_stale": 11
+    },
+    {
+      "chain": "FORCED/SELF_REFLECT/STRUCTURED/chain_12",
+      "counts": {
+        "constitutions": 8,
+        "lineage": 8,
+        "rounds": 9
+      },
+      "t_stale": 11
+    },
+    {
+      "chain": "FORCED/SELF_REFLECT/STRUCTURED/chain_13",
+      "counts": {
+        "constitutions": 8,
+        "lineage": 8,
+        "rounds": 9
+      },
+      "t_stale": 11
+    },
+    {
+      "chain": "FORCED/SELF_REFLECT/STRUCTURED/chain_14",
+      "counts": {
+        "constitutions": 8,
+        "lineage": 8,
+        "rounds": 9
+      },
+      "t_stale": 11
+    },
+    {
+      "chain": "FORCED/SELF_REFLECT/STRUCTURED/chain_15",
+      "counts": {
+        "constitutions": 8,
+        "lineage": 8,
+        "rounds": 9
+      },
+      "t_stale": 11
+    },
+    {
+      "chain": "FORCED/SELF_REFLECT/STRUCTURED/chain_16",
+      "counts": {
+        "constitutions": 8,
+        "lineage": 8,
+        "rounds": 9
+      },
+      "t_stale": 11
+    },
+    {
+      "chain": "FORCED/SELF_REFLECT/STRUCTURED/chain_17",
+      "counts": {
+        "constitutions": 8,
+        "lineage": 8,
+        "rounds": 9
+      },
+      "t_stale": 11
+    },
+    {
+      "chain": "FORCED/SELF_REFLECT/STRUCTURED/chain_18",
+      "counts": {
+        "constitutions": 8,
+        "lineage": 8,
+        "rounds": 9
+      },
+      "t_stale": 11
+    },
+    {
+      "chain": "FORCED/SELF_REFLECT/STRUCTURED/chain_19",
+      "counts": {
+        "constitutions": 8,
+        "lineage": 8,
+        "rounds": 9
+      },
+      "t_stale": 11
+    },
+    {
+      "chain": "FORCED/SELF_REFLECT/STRUCTURED/chain_2",
+      "counts": {
+        "constitutions": 8,
+        "lineage": 8,
+        "rounds": 9
+      },
+      "t_stale": 11
+    },
+    {
+      "chain": "FORCED/SELF_REFLECT/STRUCTURED/chain_20",
+      "counts": {
+        "constitutions": 8,
+        "lineage": 8,
+        "rounds": 9
+      },
+      "t_stale": 11
+    },
+    {
+      "chain": "FORCED/SELF_REFLECT/STRUCTURED/chain_21",
+      "counts": {
+        "constitutions": 8,
+        "lineage": 8,
+        "rounds": 9
+      },
+      "t_stale": 11
+    },
+    {
+      "chain": "FORCED/SELF_REFLECT/STRUCTURED/chain_22",
+      "counts": {
+        "constitutions": 8,
+        "lineage": 8,
+        "rounds": 9
+      },
+      "t_stale": 11
+    },
+    {
+      "chain": "FORCED/SELF_REFLECT/STRUCTURED/chain_23",
+      "counts": {
+        "constitutions": 8,
+        "lineage": 8,
+        "rounds": 9
+      },
+      "t_stale": 11
+    },
+    {
+      "chain": "FORCED/SELF_REFLECT/STRUCTURED/chain_24",
+      "counts": {
+        "constitutions": 8,
+        "lineage": 8,
+        "rounds": 9
+      },
+      "t_stale": 11
+    },
+    {
+      "chain": "FORCED/SELF_REFLECT/STRUCTURED/chain_3",
+      "counts": {
+        "constitutions": 8,
+        "lineage": 8,
+        "rounds": 9
+      },
+      "t_stale": 11
+    },
+    {
+      "chain": "FORCED/SELF_REFLECT/STRUCTURED/chain_4",
+      "counts": {
+        "constitutions": 8,
+        "lineage": 8,
+        "rounds": 9
+      },
+      "t_stale": 11
+    },
+    {
+      "chain": "FORCED/SELF_REFLECT/STRUCTURED/chain_5",
+      "counts": {
+        "constitutions": 8,
+        "lineage": 8,
+        "rounds": 9
+      },
+      "t_stale": 11
+    },
+    {
+      "chain": "FORCED/SELF_REFLECT/STRUCTURED/chain_6",
+      "counts": {
+        "constitutions": 8,
+        "lineage": 8,
+        "rounds": 9
+      },
+      "t_stale": 11
+    },
+    {
+      "chain": "FORCED/SELF_REFLECT/STRUCTURED/chain_7",
+      "counts": {
+        "constitutions": 8,
+        "lineage": 8,
+        "rounds": 9
+      },
+      "t_stale": 11
+    },
+    {
+      "chain": "FORCED/SELF_REFLECT/STRUCTURED/chain_8",
+      "counts": {
+        "constitutions": 8,
+        "lineage": 8,
+        "rounds": 9
+      },
+      "t_stale": 11
+    },
+    {
+      "chain": "FORCED/SELF_REFLECT/STRUCTURED/chain_9",
+      "counts": {
+        "constitutions": 8,
+        "lineage": 8,
+        "rounds": 9
+      },
+      "t_stale": 11
+    }
+  ],
+  "n_archived": 100
+}

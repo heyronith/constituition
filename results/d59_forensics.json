@@ -1,0 +1,1099 @@
+{
+  "chains": [
+    {
+      "censored_at_round": null,
+      "chain_idx": 0,
+      "chain_path": "FORCED/NEUTRAL_EDIT/STRUCTURED/chain_0",
+      "condition": "NEUTRAL_EDIT",
+      "n_ok_rounds": 20,
+      "protocol": "FORCED",
+      "t_stale": 10
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 1,
+      "chain_path": "FORCED/NEUTRAL_EDIT/STRUCTURED/chain_1",
+      "condition": "NEUTRAL_EDIT",
+      "n_ok_rounds": 20,
+      "protocol": "FORCED",
+      "t_stale": 10
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 10,
+      "chain_path": "FORCED/NEUTRAL_EDIT/STRUCTURED/chain_10",
+      "condition": "NEUTRAL_EDIT",
+      "n_ok_rounds": 20,
+      "protocol": "FORCED",
+      "t_stale": 10
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 11,
+      "chain_path": "FORCED/NEUTRAL_EDIT/STRUCTURED/chain_11",
+      "condition": "NEUTRAL_EDIT",
+      "n_ok_rounds": 20,
+      "protocol": "FORCED",
+      "t_stale": 10
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 12,
+      "chain_path": "FORCED/NEUTRAL_EDIT/STRUCTURED/chain_12",
+      "condition": "NEUTRAL_EDIT",
+      "n_ok_rounds": 20,
+      "protocol": "FORCED",
+      "t_stale": 10
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 13,
+      "chain_path": "FORCED/NEUTRAL_EDIT/STRUCTURED/chain_13",
+      "condition": "NEUTRAL_EDIT",
+      "n_ok_rounds": 20,
+      "protocol": "FORCED",
+      "t_stale": 10
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 14,
+      "chain_path": "FORCED/NEUTRAL_EDIT/STRUCTURED/chain_14",
+      "condition": "NEUTRAL_EDIT",
+      "n_ok_rounds": 20,
+      "protocol": "FORCED",
+      "t_stale": 10
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 15,
+      "chain_path": "FORCED/NEUTRAL_EDIT/STRUCTURED/chain_15",
+      "condition": "NEUTRAL_EDIT",
+      "n_ok_rounds": 20,
+      "protocol": "FORCED",
+      "t_stale": 10
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 16,
+      "chain_path": "FORCED/NEUTRAL_EDIT/STRUCTURED/chain_16",
+      "condition": "NEUTRAL_EDIT",
+      "n_ok_rounds": 20,
+      "protocol": "FORCED",
+      "t_stale": 10
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 17,
+      "chain_path": "FORCED/NEUTRAL_EDIT/STRUCTURED/chain_17",
+      "condition": "NEUTRAL_EDIT",
+      "n_ok_rounds": 20,
+      "protocol": "FORCED",
+      "t_stale": 10
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 18,
+      "chain_path": "FORCED/NEUTRAL_EDIT/STRUCTURED/chain_18",
+      "condition": "NEUTRAL_EDIT",
+      "n_ok_rounds": 20,
+      "protocol": "FORCED",
+      "t_stale": 10
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 19,
+      "chain_path": "FORCED/NEUTRAL_EDIT/STRUCTURED/chain_19",
+      "condition": "NEUTRAL_EDIT",
+      "n_ok_rounds": 20,
+      "protocol": "FORCED",
+      "t_stale": 10
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 2,
+      "chain_path": "FORCED/NEUTRAL_EDIT/STRUCTURED/chain_2",
+      "condition": "NEUTRAL_EDIT",
+      "n_ok_rounds": 20,
+      "protocol": "FORCED",
+      "t_stale": 10
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 20,
+      "chain_path": "FORCED/NEUTRAL_EDIT/STRUCTURED/chain_20",
+      "condition": "NEUTRAL_EDIT",
+      "n_ok_rounds": 20,
+      "protocol": "FORCED",
+      "t_stale": 10
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 21,
+      "chain_path": "FORCED/NEUTRAL_EDIT/STRUCTURED/chain_21",
+      "condition": "NEUTRAL_EDIT",
+      "n_ok_rounds": 20,
+      "protocol": "FORCED",
+      "t_stale": 10
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 22,
+      "chain_path": "FORCED/NEUTRAL_EDIT/STRUCTURED/chain_22",
+      "condition": "NEUTRAL_EDIT",
+      "n_ok_rounds": 20,
+      "protocol": "FORCED",
+      "t_stale": 10
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 23,
+      "chain_path": "FORCED/NEUTRAL_EDIT/STRUCTURED/chain_23",
+      "condition": "NEUTRAL_EDIT",
+      "n_ok_rounds": 20,
+      "protocol": "FORCED",
+      "t_stale": 10
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 24,
+      "chain_path": "FORCED/NEUTRAL_EDIT/STRUCTURED/chain_24",
+      "condition": "NEUTRAL_EDIT",
+      "n_ok_rounds": 20,
+      "protocol": "FORCED",
+      "t_stale": 10
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 3,
+      "chain_path": "FORCED/NEUTRAL_EDIT/STRUCTURED/chain_3",
+      "condition": "NEUTRAL_EDIT",
+      "n_ok_rounds": 20,
+      "protocol": "FORCED",
+      "t_stale": 10
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 4,
+      "chain_path": "FORCED/NEUTRAL_EDIT/STRUCTURED/chain_4",
+      "condition": "NEUTRAL_EDIT",
+      "n_ok_rounds": 20,
+      "protocol": "FORCED",
+      "t_stale": 10
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 5,
+      "chain_path": "FORCED/NEUTRAL_EDIT/STRUCTURED/chain_5",
+      "condition": "NEUTRAL_EDIT",
+      "n_ok_rounds": 20,
+      "protocol": "FORCED",
+      "t_stale": 10
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 6,
+      "chain_path": "FORCED/NEUTRAL_EDIT/STRUCTURED/chain_6",
+      "condition": "NEUTRAL_EDIT",
+      "n_ok_rounds": 20,
+      "protocol": "FORCED",
+      "t_stale": 10
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 7,
+      "chain_path": "FORCED/NEUTRAL_EDIT/STRUCTURED/chain_7",
+      "condition": "NEUTRAL_EDIT",
+      "n_ok_rounds": 20,
+      "protocol": "FORCED",
+      "t_stale": 10
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 8,
+      "chain_path": "FORCED/NEUTRAL_EDIT/STRUCTURED/chain_8",
+      "condition": "NEUTRAL_EDIT",
+      "n_ok_rounds": 20,
+      "protocol": "FORCED",
+      "t_stale": 10
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 9,
+      "chain_path": "FORCED/NEUTRAL_EDIT/STRUCTURED/chain_9",
+      "condition": "NEUTRAL_EDIT",
+      "n_ok_rounds": 20,
+      "protocol": "FORCED",
+      "t_stale": 10
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 0,
+      "chain_path": "FORCED/OTHER_REFLECT/STRUCTURED/chain_0",
+      "condition": "OTHER_REFLECT",
+      "n_ok_rounds": 20,
+      "protocol": "FORCED",
+      "t_stale": 11
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 1,
+      "chain_path": "FORCED/OTHER_REFLECT/STRUCTURED/chain_1",
+      "condition": "OTHER_REFLECT",
+      "n_ok_rounds": 20,
+      "protocol": "FORCED",
+      "t_stale": 11
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 10,
+      "chain_path": "FORCED/OTHER_REFLECT/STRUCTURED/chain_10",
+      "condition": "OTHER_REFLECT",
+      "n_ok_rounds": 20,
+      "protocol": "FORCED",
+      "t_stale": 11
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 11,
+      "chain_path": "FORCED/OTHER_REFLECT/STRUCTURED/chain_11",
+      "condition": "OTHER_REFLECT",
+      "n_ok_rounds": 20,
+      "protocol": "FORCED",
+      "t_stale": 11
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 12,
+      "chain_path": "FORCED/OTHER_REFLECT/STRUCTURED/chain_12",
+      "condition": "OTHER_REFLECT",
+      "n_ok_rounds": 20,
+      "protocol": "FORCED",
+      "t_stale": 11
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 13,
+      "chain_path": "FORCED/OTHER_REFLECT/STRUCTURED/chain_13",
+      "condition": "OTHER_REFLECT",
+      "n_ok_rounds": 20,
+      "protocol": "FORCED",
+      "t_stale": 11
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 14,
+      "chain_path": "FORCED/OTHER_REFLECT/STRUCTURED/chain_14",
+      "condition": "OTHER_REFLECT",
+      "n_ok_rounds": 20,
+      "protocol": "FORCED",
+      "t_stale": 11
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 15,
+      "chain_path": "FORCED/OTHER_REFLECT/STRUCTURED/chain_15",
+      "condition": "OTHER_REFLECT",
+      "n_ok_rounds": 20,
+      "protocol": "FORCED",
+      "t_stale": 11
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 16,
+      "chain_path": "FORCED/OTHER_REFLECT/STRUCTURED/chain_16",
+      "condition": "OTHER_REFLECT",
+      "n_ok_rounds": 20,
+      "protocol": "FORCED",
+      "t_stale": 11
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 17,
+      "chain_path": "FORCED/OTHER_REFLECT/STRUCTURED/chain_17",
+      "condition": "OTHER_REFLECT",
+      "n_ok_rounds": 20,
+      "protocol": "FORCED",
+      "t_stale": 11
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 18,
+      "chain_path": "FORCED/OTHER_REFLECT/STRUCTURED/chain_18",
+      "condition": "OTHER_REFLECT",
+      "n_ok_rounds": 20,
+      "protocol": "FORCED",
+      "t_stale": 11
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 19,
+      "chain_path": "FORCED/OTHER_REFLECT/STRUCTURED/chain_19",
+      "condition": "OTHER_REFLECT",
+      "n_ok_rounds": 20,
+      "protocol": "FORCED",
+      "t_stale": 11
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 2,
+      "chain_path": "FORCED/OTHER_REFLECT/STRUCTURED/chain_2",
+      "condition": "OTHER_REFLECT",
+      "n_ok_rounds": 20,
+      "protocol": "FORCED",
+      "t_stale": 11
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 20,
+      "chain_path": "FORCED/OTHER_REFLECT/STRUCTURED/chain_20",
+      "condition": "OTHER_REFLECT",
+      "n_ok_rounds": 20,
+      "protocol": "FORCED",
+      "t_stale": 11
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 21,
+      "chain_path": "FORCED/OTHER_REFLECT/STRUCTURED/chain_21",
+      "condition": "OTHER_REFLECT",
+      "n_ok_rounds": 20,
+      "protocol": "FORCED",
+      "t_stale": 11
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 22,
+      "chain_path": "FORCED/OTHER_REFLECT/STRUCTURED/chain_22",
+      "condition": "OTHER_REFLECT",
+      "n_ok_rounds": 20,
+      "protocol": "FORCED",
+      "t_stale": 11
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 23,
+      "chain_path": "FORCED/OTHER_REFLECT/STRUCTURED/chain_23",
+      "condition": "OTHER_REFLECT",
+      "n_ok_rounds": 20,
+      "protocol": "FORCED",
+      "t_stale": 11
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 24,
+      "chain_path": "FORCED/OTHER_REFLECT/STRUCTURED/chain_24",
+      "condition": "OTHER_REFLECT",
+      "n_ok_rounds": 20,
+      "protocol": "FORCED",
+      "t_stale": 11
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 3,
+      "chain_path": "FORCED/OTHER_REFLECT/STRUCTURED/chain_3",
+      "condition": "OTHER_REFLECT",
+      "n_ok_rounds": 20,
+      "protocol": "FORCED",
+      "t_stale": 11
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 4,
+      "chain_path": "FORCED/OTHER_REFLECT/STRUCTURED/chain_4",
+      "condition": "OTHER_REFLECT",
+      "n_ok_rounds": 20,
+      "protocol": "FORCED",
+      "t_stale": 11
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 5,
+      "chain_path": "FORCED/OTHER_REFLECT/STRUCTURED/chain_5",
+      "condition": "OTHER_REFLECT",
+      "n_ok_rounds": 20,
+      "protocol": "FORCED",
+      "t_stale": 11
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 6,
+      "chain_path": "FORCED/OTHER_REFLECT/STRUCTURED/chain_6",
+      "condition": "OTHER_REFLECT",
+      "n_ok_rounds": 20,
+      "protocol": "FORCED",
+      "t_stale": 11
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 7,
+      "chain_path": "FORCED/OTHER_REFLECT/STRUCTURED/chain_7",
+      "condition": "OTHER_REFLECT",
+      "n_ok_rounds": 20,
+      "protocol": "FORCED",
+      "t_stale": 11
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 8,
+      "chain_path": "FORCED/OTHER_REFLECT/STRUCTURED/chain_8",
+      "condition": "OTHER_REFLECT",
+      "n_ok_rounds": 20,
+      "protocol": "FORCED",
+      "t_stale": 11
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 9,
+      "chain_path": "FORCED/OTHER_REFLECT/STRUCTURED/chain_9",
+      "condition": "OTHER_REFLECT",
+      "n_ok_rounds": 20,
+      "protocol": "FORCED",
+      "t_stale": 11
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 0,
+      "chain_path": "FORCED/PARAPHRASE/STRUCTURED/chain_0",
+      "condition": "PARAPHRASE",
+      "n_ok_rounds": 20,
+      "protocol": "FORCED",
+      "t_stale": 11
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 1,
+      "chain_path": "FORCED/PARAPHRASE/STRUCTURED/chain_1",
+      "condition": "PARAPHRASE",
+      "n_ok_rounds": 20,
+      "protocol": "FORCED",
+      "t_stale": 11
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 10,
+      "chain_path": "FORCED/PARAPHRASE/STRUCTURED/chain_10",
+      "condition": "PARAPHRASE",
+      "n_ok_rounds": 20,
+      "protocol": "FORCED",
+      "t_stale": 11
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 11,
+      "chain_path": "FORCED/PARAPHRASE/STRUCTURED/chain_11",
+      "condition": "PARAPHRASE",
+      "n_ok_rounds": 20,
+      "protocol": "FORCED",
+      "t_stale": 10
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 12,
+      "chain_path": "FORCED/PARAPHRASE/STRUCTURED/chain_12",
+      "condition": "PARAPHRASE",
+      "n_ok_rounds": 20,
+      "protocol": "FORCED",
+      "t_stale": 10
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 13,
+      "chain_path": "FORCED/PARAPHRASE/STRUCTURED/chain_13",
+      "condition": "PARAPHRASE",
+      "n_ok_rounds": 20,
+      "protocol": "FORCED",
+      "t_stale": 10
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 14,
+      "chain_path": "FORCED/PARAPHRASE/STRUCTURED/chain_14",
+      "condition": "PARAPHRASE",
+      "n_ok_rounds": 20,
+      "protocol": "FORCED",
+      "t_stale": 10
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 15,
+      "chain_path": "FORCED/PARAPHRASE/STRUCTURED/chain_15",
+      "condition": "PARAPHRASE",
+      "n_ok_rounds": 20,
+      "protocol": "FORCED",
+      "t_stale": 10
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 16,
+      "chain_path": "FORCED/PARAPHRASE/STRUCTURED/chain_16",
+      "condition": "PARAPHRASE",
+      "n_ok_rounds": 20,
+      "protocol": "FORCED",
+      "t_stale": 10
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 17,
+      "chain_path": "FORCED/PARAPHRASE/STRUCTURED/chain_17",
+      "condition": "PARAPHRASE",
+      "n_ok_rounds": 20,
+      "protocol": "FORCED",
+      "t_stale": 10
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 18,
+      "chain_path": "FORCED/PARAPHRASE/STRUCTURED/chain_18",
+      "condition": "PARAPHRASE",
+      "n_ok_rounds": 20,
+      "protocol": "FORCED",
+      "t_stale": 10
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 19,
+      "chain_path": "FORCED/PARAPHRASE/STRUCTURED/chain_19",
+      "condition": "PARAPHRASE",
+      "n_ok_rounds": 20,
+      "protocol": "FORCED",
+      "t_stale": 10
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 2,
+      "chain_path": "FORCED/PARAPHRASE/STRUCTURED/chain_2",
+      "condition": "PARAPHRASE",
+      "n_ok_rounds": 20,
+      "protocol": "FORCED",
+      "t_stale": 11
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 20,
+      "chain_path": "FORCED/PARAPHRASE/STRUCTURED/chain_20",
+      "condition": "PARAPHRASE",
+      "n_ok_rounds": 20,
+      "protocol": "FORCED",
+      "t_stale": 10
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 21,
+      "chain_path": "FORCED/PARAPHRASE/STRUCTURED/chain_21",
+      "condition": "PARAPHRASE",
+      "n_ok_rounds": 20,
+      "protocol": "FORCED",
+      "t_stale": 10
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 22,
+      "chain_path": "FORCED/PARAPHRASE/STRUCTURED/chain_22",
+      "condition": "PARAPHRASE",
+      "n_ok_rounds": 20,
+      "protocol": "FORCED",
+      "t_stale": 10
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 23,
+      "chain_path": "FORCED/PARAPHRASE/STRUCTURED/chain_23",
+      "condition": "PARAPHRASE",
+      "n_ok_rounds": 20,
+      "protocol": "FORCED",
+      "t_stale": 10
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 24,
+      "chain_path": "FORCED/PARAPHRASE/STRUCTURED/chain_24",
+      "condition": "PARAPHRASE",
+      "n_ok_rounds": 20,
+      "protocol": "FORCED",
+      "t_stale": 10
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 3,
+      "chain_path": "FORCED/PARAPHRASE/STRUCTURED/chain_3",
+      "condition": "PARAPHRASE",
+      "n_ok_rounds": 20,
+      "protocol": "FORCED",
+      "t_stale": 11
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 4,
+      "chain_path": "FORCED/PARAPHRASE/STRUCTURED/chain_4",
+      "condition": "PARAPHRASE",
+      "n_ok_rounds": 20,
+      "protocol": "FORCED",
+      "t_stale": 11
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 5,
+      "chain_path": "FORCED/PARAPHRASE/STRUCTURED/chain_5",
+      "condition": "PARAPHRASE",
+      "n_ok_rounds": 20,
+      "protocol": "FORCED",
+      "t_stale": 11
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 6,
+      "chain_path": "FORCED/PARAPHRASE/STRUCTURED/chain_6",
+      "condition": "PARAPHRASE",
+      "n_ok_rounds": 20,
+      "protocol": "FORCED",
+      "t_stale": 11
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 7,
+      "chain_path": "FORCED/PARAPHRASE/STRUCTURED/chain_7",
+      "condition": "PARAPHRASE",
+      "n_ok_rounds": 20,
+      "protocol": "FORCED",
+      "t_stale": 11
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 8,
+      "chain_path": "FORCED/PARAPHRASE/STRUCTURED/chain_8",
+      "condition": "PARAPHRASE",
+      "n_ok_rounds": 20,
+      "protocol": "FORCED",
+      "t_stale": 11
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 9,
+      "chain_path": "FORCED/PARAPHRASE/STRUCTURED/chain_9",
+      "condition": "PARAPHRASE",
+      "n_ok_rounds": 20,
+      "protocol": "FORCED",
+      "t_stale": 11
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 0,
+      "chain_path": "FORCED/SELF_REFLECT/STRUCTURED/chain_0",
+      "condition": "SELF_REFLECT",
+      "n_ok_rounds": 20,
+      "protocol": "FORCED",
+      "t_stale": 11
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 1,
+      "chain_path": "FORCED/SELF_REFLECT/STRUCTURED/chain_1",
+      "condition": "SELF_REFLECT",
+      "n_ok_rounds": 20,
+      "protocol": "FORCED",
+      "t_stale": 11
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 10,
+      "chain_path": "FORCED/SELF_REFLECT/STRUCTURED/chain_10",
+      "condition": "SELF_REFLECT",
+      "n_ok_rounds": 20,
+      "protocol": "FORCED",
+      "t_stale": 11
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 11,
+      "chain_path": "FORCED/SELF_REFLECT/STRUCTURED/chain_11",
+      "condition": "SELF_REFLECT",
+      "n_ok_rounds": 20,
+      "protocol": "FORCED",
+      "t_stale": 11
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 12,
+      "chain_path": "FORCED/SELF_REFLECT/STRUCTURED/chain_12",
+      "condition": "SELF_REFLECT",
+      "n_ok_rounds": 20,
+      "protocol": "FORCED",
+      "t_stale": 11
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 13,
+      "chain_path": "FORCED/SELF_REFLECT/STRUCTURED/chain_13",
+      "condition": "SELF_REFLECT",
+      "n_ok_rounds": 20,
+      "protocol": "FORCED",
+      "t_stale": 11
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 14,
+      "chain_path": "FORCED/SELF_REFLECT/STRUCTURED/chain_14",
+      "condition": "SELF_REFLECT",
+      "n_ok_rounds": 20,
+      "protocol": "FORCED",
+      "t_stale": 11
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 15,
+      "chain_path": "FORCED/SELF_REFLECT/STRUCTURED/chain_15",
+      "condition": "SELF_REFLECT",
+      "n_ok_rounds": 20,
+      "protocol": "FORCED",
+      "t_stale": 11
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 16,
+      "chain_path": "FORCED/SELF_REFLECT/STRUCTURED/chain_16",
+      "condition": "SELF_REFLECT",
+      "n_ok_rounds": 20,
+      "protocol": "FORCED",
+      "t_stale": 11
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 17,
+      "chain_path": "FORCED/SELF_REFLECT/STRUCTURED/chain_17",
+      "condition": "SELF_REFLECT",
+      "n_ok_rounds": 20,
+      "protocol": "FORCED",
+      "t_stale": 11
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 18,
+      "chain_path": "FORCED/SELF_REFLECT/STRUCTURED/chain_18",
+      "condition": "SELF_REFLECT",
+      "n_ok_rounds": 20,
+      "protocol": "FORCED",
+      "t_stale": 11
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 19,
+      "chain_path": "FORCED/SELF_REFLECT/STRUCTURED/chain_19",
+      "condition": "SELF_REFLECT",
+      "n_ok_rounds": 20,
+      "protocol": "FORCED",
+      "t_stale": 11
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 2,
+      "chain_path": "FORCED/SELF_REFLECT/STRUCTURED/chain_2",
+      "condition": "SELF_REFLECT",
+      "n_ok_rounds": 20,
+      "protocol": "FORCED",
+      "t_stale": 11
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 20,
+      "chain_path": "FORCED/SELF_REFLECT/STRUCTURED/chain_20",
+      "condition": "SELF_REFLECT",
+      "n_ok_rounds": 20,
+      "protocol": "FORCED",
+      "t_stale": 11
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 21,
+      "chain_path": "FORCED/SELF_REFLECT/STRUCTURED/chain_21",
+      "condition": "SELF_REFLECT",
+      "n_ok_rounds": 20,
+      "protocol": "FORCED",
+      "t_stale": 11
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 22,
+      "chain_path": "FORCED/SELF_REFLECT/STRUCTURED/chain_22",
+      "condition": "SELF_REFLECT",
+      "n_ok_rounds": 20,
+      "protocol": "FORCED",
+      "t_stale": 11
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 23,
+      "chain_path": "FORCED/SELF_REFLECT/STRUCTURED/chain_23",
+      "condition": "SELF_REFLECT",
+      "n_ok_rounds": 20,
+      "protocol": "FORCED",
+      "t_stale": 11
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 24,
+      "chain_path": "FORCED/SELF_REFLECT/STRUCTURED/chain_24",
+      "condition": "SELF_REFLECT",
+      "n_ok_rounds": 20,
+      "protocol": "FORCED",
+      "t_stale": 11
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 3,
+      "chain_path": "FORCED/SELF_REFLECT/STRUCTURED/chain_3",
+      "condition": "SELF_REFLECT",
+      "n_ok_rounds": 20,
+      "protocol": "FORCED",
+      "t_stale": 11
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 4,
+      "chain_path": "FORCED/SELF_REFLECT/STRUCTURED/chain_4",
+      "condition": "SELF_REFLECT",
+      "n_ok_rounds": 20,
+      "protocol": "FORCED",
+      "t_stale": 11
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 5,
+      "chain_path": "FORCED/SELF_REFLECT/STRUCTURED/chain_5",
+      "condition": "SELF_REFLECT",
+      "n_ok_rounds": 20,
+      "protocol": "FORCED",
+      "t_stale": 11
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 6,
+      "chain_path": "FORCED/SELF_REFLECT/STRUCTURED/chain_6",
+      "condition": "SELF_REFLECT",
+      "n_ok_rounds": 20,
+      "protocol": "FORCED",
+      "t_stale": 11
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 7,
+      "chain_path": "FORCED/SELF_REFLECT/STRUCTURED/chain_7",
+      "condition": "SELF_REFLECT",
+      "n_ok_rounds": 20,
+      "protocol": "FORCED",
+      "t_stale": 11
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 8,
+      "chain_path": "FORCED/SELF_REFLECT/STRUCTURED/chain_8",
+      "condition": "SELF_REFLECT",
+      "n_ok_rounds": 20,
+      "protocol": "FORCED",
+      "t_stale": 11
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 9,
+      "chain_path": "FORCED/SELF_REFLECT/STRUCTURED/chain_9",
+      "condition": "SELF_REFLECT",
+      "n_ok_rounds": 20,
+      "protocol": "FORCED",
+      "t_stale": 11
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 0,
+      "chain_path": "PERMISSIVE/NEUTRAL_EDIT/STRUCTURED/chain_0",
+      "condition": "NEUTRAL_EDIT",
+      "n_ok_rounds": 10,
+      "protocol": "PERMISSIVE",
+      "t_stale": null
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 1,
+      "chain_path": "PERMISSIVE/NEUTRAL_EDIT/STRUCTURED/chain_1",
+      "condition": "NEUTRAL_EDIT",
+      "n_ok_rounds": 10,
+      "protocol": "PERMISSIVE",
+      "t_stale": null
+    },
+    {
+      "censored_at_round": 1,
+      "chain_idx": 2,
+      "chain_path": "PERMISSIVE/NEUTRAL_EDIT/STRUCTURED/chain_2",
+      "condition": "NEUTRAL_EDIT",
+      "n_ok_rounds": 1,
+      "protocol": "PERMISSIVE",
+      "t_stale": null
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 3,
+      "chain_path": "PERMISSIVE/NEUTRAL_EDIT/STRUCTURED/chain_3",
+      "condition": "NEUTRAL_EDIT",
+      "n_ok_rounds": 10,
+      "protocol": "PERMISSIVE",
+      "t_stale": null
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 4,
+      "chain_path": "PERMISSIVE/NEUTRAL_EDIT/STRUCTURED/chain_4",
+      "condition": "NEUTRAL_EDIT",
+      "n_ok_rounds": 10,
+      "protocol": "PERMISSIVE",
+      "t_stale": null
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 0,
+      "chain_path": "PERMISSIVE/OTHER_REFLECT/STRUCTURED/chain_0",
+      "condition": "OTHER_REFLECT",
+      "n_ok_rounds": 10,
+      "protocol": "PERMISSIVE",
+      "t_stale": null
+    },
+    {
+      "censored_at_round": 1,
+      "chain_idx": 1,
+      "chain_path": "PERMISSIVE/OTHER_REFLECT/STRUCTURED/chain_1",
+      "condition": "OTHER_REFLECT",
+      "n_ok_rounds": 1,
+      "protocol": "PERMISSIVE",
+      "t_stale": null
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 2,
+      "chain_path": "PERMISSIVE/OTHER_REFLECT/STRUCTURED/chain_2",
+      "condition": "OTHER_REFLECT",
+      "n_ok_rounds": 10,
+      "protocol": "PERMISSIVE",
+      "t_stale": null
+    },
+    {
+      "censored_at_round": 0,
+      "chain_idx": 3,
+      "chain_path": "PERMISSIVE/OTHER_REFLECT/STRUCTURED/chain_3",
+      "condition": "OTHER_REFLECT",
+      "n_ok_rounds": 0,
+      "protocol": "PERMISSIVE",
+      "t_stale": null
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 4,
+      "chain_path": "PERMISSIVE/OTHER_REFLECT/STRUCTURED/chain_4",
+      "condition": "OTHER_REFLECT",
+      "n_ok_rounds": 10,
+      "protocol": "PERMISSIVE",
+      "t_stale": null
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 0,
+      "chain_path": "PERMISSIVE/PARAPHRASE/STRUCTURED/chain_0",
+      "condition": "PARAPHRASE",
+      "n_ok_rounds": 10,
+      "protocol": "PERMISSIVE",
+      "t_stale": null
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 1,
+      "chain_path": "PERMISSIVE/PARAPHRASE/STRUCTURED/chain_1",
+      "condition": "PARAPHRASE",
+      "n_ok_rounds": 10,
+      "protocol": "PERMISSIVE",
+      "t_stale": null
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 2,
+      "chain_path": "PERMISSIVE/PARAPHRASE/STRUCTURED/chain_2",
+      "condition": "PARAPHRASE",
+      "n_ok_rounds": 10,
+      "protocol": "PERMISSIVE",
+      "t_stale": null
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 3,
+      "chain_path": "PERMISSIVE/PARAPHRASE/STRUCTURED/chain_3",
+      "condition": "PARAPHRASE",
+      "n_ok_rounds": 10,
+      "protocol": "PERMISSIVE",
+      "t_stale": null
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 4,
+      "chain_path": "PERMISSIVE/PARAPHRASE/STRUCTURED/chain_4",
+      "condition": "PARAPHRASE",
+      "n_ok_rounds": 10,
+      "protocol": "PERMISSIVE",
+      "t_stale": null
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 0,
+      "chain_path": "PERMISSIVE/SELF_REFLECT/STRUCTURED/chain_0",
+      "condition": "SELF_REFLECT",
+      "n_ok_rounds": 10,
+      "protocol": "PERMISSIVE",
+      "t_stale": null
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 1,
+      "chain_path": "PERMISSIVE/SELF_REFLECT/STRUCTURED/chain_1",
+      "condition": "SELF_REFLECT",
+      "n_ok_rounds": 10,
+      "protocol": "PERMISSIVE",
+      "t_stale": null
+    },
+    {
+      "censored_at_round": 2,
+      "chain_idx": 2,
+      "chain_path": "PERMISSIVE/SELF_REFLECT/STRUCTURED/chain_2",
+      "condition": "SELF_REFLECT",
+      "n_ok_rounds": 2,
+      "protocol": "PERMISSIVE",
+      "t_stale": null
+    },
+    {
+      "censored_at_round": 0,
+      "chain_idx": 3,
+      "chain_path": "PERMISSIVE/SELF_REFLECT/STRUCTURED/chain_3",
+      "condition": "SELF_REFLECT",
+      "n_ok_rounds": 0,
+      "protocol": "PERMISSIVE",
+      "t_stale": null
+    },
+    {
+      "censored_at_round": null,
+      "chain_idx": 4,
+      "chain_path": "PERMISSIVE/SELF_REFLECT/STRUCTURED/chain_4",
+      "condition": "SELF_REFLECT",
+      "n_ok_rounds": 10,
+      "protocol": "PERMISSIVE",
+      "t_stale": null
+    }
+  ],
+  "config_id": "olmo3_7b_final",
+  "n_chains": 120,
+  "n_clean": 20,
+  "n_stale": 100,
+  "resume_evidence": {
+    "likely_trigger": "Modal worker preemption or automatic function retry of generate_config after ~10 FORCED lock-step rounds had been Volume-committed (D31). Not a deliberate modal app stop \u2014 the only SIGTERM in the canary log is at generate\u2192coding handoff (18:39:39Z). The lineage-duplication pattern matches _init_unit resume with the pre-D58 off-by-one.",
+    "summary": "Stale rounds begin at generation index t_stale after an in-job Modal container retry/resume of generate_config. The D58 off-by-one restored constitutions.jsonl round t instead of t+1, so prompts for t_stale\u2026end were built on a constitution missing the change from round t_stale-1. Evidence: duplicated constitution/lineage rounds at cons.round \u2208 {10,11} in the pre-repair snapshot; final cons.round short by 1 vs max(ok_gen)+1; rounds.jsonl unchanged across the invalid D58 rewrite."
+  },
+  "run_tag": "main_v1",
+  "t_stale_histogram": {
+    "10": 39,
+    "11": 61,
+    "None": 20
+  },
+  "unexplained_mismatches": []
+}
