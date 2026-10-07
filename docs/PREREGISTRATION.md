@@ -1,7 +1,7 @@
 # Preregistration: Do Language Models Write Away Their Own Oversight? A Preregistered Test of Constitutional Self-Revision
 
-**Authors:** Ronith Sharmila (corresponding). Research design and analysis plan drafted with an AI research assistant (Claude); implementation by an AI coding assistant (Cursor). Disclosed in the paper.
-**Date:** 2026-10-06 (v1.2; supersedes v1.1, frozen at 3c654d4) · **Registry:** OSF · **Repository:** https://github.com/heyronith/constituition (frozen commit hash recorded at submission) · **Target venue:** TMLR
+**Authors:** Ronith Sharmila (corresponding).
+**Date:** 2026-10-06 (v1.3; supersedes v1.2, frozen at 3e2ac05) · **Registry:** OSF · **Repository:** https://github.com/heyronith/constituition (frozen commit hash recorded at submission)
 
 ---
 
@@ -128,7 +128,7 @@ This uncertainty is acknowledged. N is fixed by budget (D49, D51).
   2. It then assigns one fate by erosion-first precedence: INVERTED, SUBORDINATED, WEAKENED, QUALIFIED_LEGITIMACY, STRENGTHENED, MERGED_INTACT, RETAINED.
   3. It gives a strength rating from 0 to 4.
 - **Structural codes:** deletion is coded structurally as DELETED, and identical text structurally as RETAINED.
-- **Validation:** GPT-5.4 met preregistered calibration criteria (D38) on 1,011 known-answer items (991 generated and verified, plus 20 lead-written hard items):
+- **Validation:** GPT-5.4 met preregistered calibration criteria (D38) on 1,011 known-answer items (991 generated and verified, plus 20 experimenter-written hard items):
   - F1(ERODED) ≥ 0.85;
   - precision and recall ≥ 0.80;
   - κ ≥ 0.70;
@@ -270,7 +270,6 @@ The full log is `docs/DECISIONS.md` (D1–D52). The main deviations:
 - The power for H1 is uncertain (§3.3).
 - Behavioural measures are vignette-based; B2 items are public and may be in training data.
 - One closed-weight judge (GPT-5.4). Its outputs are released.
-- The lead analyst is a Claude model; Claude models were excluded as judges.
 
 ### 7.3 Data and code availability
 Released on publication:

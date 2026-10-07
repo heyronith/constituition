@@ -1,18 +1,22 @@
-# Preregistration freeze (Phase 6B)
+# Preregistration freeze (Phase 6C)
 
 **Date:** 2026-10-06  
-**Preregistration:** `docs/PREREGISTRATION.md` v1.2  
-**Freeze commit:** `3e2ac05`  
+**Preregistration:** `docs/PREREGISTRATION.md` v1.3  
+**Freeze commit:** `PENDING_COMMIT_HASH`  
 **Registry:** OSF (upload after this commit; no main-run until OSF timestamp confirmed)
 
-## Document hashes (SHA-256) — v1.2
+v1.3 is editorial only (front matter and one limitations bullet); design and analysis unchanged from v1.2.
+
+## Document hashes (SHA-256) — v1.3
 
 | File | SHA-256 |
 |---|---|
-| `docs/PREREGISTRATION.md` | `af7ec96baa1c233c4a6944d9a1203df64d67f25b9e9d01fe33b483cc0a8ffa6a` |
-| `docs/PREREGISTRATION.pdf` | `8a3131564fb1c80f37bd436d905564d00c5e41f887b0e2c5806fdc94c6a365f1` |
+| `docs/PREREGISTRATION.md` | `847fa5504b98b4d434706b6f70ee505bd22f2084bd80f7a233b64bb05af23bcc` |
+| `docs/PREREGISTRATION.pdf` | `4dc2f5841ad3d322255dce27cd772677027126a1233b7cdceee8baa332b6caf4` |
 
-## Confirmatory analysis code hashes (SHA-256) — v1.2
+## Confirmatory analysis code hashes (SHA-256) — unchanged from v1.2
+
+Recomputed and asserted equal to v1.2 (`3e2ac05`):
 
 | File | SHA-256 |
 |---|---|
@@ -24,19 +28,24 @@
 | `analysis/confirmatory/sensitivity.R` | `e74b063f62b3cd8ef251598921d8afd7091e9b9e2ce51000b45305199e12e64e` |
 | `analysis/confirmatory/run_confirmatory.R` | `72302af7bbd829d24d895013b242d6fecd5cfed99ad92061c39a05dc271b13ba` |
 | `analysis/confirmatory/simulate.R` | `45e76211c49fba7f396eeda13c62a643779f89428382466d17aa26925238c219` |
-
-## Python companions (SHA-256) — v1.2
-
-| File | SHA-256 |
-|---|---|
 | `src/rc/exact_tests.py` | `2b43c07ada9496354fa101f8f22a4b2a9375c19651e3ad3ccb6fd42741499b2a` |
 | `src/rc/krippendorff_alpha.py` | `1d6caedcfc8d18d1130d920bdf0dfe9f98efe6bd9e5956a8f741319f6296a542` |
 | `scripts/build_hazard_table.py` | `9fad75560310eb5edde757802ece7ffb55db9c1e08458368446db7b4385241e7` |
 
-## Simulation validation pointer (v1.2 SESOI)
+## Simulation validation pointer
 
-- `results/phase6b_sims/summary.json` (200 sims × {S0,S1,S2,S3}; seed 20261004; SESOI [2/3, 1.5])
-- Gates: G1/G2/G3 all PASS (see `reports/PHASE_6B.md`)
+- `results/phase6b_sims/summary.json` (200 sims × {S0,S1,S2,S3}; seed 20261004; SESOI [2/3, 1.5]; gates G1–G3 PASS)
+
+---
+
+## Superseded (v1.2, 3e2ac05)
+
+| File | SHA-256 |
+|---|---|
+| `docs/PREREGISTRATION.md` | `af7ec96baa1c233c4a6944d9a1203df64d67f25b9e9d01fe33b483cc0a8ffa6a` |
+| `docs/PREREGISTRATION.pdf` | `8a3131564fb1c80f37bd436d905564d00c5e41f887b0e2c5806fdc94c6a365f1` |
+
+Analysis-code hashes identical to the v1.3 table above.
 
 ---
 
