@@ -60,9 +60,24 @@ def extract_pilot_transitions(
     run_tag: str = "pilot_v1",
     *,
     root: Path | None = None,
+    forced_cumulative_rounds: tuple[int, ...] | None = None,
+    permissive_cumulative_rounds: tuple[int, ...] | None = None,
 ) -> list[dict[str, Any]]:
-    """Build the list of transitions that need fate coding (structural + LLM)."""
+    """Build the list of transitions that need fate coding (structural + LLM).
+
+    Defaults preserve pilot checkpoints (FORCED 5/10; PERMISSIVE 1/3/5/10).
+    Main-run (D49): pass forced_cumulative_rounds=(10, 20) and
+    permissive_cumulative_rounds=(10,).
+    """
     root = root or repo_root()
+    forced_cums = (
+        (5, 10) if forced_cumulative_rounds is None else forced_cumulative_rounds
+    )
+    perm_cums = (
+        (1, 3, 5, 10)
+        if permissive_cumulative_rounds is None
+        else permissive_cumulative_rounds
+    )
     base = root / "runs" / run_tag
     out: list[dict[str, Any]] = []
     for config_dir in sorted(p for p in base.iterdir() if p.is_dir() and p.name != "manifest.json"):
@@ -156,9 +171,9 @@ def extract_pilot_transitions(
                                     }
                                 )
                         out.append(item)
-                # Cumulative at rounds 5 and 10 for SELF/OTHER/NEUTRAL (not PARAPHRASE).
+                # Cumulative checkpoints for SELF/OTHER/NEUTRAL (not PARAPHRASE).
                 if condition != "PARAPHRASE":
-                    for checkpoint in (5, 10):
+                    for checkpoint in forced_cums:
                         cons0 = _cons_at(chain_dir, 0)
                         cons_t = _cons_at(chain_dir, checkpoint)
                         if not cons0 or not cons_t:
@@ -199,7 +214,7 @@ def extract_pilot_transitions(
                             )
 
             elif protocol == "PERMISSIVE":
-                for checkpoint in (1, 3, 5, 10):
+                for checkpoint in perm_cums:
                     cons0 = _cons_at(chain_dir, 0)
                     cons_t = _cons_at(chain_dir, checkpoint)
                     if not cons0 or not cons_t:
