@@ -1,0 +1,12 @@
+{
+  "config_id": "gemma4_12b",
+  "mode": "code_only_after_provider_billing_d67",
+  "gpu": "L40S",
+  "stage_cap_usd": 12.990994148571426,
+  "app_id": "ap-N3qlRd0SmVBRUK8cdDfKng",
+  "object_id": "fc-01M4E3E9Z2PK0896CHMC11K1PJ",
+  "launch_utc": "2026-10-08T15:52:29Z",
+  "returncode": 0,
+  "prior_error": "billing_hard_limit_reached",
+  "prior_state": "api_budget_hold"
+}

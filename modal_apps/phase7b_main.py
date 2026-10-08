@@ -637,6 +637,7 @@ def code_config(
         api_submission_allowed,
         append_config_ledger,
         classify_openai_batch_error,
+        wait_for_provider_billing,
     )
 
     if config_id == CANARY and run_tag == MAIN_RUN_TAG:
@@ -677,6 +678,7 @@ def code_config(
         est = estimate_batch_usd(max(len(gpt_set), 1))
         ok, reason = api_submission_allowed(est, platform="openai", root=root)
         if not ok:
+            # D62/D63/D67: project-cap guard is a hard hold — never auto-retried.
             _st(stage="coding", state="api_budget_hold", error=reason)
             runs_vol.commit()
             return {"state": "api_budget_hold", "reason": reason}
@@ -703,14 +705,27 @@ def code_config(
                 last_err = exc
                 kind = classify_openai_batch_error(exc)
                 if kind == "billing":
-                    _st(
-                        stage="coding",
-                        state="api_budget_hold",
-                        error=str(exc)[:500],
-                        batch_attempt=attempt + 1,
+                    # D67: provider billing → api_billing_wait + probe; resume when OK.
+                    def _billing_status(payload: dict) -> None:
+                        _st(
+                            stage="coding",
+                            batch_attempt=attempt + 1,
+                            **payload,
+                        )
+                        runs_vol.commit()
+
+                    recovered = wait_for_provider_billing(
+                        error=str(exc),
+                        on_status=_billing_status,
                     )
-                    runs_vol.commit()
-                    return {"state": "api_budget_hold", "error": str(exc)[:500]}
+                    if recovered:
+                        acquire_batch_submit_lock(config_id, root=root)
+                        continue
+                    return {
+                        "state": "api_billing_wait",
+                        "error": str(exc)[:500],
+                        "exhausted": True,
+                    }
                 if kind == "rate_limit":
                     _st(
                         stage="coding",

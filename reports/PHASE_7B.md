@@ -279,3 +279,54 @@ No `api_wait` states. Artifacts: `results/phase7b_quota_check_detail.json`, `res
 | prior_error | `billing_hard_limit_reached` |
 
 Entrypoint: `--code-only` wired on `modal_apps/phase7b_main.py`. Post-relaunch STATUS: `gemma4_31b` coding/running. Other progressing apps left alone. Artifact: `results/phase7b_gemma4_31b_code_resume.json`.
+
+## Check #2 — credit $0 again (~10:40 CDT) + D67 (2026-10-08)
+
+OpenAI credit hit $0 again; human topped up. D55 blinding held. No 7D.
+
+### STATUS (one shot)
+
+| config | stage | state | Batch ID / state | error / notes |
+|--------|-------|-------|------------------|---------------|
+| olmo3_7b_final | orchestrate | failed | — | D61 missing pilot `gpt54_meta.json` (not billing) |
+| qwen38_27b_nothink | done | checks_fail | `batch_6ac7a8dd825c…` done | not billing; left alone |
+| qwen38_27b_think | coding | running | `batch_6ac7b48b3884…` completed 3788/0 failed | MiMo in progress — not touched |
+| gemma4_31b | coding | running | `batch_6ac7b21f58a4…` completed 3094/0 failed | GPT done; coding continues — not touched |
+| gemma4_12b | coding | **api_budget_hold** → relaunched **running** | no Batch ID (create failed; input 2132) | provider `billing_hard_limit_reached` |
+| olmo3_7b_sft | done | done | `batch_6ac755036510…` done | — |
+| olmo3_7b_dpo | done | done | `batch_6ac75501e58c…` done | — |
+
+**Hold error** (`gemma4_12b` @ 2026-10-08T15:31:44Z):
+
+```
+Error code: 400 - {'error': {'message': 'Billing hard limit has been reached', 'type': 'invalid_request_error', 'param': None, 'code': 'billing_hard_limit_reached'}}
+```
+
+Artifacts: `results/phase7b_check2_detail.json`, `results/phase7b_gemma4_12b_hold_error.json`, `results/phase7b_status_check2.log`.
+
+### Batch error-file audit (submitted ≥ 2026-10-08T15:00Z)
+
+| config | batch_id | error-file rows | error codes | judgments contaminated |
+|--------|----------|----------------:|-------------|------------------------|
+| qwen38_27b_think | `batch_6ac7b48b3884…` | 0 | — | 0 |
+| gemma4_31b | `batch_6ac7b21f58a4…` | 0 | — | 0 |
+| gemma4_12b | *(none — create failed)* | 0 | — | 0 |
+
+`error_code_totals`: `{}`. D61: no error-file rows stored as judgments. Missing gemma4_12b keys re-coded via D60 sync on code-only resume. Artifact: `results/phase7b_batch_error_audit_check2.json`.
+
+### D67 — provider billing wait vs project-cap hold
+
+Logged in `docs/DECISIONS.md`. Provider billing (`insufficient_quota`, `billing_hard_limit_reached`) → STATUS `api_billing_wait`; re-probe every 30 min up to 24 h (`models.list`); on recovery resume coding (reuse Batches / missing keys only). Project-cap guard (`api_submission_allowed`) remains hard `api_budget_hold`, never auto-retried. Tests: `tests/test_phase7b_d67.py` (PASS).
+
+### Relaunch (code-only)
+
+| | |
+|--|--|
+| config | `gemma4_12b` |
+| mode | `code_only` after provider billing (D67) |
+| app_id | `ap-N3qlRd0SmVBRUK8cdDfKng` |
+| object_id | `fc-01M4E3E9Z2PK0896CHMC11K1PJ` |
+| launch_utc | 2026-10-08T15:52:29Z |
+| prior_error | `billing_hard_limit_reached` |
+
+Post-relaunch STATUS: `gemma4_12b` coding/running. think/gemma31 left alone. Artifact: `results/phase7b_gemma4_12b_code_resume_check2.json`.

@@ -8,6 +8,7 @@ import time
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
+from collections.abc import Callable
 from typing import Any, Literal
 
 from rc.config import load_models, repo_root
@@ -38,6 +39,11 @@ COMPUTE_GPU = {
 }
 
 BatchErrorKind = Literal["rate_limit", "billing", "other"]
+CodingHoldState = Literal["api_budget_hold", "api_billing_wait", "api_wait", "failed"]
+
+# D67: provider billing recovery (not project-cap holds).
+PROVIDER_BILLING_PROBE_INTERVAL_S = 1800.0
+PROVIDER_BILLING_MAX_WAIT_S = 86400.0
 
 
 @dataclass
@@ -121,10 +127,11 @@ def verify_canary_snapshot(
 
 
 def classify_openai_batch_error(exc_or_text: Any) -> BatchErrorKind:
-    """Classify OpenAI Batch/create failures for D63 resume.
+    """Classify OpenAI Batch/create failures for D63/D67 resume.
 
     OpenAI returns HTTP 429 for ``insufficient_quota``; that must be **billing**
-    (api_budget_hold), never a rate-limit retry loop.
+    (D67: ``api_billing_wait``), never a rate-limit retry loop. Project-cap
+    denials from ``api_submission_allowed`` are a separate hard ``api_budget_hold``.
     """
     text = str(exc_or_text).lower()
     billing_markers = (
@@ -161,6 +168,101 @@ def classify_openai_batch_error(exc_or_text: Any) -> BatchErrorKind:
     if "429" in text:
         return "rate_limit"
     return "other"
+
+
+def disposition_for_coding_failure(
+    *,
+    kind: BatchErrorKind | None = None,
+    project_cap_blocked: bool = False,
+) -> CodingHoldState:
+    """Map a coding failure to STATUS state (D62/D63/D67).
+
+    Project-cap guard → hard ``api_budget_hold`` (never auto-retried).
+    Provider billing → ``api_billing_wait`` (D67 probe/resume).
+    """
+    if project_cap_blocked:
+        return "api_budget_hold"
+    if kind is None:
+        raise ValueError("kind required when project_cap_blocked is False")
+    if kind == "billing":
+        return "api_billing_wait"
+    if kind == "rate_limit":
+        return "api_wait"
+    return "failed"
+
+
+def probe_openai_billing_ok() -> bool:
+    """One cheap OpenAI request; False only while provider billing still blocks."""
+    from openai import OpenAI
+
+    key = os.environ.get("OPENAI_API_KEY")
+    if not key:
+        raise RuntimeError("OPENAI_API_KEY not set")
+    client = OpenAI(api_key=key)
+    try:
+        # models.list is near-zero cost and fails under billing hard limits.
+        client.models.list()
+        return True
+    except Exception as exc:  # noqa: BLE001
+        return classify_openai_batch_error(exc) != "billing"
+
+
+def wait_for_provider_billing(
+    *,
+    probe_fn: Callable[[], bool] | None = None,
+    sleep_fn: Callable[[float], None] = time.sleep,
+    on_status: Callable[[dict[str, Any]], None] | None = None,
+    interval_s: float = PROVIDER_BILLING_PROBE_INTERVAL_S,
+    max_wait_s: float = PROVIDER_BILLING_MAX_WAIT_S,
+    error: str = "",
+    clock: Callable[[], float] | None = None,
+) -> bool:
+    """D67: STATUS=api_billing_wait; re-probe every interval_s up to max_wait_s.
+
+    Returns True if a probe succeeds (billing recovered). Never used for
+    project-cap ``api_budget_hold``.
+    """
+    probe = probe_fn or probe_openai_billing_ok
+    now = clock or time.time
+    started = now()
+    probe_n = 0
+    while True:
+        if on_status is not None:
+            on_status(
+                {
+                    "state": "api_billing_wait",
+                    "error": str(error)[:500],
+                    "billing_probe": probe_n,
+                    "billing_wait_s": now() - started,
+                }
+            )
+        remaining = max_wait_s - (now() - started)
+        if remaining <= 0:
+            if on_status is not None:
+                on_status(
+                    {
+                        "state": "api_billing_wait",
+                        "error": f"provider_billing_exhausted_24h: {error}"[:500],
+                        "billing_probe": probe_n,
+                        "billing_wait_s": now() - started,
+                    }
+                )
+            return False
+        sleep_fn(min(interval_s, remaining))
+        probe_n += 1
+        if probe():
+            return True
+        if now() - started >= max_wait_s:
+            if on_status is not None:
+                on_status(
+                    {
+                        "state": "api_billing_wait",
+                        "error": f"provider_billing_exhausted_24h: {error}"[:500],
+                        "billing_probe": probe_n,
+                        "billing_wait_s": now() - started,
+                    }
+                )
+            return False
 
 
 def sum_ledgers_api(
@@ -519,6 +621,7 @@ def is_stale_status(
     state = str(payload.get("state") or "")
     waiting = {
         "api_wait",
+        "api_billing_wait",
         "mimo_wait",
         "api_budget_hold",
         "budget_hold",

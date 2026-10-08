@@ -1,0 +1,8 @@
+{
+  "config_id": "gemma4_12b",
+  "state_at_hold": "api_budget_hold",
+  "stage": "coding",
+  "last_update_utc": "2026-10-08T15:31:44Z",
+  "error": "Error code: 400 - {'error': {'message': 'Billing hard limit has been reached', 'type': 'invalid_request_error', 'param': None, 'code': 'billing_hard_limit_reached'}}",
+  "note": "Provider billing; D67 now maps this to api_billing_wait. Relaunched code-only after top-up."
+}

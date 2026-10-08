@@ -68,7 +68,7 @@ def test_classify_openai_errors() -> None:
 
 
 def test_classify_insufficient_quota_429_is_billing_not_rate_limit() -> None:
-    """OpenAI uses HTTP 429 for insufficient_quota — must api_budget_hold, not retry."""
+    """OpenAI uses HTTP 429 for insufficient_quota — billing (D67: api_billing_wait)."""
     msg = (
         "Error code: 429 - {'error': {'message': 'You exceeded your current quota', "
         "'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}"

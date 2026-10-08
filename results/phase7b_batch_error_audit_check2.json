@@ -1,0 +1,68 @@
+{
+  "cutoff": "2026-10-08T15:00:00+00:00",
+  "batches": [
+    {
+      "config": "gemma4_12b",
+      "batch_id": null,
+      "batch_status": null,
+      "submitted_utc": "2026-10-08T15:49:28.822742+00:00",
+      "n_error_rows": 0,
+      "error_codes": {},
+      "n_input": 2132,
+      "n_valid_judgments": 0,
+      "n_contaminated": 0,
+      "contaminated_custom_ids": [],
+      "errors_index": null,
+      "path": "runs/main_v1/coding/gemma4_12b/gemma4_12b/gpt54_batch"
+    },
+    {
+      "config": "qwen38_27b_think",
+      "batch_id": "batch_6ac7b48b388481909741557c36082247",
+      "batch_status": "completed",
+      "submitted_utc": "2026-10-08T15:19:39.343571+00:00",
+      "n_error_rows": 0,
+      "error_codes": {},
+      "n_input": 3788,
+      "n_valid_judgments": 8094,
+      "n_contaminated": 0,
+      "contaminated_custom_ids": [],
+      "errors_index": {
+        "n": 0,
+        "custom_ids": []
+      },
+      "path": "runs/main_v1/coding/qwen38_27b_think/qwen38_27b_think/gpt54_batch"
+    },
+    {
+      "config": "gemma4_31b",
+      "batch_id": null,
+      "batch_status": null,
+      "submitted_utc": "2026-10-08T15:04:42.121718+00:00",
+      "n_error_rows": 0,
+      "error_codes": {},
+      "n_input": 3094,
+      "n_valid_judgments": 0,
+      "n_contaminated": 0,
+      "contaminated_custom_ids": [],
+      "errors_index": null,
+      "path": "runs/main_v1/coding/gemma4_31b/gpt54_batch"
+    },
+    {
+      "config": "gemma4_31b",
+      "batch_id": "batch_6ac7b21f58a4819095284c9f6f13756f",
+      "batch_status": "completed",
+      "submitted_utc": "2026-10-08T15:09:20.349252+00:00",
+      "n_error_rows": 0,
+      "error_codes": {},
+      "n_input": 3094,
+      "n_valid_judgments": 7127,
+      "n_contaminated": 0,
+      "contaminated_custom_ids": [],
+      "errors_index": {
+        "n": 0,
+        "custom_ids": []
+      },
+      "path": "runs/main_v1/coding/gemma4_31b/gemma4_31b/gpt54_batch"
+    }
+  ],
+  "error_code_totals": {}
+}
