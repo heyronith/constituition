@@ -144,6 +144,37 @@ def _resume_batch_id(run_tag: str, root: Path, work_dir: Path, job_id: str) -> s
     return None
 
 
+def gpt54_fully_resumable(
+    transitions: list[dict[str, Any]],
+    *,
+    run_tag: str,
+    root: Path,
+    coding_subdir: str | None = None,
+) -> bool:
+    """True when every needed GPT-5.4 key already has a valid fate on disk (D60/D69).
+
+    Used by code_config to skip project-cap Batch estimates and submit locks when
+    resume will spend $0.
+    """
+    coding_root = root / "runs" / run_tag / "coding"
+    if coding_subdir:
+        coding_root = coding_root / coding_subdir
+    transitions = _dedupe_by_transition_id(transitions)
+    if not transitions:
+        return True
+    from rc.judging import judgment_key_for
+
+    existing = _load_existing_gpt54(coding_root / "gpt54.jsonl")
+    if not existing:
+        return False
+    for t in transitions:
+        t.setdefault("source", "pilot")
+        key = judgment_key_for(t, source=t.get("source") or "pilot")
+        if key not in existing:
+            return False
+    return True
+
+
 def code_gpt54(
     transitions: list[dict[str, Any]],
     *,
@@ -240,6 +271,24 @@ def code_gpt54(
     return rows, meta
 
 
+def _load_existing_mimo(path: Path) -> dict[str, dict[str, Any]]:
+    """Load completed MiMo judgments keyed by judgment_key / transition_id."""
+    out: dict[str, dict[str, Any]] = {}
+    if not path.exists():
+        return out
+    for line in path.read_text(encoding="utf-8").splitlines():
+        if not line.strip():
+            continue
+        row = json.loads(line)
+        # Require a real fate (never treat empty/malformed as done).
+        if not row.get("fate"):
+            continue
+        key = row.get("judgment_key") or row.get("transition_id")
+        if key:
+            out[str(key)] = row
+    return out
+
+
 def code_mimo_subsample(
     transitions: list[dict[str, Any]],
     *,
@@ -248,7 +297,11 @@ def code_mimo_subsample(
     job_id: str,
     config_id: str | None = None,
     coding_subdir: str | None = None,
+    on_progress: Any | None = None,
+    max_workers: int = 8,
 ) -> tuple[list[dict[str, Any]], dict[str, Any], int]:
+    from rc.judging import judgment_key_for
+
     selected = load_mimo_slot_ids(root)
     if config_id:
         selected = {s for s in selected if s.startswith(f"{config_id}|")}
@@ -282,31 +335,100 @@ def code_mimo_subsample(
     coding_root = root / "runs" / run_tag / "coding"
     if coding_subdir:
         coding_root = coding_root / coding_subdir
+    out = coding_root / "mimo.jsonl"
+    out.parent.mkdir(parents=True, exist_ok=True)
+    existing = _load_existing_mimo(out)
+
+    def _item_key(t: dict[str, Any]) -> str:
+        return judgment_key_for(t, source=t.get("source") or "pilot")
+
+    need = [t for t in subset if _item_key(t) not in existing]
+    resumed_n = len(subset) - len(need)
     work_dir = coding_root / "mimo_batch"
-    backend = OpenRouterBackend(
-        "mimo_v26_pro", work_dir=work_dir, root=root, job_id=job_id
-    )
-    rows = judge_fate_batch(
-        backend,
-        "mimo_v26_pro",
-        subset,
-        root=root,
-        rubric_version="v2",
-        seed_base=20261004 + 17,
-    )
+    api_usd = 0.0
+    if need:
+        api_done = {"n": 0}
+
+        def _on_result(i: int, result: Any, meta: dict[str, Any]) -> None:
+            api_done["n"] += 1
+            if on_progress is not None:
+                on_progress(
+                    {
+                        "substage": "mimo",
+                        "mimo_api_done": api_done["n"],
+                        "mimo_api_total": len(need),
+                        "mimo_resumed": resumed_n,
+                        "mimo_total": len(subset),
+                    }
+                )
+
+        backend = OpenRouterBackend(
+            "mimo_v26_pro",
+            work_dir=work_dir,
+            root=root,
+            job_id=job_id,
+            max_workers=max_workers,
+            on_result=_on_result,
+        )
+        new_rows = judge_fate_batch(
+            backend,
+            "mimo_v26_pro",
+            need,
+            root=root,
+            rubric_version="v2",
+            seed_base=20261004 + 17,
+        )
+        api_usd = float(getattr(backend.last_cost, "usd", 0) or 0)
+        # D69: append each new judgment immediately; never drop prior rows.
+        with out.open("a", encoding="utf-8") as fh:
+            for r in new_rows:
+                if not r.get("fate"):
+                    raise RuntimeError(
+                        f"MiMo returned row without fate for key="
+                        f"{r.get('judgment_key') or r.get('transition_id')}"
+                    )
+                fh.write(json.dumps(r, sort_keys=True) + "\n")
+                fh.flush()
+                key = str(r.get("judgment_key") or r.get("transition_id"))
+                existing[key] = r
+                if on_progress is not None:
+                    on_progress(
+                        {
+                            "substage": "mimo",
+                            "mimo_written": len(existing),
+                            "mimo_total": len(subset),
+                        }
+                    )
+    # Rebuild in subset order; fail loud if any selected present slot lacks a judgment.
+    rows: list[dict[str, Any]] = []
+    missing_keys: list[str] = []
+    for t in subset:
+        key = _item_key(t)
+        row = existing.get(key)
+        if row is None:
+            missing_keys.append(key)
+            continue
+        rows.append(row)
+    if missing_keys:
+        raise RuntimeError(
+            f"MiMo missing judgments after resume for {len(missing_keys)} keys; "
+            f"examples={missing_keys[:5]}"
+        )
+    # Rewrite canonical mimo.jsonl in subset order (byte-stable for audits).
+    with out.open("w", encoding="utf-8") as fh:
+        for r in rows:
+            fh.write(json.dumps(r, sort_keys=True) + "\n")
     meta = {
         "n": len(rows),
         "n_slots_selected_present": len(subset),
         "n_slots_selected_missing": n_missing_slots,
         "n_slots_missing_post_censor": n_missing_post_censor,
-        "api_usd": getattr(backend.last_cost, "usd", None),
+        "n_resumed": resumed_n,
+        "n_api_new": len(need),
+        "api_usd": api_usd,
         "job_id": job_id,
+        "max_workers": max_workers,
     }
-    out = coding_root / "mimo.jsonl"
-    out.parent.mkdir(parents=True, exist_ok=True)
-    with out.open("w", encoding="utf-8") as fh:
-        for r in rows:
-            fh.write(json.dumps(r, sort_keys=True) + "\n")
     (out.parent / "mimo_meta.json").write_text(
         json.dumps(meta, indent=2, sort_keys=True) + "\n", encoding="utf-8"
     )

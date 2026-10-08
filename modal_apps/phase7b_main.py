@@ -87,13 +87,15 @@ def _link_runs() -> Path:
     budget_link = Path(REMOTE_REPO) / "budget"
     vol_budget = Path(REMOTE_RUNS) / MAIN_RUN_TAG / "budget"
     vol_budget.mkdir(parents=True, exist_ok=True)
+    # Ensure C6 ledger path exists on the Volume (compute_canary_checks reads it).
+    ledger = vol_budget / "ledger.jsonl"
+    if not ledger.exists():
+        ledger.write_text("", encoding="utf-8")
     if budget_link.is_symlink() or budget_link.is_file():
         budget_link.unlink()
     elif budget_link.exists():
-        # Keep image-local ledger.jsonl if present; merge via phase7b.sum_ledgers.
-        pass
-    else:
-        budget_link.mkdir(parents=True, exist_ok=True)
+        shutil.rmtree(budget_link)
+    budget_link.symlink_to(vol_budget)
     return Path(REMOTE_REPO)
 
 
@@ -629,6 +631,7 @@ def code_config(
         code_gpt54,
         code_mimo_subsample,
         extract_main_transitions,
+        gpt54_fully_resumable,
         integrity_for_judge,
     )
     from rc.openai_batch import estimate_batch_usd
@@ -679,16 +682,22 @@ def code_config(
         if max_gpt is not None:
             gpt_set = gpt_set[: int(max_gpt)]
 
-        est = estimate_batch_usd(max(len(gpt_set), 1))
-        ok, reason = api_submission_allowed(est, platform="openai", root=root)
-        if not ok:
-            # D62/D63/D67: project-cap guard is a hard hold — never auto-retried.
-            _st(stage="coding", state="api_budget_hold", error=reason)
+        # D69: if every GPT key is already on Volume, there is no new submit —
+        # skip project-cap guard and Batch lock (spent may already exceed the
+        # cap from prior configs; zero-spend resume must still proceed).
+        fully_resumed = gpt54_fully_resumable(
+            gpt_set, run_tag=run_tag, root=root, coding_subdir=coding_subdir
+        )
+        if not fully_resumed:
+            est = estimate_batch_usd(max(len(gpt_set), 1))
+            ok, reason = api_submission_allowed(est, platform="openai", root=root)
+            if not ok:
+                # D62/D63/D67: project-cap guard is a hard hold — never auto-retried.
+                _st(stage="coding", state="api_budget_hold", error=reason)
+                runs_vol.commit()
+                return {"state": "api_budget_hold", "reason": reason}
+            acquire_batch_submit_lock(config_id, root=root)
             runs_vol.commit()
-            return {"state": "api_budget_hold", "reason": reason}
-
-        acquire_batch_submit_lock(config_id, root=root)
-        runs_vol.commit()
 
         job_id = f"phase7b-gpt54-{config_id}"
         gpt_rows = None
@@ -704,7 +713,12 @@ def code_config(
         try:
             for attempt in range(12):
                 try:
-                    hb.pulse("batch_poll", force=True, batch_attempt=attempt + 1)
+                    hb.pulse(
+                        "batch_poll" if not fully_resumed else "gpt54_resume",
+                        force=True,
+                        batch_attempt=attempt + 1,
+                        gpt54_fully_resumed=fully_resumed,
+                    )
                     gpt_rows, gpt_meta = code_gpt54(
                         gpt_set,
                         run_tag=run_tag,
@@ -815,6 +829,17 @@ def code_config(
                         "api_usd": getattr(backend.last_cost, "usd", 0),
                     }
                     return rows, meta, 0
+                def _mimo_progress(info: dict) -> None:
+                    hb.pulse(
+                        "mimo",
+                        mimo_api_done=info.get("mimo_api_done"),
+                        mimo_api_total=info.get("mimo_api_total"),
+                        mimo_written=info.get("mimo_written"),
+                        mimo_total=info.get("mimo_total"),
+                        mimo_resumed=info.get("mimo_resumed"),
+                    )
+                    runs_vol.commit()
+
                 return code_mimo_subsample(
                     [t for t in transitions if t.get("protocol") == "FORCED"],
                     run_tag=run_tag,
@@ -822,6 +847,8 @@ def code_config(
                     job_id=f"phase7b-mimo-{config_id}",
                     config_id=config_id,
                     coding_subdir=coding_subdir,
+                    on_progress=_mimo_progress,
+                    max_workers=8,
                 )
 
             # D63: MiMo — if provider unavailable >2 h, mimo_wait + hourly retries ≤24 h.

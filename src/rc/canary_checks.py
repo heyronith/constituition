@@ -270,7 +270,12 @@ def compute_canary_checks(
     mimo_frac = 1.0 - gpt_frac
     openai_to_date = 0.0
     openrouter_to_date = 0.0
-    for line in (root / "budget" / "ledger.jsonl").read_text(encoding="utf-8").splitlines():
+    # Modal Volume apps may only have per-config ledgers; missing ledger.jsonl ⇒ $0.
+    ledger_path = root / "budget" / "ledger.jsonl"
+    ledger_text = (
+        ledger_path.read_text(encoding="utf-8") if ledger_path.exists() else ""
+    )
+    for line in ledger_text.splitlines():
         if not line.strip():
             continue
         row = json.loads(line)

@@ -358,3 +358,54 @@ D55 blinding held. **gemma4_31b not touched** (still coding/running, STATUS 20:4
 Logged in `docs/DECISIONS.md`: lock TTL 60 min + `release_batch_submit_lock` in `finally`; coding STATUS heartbeat ≤15 min (`CodingStatusHeartbeat` on Batch poll / sync / MiMo / checks). Tests: `tests/test_phase7b_d68.py` (PASS).
 
 Artifacts: `results/phase7b_gemma4_12b_stale_diag.json`, `results/phase7b_gemma4_12b_code_resume_d68.json`, `results/phase7b_status_d68.log`.
+
+## gemma4_31b coding loop + D69 (2026-10-08)
+
+D55 blinding held. No 7D started.
+
+### Diagnose (`ap-KI7qTFhyttGyaWjwlLToXA`)
+
+| event | utc (CDT) | sub-stage | detail |
+|-------|-----------|-----------|--------|
+| fail #1 | 2026-10-08 21:12:37Z (16:12:37 CDT) | **checks** (after MiMo ~450/460) | `FileNotFoundError: /rc/budget/ledger.jsonl` in `compute_canary_checks` |
+| fail #2 | 2026-10-08 21:41:20Z (16:41:20 CDT) | **checks** (after full MiMo redo 0→450/460) | same `FileNotFoundError` |
+| cancel #1 | with fail #2 / Modal retry | orchestrate→code_config child | Modal cancelled in-flight `code_config` when the container failed (`RemoteError` / runner terminate on retry path) — **not** preemption, **not** timeout |
+| cancel #2 | 2026-10-08 21:49:46Z (16:49:46 CDT) | MiMo mid-retry (~150/460) | **manual** `modal app stop` (CLI: “Stopping app - user stopped from CLI”) |
+
+Both failures completed Batch ingest + D60 + MiMo API, then crashed at **checks** before integrity gates could be recorded as final STATUS. Retries re-ran all ~460 MiMo calls from scratch (no resume).
+
+**Keys / slots at stop (Volume):**
+
+| artifact | done | missing / notes |
+|----------|-----:|-----------------|
+| GPT-5.4 `gpt54.jsonl` | **7127** | 0 missing for resume (`n_batch=3094`, `n_sync=0`, `resumed_from_jsonl`) |
+| MiMo `mimo.jsonl` | **462** with fate | `n_slots_selected_missing=0`; 38 slots expected-absent post-censor (D65) |
+
+### Act
+
+1. `modal app stop -y ap-KI7qTFhyttGyaWjwlLToXA`
+2. Fix root cause + D69 speed/resume (below)
+3. First code-only relaunch `ap-gVkMJqDJkMCT8pRC2x4xyJ` hit `api_budget_hold` (`openai 60.76 > cap 49`) despite full GPT resume — guard treated zero-spend resume as a new Batch submit
+4. Second code-only relaunch after guard skip: `ap-shvgUMItcR2kg7PC7pEsdd` / `fc-01M4ERAG670PZ4KFCQM16WM2BW` @ ~21:57Z
+
+### Confirm (within 15 min)
+
+| t | STATUS |
+|---|--------|
+| 21:53:01Z (first relaunch) | coding/running, `coding_substage=consistency` |
+| 21:53:41Z | coding/`api_budget_hold` (false positive; fixed) |
+| 21:58:10Z (second relaunch) | **done** / `checks_pass=true`, `batch_state=done` |
+
+MiMo: **already complete** on Volume (462/462); resume spent $0 API (`n_api_new=0`). Rows/min N/A (no new calls); ETA for remaining work was **&lt;2 min** (integrity + checks only). GPT-5.4 likewise fully resumed (`resumed_from_jsonl=true`, `api_usd=0`).
+
+### D69
+
+Logged in `docs/DECISIONS.md`:
+
+- MiMo OpenRouter: 8-way concurrent, Xiaomi pinned, `allow_fallbacks=false`, exponential backoff on 429/5xx; append `*_generations.jsonl` + `mimo.jsonl` as each call completes; resume by fate key
+- `compute_canary_checks` tolerates missing `budget/ledger.jsonl`; `_link_runs` symlinks Volume budget + touches empty ledger
+- `gpt54_fully_resumable` → skip `api_submission_allowed` + Batch submit lock on zero-spend resume
+
+Tests: `tests/test_phase7b_d69.py` (PASS).
+
+Artifacts: `results/phase7b_gemma4_31b_d69_fix.json`, `logs/phase7b_gemma31_d69_relaunch.log`, `logs/phase7b_gemma31_d69_relaunch2.log`.
