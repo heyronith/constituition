@@ -1,0 +1,56 @@
+[
+  {
+    "app_id": "ap-uogHJinaVt5Yo3uqnMEYYC",
+    "config_id": "qwen38_27b_nothink",
+    "gpu": "A100-80GB",
+    "launch_utc": "2026-10-08T05:30:28Z",
+    "object_id": "fc-01M4CZVC9CY9FW0KP6XSQXNJVE",
+    "returncode": 0,
+    "stage_cap_usd": 12.990994148571424
+  },
+  {
+    "app_id": "ap-gvXszpuUssPlTh7VmJJkcc",
+    "config_id": "qwen38_27b_think",
+    "gpu": "A100-80GB",
+    "launch_utc": "2026-10-08T05:30:44Z",
+    "object_id": "fc-01M4CZVV45CKDTPZGETQA1NDDF",
+    "returncode": 0,
+    "stage_cap_usd": 12.990994148571424
+  },
+  {
+    "app_id": "ap-PJndHhQkh5CgqENWPdZP9i",
+    "config_id": "gemma4_31b",
+    "gpu": "A100-80GB",
+    "launch_utc": "2026-10-08T05:30:59Z",
+    "object_id": "fc-01M4CZWAD959MH4G2QC76YSTNA",
+    "returncode": 0,
+    "stage_cap_usd": 12.990994148571424
+  },
+  {
+    "app_id": "ap-g5F6LKQu20gBTUj6QrFm0C",
+    "config_id": "gemma4_12b",
+    "gpu": "L40S",
+    "launch_utc": "2026-10-08T05:31:15Z",
+    "object_id": "fc-01M4CZWSD7WGRP7KT8K6CNPZ9Y",
+    "returncode": 0,
+    "stage_cap_usd": 12.990994148571424
+  },
+  {
+    "app_id": "ap-nSbqplklEa5ruZ32wAMdOB",
+    "config_id": "olmo3_7b_sft",
+    "gpu": "L4",
+    "launch_utc": "2026-10-08T05:31:30Z",
+    "object_id": "fc-01M4CZX87MBJAXDFCTRAG2QG6X",
+    "returncode": 0,
+    "stage_cap_usd": 12.990994148571424
+  },
+  {
+    "app_id": "ap-1ree2MUKHF3jlRBeCL5Lwi",
+    "config_id": "olmo3_7b_dpo",
+    "gpu": "L4",
+    "launch_utc": "2026-10-08T05:31:45Z",
+    "object_id": "fc-01M4CZXQ10T1Y6V3V0BQHN152C",
+    "returncode": 0,
+    "stage_cap_usd": 12.990994148571424
+  }
+]

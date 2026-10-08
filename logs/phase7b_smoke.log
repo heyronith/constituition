@@ -1,0 +1,298 @@
+✓ Initialized. View run at 
+https://modal.com/apps/heyronith/main/ap-TYPL99PYCEJhoGnuZatiq7
+✓ Created objects.
+├── ✓ Uploaded /Users/ronny/Desktop/Research/AI Alignment 
+│   Projects_Claude/Constituition/modal_apps/phase7b_main.py
+├── ✓ Uploaded pyproject.toml
+├── ✓ Uploaded /Users/ronny/Desktop/Research/AI Alignment 
+│   Projects_Claude/Constituition/configs
+├── ✓ Uploaded /Users/ronny/Desktop/Research/AI Alignment 
+│   Projects_Claude/Constituition/materials
+├── ✓ Uploaded /Users/ronny/Desktop/Research/AI Alignment 
+│   Projects_Claude/Constituition/src
+├── ✓ Created Function generate_a100.
+├── ✓ Created Function code_config.
+├── ✓ Created Function verify_precheck.
+├── ✓ Created Function orchestrate_config.
+├── ✓ Created Function generate_l4.
+├── ✓ Created Function download_weights.
+└── ✓ Created Function generate_l40s.
+override_job_cap_usd=0.3 for job_id=phase7b-smoke phase=7b_smoke
+INFO 10-08 05:01:41 [api_utils.py:286] non-default args: {'trust_remote_code': True, 'dtype': 'bfloat16', 'max_model_len': 4096, 'max_num_seqs': 64, 'disable_log_stats': True, 'model': '/__modal/volumes/vo-IcoHJoZnXHnZKAFJLrBXMu/models--Qwen--Qwen3.5-0.8B/snapshots/2fc06364715b967f1860aea9cf38778875588b17'}
+INFO 10-08 05:02:03 [model.py:692] Resolved architecture: Qwen3_5ForConditionalGeneration
+INFO 10-08 05:02:03 [model.py:2030] Using max model len 4096
+WARNING 10-08 05:02:03 [model.py:994] Model does not support mm_device_do_normalize, forcing mm_device_do_normalize = False.
+INFO 10-08 05:02:06 [scheduler.py:288] Chunked prefill is enabled with max_num_batched_tokens=8192.
+INFO 10-08 05:02:06 [config.py:625] Mamba cache mode is set to 'align' for Qwen3_5ForConditionalGeneration by default when prefix caching is enabled
+INFO 10-08 05:02:06 [kernel.py:416] Final IR op priority after setting platform defaults: IrOpPriorityConfig(rms_norm=['native'], fused_add_rms_norm=['native'], gelu_and_mul_sparse=['triton', 'native'])
+[transformers] The `use_fast` parameter is deprecated and will be removed in a future version. Use `backend="torchvision"` instead of `use_fast=True`, or `backend="pil"` instead of `use_fast=False`.
+WARNING 10-08 05:02:22 [system_utils.py:157] We must use the `spawn` multiprocessing start method. Overriding VLLM_WORKER_MULTIPROC_METHOD to 'spawn'. See https://docs.vllm.ai/en/latest/usage/troubleshooting.html#python-multiprocessing for more information. Reasons: CUDA is initialized
+(EngineCore pid=77) INFO 10-08 05:02:40 [core.py:123] Initializing a V1 LLM engine (v0.30.0) with config: model='/__modal/volumes/vo-IcoHJoZnXHnZKAFJLrBXMu/models--Qwen--Qwen3.5-0.8B/snapshots/2fc06364715b967f1860aea9cf38778875588b17', speculative_config=None, tokenizer='/__modal/volumes/vo-IcoHJoZnXHnZKAFJLrBXMu/models--Qwen--Qwen3.5-0.8B/snapshots/2fc06364715b967f1860aea9cf38778875588b17', skip_tokenizer_init=False, tokenizer_mode=auto, revision=None, tokenizer_revision=None, trust_remote_code=True, dtype=torch.bfloat16, max_seq_len=4096, download_dir=None, load_format=auto, tensor_parallel_size=1, pipeline_parallel_size=1, data_parallel_size=1, decode_context_parallel_size=1, dcp_comm_backend=ag_rs, disable_custom_all_reduce=False, quantization=None, quantization_config=None, enforce_eager=False, enable_return_routed_experts=False, kv_cache_dtype=auto, device_config=cuda, structured_outputs_config=StructuredOutputsConfig(backend='auto', disable_any_whitespace=False, disable_additional_properties=False, reasoning_parser='', reasoning_parser_plugin='', enable_in_reasoning=False), observability_config=ObservabilityConfig(show_hidden_metrics_for_version=None, otlp_traces_endpoint=None, collect_detailed_traces=None, per_request_spec_decode_metrics='none', kv_cache_metrics=False, kv_cache_metrics_sample=0.01, cudagraph_metrics=False, enable_layerwise_nvtx_tracing=False, enable_mfu_metrics=False, enable_mm_processor_stats=False, enable_logging_iteration_details=False, jit_monitor_mode='warn', jit_monitor_verbose=False), seed=0, served_model_name=/__modal/volumes/vo-IcoHJoZnXHnZKAFJLrBXMu/models--Qwen--Qwen3.5-0.8B/snapshots/2fc06364715b967f1860aea9cf38778875588b17, enable_prefix_caching=True, enable_chunked_prefill=True, pooler_config=None, compilation_config={'mode': <CompilationMode.VLLM_COMPILE: 3>, 'debug_dump_path': None, 'cache_dir': '', 'compile_cache_save_format': 'binary', 'backend': 'inductor', 'custom_ops': ['none'], 'ir_enable_torch_wrap': True, 'splitting_ops': ['vllm::unified_attention_with_output', 'vllm::unified_mla_attention_with_output', 'vllm::mamba_mixer2', 'vllm::mamba_mixer', 'vllm::short_conv', 'vllm::qwen4_exp_ple_short_conv', 'vllm::qwen4_exp_qsa_with_output', 'vllm::linear_attention', 'vllm::qwen_gdn_attention_core', 'vllm::qwen_gdn_attention_core_fused_norm_packed', 'vllm::gdn_attention_core_xpu', 'vllm::olmo_hybrid_gdn_full_forward', 'vllm::sparse_attn_indexer', 'vllm::rocm_aiter_sparse_attn_indexer', 'vllm::deepseek_v4_attention', 'vllm::hpc_rope_norm_forward', 'vllm::unified_kv_cache_update', 'vllm::unified_mla_kv_cache_update'], 'compile_mm_encoder': False, 'cudagraph_mm_encoder': False, 'encoder_cudagraph_token_budgets': [], 'encoder_cudagraph_max_vision_items_per_batch': 0, 'encoder_cudagraph_max_frames_per_batch': None, 'compile_sizes': [], 'compile_ranges_endpoints': [8192], 'inductor_compile_config': {'enable_auto_functionalized_v2': False, 'combo_kernels': True, 'benchmark_combo_kernel': True}, 'inductor_passes': {}, 'cudagraph_mode': <CUDAGraphMode.FULL_AND_PIECEWISE: (2, 1)>, 'cudagraph_num_of_warmups': 1, 'cudagraph_capture_sizes': [1, 2, 4, 8, 16, 24, 32, 40, 48, 56, 64, 72, 80, 88, 96, 104, 112, 120, 128], 'cudagraph_copy_inputs': False, 'cudagraph_specialize_lora': True, 'use_inductor_graph_partition': False, 'pass_config': {'fuse_norm_quant': False, 'fuse_act_quant': False, 'fuse_attn_quant': False, 'enable_sp': False, 'fuse_gemm_comms': False, 'fuse_allreduce_rms': False, 'enable_qk_norm_rope_fusion': False, 'fuse_rope_kvcache_cat_mla': False, 'fuse_act_padding': False, 'fuse_qk_norm_rope_kvcache': False}, 'max_cudagraph_capture_size': 128, 'dynamic_shapes_config': {'type': <DynamicShapesType.BACKED: 'backed'>, 'evaluate_guards': False, 'assume_32_bit_indexing': False}, 'local_cache_dir': None, 'fast_moe_cold_start': False, 'static_all_moe_layers': []}, kernel_config=KernelConfig(ir_op_priority=IrOpPriorityConfig(rms_norm=['native'], fused_add_rms_norm=['native'], gelu_and_mul_sparse=['triton', 'native']), enable_flashinfer_autotune=True, enable_cutedsl_warmup=True, enable_jit_warmup=True, moe_backend='auto', sparse_indexer_topk_backend='auto', linear_backend='auto', linear_backend_per_quant=None)
+(EngineCore pid=77) INFO 10-08 05:02:43 [parallel_state.py:1827] world_size=1 rank=0 local_rank=0 distributed_init_method=file:///tmp/vllm_dist_2e727a9aa1d64074b4dce39e1234fe2a backend=nccl
+(EngineCore pid=77) INFO 10-08 05:02:43 [parallel_state.py:2267] rank 0 in world size 1 is assigned as DP rank 0, PP rank 0, PCP rank 0, TP rank 0, ETP rank 0, EP rank N/A, EPLB rank N/A
+(EngineCore pid=77) INFO 10-08 05:02:43 [gpu_worker.py:441] Using V2 Model Runner
+(EngineCore pid=77) INFO 10-08 05:02:44 [model_runner.py:396] Loading model from scratch...
+(EngineCore pid=77) INFO 10-08 05:02:45 [cuda.py:597] Using backend AttentionBackendEnum.FLASH_ATTN for vit attention
+(EngineCore pid=77) INFO 10-08 05:02:45 [mm_encoder_attention.py:372] Using AttentionBackendEnum.FLASH_ATTN for MMEncoderAttention.
+(EngineCore pid=77) INFO 10-08 05:02:45 [qwen_gdn_linear_attn.py:176] Using Triton/FLA GDN prefill kernel (requested=auto, head_k_dim=128).
+(EngineCore pid=77) INFO 10-08 05:02:45 [qwen_gdn_linear_attn.py:528] GDN decode kernel: cuda
+(EngineCore pid=77) INFO 10-08 05:02:47 [cuda.py:538] Using FLASH_ATTN attention backend out of potential backends: ['FLASH_ATTN', 'FLASHINFER', 'TRITON_ATTN', 'FLEX_ATTENTION'].
+(EngineCore pid=77) INFO 10-08 05:02:47 [flash_attn.py:1116] Using FlashAttention version 2
+(EngineCore pid=77) INFO 10-08 05:02:47 [weight_utils.py:895] Filesystem type for checkpoints: 9P. Checkpoint size: 1.63 GiB. Available RAM: 332.45 GiB.
+(EngineCore pid=77) INFO 10-08 05:02:47 [weight_utils.py:918] Auto-prefetch is disabled because the filesystem (9P) is not a recognized network FS (NFS/Lustre). If you want to force prefetching, start vLLM with --safetensors-load-strategy=prefetch.
+(EngineCore pid=77) Loading safetensors checkpoint shards:   0% Completed | 0/1 [00:00<?, ?it/s]
+(EngineCore pid=77) Loading safetensors checkpoint shards: 100% Completed | 1/1 [00:01<00:00,  1.20s/it]
+(EngineCore pid=77) Loading safetensors checkpoint shards: 100% Completed | 1/1 [00:01<00:00,  1.20s/it]
+(EngineCore pid=77) 
+(EngineCore pid=77) INFO 10-08 05:02:48 [default_loader.py:430] Loading weights took 1.27 seconds
+(EngineCore pid=77) INFO 10-08 05:02:49 [model_runner.py:428] Model loading took 1.72 GiB memory and 5.388489 seconds
+(EngineCore pid=77) INFO 10-08 05:02:50 [topk_topp_sampler.py:78] Using FlashInfer for top-p & top-k sampling.
+(EngineCore pid=77) INFO 10-08 05:02:50 [interface.py:933] Setting attention block size to 544 tokens to ensure that attention page size is >= mamba page size.
+(EngineCore pid=77) INFO 10-08 05:02:50 [interface.py:957] Padding mamba page size by 2.64% to ensure that mamba page size and attention page size are exactly equal.
+(EngineCore pid=77) INFO 10-08 05:02:50 [utils.py:320] Using LBNHC KV cache layout.
+[transformers] Qwen3VL video processing does not apply the per-frame pixel cap the reference implementation (qwen-vl-utils) applies, so some videos cost far more tokens than they would there. In v5.22 the capped behavior will become the default and `cap_pixels_per_frame` will be removed. Pass `cap_pixels_per_frame=True` to adopt the reference behavior now, or `False` to keep the current behavior and silence this warning.
+(EngineCore pid=77) [transformers] The `use_fast` parameter is deprecated and will be removed in a future version. Use `backend="torchvision"` instead of `use_fast=True`, or `backend="pil"` instead of `use_fast=False`.
+INFO 10-08 05:02:54 [base.py:261] Multi-modal warmup completed in 32.563s
+INFO 10-08 05:02:56 [base.py:261] Readonly multi-modal warmup completed in 1.641s
+(EngineCore pid=77) INFO 10-08 05:03:00 [encoder_runner.py:131] Encoder cache will be initialized with a budget of 16384 tokens, and profiled with 1 image items of the maximum feature size.
+(EngineCore pid=77) INFO 10-08 05:03:12 [backends.py:1094] Using cache directory: /root/.cache/vllm/torch_compile_cache/6f9ddd9552/rank_0_0/backbone for vLLM's torch.compile
+(EngineCore pid=77) INFO 10-08 05:03:12 [backends.py:1155] Dynamo bytecode transform time: 5.73 s
+(EngineCore pid=77) [rank0]:W1008 05:03:15.068000 77 site-packages/torch/_inductor/utils.py:1953] Not enough SMs to use max_autotune_gemm mode
+(EngineCore pid=77) INFO 10-08 05:03:33 [backends.py:393] Compiling a graph for compile range (1, 8192) takes 20.66 s
+(EngineCore pid=77) INFO 10-08 05:03:37 [backends.py:920] collected artifacts: 25 entries, 11 artifacts, 11769415 bytes total
+(EngineCore pid=77) INFO 10-08 05:03:37 [decorators.py:719] saved AOT compiled function to /root/.cache/vllm/torch_compile_cache/torch_aot_compile/02f52be8138cd796edcc4ca4b9b46d31c206082d1086d4bea8a608a01040c3f9/rank_0_0/model
+(EngineCore pid=77) INFO 10-08 05:03:37 [monitor.py:53] torch.compile took 30.28 s in total
+(EngineCore pid=77) /usr/local/lib/python3.11/site-packages/triton/language/core.py:2284: UserWarning: tl.make_block_ptr is deprecated. Use TensorDescriptor or tl.make_tensor_descriptor instead.
+(EngineCore pid=77)   warn("tl.make_block_ptr is deprecated. Use TensorDescriptor or tl.make_tensor_descriptor instead.")
+(EngineCore pid=77) INFO 10-08 05:05:12 [monitor.py:81] Initial profiling/warmup run took 95.33 s
+(EngineCore pid=77) 
+[1ACapturing CUDA graphs (PIECEWISE):   0%|          | 0/19 [00:00<?, ?it/s]
+[1ACapturing CUDA graphs (PIECEWISE):   5%|▌         | 1/19 [00:01<00:22,  1.26s/it]
+[1ACapturing CUDA graphs (PIECEWISE):  11%|█         | 2/19 [00:02<00:17,  1.01s/it]
+[1ACapturing CUDA graphs (PIECEWISE):  16%|█▌        | 3/19 [00:02<00:10,  1.52it/s]
+[1ACapturing CUDA graphs (PIECEWISE):  21%|██        | 4/19 [00:02<00:07,  2.01it/s]
+[1ACapturing CUDA graphs (PIECEWISE):  26%|██▋       | 5/19 [00:02<00:05,  2.46it/s]
+[1ACapturing CUDA graphs (PIECEWISE):  32%|███▏      | 6/19 [00:03<00:04,  2.81it/s]
+[1ACapturing CUDA graphs (PIECEWISE):  37%|███▋      | 7/19 [00:03<00:03,  3.37it/s]
+[1ACapturing CUDA graphs (PIECEWISE):  42%|████▏     | 8/19 [00:03<00:02,  3.81it/s]
+[1ACapturing CUDA graphs (PIECEWISE):  47%|████▋     | 9/19 [00:05<00:06,  1.44it/s]
+[1ACapturing CUDA graphs (PIECEWISE):  53%|█████▎    | 10/19 [00:05<00:05,  1.68it/s]
+[1ACapturing CUDA graphs (PIECEWISE):  63%|██████▎   | 12/19 [00:05<00:02,  2.84it/s]
+[1ACapturing CUDA graphs (PIECEWISE):  74%|███████▎  | 14/19 [00:05<00:01,  4.18it/s]
+[1ACapturing CUDA graphs (PIECEWISE):  84%|████████▍ | 16/19 [00:06<00:00,  4.25it/s]
+[1ACapturing CUDA graphs (PIECEWISE):  89%|████████▉ | 17/19 [00:06<00:00,  3.98it/s]
+[1ACapturing CUDA graphs (PIECEWISE): 100%|██████████| 19/19 [00:08<00:00,  2.18it/s]
+[1ACapturing CUDA graphs (PIECEWISE): 100%|██████████| 19/19 [00:08<00:00,  2.33it/s]
+(EngineCore pid=77) 
+[1ACapturing CUDA graphs (FULL):   0%|          | 0/2 [00:00<?, ?it/s]
+[1ACapturing CUDA graphs (FULL): 100%|██████████| 2/2 [00:00<00:00, 18.02it/s]Capturing CUDA graphs (FULL): 100%|██████████| 2/2 [00:00<00:00, 17.97it/s]
+(EngineCore pid=77) INFO 10-08 05:05:25 [model_runner.py:1066] Graph capturing finished in 10 secs, took 0.12 GiB
+(EngineCore pid=77) INFO 10-08 05:05:25 [gpu_worker.py:640] Available KV cache memory: 16.88 GiB
+(EngineCore pid=77) INFO 10-08 05:05:25 [gpu_worker.py:655] CUDA graph memory profiling is enabled (default since v0.21.0). The current --gpu-memory-utilization=0.9200 is equivalent to --gpu-memory-utilization=0.9135 without CUDA graph memory profiling. To maintain the same effective KV cache size as before, increase --gpu-memory-utilization to 0.9265. To disable, set VLLM_MEMORY_PROFILER_ESTIMATE_CUDAGRAPHS=0.
+(EngineCore pid=77) INFO 10-08 05:05:25 [kv_cache_utils.py:2395] GPU KV cache size: 793,161 tokens, Maximum concurrency for 4,096 tokens per request: 193.64x
+(EngineCore pid=77) INFO 10-08 05:05:25 [kernel_warmup.py:172] JIT kernel warmup starting.
+(EngineCore pid=77) INFO 10-08 05:05:25 [kernel_warmup.py:185] JIT kernel warmup finished in 0.00s.
+(EngineCore pid=77) INFO 10-08 05:05:25 [qwen_triton_warmup.py:294] Warming up Qwen GDN Triton kernels for model_type=qwen3_5_text.
+(EngineCore pid=77) INFO 10-08 05:05:27 [qwen_vl_triton_warmup.py:57] Warmed position embedding and vision rotary kernels on grids=[(1, 16, 16), (1, 16, 2), (1, 2, 16), (1, 2, 2)].
+(EngineCore pid=77) INFO 10-08 05:05:27 [qwen_vl_triton_warmup.py:98] Warmed M-RoPE Triton kernels.
+(EngineCore pid=77) INFO 10-08 05:05:27 [mamba_triton_warmup.py:42] Warmed Mamba batch_memcpy_kernel.
+[modal-client] 2026-10-08T00:06:44-0500 Loop attempt for _run_app.<locals>.heartbeat failed
+Traceback (most recent call last):
+  File "/Users/ronny/Desktop/Research/AI Alignment Projects_Claude/Constituition/.venv/lib/python3.11/site-packages/grpclib/client.py", line 174, in send_request
+    protocol = await self._channel.__connect__()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/ronny/Desktop/Research/AI Alignment Projects_Claude/Constituition/.venv/lib/python3.11/site-packages/modal/_utils/grpc_utils.py", line 136, in __connect__
+    return await super().__connect__()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/ronny/Desktop/Research/AI Alignment Projects_Claude/Constituition/.venv/lib/python3.11/site-packages/grpclib/client.py", line 748, in __connect__
+    self._protocol = await self._create_connection()
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/ronny/Desktop/Research/AI Alignment Projects_Claude/Constituition/.venv/lib/python3.11/site-packages/modal/_utils/grpc_utils.py", line 146, in _create_connection
+    protocol = await self._open_connection()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/ronny/Desktop/Research/AI Alignment Projects_Claude/Constituition/.venv/lib/python3.11/site-packages/modal/_utils/grpc_utils.py", line 168, in _open_connection
+    return await super()._create_connection()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/ronny/Desktop/Research/AI Alignment Projects_Claude/Constituition/.venv/lib/python3.11/site-packages/grpclib/client.py", line 725, in _create_connection
+    _, protocol = await self._loop.create_connection(
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/ronny/.local/share/uv/python/cpython-3.11.15-macos-aarch64-none/lib/python3.11/asyncio/base_events.py", line 1046, in create_connection
+    infos = await self._ensure_resolved(
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/ronny/.local/share/uv/python/cpython-3.11.15-macos-aarch64-none/lib/python3.11/asyncio/base_events.py", line 1420, in _ensure_resolved
+    return await loop.getaddrinfo(host, port, family=family, type=type,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/ronny/.local/share/uv/python/cpython-3.11.15-macos-aarch64-none/lib/python3.11/asyncio/base_events.py", line 868, in getaddrinfo
+    return await self.run_in_executor(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+asyncio.exceptions.CancelledError
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/ronny/Desktop/Research/AI Alignment Projects_Claude/Constituition/.venv/lib/python3.11/site-packages/modal/_grpc_client.py", line 164, in direct
+    return await self.client._call_unary(self.wrapped_method, req, timeout=timeout, metadata=metadata)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/ronny/Desktop/Research/AI Alignment Projects_Claude/Constituition/.venv/lib/python3.11/site-packages/modal/client.py", line 533, in _call_unary
+    return await self._call_safely(coro, grpclib_method.name)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/ronny/Desktop/Research/AI Alignment Projects_Claude/Constituition/.venv/lib/python3.11/site-packages/modal/client.py", line 489, in _call_safely
+    return await request_task
+           ^^^^^^^^^^^^^^^^^^
+  File "/Users/ronny/Desktop/Research/AI Alignment Projects_Claude/Constituition/.venv/lib/python3.11/site-packages/grpclib/client.py", line 912, in __call__
+    await stream.send_message(message, end=True)
+  File "/Users/ronny/Desktop/Research/AI Alignment Projects_Claude/Constituition/.venv/lib/python3.11/site-packages/grpclib/client.py", line 242, in send_message
+    await self.send_request()
+  File "/Users/ronny/Desktop/Research/AI Alignment Projects_Claude/Constituition/.venv/lib/python3.11/site-packages/grpclib/client.py", line 173, in send_request
+    with self._wrapper:
+  File "/Users/ronny/Desktop/Research/AI Alignment Projects_Claude/Constituition/.venv/lib/python3.11/site-packages/grpclib/utils.py", line 70, in __exit__
+    raise self._error
+TimeoutError: Deadline exceeded
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/ronny/Desktop/Research/AI Alignment Projects_Claude/Constituition/.venv/lib/python3.11/site-packages/modal/_utils/async_utils.py", line 588, in loop_coro
+    await asyncio.wait_for(async_f(), timeout=timeout)
+  File "/Users/ronny/.local/share/uv/python/cpython-3.11.15-macos-aarch64-none/lib/python3.11/asyncio/tasks.py", line 489, in wait_for
+    return fut.result()
+           ^^^^^^^^^^^^
+  File "/Users/ronny/Desktop/Research/AI Alignment Projects_Claude/Constituition/.venv/lib/python3.11/site-packages/modal/runner.py", line 66, in _heartbeat
+    await client._stub.AppHeartbeat(request, retry=Retry(attempt_timeout=HEARTBEAT_TIMEOUT))
+modal.exception.ConnectionError: Deadline exceeded
+(EngineCore pid=77) 
+[1ACapturing CUDA graphs (PIECEWISE):   0%|          | 0/19 [00:00<?, ?it/s]
+[1ACapturing CUDA graphs (PIECEWISE):   5%|▌         | 1/19 [00:00<00:05,  3.54it/s]
+[1ACapturing CUDA graphs (PIECEWISE):  11%|█         | 2/19 [00:00<00:04,  3.67it/s]
+[1ACapturing CUDA graphs (PIECEWISE):  16%|█▌        | 3/19 [00:00<00:04,  3.63it/s]
+[1ACapturing CUDA graphs (PIECEWISE):  21%|██        | 4/19 [00:01<00:04,  3.47it/s]
+[1ACapturing CUDA graphs (PIECEWISE):  26%|██▋       | 5/19 [00:01<00:04,  3.35it/s]
+[1ACapturing CUDA graphs (PIECEWISE):  32%|███▏      | 6/19 [00:01<00:03,  3.56it/s]
+[1ACapturing CUDA graphs (PIECEWISE):  37%|███▋      | 7/19 [00:01<00:03,  3.63it/s]
+[1ACapturing CUDA graphs (PIECEWISE):  42%|████▏     | 8/19 [00:02<00:02,  3.88it/s]
+[1ACapturing CUDA graphs (PIECEWISE):  53%|█████▎    | 10/19 [00:02<00:01,  6.08it/s]
+[1ACapturing CUDA graphs (PIECEWISE):  63%|██████▎   | 12/19 [00:02<00:00,  8.19it/s]
+[1ACapturing CUDA graphs (PIECEWISE):  74%|███████▎  | 14/19 [00:02<00:00, 10.09it/s]
+[1ACapturing CUDA graphs (PIECEWISE):  84%|████████▍ | 16/19 [00:02<00:00, 11.81it/s]
+[1ACapturing CUDA graphs (PIECEWISE):  95%|█████████▍| 18/19 [00:02<00:00, 13.23it/s]Capturing CUDA graphs (PIECEWISE): 100%|██████████| 19/19 [00:02<00:00,  6.72it/s]
+(EngineCore pid=77) 
+[1ACapturing CUDA graphs (FULL):   0%|          | 0/11 [00:00<?, ?it/s]
+[1ACapturing CUDA graphs (FULL):  18%|█▊        | 2/11 [00:00<00:00, 19.01it/s]
+[1ACapturing CUDA graphs (FULL):  36%|███▋      | 4/11 [00:00<00:00, 18.81it/s]
+[1ACapturing CUDA graphs (FULL):  55%|█████▍    | 6/11 [00:00<00:00, 18.86it/s]
+[1ACapturing CUDA graphs (FULL):  73%|███████▎  | 8/11 [00:00<00:00, 18.97it/s]
+[1ACapturing CUDA graphs (FULL):  91%|█████████ | 10/11 [00:00<00:00, 18.36it/s]Capturing CUDA graphs (FULL): 100%|██████████| 11/11 [00:00<00:00, 18.76it/s]
+(EngineCore pid=77) INFO 10-08 05:07:29 [model_runner.py:1066] Graph capturing finished in 5 secs, took 0.08 GiB
+(EngineCore pid=77) INFO 10-08 05:07:29 [gpu_worker.py:825] CUDA graph pool memory: 0.08 GiB (actual), 0.14 GiB (estimated), difference: 0.06 GiB (78.0%).
+(EngineCore pid=77) INFO 10-08 05:07:29 [gpu_worker.py:888] Free memory on device (21.84/22.03 GiB) on startup. Desired GPU memory utilization is (0.92, 20.27 GiB). Actual usage is 1.93 GiB for consumed memory (weights + non-torch), 1.46 GiB for peak activation, and 0.08 GiB for CUDAGraph memory. Replace gpu_memory_utilization config with `--kv-cache-memory=17879494964` (16.65 GiB) to fit into requested memory, or `--kv-cache-memory=19568672256` (18.22 GiB) to fully utilize gpu memory. Current kv cache memory in use is 16.88 GiB.
+(EngineCore pid=77) INFO 10-08 05:07:31 [jit_monitor.py:85] Kernel JIT monitor activated; monitored JIT compilations during inference will use mode=warn.
+(EngineCore pid=77) WARNING 10-08 05:07:32 [torch_utils.py:275] OMP_NUM_THREADS=4 is set; leaving Torch threads at 4 for serving. Multi-threaded torch CPU ops during serving can degrade performance through spin-wait contention and cgroup CPU-quota throttling.
+(EngineCore pid=77) INFO 10-08 05:07:32 [core.py:372] init engine (profile, create kv cache, warmup model) took 282.46 s (compilation: 30.28 s)
+(EngineCore pid=77) INFO 10-08 05:07:32 [kv_cache_utils.py:748] kv cache group sizes [544, 544, 544, 544]
+(EngineCore pid=77) INFO 10-08 05:07:32 [kv_cache_utils.py:749] kv lcm block sizes 544
+(EngineCore pid=77) INFO 10-08 05:07:32 [kernel.py:416] Final IR op priority after setting platform defaults: IrOpPriorityConfig(rms_norm=['native'], fused_add_rms_norm=['native'], gelu_and_mul_sparse=['triton', 'native'])
+INFO 10-08 05:07:33 [hf.py:642] Detected the chat template content format to be 'openai'. You can set `--chat-template-content-format` to override this.
+
+[1ARendering conversations:   0%|          | 0/2 [00:00<?, ?it/s]
+[1ARendering conversations: 100%|██████████| 2/2 [00:00<00:00, 21.79it/s]
+
+(EngineCore pid=77) WARNING 10-08 05:07:43 [jit_monitor.py:141] Triton kernel JIT compilation during inference: _topk_topp_kernel. This causes a latency spike; consider extending warmup to cover this shape/config.
+(EngineCore pid=77) WARNING 10-08 05:07:43 [jit_monitor.py:141] Triton kernel JIT compilation during inference: _topp_sb_stats_kernel. This causes a latency spike; consider extending warmup to cover this shape/config.
+(EngineCore pid=77) WARNING 10-08 05:07:44 [jit_monitor.py:141] Triton kernel JIT compilation during inference: _topp_sb_step_kernel. This causes a latency spike; consider extending warmup to cover this shape/config.
+(EngineCore pid=77) WARNING 10-08 05:07:47 [jit_monitor.py:141] Triton kernel JIT compilation during inference: _topp_sb_mask_kernel. This causes a latency spike; consider extending warmup to cover this shape/config.
+(EngineCore pid=77) WARNING 10-08 05:07:47 [jit_monitor.py:141] Triton kernel JIT compilation during inference: _gumbel_sample_kernel. This causes a latency spike; consider extending warmup to cover this shape/config.
+[1AProcessed prompts:   0%|          | 0/2 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]
+[1AProcessed prompts:  50%|█████     | 1/2 [00:14<00:14, 14.40s/it, est. speed input: 90.15 toks/s, output: 4.17 toks/s]
+[1AProcessed prompts: 100%|██████████| 2/2 [00:25<00:00, 12.23s/it, est. speed input: 104.22 toks/s, output: 5.62 toks/s]
+[1AProcessed prompts: 100%|██████████| 2/2 [00:25<00:00, 12.23s/it, est. speed input: 104.22 toks/s, output: 5.62 toks/s]Processed prompts: 100%|██████████| 2/2 [00:25<00:00, 12.56s/it, est. speed input: 104.22 toks/s, output: 5.62 toks/s]
+
+[1ARendering conversations:   0%|          | 0/1 [00:00<?, ?it/s]
+[1ARendering conversations: 100%|██████████| 1/1 [00:00<00:00, 135.93it/s]
+
+[1AProcessed prompts:   0%|          | 0/1 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]
+[1AProcessed prompts: 100%|██████████| 1/1 [00:00<00:00,  1.40it/s, est. speed input: 1842.48 toks/s, output: 103.36 toks/s]
+[1AProcessed prompts: 100%|██████████| 1/1 [00:00<00:00,  1.40it/s, est. speed input: 1842.48 toks/s, output: 103.36 toks/s]Processed prompts: 100%|██████████| 1/1 [00:00<00:00,  1.40it/s, est. speed input: 1842.48 toks/s, output: 103.36 toks/s]
+
+[1ARendering conversations:   0%|          | 0/2 [00:00<?, ?it/s]
+[1ARendering conversations: 100%|██████████| 2/2 [00:00<00:00, 162.81it/s]
+
+[1AProcessed prompts:   0%|          | 0/2 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]
+[1AProcessed prompts:  50%|█████     | 1/2 [00:00<00:00,  1.07it/s, est. speed input: 1360.06 toks/s, output: 72.71 toks/s]
+[1AProcessed prompts: 100%|██████████| 2/2 [00:01<00:00,  2.17it/s, est. speed input: 2408.76 toks/s, output: 143.84 toks/s]
+[1AProcessed prompts: 100%|██████████| 2/2 [00:01<00:00,  2.17it/s, est. speed input: 2408.76 toks/s, output: 143.84 toks/s]
+[1AProcessed prompts: 100%|██████████| 2/2 [00:01<00:00,  1.88it/s, est. speed input: 2408.76 toks/s, output: 143.84 toks/s]
+
+[1ARendering conversations:   0%|          | 0/2 [00:00<?, ?it/s]
+[1ARendering conversations: 100%|██████████| 2/2 [00:00<00:00, 159.10it/s]
+
+[1AProcessed prompts:   0%|          | 0/2 [00:00<?, ?it/s, est. speed input: 0.00 toks/s, output: 0.00 toks/s]
+[1AProcessed prompts:  50%|█████     | 1/2 [00:01<00:01,  1.08s/it, est. speed input: 1160.95 toks/s, output: 63.93 toks/s]
+[1AProcessed prompts: 100%|██████████| 2/2 [00:01<00:00,  1.54it/s, est. speed input: 1764.43 toks/s, output: 126.38 toks/s]
+[1AProcessed prompts: 100%|██████████| 2/2 [00:01<00:00,  1.54it/s, est. speed input: 1764.43 toks/s, output: 126.38 toks/s]Processed prompts: 100%|██████████| 2/2 [00:01<00:00,  1.40it/s, est. speed input: 1764.43 toks/s, output: 126.38 toks/s]
+INFO 10-08 05:08:09 [utils.py:632] [shutdown] Process manager: send sigterm to process EngineCore
+(EngineCore pid=77) INFO 10-08 05:08:09 [core.py:1342] [shutdown] EngineCore: trigger received signal=SIGTERM
+(EngineCore pid=77) INFO 10-08 05:08:09 [core.py:1493] [shutdown] EngineCore: start mode=abort timeout=0s
+(EngineCore pid=77) INFO 10-08 05:08:09 [core.py:1524] [shutdown] EngineCore: request processing complete; starting resource teardown
+(EngineCore pid=77) INFO 10-08 05:08:09 [core.py:1355] [shutdown] EngineCore: exiting busy loop
+WARNING 10-08 05:08:14 [utils.py:652] [shutdown] Process manager: force killing remaining processes count=1
+WARNING 10-08 05:08:14 [utils.py:657] [shutdown] Process manager: force killing remaining process EngineCore pid 77
+[modal-client] 2026-10-08T05:08:26+0000 Detected 1 background thread(s) [ThreadPoolExecutor-4_0] still running after container exit. This will prevent runner shutdown for up to 30 seconds.
+{
+  "checks": {
+    "all_pass": true,
+    "gates_gpt": {
+      "key_join": {
+        "ok": true
+      },
+      "ok": true,
+      "prompt_hash": {
+        "examples": [],
+        "gate": "prompt_hash",
+        "mismatch_rate": 0.0,
+        "n_checked": 3,
+        "n_mismatch": 0,
+        "ok": true
+      },
+      "quote_audit": {
+        "gate": "quote_audit",
+        "hit_rate": 1.0,
+        "min_phrases_for_gate": 30,
+        "n_hits": 1,
+        "n_phrases": 1,
+        "non_hit_examples": [],
+        "note": "D41/D45: N/A when n_phrases < 30; prompt-hash is binding 
+integrity gate",
+        "ok": true,
+        "role": "misalignment_detector",
+        "status": "N/A",
+        "threshold": 0.5
+      }
+    },
+    "gpt_meta": {
+      "api_usd": 0.00496625,
+      "batch_id": "batch_6ac72548e1388190b4dc3bb8f54a96a6",
+      "batch_usd": 0.00496625,
+      "job_id": "phase7b-gpt54-qwen35_08b_smoke",
+      "n": 6,
+      "n_batch": 3,
+      "n_sync": 0,
+      "resumed_batch": false,
+      "sync_usd": 0.0
+    },
+    "mimo_meta": {
+      "api_usd": 0.0,
+      "n": 0,
+      "skipped": true
+    },
+    "smoke_or_precheck": true
+  },
+  "generate": {
+    "config_id": "qwen35_08b_smoke",
+    "state": "generate_done",
+    "usd_so_far": 0.12644736
+  },
+  "state": "done"
+}
+Stopping app - local entrypoint completed.
+✓ App completed. View run at 
+https://modal.com/apps/heyronith/main/ap-TYPL99PYCEJhoGnuZatiq7

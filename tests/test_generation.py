@@ -74,7 +74,8 @@ def test_mock_backend_scripted_and_records_calls() -> None:
     assert max_tokens_for("gemma4_12b") == 4096
 
 
-def test_olmo_max_model_len_matches_default_after_d31() -> None:
-    # D31: OLMo on Modal L40S uses the same default as other non-think subjects.
-    assert max_model_len_for("olmo3_7b_final") == max_model_len_for("gemma4_12b")
-    assert max_model_len_for("olmo3_7b_sft") == 16384
+def test_olmo_max_model_len_d51() -> None:
+    # D51: OLMo on Modal L4 uses 8192 (supersedes D31 L40S default pairing).
+    assert max_model_len_for("olmo3_7b_final") == 8192
+    assert max_model_len_for("olmo3_7b_sft") == 8192
+    assert max_model_len_for("gemma4_12b") == 16384

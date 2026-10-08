@@ -590,7 +590,19 @@ class OpenAIBatchBackend:
         )
 
         if status == "failed" and not by_id and not stalled:
-            raise RuntimeError(f"OpenAI batch {batch_id} ended with status={status}")
+            err_body = ""
+            try:
+                errs = getattr(batch, "errors", None)
+                if errs is not None:
+                    err_body = str(errs)[:800]
+            except Exception:  # noqa: BLE001
+                err_body = ""
+            if err_path.exists():
+                err_body = (err_body + " " + err_path.read_text(encoding="utf-8")[:800]).strip()
+            raise RuntimeError(
+                f"OpenAI batch {batch_id} ended with status={status} zero_completed "
+                f"error={err_body or 'none'}"
+            )
 
         # Sync stragglers: missing custom_ids OR present but without a real completion.
         missing = [

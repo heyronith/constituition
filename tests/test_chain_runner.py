@@ -210,11 +210,11 @@ def test_manifest_hashes_match_files(repo_tmp: Path) -> None:
         run_tag="test_manifest",
         root=repo_tmp,
     )
-    manifest = json.loads(
-        (repo_tmp / "runs/test_manifest/manifest.json").read_text(encoding="utf-8")
-    )
+    # D63: per-config manifest under runs/<tag>/<config>/manifest.json
+    base = repo_tmp / "runs/test_manifest/gemma4_12b"
+    manifest = json.loads((base / "manifest.json").read_text(encoding="utf-8"))
     for rel, digest in manifest["output_hashes"].items():
-        assert sha256_file(repo_tmp / "runs/test_manifest" / rel) == digest
+        assert sha256_file(base / rel) == digest
 
 
 def test_free_format_round_transition(repo_tmp: Path) -> None:

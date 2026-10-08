@@ -529,7 +529,7 @@ def run_config(
                 "censored_at_round": censored[unit],
                 "completed_rounds": info["completed_rounds"],
             }
-    _update_run_manifest(run_tag, root)
+    _update_run_manifest(run_tag, root, config_id=config_id)
     return summary
 
 
@@ -832,15 +832,23 @@ def archive_stale_suffix(
     return counts
 
 
-def _update_run_manifest(run_tag: str, root: Path) -> None:
+def _update_run_manifest(
+    run_tag: str, root: Path, *, config_id: str | None = None
+) -> None:
+    """Write manifest. D63: when config_id is set, only hash that config subtree.
+
+    Avoids last-writer-wins races when multiple main-run configs share a Volume.
+    """
     run_dir = root / "runs" / run_tag
+    base = (run_dir / config_id) if config_id else run_dir
+    base.mkdir(parents=True, exist_ok=True)
     output_hashes: dict[str, str] = {}
-    for path in sorted(run_dir.rglob("*")):
+    for path in sorted(base.rglob("*")):
         if path.is_file() and path.name != "manifest.json":
-            rel = str(path.relative_to(run_dir))
+            rel = str(path.relative_to(base))
             output_hashes[rel] = sha256_file(path)
     write_run_manifest(
-        run_dir,
+        base,
         git_sha_value=git_sha(root),
         config_hashes={
             "models.yaml": sha256_file(root / "configs" / "models.yaml"),
@@ -850,7 +858,7 @@ def _update_run_manifest(run_tag: str, root: Path) -> None:
         model_revision=None,
         seeds={"master": load_experiment(root).master_seed},
         output_hashes=output_hashes,
-        extra={"run_tag": run_tag},
+        extra={"run_tag": run_tag, "config_id": config_id},
     )
 
 

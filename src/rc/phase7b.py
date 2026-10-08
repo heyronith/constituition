@@ -1,0 +1,363 @@
+"""Phase 7B helpers: per-config isolation, API guard, Batch stagger, canary protection (D62/D63)."""
+
+from __future__ import annotations
+
+import json
+import os
+import time
+from dataclasses import dataclass
+from datetime import datetime, timezone
+from pathlib import Path
+from typing import Any, Literal
+
+from rc.config import load_models, repo_root
+from rc.io_utils import sha256_file
+
+MAIN_RUN_TAG = "main_v1"
+CANARY_CONFIG = "olmo3_7b_final"
+SMOKE_ID = "qwen35_08b_smoke"
+REMAINING_CONFIGS = (
+    "qwen38_27b_nothink",
+    "qwen38_27b_think",
+    "gemma4_31b",
+    "gemma4_12b",
+    "olmo3_7b_sft",
+    "olmo3_7b_dpo",
+)
+
+# D62 caps (human-approved 2026-10-07).
+API_CAP_USD = 52.0
+OPENAI_CAP_USD = 49.0
+OPENROUTER_CAP_USD = 3.0
+MODAL_CAP_USD = 130.0
+
+COMPUTE_GPU = {
+    "modal_a100_80gb": "A100-80GB",
+    "modal_l40s": "L40S",
+    "modal_l4": "L4",
+}
+
+BatchErrorKind = Literal["rate_limit", "billing", "other"]
+
+
+@dataclass
+class Caps:
+    api: float = API_CAP_USD
+    openai: float = OPENAI_CAP_USD
+    openrouter: float = OPENROUTER_CAP_USD
+    modal: float = MODAL_CAP_USD
+
+
+def utc_now() -> str:
+    return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
+def status_filename(config_id: str) -> str:
+    return f"STATUS_{config_id}.json"
+
+
+def status_path(run_tag: str, config_id: str, *, root: Path | None = None) -> Path:
+    root = root or repo_root()
+    return root / "runs" / run_tag / status_filename(config_id)
+
+
+def ledger_path(run_tag: str, config_id: str, *, root: Path | None = None) -> Path:
+    root = root or repo_root()
+    return root / "budget" / f"ledger_{run_tag}_{config_id}.jsonl"
+
+
+def batch_lock_path(*, root: Path | None = None) -> Path:
+    root = root or repo_root()
+    return root / "runs" / MAIN_RUN_TAG / "_locks" / "openai_batch_submit.lock"
+
+
+def gpu_for_config(config_id: str, *, root: Path | None = None) -> str:
+    root = root or repo_root()
+    subject = load_models(root).by_id(config_id)
+    return COMPUTE_GPU.get(subject.compute, "A100-80GB")
+
+
+def assert_not_canary_write(path: Path, *, root: Path | None = None) -> None:
+    """D63: refuse writes under the canary config directory."""
+    root = root or repo_root()
+    canary = (root / "runs" / MAIN_RUN_TAG / CANARY_CONFIG).resolve()
+    try:
+        resolved = path.resolve()
+    except FileNotFoundError:
+        resolved = path.absolute()
+    if canary == resolved or canary in resolved.parents:
+        raise PermissionError(f"D63 canary read-only: refusing write to {path}")
+
+
+def snapshot_canary_tree(*, root: Path | None = None) -> dict[str, str]:
+    root = root or repo_root()
+    base = root / "runs" / MAIN_RUN_TAG / CANARY_CONFIG
+    if not base.exists():
+        raise FileNotFoundError(f"missing canary tree {base}")
+    out: dict[str, str] = {}
+    for path in sorted(base.rglob("*")):
+        if path.is_file():
+            rel = str(path.relative_to(base))
+            out[rel] = sha256_file(path)
+    return out
+
+
+def verify_canary_snapshot(
+    snapshot: dict[str, str], *, root: Path | None = None
+) -> dict[str, Any]:
+    root = root or repo_root()
+    current = snapshot_canary_tree(root=root)
+    missing = sorted(set(snapshot) - set(current))
+    added = sorted(set(current) - set(snapshot))
+    changed = sorted(k for k in snapshot if k in current and snapshot[k] != current[k])
+    return {
+        "ok": not missing and not added and not changed,
+        "n_snapshot": len(snapshot),
+        "n_current": len(current),
+        "missing": missing[:20],
+        "added": added[:20],
+        "changed": changed[:20],
+    }
+
+
+def classify_openai_batch_error(exc_or_text: Any) -> BatchErrorKind:
+    text = str(exc_or_text).lower()
+    if any(
+        s in text
+        for s in (
+            "billing",
+            "spending limit",
+            "insufficient_quota",
+            "payment",
+            "exceeded your current quota",
+        )
+    ):
+        return "billing"
+    if any(
+        s in text
+        for s in (
+            "rate limit",
+            "rate_limit",
+            "enqueued",
+            "token limit",
+            "tokens_enqueued",
+            "429",
+            "too many requests",
+            "capacity",
+        )
+    ):
+        return "rate_limit"
+    return "other"
+
+
+def sum_ledgers_api(
+    run_tag: str = MAIN_RUN_TAG, *, root: Path | None = None
+) -> dict[str, float]:
+    """Sum OpenAI/OpenRouter from all per-config ledgers + repo ledger."""
+    root = root or repo_root()
+    totals = {"openai": 0.0, "openrouter": 0.0, "modal": 0.0}
+    paths = [root / "budget" / "ledger.jsonl"]
+    paths.extend(sorted((root / "budget").glob(f"ledger_{run_tag}_*.jsonl")))
+    # Volume-mounted copies under runs/
+    vol_budget = root / "runs" / run_tag / "budget"
+    if vol_budget.exists():
+        paths.extend(sorted(vol_budget.glob(f"ledger_{run_tag}_*.jsonl")))
+    for path in paths:
+        if not path.exists():
+            continue
+        for line in path.read_text(encoding="utf-8").splitlines():
+            if not line.strip():
+                continue
+            row = json.loads(line)
+            plat = row.get("platform")
+            if plat not in totals:
+                continue
+            totals[plat] += float(row.get("actual_usd") or row.get("est_usd") or 0.0)
+    return totals
+
+
+def api_submission_allowed(
+    estimate_usd: float,
+    *,
+    platform: str = "openai",
+    caps: Caps | None = None,
+    root: Path | None = None,
+    openai_spent_floor: float = 12.77,
+) -> tuple[bool, str]:
+    """Global API guard before Batch submit (D62/D63)."""
+    caps = caps or Caps()
+    spent = sum_ledgers_api(root=root)
+    # Dashboard floor for OpenAI (ledger under-counts).
+    oa = max(spent["openai"], openai_spent_floor)
+    or_ = spent["openrouter"]
+    if platform == "openai":
+        if oa + estimate_usd > caps.openai:
+            return False, f"openai {oa + estimate_usd:.4f} > cap {caps.openai}"
+        if oa + or_ + estimate_usd > caps.api:
+            return False, f"api total {oa + or_ + estimate_usd:.4f} > cap {caps.api}"
+    elif platform == "openrouter":
+        if or_ + estimate_usd > caps.openrouter:
+            return False, f"openrouter {or_ + estimate_usd:.4f} > cap {caps.openrouter}"
+        if oa + or_ + estimate_usd > caps.api:
+            return False, f"api total {oa + or_ + estimate_usd:.4f} > cap {caps.api}"
+    return True, "ok"
+
+
+def acquire_batch_submit_lock(
+    config_id: str,
+    *,
+    root: Path | None = None,
+    min_gap_s: float = 600.0,
+    poll_s: float = 15.0,
+    max_wait_s: float = 7200.0,
+) -> None:
+    """Stagger OpenAI Batch submissions ≥ min_gap_s between configs (Volume lock)."""
+    root = root or repo_root()
+    path = batch_lock_path(root=root)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    started = time.time()
+    while True:
+        now = time.time()
+        if now - started > max_wait_s:
+            raise TimeoutError(f"batch submit lock wait exceeded for {config_id}")
+        payload: dict[str, Any] = {}
+        if path.exists():
+            try:
+                payload = json.loads(path.read_text(encoding="utf-8"))
+            except (json.JSONDecodeError, OSError):
+                payload = {}
+        last_ts = float(payload.get("unix") or 0.0)
+        last_cfg = payload.get("config_id")
+        if last_cfg == config_id or (now - last_ts) >= min_gap_s:
+            path.write_text(
+                json.dumps(
+                    {
+                        "config_id": config_id,
+                        "unix": now,
+                        "utc": utc_now(),
+                        "pid": os.getpid(),
+                    },
+                    indent=2,
+                    sort_keys=True,
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+            return
+        time.sleep(poll_s)
+
+
+def append_config_ledger(
+    *,
+    run_tag: str,
+    config_id: str,
+    platform: str,
+    actual_usd: float,
+    job_id: str,
+    note: str,
+    root: Path | None = None,
+    gpu: str = "none",
+) -> None:
+    root = root or repo_root()
+    # Prefer Volume-visible path under runs/ for cross-app reads.
+    path = root / "runs" / run_tag / "budget" / f"ledger_{run_tag}_{config_id}.jsonl"
+    assert_not_canary_write(path, root=root)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    row = {
+        "timestamp_utc": utc_now(),
+        "job_id": job_id,
+        "phase": "7b",
+        "platform": platform,
+        "gpu": gpu,
+        "actual_usd": actual_usd,
+        "config_id": config_id,
+        "note": note,
+    }
+    with path.open("a", encoding="utf-8") as fh:
+        fh.write(json.dumps(row, sort_keys=True) + "\n")
+
+
+def parse_tripwire_stats(
+    run_tag: str, config_id: str, *, root: Path | None = None, after_round: int = 3
+) -> dict[str, Any]:
+    """After FORCED round ``after_round``, compute parse rate and censor frac."""
+    root = root or repo_root()
+    base = root / "runs" / run_tag / config_id / "FORCED"
+    n_chains = n_censored = n_ok = n_fail = 0
+    failed_samples: list[dict[str, Any]] = []
+    if not base.exists():
+        return {"ok": True, "n_chains": 0}
+    for chain_dir in sorted(p for p in base.rglob("chain_*") if p.is_dir()):
+        n_chains += 1
+        meta_path = chain_dir / "meta.json"
+        meta = json.loads(meta_path.read_text(encoding="utf-8")) if meta_path.exists() else {}
+        cens = meta.get("censored_at_round")
+        if cens is not None and int(cens) <= after_round:
+            n_censored += 1
+        rp = chain_dir / "rounds.jsonl"
+        if not rp.exists():
+            continue
+        for line in rp.read_text(encoding="utf-8").splitlines():
+            if not line.strip():
+                continue
+            row = json.loads(line)
+            if int(row.get("round", -1)) > after_round:
+                continue
+            if row.get("parse_status") == "ok":
+                n_ok += 1
+            else:
+                n_fail += 1
+                if len(failed_samples) < 10:
+                    failed_samples.append(
+                        {
+                            "chain": chain_dir.name,
+                            "round": row.get("round"),
+                            "finish_reason": row.get("finish_reason"),
+                            "parse_error": row.get("parse_error"),
+                            "text_final": (row.get("text_final") or "")[:2000],
+                        }
+                    )
+    parse_rate = n_ok / max(n_ok + n_fail, 1)
+    censor_frac = n_censored / max(n_chains, 1)
+    trip = parse_rate < 0.90 or censor_frac > 0.10
+    return {
+        "ok": not trip,
+        "trip": trip,
+        "parse_rate": parse_rate,
+        "censor_frac": censor_frac,
+        "n_chains": n_chains,
+        "n_censored": n_censored,
+        "failed_samples": failed_samples,
+    }
+
+
+def is_stale_status(
+    payload: dict[str, Any], *, now: datetime | None = None, stale_hours: float = 2.0
+) -> bool:
+    """D63: STALE if no update >2h and not in a known waiting state."""
+    state = str(payload.get("state") or "")
+    waiting = {
+        "api_wait",
+        "mimo_wait",
+        "api_budget_hold",
+        "budget_hold",
+        "parse_hold",
+        "running",
+    }
+    # Batch in_progress within D60 window is not stale.
+    batch_state = str((payload.get("batch_state") or payload.get("batch_status") or ""))
+    if batch_state in {"in_progress", "validating", "finalizing", "cancelling"}:
+        return False
+    if state in {"done", "failed", "canary_fail", "budget_stop"}:
+        return False
+    if state in waiting and state != "running":
+        return False
+    last = payload.get("last_update_utc")
+    if not last:
+        return True
+    try:
+        ts = datetime.strptime(str(last), "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc)
+    except ValueError:
+        return True
+    now = now or datetime.now(timezone.utc)
+    return (now - ts).total_seconds() > stale_hours * 3600

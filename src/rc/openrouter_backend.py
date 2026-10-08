@@ -134,7 +134,8 @@ class OpenRouterBackend:
                 last_err: Exception | None = None
                 raw: dict[str, Any] | None = None
                 latency = 0.0
-                for attempt in range(3):
+                # D63: exponential backoff on 429 / 5xx (keep Xiaomi pinned; no provider fallback).
+                for attempt in range(8):
                     try:
                         http_resp = httpx.post(
                             "https://openrouter.ai/api/v1/chat/completions",
@@ -148,15 +149,21 @@ class OpenRouterBackend:
                             timeout=httpx.Timeout(60.0, connect=20.0),
                         )
                         latency = time.perf_counter() - started
-                        if http_resp.status_code >= 400:
+                        code = http_resp.status_code
+                        if code in {429} or code >= 500:
                             raise RuntimeError(
-                                f"OpenRouter HTTP {http_resp.status_code}: {http_resp.text[:500]}"
+                                f"OpenRouter HTTP {code}: {http_resp.text[:500]}"
+                            )
+                        if code >= 400:
+                            raise RuntimeError(
+                                f"OpenRouter HTTP {code}: {http_resp.text[:500]}"
                             )
                         raw = http_resp.json()
                         break
                     except Exception as exc:  # noqa: BLE001
                         last_err = exc
-                        time.sleep(1.5 * (attempt + 1))
+                        # 2^attempt seconds, capped at 120s
+                        time.sleep(min(120.0, 2.0**attempt))
                 if raw is None:
                     raise RuntimeError(f"OpenRouter failed after retries: {last_err}")
                 choices = raw.get("choices") or []

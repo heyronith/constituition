@@ -111,8 +111,13 @@ def code_gpt54(
     run_tag: str,
     root: Path,
     job_id: str,
+    coding_subdir: str | None = None,
 ) -> tuple[list[dict[str, Any]], dict[str, Any]]:
-    work_dir = root / "runs" / run_tag / "coding" / "gpt54_batch"
+    # D63: per-config coding dirs when coding_subdir set (concurrent 7B apps).
+    coding_root = root / "runs" / run_tag / "coding"
+    if coding_subdir:
+        coding_root = coding_root / coding_subdir
+    work_dir = coding_root / "gpt54_batch"
     work_dir.mkdir(parents=True, exist_ok=True)
     transitions = _dedupe_by_transition_id(transitions)
     # judge_fate_batch expects source tagging
@@ -120,7 +125,7 @@ def code_gpt54(
         t.setdefault("source", "pilot")
         t.setdefault("rewrite", t.get("revised") or t.get("rewrite"))
 
-    out = root / "runs" / run_tag / "coding" / "gpt54.jsonl"
+    out = coding_root / "gpt54.jsonl"
     existing = _load_existing_gpt54(out)
     # Never resubmit a key that already has a valid result (D60).
     if existing:
@@ -160,15 +165,28 @@ def code_gpt54(
         seed_base=20261004,
     )
     cost = backend.last_cost
+
+    def _jsonable(v: Any) -> Any:
+        if v is None or isinstance(v, (str, int, float, bool)):
+            return v
+        if isinstance(v, (list, dict)):
+            return v
+        # Avoid MagicMock / SDK objects in meta JSON.
+        try:
+            json.dumps(v)
+            return v
+        except TypeError:
+            return str(v)
+
     meta = {
         "n": len(rows),
-        "api_usd": getattr(cost, "usd", None),
-        "batch_id": getattr(cost, "batch_id", None) or resume_id,
+        "api_usd": _jsonable(getattr(cost, "usd", None)),
+        "batch_id": _jsonable(getattr(cost, "batch_id", None) or resume_id),
         "job_id": job_id,
-        "n_batch": getattr(cost, "n_batch", None),
-        "n_sync": getattr(cost, "n_sync", None),
-        "batch_usd": getattr(cost, "batch_usd", None),
-        "sync_usd": getattr(cost, "sync_usd", None),
+        "n_batch": _jsonable(getattr(cost, "n_batch", None)),
+        "n_sync": _jsonable(getattr(cost, "n_sync", None)),
+        "batch_usd": _jsonable(getattr(cost, "batch_usd", None)),
+        "sync_usd": _jsonable(getattr(cost, "sync_usd", None)),
         "resumed_batch": bool(resume_id) and not getattr(backend, "_created_new_batch", True),
     }
     out.parent.mkdir(parents=True, exist_ok=True)
@@ -188,6 +206,7 @@ def code_mimo_subsample(
     root: Path,
     job_id: str,
     config_id: str | None = None,
+    coding_subdir: str | None = None,
 ) -> tuple[list[dict[str, Any]], dict[str, Any], int]:
     selected = load_mimo_slot_ids(root)
     if config_id:
@@ -208,7 +227,10 @@ def code_mimo_subsample(
     for t in subset:
         t.setdefault("source", "pilot")
         t.setdefault("rewrite", t.get("revised") or t.get("rewrite"))
-    work_dir = root / "runs" / run_tag / "coding" / "mimo_batch"
+    coding_root = root / "runs" / run_tag / "coding"
+    if coding_subdir:
+        coding_root = coding_root / coding_subdir
+    work_dir = coding_root / "mimo_batch"
     backend = OpenRouterBackend(
         "mimo_v26_pro", work_dir=work_dir, root=root, job_id=job_id
     )
@@ -227,7 +249,7 @@ def code_mimo_subsample(
         "api_usd": getattr(backend.last_cost, "usd", None),
         "job_id": job_id,
     }
-    out = root / "runs" / run_tag / "coding" / "mimo.jsonl"
+    out = coding_root / "mimo.jsonl"
     out.parent.mkdir(parents=True, exist_ok=True)
     with out.open("w", encoding="utf-8") as fh:
         for r in rows:

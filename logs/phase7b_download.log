@@ -1,0 +1,104 @@
+✓ Initialized. View run at 
+https://modal.com/apps/heyronith/main/ap-yzG51W5uEReWheIMRXSIVj
+✓ Created objects.
+├── ✓ Uploaded /Users/ronny/Desktop/Research/AI Alignment 
+│   Projects_Claude/Constituition/modal_apps/phase7b_main.py
+├── ✓ Uploaded pyproject.toml
+├── ✓ Uploaded /Users/ronny/Desktop/Research/AI Alignment 
+│   Projects_Claude/Constituition/configs
+├── ✓ Uploaded /Users/ronny/Desktop/Research/AI Alignment 
+│   Projects_Claude/Constituition/materials
+├── ✓ Uploaded /Users/ronny/Desktop/Research/AI Alignment 
+│   Projects_Claude/Constituition/src
+├── ✓ Created Function code_config.
+├── ✓ Created Function orchestrate_config.
+├── ✓ Created Function verify_precheck.
+├── ✓ Created Function download_weights.
+├── ✓ Created Function generate_l4.
+├── ✓ Created Function generate_l40s.
+└── ✓ Created Function generate_a100.
+
+[1AFetching 32 files:   0%|          | 0/32 [00:00<?, ?it/s]
+[1AFetching 32 files:   3%|▎         | 1/32 [00:00<00:03,  9.57it/s]
+[1AFetching 32 files:  22%|██▏       | 7/32 [00:00<00:00, 29.67it/s]
+[1AFetching 32 files:  28%|██▊       | 9/32 [00:20<00:00, 29.67it/s]
+[1AFetching 32 files:  31%|███▏      | 10/32 [00:31<01:29,  4.08s/it]
+[1AFetching 32 files:  34%|███▍      | 11/32 [00:32<01:15,  3.58s/it]
+[1AFetching 32 files:  41%|████      | 13/32 [00:49<01:37,  5.12s/it]
+[1AFetching 32 files:  44%|████▍     | 14/32 [00:58<01:45,  5.85s/it]
+[1AFetching 32 files:  47%|████▋     | 15/32 [00:59<01:23,  4.88s/it]
+[1AFetching 32 files:  50%|█████     | 16/32 [01:06<01:23,  5.19s/it]
+[1AFetching 32 files:  53%|█████▎    | 17/32 [01:16<01:37,  6.50s/it]
+[1AFetching 32 files:  56%|█████▋    | 18/32 [01:18<01:14,  5.32s/it]
+[1AFetching 32 files:  59%|█████▉    | 19/32 [01:26<01:17,  5.97s/it]
+[1AFetching 32 files:  62%|██████▎   | 20/32 [01:37<01:28,  7.38s/it]
+[1AFetching 32 files:  66%|██████▌   | 21/32 [01:37<00:58,  5.32s/it]
+[1AFetching 32 files:  69%|██████▉   | 22/32 [01:42<00:53,  5.36s/it]
+[1AFetching 32 files:  72%|███████▏  | 23/32 [01:43<00:36,  4.04s/it]
+[1AFetching 32 files:  78%|███████▊  | 25/32 [01:51<00:27,  3.93s/it]
+[1AFetching 32 files:  88%|████████▊ | 28/32 [01:57<00:12,  3.03s/it]
+[1AFetching 32 files:  91%|█████████ | 29/32 [02:08<00:13,  4.59s/it]
+[1AFetching 32 files:  94%|█████████▍| 30/32 [02:11<00:08,  4.11s/it]
+[1AFetching 32 files:  97%|█████████▋| 31/32 [02:12<00:03,  3.51s/it]
+[1AFetching 32 files: 100%|██████████| 32/32 [02:12<00:00,  2.67s/it]
+[1AFetching 32 files: 100%|██████████| 32/32 [02:12<00:00,  4.15s/it]
+
+[1AFetching 32 files:   0%|          | 0/32 [00:00<?, ?it/s]
+[1AFetching 32 files: 100%|██████████| 32/32 [00:00<00:00, 1231.52it/s]
+
+[1AFetching 12 files:   0%|          | 0/12 [00:00<?, ?it/s]
+[1AFetching 12 files:  33%|███▎      | 4/12 [00:00<00:00, 37.19it/s]
+[1AFetching 12 files:  83%|████████▎ | 10/12 [00:03<00:00,  2.35it/s]
+[1AFetching 12 files:  83%|████████▎ | 10/12 [00:17<00:00,  2.35it/s]
+[1AFetching 12 files:  92%|█████████▏| 11/12 [00:40<00:05,  5.51s/it]
+[1AFetching 12 files: 100%|██████████| 12/12 [02:43<00:00, 25.10s/it]
+[1AFetching 12 files: 100%|██████████| 12/12 [02:43<00:00, 13.66s/it]
+
+[1AFetching 9 files:   0%|          | 0/9 [00:00<?, ?it/s]
+[1AFetching 9 files:  33%|███▎      | 3/9 [00:00<00:00, 26.54it/s]
+[1AFetching 9 files:  67%|██████▋   | 6/9 [00:00<00:00,  7.78it/s]
+[1AFetching 9 files:  89%|████████▉ | 8/9 [00:17<00:00,  7.78it/s]
+[1AFetching 9 files: 100%|██████████| 9/9 [01:00<00:00,  9.17s/it]
+[1AFetching 9 files: 100%|██████████| 9/9 [01:00<00:00,  6.72s/it]
+
+[1AFetching 16 files:   0%|          | 0/16 [00:00<?, ?it/s]
+[1AFetching 16 files:  12%|█▎        | 2/16 [00:00<00:00, 19.67it/s]
+[1AFetching 16 files:  62%|██████▎   | 10/16 [00:00<00:00, 45.44it/s]
+[1AFetching 16 files:  81%|████████▏ | 13/16 [00:17<00:00, 45.44it/s]
+[1AFetching 16 files:  88%|████████▊ | 14/16 [00:30<00:05,  2.90s/it]
+[1AFetching 16 files:  94%|█████████▍| 15/16 [00:32<00:02,  2.77s/it]
+[1AFetching 16 files: 100%|██████████| 16/16 [00:33<00:00,  2.08s/it]
+
+[1AFetching 19 files:   0%|          | 0/19 [00:00<?, ?it/s]
+[1AFetching 19 files:  11%|█         | 2/19 [00:00<00:00, 17.64it/s]
+[1AFetching 19 files:  47%|████▋     | 9/19 [00:00<00:00, 45.56it/s]
+[1AFetching 19 files:  68%|██████▊   | 13/19 [00:13<00:00, 45.56it/s]
+[1AFetching 19 files:  74%|███████▎  | 14/19 [00:32<00:15,  3.02s/it]
+[1AFetching 19 files:  79%|███████▉  | 15/19 [00:46<00:16,  4.22s/it]
+[1AFetching 19 files:  84%|████████▍ | 16/19 [00:51<00:13,  4.36s/it]
+[1AFetching 19 files:  84%|████████▍ | 16/19 [01:03<00:13,  4.36s/it]
+[1AFetching 19 files:  89%|████████▉ | 17/19 [01:06<00:12,  6.09s/it]
+[1AFetching 19 files:  95%|█████████▍| 18/19 [01:08<00:05,  5.30s/it]
+[1AFetching 19 files: 100%|██████████| 19/19 [01:09<00:00,  3.66s/it]
+
+[1AFetching 13 files:   0%|          | 0/13 [00:00<?, ?it/s]
+[1AFetching 13 files:   8%|▊         | 1/13 [00:00<00:01,  9.88it/s]
+[1AFetching 13 files:  69%|██████▉   | 9/13 [00:00<00:00, 39.39it/s]
+{'qwen38_27b_nothink': {'repo': 'Qwen/Qwen3.8-27B', 'revision': 
+'1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0'}, 'qwen38_27b_think': {'repo': 
+'Qwen/Qwen3.8-27B', 'revision': '1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0'}, 
+'gemma4_31b': {'repo': 'google/gemma-4-31B-it', 'revision': 
+'842da3794eaa0b77d5f08bae87a17459d91ff475'}, 'gemma4_12b': {'repo': 
+'google/gemma-4-12B-it', 'revision': 
+'707f0a3b8a3c7ad586ed01e27eafbad8a27dd0f7'}, 'olmo3_7b_sft': {'repo': 
+'allenai/Olmo-3-7B-Instruct-SFT', 'revision': 
+'e1452fc572d51966ff4aaeb25118b891eb93e549'}, 'olmo3_7b_dpo': {'repo': 
+'allenai/Olmo-3-7B-Instruct-DPO', 'revision': 
+'b33130b7de49f0c2553b5c2b3bc8409ff3e627d1'}, 'qwen35_08b_smoke': {'repo': 
+'Qwen/Qwen3.5-0.8B', 'revision': '2fc06364715b967f1860aea9cf38778875588b17'}}
+[1AFetching 13 files: 100%|██████████| 13/13 [00:03<00:00,  2.76it/s]
+[1AFetching 13 files: 100%|██████████| 13/13 [00:03<00:00,  3.47it/s]
+Stopping app - local entrypoint completed.
+[modal-client] 2026-10-07T23:33:44-0500 Timed out waiting for final app logs.
+✓ App completed. View run at 
+https://modal.com/apps/heyronith/main/ap-yzG51W5uEReWheIMRXSIVj

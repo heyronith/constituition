@@ -6,10 +6,10 @@ phase3_hard_cap_usd: 19
 # Phase 4F: cumulative Modal cap $32 (was $27); API (OpenAI Batch) hard cap $15.
 phase4_hard_cap_usd: 32
 # D51: Modal gross hard cap $130 (human OOP ≤ $100 after $30/mo free credit).
-# API cumulative $40 (OpenAI ≤ $35, OpenRouter ≤ $5).
-api_hard_cap_usd: 40
-openai_hard_cap_usd: 35
-openrouter_hard_cap_usd: 5
+# D62: API caps human-approved 2026-10-07 — total $52 / OpenAI ≤$49 / OpenRouter ≤$3.
+api_hard_cap_usd: 52
+openai_hard_cap_usd: 49
+openrouter_hard_cap_usd: 3
 phase5_modal_cap_usd: 4
 phase5_api_cap_usd: 2
 colab_cu_cap: 100
