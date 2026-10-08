@@ -227,3 +227,55 @@ All other failures in the refreshed taxonomy are **model_behaviour** (dominated 
 | Modal (ledger ~$25.7 + resume/coding GPUs) | in progress | 130 |
 
 No 7D.
+
+## Quota top-up check (2026-10-08)
+
+OpenAI credit hit $0 earlier; human topped up. D55 blinding held. No 7D.
+
+### STATUS (one shot)
+
+| config | stage | state | Batch ID / state | notes |
+|--------|-------|-------|------------------|-------|
+| olmo3_7b_final | orchestrate | failed | — | Canary D61 `FileNotFoundError` missing pilot `gpt54_meta.json` (not quota; read-only) |
+| qwen38_27b_nothink | coding | running | `batch_6ac7a8dd825c81909c44990e84430662` completed (3047/3047, 0 failed) | GPT-5.4 done; MiMo in progress — not touched |
+| qwen38_27b_think | generate | running | — | PERMISSIVE 9/10 (~$3.81) — not touched |
+| gemma4_31b | coding | **api_budget_hold** → relaunched **running** | no Batch ID (create failed) | see hold error + relaunch below |
+| gemma4_12b | generate | running | — | PERMISSIVE 4/10 (~$1.02) — not touched |
+| olmo3_7b_sft | done | done | `batch_6ac7550365108190b7ffbe46f9133329` done | — |
+| olmo3_7b_dpo | done | done | `batch_6ac75501e58c8190bdd166ad4ad0d0d6` done | — |
+
+**Hold error body** (`gemma4_31b` @ 2026-10-08T14:39:28Z):
+
+```
+Error code: 400 - {'error': {'message': 'Billing hard limit has been reached', 'type': 'invalid_request_error', 'param': None, 'code': 'billing_hard_limit_reached'}}
+```
+
+No `api_wait` states. Artifacts: `results/phase7b_quota_check_detail.json`, `results/phase7b_gemma4_31b_hold_error.json`.
+
+### Batch error-file audit (submitted ≥ 2026-10-08T05:30Z)
+
+| config | batch_id | error-file rows | error codes | judgments contaminated |
+|--------|----------|----------------:|-------------|------------------------|
+| olmo3_7b_dpo | `batch_6ac75501e58c…` | 0 | — | 0 |
+| olmo3_7b_sft | `batch_6ac755036510…` | 0 | — | 0 |
+| qwen38_27b_nothink | `batch_6ac7a8dd825c…` | 0 | — | 0 |
+| gemma4_31b | *(none — create failed)* | 0 | — | 0 (no judgments) |
+
+`error_code_totals`: `{}`. D61: no error-file rows stored as judgments. Errored/missing keys (gemma4_31b: all keys still missing) re-coded via D60 sync path on code-only resume (byte-identical input bodies + integrity gates). Artifact: `results/phase7b_batch_error_audit.json`.
+
+### Classification: `insufficient_quota` + HTTP 429 → billing
+
+`classify_openai_batch_error` checks billing markers (incl. `insufficient_quota`) **before** rate-limit / bare-429 → `rate_limit`. 429 + quota wording → `billing` → `api_budget_hold`. Test: `test_classify_insufficient_quota_429_is_billing_not_rate_limit` (PASS). Observed hold was `billing_hard_limit_reached` (400), also classified billing.
+
+### Relaunch (code-only)
+
+| | |
+|--|--|
+| config | `gemma4_31b` |
+| mode | `code_only` resume (no regeneration; reuse recorded inputs; code missing keys) |
+| app_id | `ap-KI7qTFhyttGyaWjwlLToXA` |
+| object_id | `fc-01M4E0TBVKXFA27Y4YBA7G4F72` |
+| launch_utc | 2026-10-08T15:06:38Z |
+| prior_error | `billing_hard_limit_reached` |
+
+Entrypoint: `--code-only` wired on `modal_apps/phase7b_main.py`. Post-relaunch STATUS: `gemma4_31b` coding/running. Other progressing apps left alone. Artifact: `results/phase7b_gemma4_31b_code_resume.json`.

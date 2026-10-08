@@ -1,0 +1,72 @@
+{
+  "cutoff": "2026-10-08T05:30:00+00:00",
+  "batches": [
+    {
+      "config": "gemma4_31b",
+      "batch_id": null,
+      "batch_status": null,
+      "submitted_utc": "2026-10-08T15:04:42.121718+00:00",
+      "n_error_rows": 0,
+      "error_codes": {},
+      "n_input": 3094,
+      "n_valid_judgments": 0,
+      "contaminated_custom_ids": [],
+      "n_contaminated": 0,
+      "has_errors_jsonl": false,
+      "errors_index": null
+    },
+    {
+      "config": "olmo3_7b_dpo",
+      "batch_id": "batch_6ac75501e58c8190bdd166ad4ad0d0d6",
+      "batch_status": "completed",
+      "submitted_utc": "2026-10-08T08:32:02.352010+00:00",
+      "n_error_rows": 0,
+      "error_codes": {},
+      "n_input": 3057,
+      "n_valid_judgments": 7670,
+      "contaminated_custom_ids": [],
+      "n_contaminated": 0,
+      "has_errors_jsonl": false,
+      "errors_index": {
+        "n": 0,
+        "custom_ids": []
+      }
+    },
+    {
+      "config": "olmo3_7b_sft",
+      "batch_id": "batch_6ac7550365108190b7ffbe46f9133329",
+      "batch_status": "completed",
+      "submitted_utc": "2026-10-08T08:32:03.577156+00:00",
+      "n_error_rows": 0,
+      "error_codes": {},
+      "n_input": 2625,
+      "n_valid_judgments": 6544,
+      "contaminated_custom_ids": [],
+      "n_contaminated": 0,
+      "has_errors_jsonl": false,
+      "errors_index": {
+        "n": 0,
+        "custom_ids": []
+      }
+    },
+    {
+      "config": "qwen38_27b_nothink",
+      "batch_id": "batch_6ac7a8dd825c81909c44990e84430662",
+      "batch_status": "completed",
+      "submitted_utc": "2026-10-08T14:29:50.042754+00:00",
+      "n_error_rows": 0,
+      "error_codes": {},
+      "n_input": 3047,
+      "n_valid_judgments": 7804,
+      "contaminated_custom_ids": [],
+      "n_contaminated": 0,
+      "has_errors_jsonl": false,
+      "errors_index": {
+        "n": 0,
+        "custom_ids": []
+      }
+    }
+  ],
+  "error_code_totals": {},
+  "d61_note": "error-file rows must not be stored as judgments; n_contaminated must be 0"
+}

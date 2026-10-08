@@ -1100,6 +1100,7 @@ def main(
     config_id: str = "olmo3_7b_sft",
     stage_cap_usd: float = 15.0,
     detach: bool = True,
+    code_only: bool = False,
 ) -> None:
     from rc.budget import preflight, spent_modal_usd
     from rc.config import repo_root
@@ -1220,13 +1221,18 @@ def main(
             gpu,
             stage_cap_usd,
             git_sha_value=sha,
+            code_only=code_only,
         )
-        print(f"ORCHESTRATE config={config_id} gpu={gpu} object_id={call.object_id}")
+        print(
+            f"ORCHESTRATE config={config_id} gpu={gpu} code_only={code_only} "
+            f"object_id={call.object_id}"
+        )
     else:
         result = orchestrate_config.remote(
             config_id,
             gpu,
             stage_cap_usd,
             git_sha_value=sha,
+            code_only=code_only,
         )
         print(json.dumps(result, indent=2, sort_keys=True, default=str))

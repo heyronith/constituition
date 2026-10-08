@@ -67,6 +67,21 @@ def test_classify_openai_errors() -> None:
     assert classify_openai_batch_error("invalid schema") == "other"
 
 
+def test_classify_insufficient_quota_429_is_billing_not_rate_limit() -> None:
+    """OpenAI uses HTTP 429 for insufficient_quota — must api_budget_hold, not retry."""
+    msg = (
+        "Error code: 429 - {'error': {'message': 'You exceeded your current quota', "
+        "'type': 'insufficient_quota', 'param': None, 'code': 'insufficient_quota'}}"
+    )
+    assert classify_openai_batch_error(msg) == "billing"
+    assert (
+        classify_openai_batch_error(
+            "Error code: 400 - {'error': {'code': 'billing_hard_limit_reached'}}"
+        )
+        == "billing"
+    )
+
+
 def test_stale_flag() -> None:
     old = (datetime.now(timezone.utc) - timedelta(hours=3)).strftime("%Y-%m-%dT%H:%M:%SZ")
     assert is_stale_status({"state": "running", "last_update_utc": old}) is True

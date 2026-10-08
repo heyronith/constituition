@@ -1,0 +1,196 @@
+{
+  "pulled_utc": "2026-10-08T15:08:46Z",
+  "configs": [
+    {
+      "config_id": "olmo3_7b_final",
+      "stage": "orchestrate",
+      "state": "failed",
+      "error": "FileNotFoundError: [Errno 2] No such file or directory: '/rc/runs/pilot_v1_coding_v3/coding_v3/gpt54_meta.json'",
+      "batch_ids": null,
+      "batch_state": null,
+      "batch_meta": null,
+      "last_update_utc": "2026-10-08T03:39:40Z",
+      "rounds_completed": null,
+      "rounds_total": null,
+      "usd_so_far": null,
+      "full_status_keys": [
+        "error",
+        "last_update_utc",
+        "run_tag",
+        "stage",
+        "state",
+        "traceback"
+      ]
+    },
+    {
+      "config_id": "qwen38_27b_nothink",
+      "stage": "coding",
+      "state": "running",
+      "error": null,
+      "batch_ids": null,
+      "batch_state": null,
+      "batch_meta": {
+        "batch_id": "batch_6ac7a8dd825c81909c44990e84430662",
+        "status": "completed",
+        "n_requests": 3047,
+        "request_counts": {
+          "completed": 3047,
+          "failed": 0,
+          "total": 3047
+        },
+        "submitted_at_unix": 1791469790.042754
+      },
+      "last_update_utc": "2026-10-08T14:25:53Z",
+      "rounds_completed": null,
+      "rounds_total": null,
+      "usd_so_far": null,
+      "full_status_keys": [
+        "config_id",
+        "last_update_utc",
+        "run_tag",
+        "stage",
+        "state"
+      ]
+    },
+    {
+      "config_id": "qwen38_27b_think",
+      "stage": "generate",
+      "state": "running",
+      "error": null,
+      "batch_ids": null,
+      "batch_state": null,
+      "batch_meta": null,
+      "last_update_utc": "2026-10-08T15:05:22Z",
+      "rounds_completed": 9,
+      "rounds_total": 10,
+      "usd_so_far": 3.8102961599999996,
+      "full_status_keys": [
+        "config_id",
+        "last_update_utc",
+        "protocol",
+        "rounds_completed",
+        "rounds_total",
+        "run_tag",
+        "stage",
+        "state",
+        "usd_so_far"
+      ]
+    },
+    {
+      "config_id": "gemma4_31b",
+      "stage": "coding",
+      "state": "running",
+      "error": null,
+      "batch_ids": null,
+      "batch_state": null,
+      "batch_meta": null,
+      "last_update_utc": "2026-10-08T15:06:36Z",
+      "rounds_completed": null,
+      "rounds_total": null,
+      "usd_so_far": null,
+      "full_status_keys": [
+        "config_id",
+        "last_update_utc",
+        "run_tag",
+        "stage",
+        "state"
+      ]
+    },
+    {
+      "config_id": "gemma4_12b",
+      "stage": "generate",
+      "state": "running",
+      "error": null,
+      "batch_ids": null,
+      "batch_state": null,
+      "batch_meta": null,
+      "last_update_utc": "2026-10-08T15:04:17Z",
+      "rounds_completed": 4,
+      "rounds_total": 10,
+      "usd_so_far": 1.01858064,
+      "full_status_keys": [
+        "config_id",
+        "last_update_utc",
+        "protocol",
+        "rounds_completed",
+        "rounds_total",
+        "run_tag",
+        "stage",
+        "state",
+        "usd_so_far"
+      ]
+    },
+    {
+      "config_id": "olmo3_7b_sft",
+      "stage": "done",
+      "state": "done",
+      "error": null,
+      "batch_ids": {
+        "gpt54": "batch_6ac7550365108190b7ffbe46f9133329"
+      },
+      "batch_state": "done",
+      "batch_meta": {
+        "batch_id": "batch_6ac7550365108190b7ffbe46f9133329",
+        "status": "completed",
+        "n_requests": 2625,
+        "request_counts": {
+          "completed": 2625,
+          "failed": 0,
+          "total": 2625
+        },
+        "submitted_at_unix": 1791448323.5771558
+      },
+      "last_update_utc": "2026-10-08T14:26:34Z",
+      "rounds_completed": null,
+      "rounds_total": null,
+      "usd_so_far": null,
+      "full_status_keys": [
+        "batch_ids",
+        "batch_state",
+        "checks_pass",
+        "config_id",
+        "d65",
+        "last_update_utc",
+        "run_tag",
+        "stage",
+        "state"
+      ]
+    },
+    {
+      "config_id": "olmo3_7b_dpo",
+      "stage": "done",
+      "state": "done",
+      "error": null,
+      "batch_ids": {
+        "gpt54": "batch_6ac75501e58c8190bdd166ad4ad0d0d6"
+      },
+      "batch_state": "done",
+      "batch_meta": {
+        "batch_id": "batch_6ac75501e58c8190bdd166ad4ad0d0d6",
+        "status": "completed",
+        "n_requests": 3057,
+        "request_counts": {
+          "completed": 3057,
+          "failed": 0,
+          "total": 3057
+        },
+        "submitted_at_unix": 1791448322.3520098
+      },
+      "last_update_utc": "2026-10-08T14:26:36Z",
+      "rounds_completed": null,
+      "rounds_total": null,
+      "usd_so_far": null,
+      "full_status_keys": [
+        "batch_ids",
+        "batch_state",
+        "checks_pass",
+        "config_id",
+        "d65",
+        "last_update_utc",
+        "run_tag",
+        "stage",
+        "state"
+      ]
+    }
+  ]
+}

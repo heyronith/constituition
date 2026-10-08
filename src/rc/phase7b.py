@@ -121,16 +121,27 @@ def verify_canary_snapshot(
 
 
 def classify_openai_batch_error(exc_or_text: Any) -> BatchErrorKind:
+    """Classify OpenAI Batch/create failures for D63 resume.
+
+    OpenAI returns HTTP 429 for ``insufficient_quota``; that must be **billing**
+    (api_budget_hold), never a rate-limit retry loop.
+    """
     text = str(exc_or_text).lower()
-    if any(
-        s in text
-        for s in (
-            "billing",
-            "spending limit",
-            "insufficient_quota",
-            "payment",
-            "exceeded your current quota",
-        )
+    billing_markers = (
+        "billing",
+        "spending limit",
+        "billing_hard_limit",
+        "hard limit has been reached",
+        "insufficient_quota",
+        "payment",
+        "exceeded your current quota",
+        "exceeded your quota",
+    )
+    if any(s in text for s in billing_markers):
+        return "billing"
+    # 429 + quota/billing wording → billing (OpenAI quota exhaustion).
+    if "429" in text and any(
+        s in text for s in ("quota", "billing", "payment", "hard limit")
     ):
         return "billing"
     if any(
@@ -141,11 +152,13 @@ def classify_openai_batch_error(exc_or_text: Any) -> BatchErrorKind:
             "enqueued",
             "token limit",
             "tokens_enqueued",
-            "429",
             "too many requests",
             "capacity",
         )
     ):
+        return "rate_limit"
+    # Bare 429 without quota markers → rate limit / capacity.
+    if "429" in text:
         return "rate_limit"
     return "other"
 

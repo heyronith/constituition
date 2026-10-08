@@ -1,0 +1,9 @@
+{
+  "config_id": "gemma4_31b",
+  "mode": "code_only_after_api_budget_hold",
+  "app_id": "ap-KI7qTFhyttGyaWjwlLToXA",
+  "object_id": "fc-01M4E0TBVKXFA27Y4YBA7G4F72",
+  "launch_utc": "2026-10-08T15:06:38Z",
+  "returncode": 0,
+  "prior_error": "billing_hard_limit_reached"
+}

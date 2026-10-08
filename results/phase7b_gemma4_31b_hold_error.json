@@ -1,0 +1,8 @@
+{
+  "config_id": "gemma4_31b",
+  "state_at_hold": "api_budget_hold",
+  "stage": "coding",
+  "last_update_utc": "2026-10-08T14:39:28Z",
+  "error": "Error code: 400 - {'error': {'message': 'Billing hard limit has been reached', 'type': 'invalid_request_error', 'param': None, 'code': 'billing_hard_limit_reached'}}",
+  "note": "Batch create failed before submission; only input.jsonl on Volume (no batch_id). Classified billing \u2192 api_budget_hold."
+}

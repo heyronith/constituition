@@ -1,0 +1,117 @@
+{
+  "configs": [
+    {
+      "batch_ids": null,
+      "batch_state": null,
+      "censored_chains": null,
+      "config_id": "olmo3_7b_final",
+      "last_update_utc": "2026-10-08T03:39:40Z",
+      "parse_failures": null,
+      "rounds_completed": null,
+      "rounds_total": null,
+      "stage": "orchestrate",
+      "stale": false,
+      "state": "failed",
+      "usd_so_far": null
+    },
+    {
+      "batch_ids": null,
+      "batch_state": null,
+      "censored_chains": null,
+      "config_id": "qwen38_27b_nothink",
+      "last_update_utc": "2026-10-08T14:25:53Z",
+      "parse_failures": null,
+      "rounds_completed": null,
+      "rounds_total": null,
+      "stage": "coding",
+      "stale": false,
+      "state": "running",
+      "usd_so_far": null
+    },
+    {
+      "batch_ids": null,
+      "batch_state": null,
+      "censored_chains": null,
+      "config_id": "qwen38_27b_think",
+      "last_update_utc": "2026-10-08T14:58:23Z",
+      "parse_failures": null,
+      "rounds_completed": 8,
+      "rounds_total": 10,
+      "stage": "generate",
+      "stale": false,
+      "state": "running",
+      "usd_so_far": 3.4826716799999997
+    },
+    {
+      "batch_ids": null,
+      "batch_state": null,
+      "censored_chains": null,
+      "config_id": "gemma4_31b",
+      "last_update_utc": "2026-10-08T14:39:28Z",
+      "parse_failures": null,
+      "rounds_completed": null,
+      "rounds_total": null,
+      "stage": "coding",
+      "stale": false,
+      "state": "api_budget_hold",
+      "usd_so_far": null
+    },
+    {
+      "batch_ids": null,
+      "batch_state": null,
+      "censored_chains": null,
+      "config_id": "gemma4_12b",
+      "last_update_utc": "2026-10-08T15:01:54Z",
+      "parse_failures": null,
+      "rounds_completed": 3,
+      "rounds_total": 10,
+      "stage": "generate",
+      "stale": false,
+      "state": "running",
+      "usd_so_far": 0.9291319999999998
+    },
+    {
+      "batch_ids": {
+        "gpt54": "batch_6ac7550365108190b7ffbe46f9133329"
+      },
+      "batch_state": "done",
+      "censored_chains": null,
+      "config_id": "olmo3_7b_sft",
+      "last_update_utc": "2026-10-08T14:26:34Z",
+      "parse_failures": null,
+      "rounds_completed": null,
+      "rounds_total": null,
+      "stage": "done",
+      "stale": false,
+      "state": "done",
+      "usd_so_far": null
+    },
+    {
+      "batch_ids": {
+        "gpt54": "batch_6ac75501e58c8190bdd166ad4ad0d0d6"
+      },
+      "batch_state": "done",
+      "censored_chains": null,
+      "config_id": "olmo3_7b_dpo",
+      "last_update_utc": "2026-10-08T14:26:36Z",
+      "parse_failures": null,
+      "rounds_completed": null,
+      "rounds_total": null,
+      "stage": "done",
+      "stale": false,
+      "state": "done",
+      "usd_so_far": null
+    }
+  ],
+  "run_tag": "main_v1"
+}
+
+config                 stage        state            rounds          usd batch        updated
+---------------------------------------------------------------------------------------------
+olmo3_7b_final         orchestrate  failed           None/None         - -            2026-10-08T03:39:40Z
+qwen38_27b_nothink     coding       running          None/None         - -            2026-10-08T14:25:53Z
+qwen38_27b_think       generate     running          8/10          3.483 -            2026-10-08T14:58:23Z
+gemma4_31b             coding       api_budget_hold  None/None         - -            2026-10-08T14:39:28Z
+gemma4_12b             generate     running          3/10          0.929 -            2026-10-08T15:01:54Z
+olmo3_7b_sft           done         done             None/None         - batch_6ac7   2026-10-08T14:26:34Z
+olmo3_7b_dpo           done         done             None/None         - batch_6ac7   2026-10-08T14:26:36Z
