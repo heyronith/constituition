@@ -1,19 +1,19 @@
-# PHASE 7A2 — D59 stop/replace repair, consistency, canary re-run
+# PHASE 7A2 — D59 stale-resume remedy, D60 Batch stragglers, D61 image refs
 
-**Status:** Session 2 (D60) — resume coding in flight.
+**Status:** Session 2 finalize complete (local). Canary coding done; **C6 fails** (API / OpenAI caps). No 7B.
 
-## §0 Stop
+## §0 Stop (D59 session 1)
 
 | Action | Result |
 |---|---|
-| Cancel Batch `batch_6ac697c82fb8819089a03dba6801da20` | `cancelling` → completed_before_cancel **2079/3141** |
+| Cancel Batch `batch_6ac697c82fb8819089a03dba6801da20` | completed_before_cancel **2079→2111/3141** |
 | Stop app `ap-FEWGpgsKsjlBlaRGXV9ahD` | stopped |
-| Ledger | `cancelled_stale_resume`; est **$1.797** OpenAI (2079 req) |
-| Judgments | moved to `runs/main_v1/invalid/d59_cancelled_batch/` |
+| Ledger | `cancelled_stale_resume` FINAL **$1.8247** OpenAI (2111 req) |
+| Judgments | `runs/main_v1/invalid/d59_cancelled_batch/` |
 
-## §1 Forensics
+## §1 Forensics (D59)
 
-See `results/d59_forensics.json` / `results/d59_forensics.md`.
+See `results/d59_forensics.json`.
 
 | Metric | Value |
 |---|---|
@@ -23,81 +23,131 @@ See `results/d59_forensics.json` / `results/d59_forensics.md`.
 | `t_stale` histogram | 10→39, 11→61, none→20 |
 | Unexplained mismatches | **0** |
 
-**Resume cause:** Modal `generate_config` container retry/preemption after ~10 FORCED lock-step rounds were Volume-committed. Pre-D58 off-by-one restored `constitution.round=t` instead of `t+1`, so prompts for `t_stale…` omitted the prior change. PERMISSIVE cells (started after FORCED in the same job, fresh `_init_unit`) stayed clean. Not a deliberate `modal app stop` (only SIGTERM at generate→coding handoff).
+**Resume cause:** Modal `generate_config` retry/preemption after ~10 FORCED rounds Volume-committed; pre-D58 off-by-one omitted prior change from prompts. PERMISSIVE clean.
 
 ## §2 D59 data handling
 
-- Restored pre-D58 `rounds.jsonl` (D58 rewrite archived under `_invalid_d59/d58_rewrite/`).
-- Archived stale suffixes for 100 chains → `_invalid_d59/stale_suffixes/`.
-- Rebuilt retained constitutions/lineage by replaying **only** non-stale ok rounds.
-- Deleted `repair_chain_lineage_from_rounds` / call sites; kept off-by-one fix (**D58**/**D59**).
-
-## §3 Prevention
-
-- Per-round `input_constitution_sha256` + `prompt_sha256`.
+- Archived stale suffixes → `_invalid_d59/stale_suffixes/`.
+- Regenerated from correct state; `input_constitution_sha256` + `prompt_sha256`.
 - `verify_chain_consistency` after generate and before coding.
-- Crash handler writes `STATUS=failed` + traceback on orchestrator exceptions.
-- Tests: `tests/test_d59_consistency.py` — **PASS** (interrupt/resume equivalence FORCED+PERMISSIVE, mid-retry, coding call-site).
-- L4 smoke `smoke_d59` (`ap-gG6E7TRXYuwq12mywqoC0s`): **PASS** — STATUS `done`, `checks_pass=true`, GPT Batch `batch_6ac69ed0b9788190b0e6f8b7bdfbbff3` (6/6).
+- D58 rewrite deleted; off-by-one fix kept.
+
+## §3 Prevention (D59) + smoke
+
+- Tests: `tests/test_d59_consistency.py` PASS.
+- L4 smoke `smoke_d59`: PASS.
 
 ## §4 PERMISSIVE censoring
 
-15/15 failed attempts: `parse_error=duplicate ID in principles`, `finish_reason=stop`.
+15/15 failed attempts: `parse_error=duplicate ID in principles`. **Model behaviour** (keep/revise **and** merge list same id). Censoring stands. Raw: `results/d59_permissive_fails.json`.
 
-**Cause: model behaviour.** Outputs list the same opaque id twice in `principles` (typically `keep`/`revise` **and** `merge` for the merge source). Schema/validation correctly rejects that. Not a harness/schema bug. Censoring stands per prereg. Raw outputs in `results/d59_permissive_fails.json`.
-
-## §5 Canary re-run (Session 1 launch)
+## §5 Canary re-run
 
 | Field | Value |
 |---|---|
-| Mode | `canary_d59` |
-| App | `ap-NhwIFsSE4YkMQMC1F2iAKq` |
-| Object | `fc-01M4C0SH5V8DB4RBQP5C9P2GVQ` |
-| Launch UTC | `2026-10-07T20:27:32Z` |
-| Caps | Modal **$4**; API residual after cancelled Batch |
-| First STATUS (~12 min) | `generate` / `running`; rounds **15/20** FORCED (regen past `t_stale`); usd_so_far≈$0.22 |
+| Mode | `canary_d59` then `canary_d59_resume` (D60) |
+| Gen+coding app (stuck) | `ap-NhwIFsSE4YkMQMC1F2iAKq` |
+| Resume app | `ap-keYNfLqFMpN41BUM7ZRElr` |
+| Crash | `_compute_canary_checks` → missing laptop-only pilot meta (**D61**) |
 
-## Costs (partial, session 1)
+### Local Volume pull + consistency (session 2)
+
+| Check | Result |
+|---|---|
+| Pull `main_v1/coding` + `olmo3_7b_final` | done → `runs/main_v1/` |
+| `verify_run_consistency` | **ok** — 120/120 chains, 0 failed |
+
+## §6 D60 — Batch straggler sync
+
+| Field | Value |
+|---|---|
+| Decision | **D60** |
+| Batch | `batch_6ac6b190dcdc819087c85c218e21bf8c` |
+| OpenAI final `request_counts` | completed **3138**, failed **0**, total **3148**, status **cancelled** |
+| output_file_id | `file-FhGCdgaMRJpSod61yBe2nx` |
+| error_file_id | `file-8mUtpEy8h5arEbsu9Es1K7` |
+
+### Provenance audit (3148 LLM judgments)
+
+| Source | n | batch_id |
+|---|---:|---|
+| `{job}_output.jsonl` | **3138** | `batch_6ac6b190dcdc819087c85c218e21bf8c` |
+| D60 sync re-code (error-file HTTP 500 stubs) | **10** | same batch (straggler path) |
+| D59-invalid `batch_6ac697c82fb8819089a03dba6801da20` | **0** | — |
+| `runs/main_v1/invalid/` | **0** | — |
+
+**Discrepancy:** Cost meta reported `n_batch=3138`, `n_sync=0`, but all 3148 rows were tagged `submit_mode=batch`. Root cause: error-file rows (10× HTTP 500, no completion body) were merged into `by_id` and treated as successes. Those keys were **discarded** and re-coded via D60 sync (byte-identical bodies from input.jsonl); `submit_mode=sync`, sync_usd **$0.030185**.
+
+Artifacts: `results/d60_provenance_audit.json`, `results/d60_provenance_by_key.jsonl` (+ gz under `results/main_v1_coding/`).
+
+Backend fix: error-file stubs are no longer counted as completions (sync stragglers).
+
+## §7 D61 — no laptop-only orchestrator inputs
+
+| Rule | Implementation |
+|---|---|
+| Refs in image | `materials/main_run/refs/pilot_gpt54_meta.json`, `g4_projection_n25.json` |
+| Preflight | `rc.canary_checks.assert_canary_inputs` at orchestrator/coding start |
+| Checks module | `rc.canary_checks.compute_canary_checks` |
+| Test | `tests/test_canary_checks_d61.py` (temp tree = image mounts only) |
+
+## §8 C1–C6 (local finalize)
+
+| Check | Pass | Detail |
+|---|---|---|
+| **C1** parse ≥98%; censor ≤5% | **PASS** | parse **0.9876**; censor **5/120 = 4.17%** |
+| C1 FORCED | — | parse 0.999; censor **0/100** |
+| C1 PERMISSIVE | — | parse 0.860; censor **5/20 = 25%** (model duplicate-ID; stands) |
+| **C2** Modal ≤1.2× G4/config | **PASS** | actual **$2.002** (Σ latency+load est.); proj/config **$8.661**; ratio **0.23** |
+| **C3** integrity; unparseable ≤1% | **PASS** | gpt54+mimo ok; prompt-hash 3148/3148; unparseable **0** after sync re-code |
+| **C4** $/tx ≤1.2× pilot | **PASS** | canary **$0.001518**/LLM-tx; pilot **$0.001458**; ratio **1.040**. Excludes D59 waste (**$1.825** reported separately) |
+| **C5** storage/manifest | **PASS** | 120 chains; no dup rounds; mimo slots missing **0** |
+| **C6** full-run forecast | **FAIL** | see §9 |
+
+`all_pass=false` → STATUS `canary_fail` (operational; no 7B).
+
+## §9 Costs
+
+### Modal
 
 | Item | USD |
-|---|---|
-| Cancelled Batch (wasted, FINAL) | ~**$1.82** OpenAI (2111/3141 completed) |
-| Ledger note | `cancelled_stale_resume` |
+|---|---:|
+| Ledger to date (incl. canary gen est.) | **25.685** |
+| Canary olmo-final gen (Σ round latency + 180s load, L4) | **2.002** |
+| G4 N=25 full generation (frozen ref) | 60.625 |
 
-## §6 D60 — Batch straggler sync (Session 2)
+### API (OpenAI / OpenRouter)
 
-| Field | Value |
-|---|---|
-| Decision | **D60** (see `docs/DECISIONS.md`) |
-| Stuck Batch | `batch_6ac6b190dcdc819087c85c218e21bf8c` |
-| Progress at cancel | **3113 / 3148** completed, 0 failed (~6 h no progress on last 35) |
-| Stopped app | `ap-NhwIFsSE4YkMQMC1F2iAKq` (already stopped) |
-| Resume mode | `canary_d59_resume` (skip generation; consistency → ingest → sync remainder → MiMo → gates → C1–C6) |
-| Rule | ≥95% + 60 min stall **or** 8 h wall → cancel → keep completed → sync remainder (byte-identical bodies) |
-| Provenance | `submit_mode` + `request_body_sha256` on every judgment |
-| Ledger | batch @ batch prices; sync @ standard with note `sync_straggler` |
-| Tests | `tests/test_openai_batch_d60.py` (stall→sync; resume no re-submit; body-hash equality) |
+| Item | USD | Note |
+|---|---:|---|
+| D59 wasted Batch (FINAL) | **1.825** | `batch_6ac697…` 2111/3141; excluded from C4 |
+| D60 canary Batch | **4.747** | 3138 completions @ batch prices |
+| D60 sync stragglers | **0.030** | 10× HTTP 500 re-code |
+| MiMo canary subsample | **0.049** | 500 slots |
+| **API ledger to date** | **6.878** | includes wasted |
 
-### Resume launch
+### C6 forecast (all spend to date counted)
 
-| Field | Value |
-|---|---|
-| Mode | `canary_d59_resume` (`code_only=True`) |
-| App | `ap-keYNfLqFMpN41BUM7ZRElr` |
-| Object | `fc-01M4CQ4FSAKZVC8X9B1HBWYCHQ` |
-| Launch UTC | `2026-10-08T02:58:00Z` |
-| Caps | Modal **$0.50** (CPU); API residual **~$3.95** |
-| First STATUS (~12 min) | `coding` / `running`; `batch_ids.gpt54=batch_6ac6b190…`; note `d60_resume_batch` |
-| Batch at STATUS check | still `cancelling`; completed **3138/3148** (was 3113); `output_file_id=None` — backend waits for terminal + output then syncs remainder |
+| Line item | USD |
+|---|---:|
+| Modal spent to date | 25.685 |
+| Modal gen remaining 6 configs (scaled) | 12.011 |
+| Modal H3 battery (G4 high) | 15.000 |
+| **Proj Modal total** | **52.696** ≤ $130 |
+| API spent to date (incl. waste) | 6.878 |
+| API coding remaining 6 configs | 27.017 |
+| API H3 StrongREJECT (7×120×30 × Phase5 $/req) | 12.643 |
+| **Proj API total** | **46.539** |
+| Proj OpenAI | **46.199** |
+| Proj OpenRouter | **0.340** |
 
-### Straggler / cost split (operational; finalize when coding completes)
+**C6 failure:** API overshoot **+$6.54** vs $40; OpenAI overshoot **+$11.20** vs $35. Drivers: remaining GPT-5.4 coding (~$27) and StrongREJECT-for-every-constitution (~$12.6). Modal fits. Caps unchanged; nothing dropped.
 
-| Metric | Value |
-|---|---|
-| n_batch (at cancel request) | 3113 |
-| n_batch (cancelling progress) | 3138 |
-| n_sync (expected remainder) | ≤35 (≤10 if 3138 hold) |
-| batch_usd | _(pending `gpt54_meta.json`)_ |
-| sync_usd | _(pending; ledger note `sync_straggler`)_ |
+## §10 Dual copy (D55)
 
-D55 blinding: operational metrics only in STATUS/logs (no category erosion / COR−AGENT). No 7B launch.
+- Volume → `runs/main_v1/` (gitignored).
+- Compressed operational summaries: `results/main_v1_coding/*.gz`, `results/d60_provenance_audit.json`, `results/phase7a2_finalize.json`.
+
+## Decisions
+
+D55–D61 in `docs/DECISIONS.md`. Analysis blinding held (operational metrics only).

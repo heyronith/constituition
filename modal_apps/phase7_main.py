@@ -79,6 +79,7 @@ cpu_image = (
     .add_local_dir("configs", remote_path=f"{REMOTE_REPO}/configs")
     .add_local_dir("materials", remote_path=f"{REMOTE_REPO}/materials")
     .add_local_file("pyproject.toml", remote_path=f"{REMOTE_REPO}/pyproject.toml")
+    # D61: materials/ includes main_run/refs (pilot G4 meta, subsample).
 )
 
 
@@ -503,6 +504,7 @@ def code_canary(
     root = _link_runs()
 
     from rc.budget import spent_api_usd
+    from rc.canary_checks import assert_canary_inputs
     from rc.main_run_coding import (
         code_gpt54,
         code_mimo_subsample,
@@ -512,6 +514,8 @@ def code_canary(
     from rc.judging import judge_fate_batch
     from rc.openrouter_backend import OpenRouterBackend
     from rc.phase7_status import write_status
+
+    assert_canary_inputs(root=root)
 
     write_status(
         Path(REMOTE_RUNS) / run_tag / "STATUS.json",
@@ -704,131 +708,29 @@ def _compute_canary_checks(
     api_spend: float,
     stage_api_cap_usd: float,
     n_mimo_missing: int,
+    modal_actual_usd: float | None = None,
+    exclude_api_usd_from_c4: float = 0.0,
 ) -> dict:
-    """C1–C6 operational checks (no hypothesis metrics)."""
+    """C1–C6 operational checks (no hypothesis metrics). Delegates to rc.canary_checks."""
     import sys
 
     sys.path.insert(0, f"{REMOTE_REPO}/src")
-    from rc.budget import estimate_modal_usd, spent_modal_usd
-    from rc.d49_power_g4 import project_g4_d49
-    from rc.io_utils import sha256_file
+    from rc.canary_checks import compute_canary_checks
 
-    base = root / "runs" / run_tag / config_id
-    n_chains = n_ok = n_censored = n_rounds_ok = n_rounds_fail = 0
-    dup_rounds = False
-    for chain_dir in sorted(base.rglob("chain_*")) if base.exists() else []:
-        if not chain_dir.is_dir():
-            continue
-        n_chains += 1
-        meta_path = chain_dir / "meta.json"
-        meta = json.loads(meta_path.read_text(encoding="utf-8")) if meta_path.exists() else {}
-        if meta.get("censored_at_round") is not None:
-            n_censored += 1
-        else:
-            n_ok += 1
-        rounds = []
-        rp = chain_dir / "rounds.jsonl"
-        if rp.exists():
-            seen = set()
-            for line in rp.read_text(encoding="utf-8").splitlines():
-                if not line.strip():
-                    continue
-                row = json.loads(line)
-                r = int(row["round"])
-                if row.get("parse_status") == "ok":
-                    n_rounds_ok += 1
-                    if r in seen:
-                        dup_rounds = True
-                    seen.add(r)
-                    rounds.append(r)
-                else:
-                    n_rounds_fail += 1
-    parse_rate = n_rounds_ok / max(n_rounds_ok + n_rounds_fail, 1)
-    censor_frac = n_censored / max(n_chains, 1)
-
-    # C2: G4 projection for this config at L4 rates (operational).
-    g4 = project_g4_d49(25, root=root)
-    # Prefer per-config breakdown if present; else scale total/7.
-    at = g4.get("at_chosen_n") or {}
-    modal_proj_total = float(at.get("modal_generation_usd") or at.get("modal_usd") or 66.51)
-    # OLMo share ≈ 1/7 of gen if no breakdown; refine with pilot timings ratio later.
-    modal_proj_config = modal_proj_total / 7.0
-    # Actual from STATUS
-    status = {}
-    sp = root / "runs" / run_tag / "STATUS.json"
-    if sp.exists():
-        status = json.loads(sp.read_text(encoding="utf-8"))
-    modal_actual = float(status.get("usd_so_far") or 0.0)
-
-    gpt_n = int(gpt_meta.get("n") or 0)
-    gpt_usd = float(gpt_meta.get("api_usd") or 0.0)
-    per_tx = (gpt_usd / gpt_n) if gpt_n else None
-    # Pilot gpt54 per-transition projection
-    pilot_meta = root / "runs" / "pilot_v1_coding_v3" / "coding_v3" / "gpt54_meta.json"
-    proj_per = None
-    if pilot_meta.exists():
-        pm = json.loads(pilot_meta.read_text(encoding="utf-8"))
-        proj_per = float(pm["api_usd"]) / int(pm["n"])
-
-    c1 = parse_rate >= 0.98 and censor_frac <= 0.05
-    c2 = modal_actual <= 1.2 * modal_proj_config if modal_proj_config > 0 else False
-    c3 = bool(gates_gpt.get("ok")) and bool(gates_mimo.get("ok"))
-    c4 = (per_tx is not None and proj_per is not None and per_tx <= 1.2 * proj_per)
-    c5 = (not dup_rounds) and n_chains > 0
-    # C6 forecast
-    spent_m = spent_modal_usd(root) + modal_actual
-    # Rescale full-run Modal gen by canary actual / projection for this config
-    scale = (modal_actual / modal_proj_config) if modal_proj_config > 0 else 1.0
-    proj_full_modal = spent_m - modal_actual + modal_proj_total * scale
-    # H3 placeholder mid
-    proj_full_modal += 12.0
-    api_proj = float(at.get("api_usd") or 30.29) * (scale if scale == scale else 1.0)
-    spent_api = float(api_spend)
-    proj_full_api = spent_api + api_proj * 0.85  # rough remaining
-    c6 = proj_full_modal <= 130.0 and proj_full_api <= 40.0
-
-    checks = {
-        "C1_subject_parsing": {
-            "pass": c1,
-            "parse_rate": parse_rate,
-            "censor_frac": censor_frac,
-            "n_chains": n_chains,
-        },
-        "C2_modal_cost": {
-            "pass": c2,
-            "actual_usd": modal_actual,
-            "projected_config_usd": modal_proj_config,
-            "ratio_cap": 1.2,
-        },
-        "C3_judge_integrity": {
-            "pass": c3,
-            "gpt54_ok": gates_gpt.get("ok"),
-            "mimo_ok": gates_mimo.get("ok"),
-        },
-        "C4_api_cost": {
-            "pass": c4,
-            "usd_per_transition": per_tx,
-            "projected_usd_per_transition": proj_per,
-        },
-        "C5_storage": {
-            "pass": c5,
-            "duplicate_rounds": dup_rounds,
-            "n_chains": n_chains,
-            "mimo_slots_missing": n_mimo_missing,
-        },
-        "C6_full_run_forecast": {
-            "pass": c6,
-            "proj_modal_usd": proj_full_modal,
-            "proj_api_usd": proj_full_api,
-            "modal_cap": 130.0,
-            "api_cap": 40.0,
-            "scale_from_canary": scale,
-        },
-        "all_pass": all([c1, c2, c3, c4, c5, c6]),
-        "stage_api_cap_usd": stage_api_cap_usd,
-        "api_spend_usd": api_spend,
-    }
-    return checks
+    return compute_canary_checks(
+        root=root,
+        run_tag=run_tag,
+        config_id=config_id,
+        gpt_meta=gpt_meta,
+        mimo_meta=mimo_meta,
+        gates_gpt=gates_gpt,
+        gates_mimo=gates_mimo,
+        api_spend=api_spend,
+        stage_api_cap_usd=stage_api_cap_usd,
+        n_mimo_missing=n_mimo_missing,
+        modal_actual_usd=modal_actual_usd,
+        exclude_api_usd_from_c4=exclude_api_usd_from_c4,
+    )
 
 
 @app.function(
@@ -873,7 +775,14 @@ def orchestrate_canary(
     run_tag: str = MAIN_RUN_TAG,
 ) -> dict:
     """Canary: generate olmo3_7b_final full cells → consistency → code → checks."""
+    import sys
     import traceback
+
+    sys.path.insert(0, f"{REMOTE_REPO}/src")
+    from rc.canary_checks import assert_canary_inputs
+
+    # D61: fail before any spend if image refs are incomplete.
+    assert_canary_inputs(root=Path(REMOTE_REPO))
 
     try:
         gen: dict | None = None

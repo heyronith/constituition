@@ -567,16 +567,37 @@ class OpenAIBatchBackend:
         self._download_file(out_file_id, out_path)
         self._download_file(err_file_id, err_path)
         by_id = self._parse_output_jsonl(out_path)
-        # Merge error-file rows that lack a successful response.
-        for cid, row in self._parse_output_jsonl(err_path).items():
-            if cid not in by_id:
-                by_id[cid] = row
+
+        def _row_has_completion(row: dict[str, Any]) -> bool:
+            """True only for a successful chat completion body (not error-file stubs)."""
+            if row.get("error"):
+                return False
+            resp = (row.get("response") or {}).get("body") or {}
+            if resp.get("error"):
+                return False
+            choices = resp.get("choices") or []
+            if not choices:
+                return False
+            content = (choices[0].get("message") or {}).get("content")
+            return bool(content)
+
+        # Keep error-file rows only for audit; do not treat them as completions (D60/D61).
+        err_by_id = self._parse_output_jsonl(err_path)
+        (self.work_dir / f"{self.job_id}_errors_index.json").write_text(
+            json.dumps({"n": len(err_by_id), "custom_ids": sorted(err_by_id)}, indent=2)
+            + "\n",
+            encoding="utf-8",
+        )
 
         if status == "failed" and not by_id and not stalled:
             raise RuntimeError(f"OpenAI batch {batch_id} ended with status={status}")
 
-        # Sync stragglers for missing custom_ids (D60).
-        missing = [i for i in range(len(requests)) if f"req-{i}" not in by_id]
+        # Sync stragglers: missing custom_ids OR present but without a real completion.
+        missing = [
+            i
+            for i in range(len(requests))
+            if f"req-{i}" not in by_id or not _row_has_completion(by_id[f"req-{i}"])
+        ]
         sync_usd = 0.0
         sync_in = sync_cached = sync_out = 0
         for i in missing:

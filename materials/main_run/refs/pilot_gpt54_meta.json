@@ -1,0 +1,11 @@
+{
+  "judge_id": "gpt54",
+  "n": 2018,
+  "n_ok": 2018,
+  "batch_id": "batch_6ac50cfa92e4819081b8e0049db7fb5f",
+  "api_usd": 2.9432325000000024,
+  "input_tokens": 1632252,
+  "output_tokens": 120389,
+  "cached_input_tokens": 0,
+  "run_tag": "pilot_v1_coding_v3"
+}

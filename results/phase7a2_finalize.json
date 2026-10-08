@@ -1,0 +1,176 @@
+{
+  "C6": {
+    "api_cap": 40.0,
+    "line_items": {
+      "api_canary_stage_spend": 4.826209260000006,
+      "api_coding_remaining_6_configs": 27.0171662302502,
+      "api_h3_strongreject": 12.64344375,
+      "api_spent_to_date_ledger": 6.878083635000006,
+      "g4_api_judging_usd": 30.293699694232178,
+      "g4_modal_generation_usd": 60.62463935999999,
+      "h3_modal_low": 10.0,
+      "modal_canary_actual": 2.00177328,
+      "modal_gen_remaining_6_configs": 12.01063968,
+      "modal_h3_battery_high": 15.0,
+      "modal_spent_to_date_ledger": 25.6849521948442,
+      "strongreject_n": 25200
+    },
+    "modal_cap": 130.0,
+    "openai_cap": 35.0,
+    "openrouter_cap": 5.0,
+    "overshoot": {
+      "api": 6.53869361525021,
+      "modal": 0.0,
+      "openai": 11.198653538167818,
+      "openrouter": 0.0
+    },
+    "pass": false,
+    "proj_api_usd": 46.53869361525021,
+    "proj_modal_usd": 52.6955918748442,
+    "proj_openai_usd": 46.19865353816782,
+    "proj_openrouter_usd": 0.3400400770823879,
+    "scale_from_canary": 0.23113395985404184
+  },
+  "api_canary_usd": 4.826209260000006,
+  "checks": {
+    "C1_subject_parsing": {
+      "censor_frac": 0.041666666666666664,
+      "n_censored": 5,
+      "n_chains": 120,
+      "parse_rate": 0.9876203576341128,
+      "pass": true,
+      "per_protocol": {
+        "FORCED": {
+          "censor_frac": 0.0,
+          "n_censored": 0,
+          "n_chains": 100,
+          "n_rounds_fail": 2,
+          "n_rounds_ok": 2000,
+          "parse_rate": 0.999000999000999
+        },
+        "PERMISSIVE": {
+          "censor_frac": 0.25,
+          "n_censored": 5,
+          "n_chains": 20,
+          "n_rounds_fail": 25,
+          "n_rounds_ok": 154,
+          "parse_rate": 0.8603351955307262
+        }
+      }
+    },
+    "C2_modal_cost": {
+      "actual_usd": 2.00177328,
+      "pass": true,
+      "projected_config_usd": 8.660662765714283,
+      "ratio": 0.23113395985404184,
+      "ratio_cap": 1.2
+    },
+    "C3_judge_integrity": {
+      "gpt54_ok": true,
+      "mimo_ok": true,
+      "n_llm": 3148,
+      "n_unparseable": 0,
+      "pass": true,
+      "unparseable_cap": 0.01,
+      "unparseable_rate": 0.0
+    },
+    "C4_api_cost": {
+      "excluded_wasted_usd": 1.824695625,
+      "note": "C4 uses canary gpt54 api_usd/n only; D59 wasted reported separately",
+      "pass": true,
+      "projected_usd_per_transition": 0.0014584898414271568,
+      "ratio": 1.040481274547874,
+      "ratio_cap": 1.2,
+      "usd_per_transition": 0.0015175313691232547
+    },
+    "C5_storage": {
+      "chain_artifacts": 120,
+      "duplicate_rounds": false,
+      "mimo_slots_missing": 0,
+      "n_chains": 120,
+      "pass": true,
+      "run_manifest_present": true
+    },
+    "C6_full_run_forecast": {
+      "api_cap": 40.0,
+      "line_items": {
+        "api_canary_stage_spend": 4.826209260000006,
+        "api_coding_remaining_6_configs": 27.0171662302502,
+        "api_h3_strongreject": 12.64344375,
+        "api_spent_to_date_ledger": 6.878083635000006,
+        "g4_api_judging_usd": 30.293699694232178,
+        "g4_modal_generation_usd": 60.62463935999999,
+        "h3_modal_low": 10.0,
+        "modal_canary_actual": 2.00177328,
+        "modal_gen_remaining_6_configs": 12.01063968,
+        "modal_h3_battery_high": 15.0,
+        "modal_spent_to_date_ledger": 25.6849521948442,
+        "strongreject_n": 25200
+      },
+      "modal_cap": 130.0,
+      "openai_cap": 35.0,
+      "openrouter_cap": 5.0,
+      "overshoot": {
+        "api": 6.53869361525021,
+        "modal": 0.0,
+        "openai": 11.198653538167818,
+        "openrouter": 0.0
+      },
+      "pass": false,
+      "proj_api_usd": 46.53869361525021,
+      "proj_modal_usd": 52.6955918748442,
+      "proj_openai_usd": 46.19865353816782,
+      "proj_openrouter_usd": 0.3400400770823879,
+      "scale_from_canary": 0.23113395985404184
+    },
+    "all_pass": false
+  },
+  "consistency": {
+    "failed": [],
+    "n_chains": 120,
+    "n_failed": 0,
+    "ok": true
+  },
+  "modal_canary_usd": 2.00177328,
+  "provenance": {
+    "counts_by_batch_id": {
+      "batch_6ac6b190dcdc819087c85c218e21bf8c": 3148
+    },
+    "counts_by_source_file": {
+      "output.jsonl": 3138,
+      "sync_straggler": 10
+    },
+    "discrepancy_explanation": "Output file had 3138 completions; error file had 10 HTTP 500 stubs mis-tagged as batch. Those 10 were discarded and re-coded via D60 sync ($0.030185). All 3148 LLM judgments now provenance to batch_6ac6b190\u2026 (3138 output lines + 10 sync).",
+    "invalid_d59_batch_id": "batch_6ac697c82fb8819089a03dba6801da20",
+    "n_batch_mode": 3138,
+    "n_from_d59_invalid": 0,
+    "n_from_invalid_dir": 0,
+    "n_llm": 3148,
+    "n_structural": 4627,
+    "n_sync_mode": 10,
+    "openai_request_counts": {
+      "completed": 3138,
+      "error_file_id": "file-8mUtpEy8h5arEbsu9Es1K7",
+      "failed": 0,
+      "output_file_id": "file-FhGCdgaMRJpSod61yBe2nx",
+      "status": "cancelled",
+      "total": 3148
+    },
+    "sync_custom_ids": [
+      "req-458",
+      "req-489",
+      "req-975",
+      "req-1568",
+      "req-1630",
+      "req-1687",
+      "req-2219",
+      "req-2267",
+      "req-2313",
+      "req-2461"
+    ],
+    "valid_batch_id": "batch_6ac6b190dcdc819087c85c218e21bf8c"
+  },
+  "spent_api_ledger": 6.878083635000006,
+  "spent_modal_ledger": 25.6849521948442,
+  "wasted_d59_usd": 1.824695625
+}

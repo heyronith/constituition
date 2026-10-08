@@ -1,0 +1,38 @@
+{
+  "counts_by_batch_id": {
+    "batch_6ac6b190dcdc819087c85c218e21bf8c": 3148
+  },
+  "counts_by_source_file": {
+    "output.jsonl": 3138,
+    "sync_straggler": 10
+  },
+  "discrepancy_explanation": "Output file had 3138 completions; error file had 10 HTTP 500 stubs mis-tagged as batch. Those 10 were discarded and re-coded via D60 sync ($0.030185). All 3148 LLM judgments now provenance to batch_6ac6b190\u2026 (3138 output lines + 10 sync).",
+  "invalid_d59_batch_id": "batch_6ac697c82fb8819089a03dba6801da20",
+  "n_batch_mode": 3138,
+  "n_from_d59_invalid": 0,
+  "n_from_invalid_dir": 0,
+  "n_llm": 3148,
+  "n_structural": 4627,
+  "n_sync_mode": 10,
+  "openai_request_counts": {
+    "completed": 3138,
+    "error_file_id": "file-8mUtpEy8h5arEbsu9Es1K7",
+    "failed": 0,
+    "output_file_id": "file-FhGCdgaMRJpSod61yBe2nx",
+    "status": "cancelled",
+    "total": 3148
+  },
+  "sync_custom_ids": [
+    "req-458",
+    "req-489",
+    "req-975",
+    "req-1568",
+    "req-1630",
+    "req-1687",
+    "req-2219",
+    "req-2267",
+    "req-2313",
+    "req-2461"
+  ],
+  "valid_batch_id": "batch_6ac6b190dcdc819087c85c218e21bf8c"
+}
