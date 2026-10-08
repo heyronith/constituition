@@ -1,0 +1,91 @@
+override_job_cap_usd=12.990994148571426 for job_id=phase7b-resume-qwen38_27b_nothink phase=7b_resume
+override_job_cap_usd=12.990994148571426 for job_id=phase7b-resume-qwen38_27b_think phase=7b_resume
+override_job_cap_usd=12.990994148571426 for job_id=phase7b-resume-gemma4_31b phase=7b_resume
+assert_forced_complete qwen38_27b_nothink OK
+assert_forced_complete qwen38_27b_think OK
+assert_forced_complete gemma4_31b OK
+LAUNCH uv run modal run --detach modal_apps/phase7b_main.py --mode config --config-id qwen38_27b_nothink --stage-cap-usd 12.9910
+Note that running a local entrypoint in detached mode only keeps the last triggered Modal function alive after the parent process has been killed or disconnected.
+✓ Initialized. View run at 
+https://modal.com/apps/heyronith/main/ap-GTAsWFIiFIZkLPMsLkhnJb
+✓ Created objects.
+├── ✓ Uploaded /Users/ronny/Desktop/Research/AI Alignment 
+│   Projects_Claude/Constituition/modal_apps/phase7b_main.py
+├── ✓ Uploaded pyproject.toml
+├── ✓ Uploaded /Users/ronny/Desktop/Research/AI Alignment 
+│   Projects_Claude/Constituition/configs
+├── ✓ Uploaded /Users/ronny/Desktop/Research/AI Alignment 
+│   Projects_Claude/Constituition/materials
+├── ✓ Uploaded /Users/ronny/Desktop/Research/AI Alignment 
+│   Projects_Claude/Constituition/src
+├── ✓ Created Function generate_l4.
+├── ✓ Created Function generate_l40s.
+├── ✓ Created Function generate_a100.
+├── ✓ Created Function code_config.
+├── ✓ Created Function orchestrate_config.
+├── ✓ Created Function verify_precheck.
+└── ✓ Created Function download_weights.
+override_job_cap_usd=12.991 for job_id=phase7b-qwen38_27b_nothink phase=7b
+ORCHESTRATE config=qwen38_27b_nothink gpu=A100-80GB 
+object_id=fc-01M4DW2XV78AAQF3R79HSMR667
+✓ App completed. View run at 
+https://modal.com/apps/heyronith/main/ap-GTAsWFIiFIZkLPMsLkhnJb
+[modal-client] 2026-10-08T08:43:56-0500 Timed out waiting for final app logs.
+
+LAUNCH uv run modal run --detach modal_apps/phase7b_main.py --mode config --config-id qwen38_27b_think --stage-cap-usd 12.9910
+Note that running a local entrypoint in detached mode only keeps the last triggered Modal function alive after the parent process has been killed or disconnected.
+✓ Initialized. View run at 
+https://modal.com/apps/heyronith/main/ap-P72Kvs1VXv93hcGrvWO8sP
+✓ Created objects.
+├── ✓ Uploaded /Users/ronny/Desktop/Research/AI Alignment 
+│   Projects_Claude/Constituition/modal_apps/phase7b_main.py
+├── ✓ Uploaded pyproject.toml
+├── ✓ Uploaded /Users/ronny/Desktop/Research/AI Alignment 
+│   Projects_Claude/Constituition/configs
+├── ✓ Uploaded /Users/ronny/Desktop/Research/AI Alignment 
+│   Projects_Claude/Constituition/materials
+├── ✓ Uploaded /Users/ronny/Desktop/Research/AI Alignment 
+│   Projects_Claude/Constituition/src
+├── ✓ Created Function code_config.
+├── ✓ Created Function orchestrate_config.
+├── ✓ Created Function verify_precheck.
+├── ✓ Created Function download_weights.
+├── ✓ Created Function generate_l4.
+├── ✓ Created Function generate_l40s.
+└── ✓ Created Function generate_a100.
+override_job_cap_usd=12.991 for job_id=phase7b-qwen38_27b_think phase=7b
+ORCHESTRATE config=qwen38_27b_think gpu=A100-80GB 
+object_id=fc-01M4DW3CHT8P02AVEE6DQSJ1KZ
+✓ App completed. View run at 
+https://modal.com/apps/heyronith/main/ap-P72Kvs1VXv93hcGrvWO8sP
+[modal-client] 2026-10-08T08:44:11-0500 Timed out waiting for final app logs.
+
+LAUNCH uv run modal run --detach modal_apps/phase7b_main.py --mode config --config-id gemma4_31b --stage-cap-usd 12.9910
+Note that running a local entrypoint in detached mode only keeps the last triggered Modal function alive after the parent process has been killed or disconnected.
+✓ Initialized. View run at 
+https://modal.com/apps/heyronith/main/ap-4ClOTEgrKuo966WroYlMlU
+✓ Created objects.
+├── ✓ Uploaded /Users/ronny/Desktop/Research/AI Alignment 
+│   Projects_Claude/Constituition/modal_apps/phase7b_main.py
+├── ✓ Uploaded pyproject.toml
+├── ✓ Uploaded /Users/ronny/Desktop/Research/AI Alignment 
+│   Projects_Claude/Constituition/configs
+├── ✓ Uploaded /Users/ronny/Desktop/Research/AI Alignment 
+│   Projects_Claude/Constituition/materials
+├── ✓ Uploaded /Users/ronny/Desktop/Research/AI Alignment 
+│   Projects_Claude/Constituition/src
+├── ✓ Created Function generate_l4.
+├── ✓ Created Function generate_l40s.
+├── ✓ Created Function generate_a100.
+├── ✓ Created Function code_config.
+├── ✓ Created Function orchestrate_config.
+├── ✓ Created Function verify_precheck.
+└── ✓ Created Function download_weights.
+override_job_cap_usd=12.991 for job_id=phase7b-gemma4_31b phase=7b
+ORCHESTRATE config=gemma4_31b gpu=A100-80GB 
+object_id=fc-01M4DW3XD17SPQ3FWWHZPNAXZW
+✓ App completed. View run at 
+https://modal.com/apps/heyronith/main/ap-4ClOTEgrKuo966WroYlMlU
+[modal-client] 2026-10-08T08:44:28-0500 Timed out waiting for final app logs.
+
+wrote /Users/ronny/Desktop/Research/AI Alignment Projects_Claude/Constituition/results/phase7b_resume_launches.json

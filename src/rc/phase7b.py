@@ -331,6 +331,89 @@ def parse_tripwire_stats(
     }
 
 
+# Canary PERMISSIVE/FORCED per-unit-round wall-time ratio (D64).
+CANARY_PERM_FORCED_RATIO = 1.65
+PERM_EST_SAFETY = 1.5
+
+
+def estimate_permissive_usd(
+    *,
+    forced_modal_usd: float,
+    forced_unit_rounds: int,
+    permissive_unit_rounds: int,
+    canary_ratio: float = CANARY_PERM_FORCED_RATIO,
+    safety: float = PERM_EST_SAFETY,
+) -> float:
+    """D64: measured FORCED $/unit-round × PERMISSIVE unit-rounds × 1.65 × 1.5."""
+    if forced_unit_rounds <= 0:
+        raise ValueError("forced_unit_rounds must be positive")
+    if forced_modal_usd < 0:
+        raise ValueError("forced_modal_usd must be non-negative")
+    return (
+        (forced_modal_usd / forced_unit_rounds)
+        * permissive_unit_rounds
+        * canary_ratio
+        * safety
+    )
+
+
+def count_protocol_unit_rounds(
+    run_tag: str,
+    config_id: str,
+    protocol: str,
+    *,
+    root: Path | None = None,
+) -> int:
+    """Count completed generation rows (ok or failed) under a protocol."""
+    root = root or repo_root()
+    base = root / "runs" / run_tag / config_id / protocol
+    n = 0
+    if not base.exists():
+        return 0
+    for rp in base.rglob("rounds.jsonl"):
+        for line in rp.read_text(encoding="utf-8").splitlines():
+            if line.strip():
+                n += 1
+    return n
+
+
+def forced_protocol_complete(
+    run_tag: str,
+    config_id: str,
+    *,
+    forced_chains: list[int],
+    conditions: list[str],
+    forced_rounds: int,
+    root: Path | None = None,
+) -> bool:
+    """True iff every FORCED chain has ``forced_rounds`` rows or was censored earlier."""
+    root = root or repo_root()
+    for cond in conditions:
+        for ch in forced_chains:
+            cdir = (
+                root
+                / "runs"
+                / run_tag
+                / config_id
+                / "FORCED"
+                / cond
+                / "STRUCTURED"
+                / f"chain_{ch}"
+            )
+            meta_path = cdir / "meta.json"
+            rp = cdir / "rounds.jsonl"
+            if not rp.exists():
+                return False
+            rows = [json.loads(l) for l in rp.read_text(encoding="utf-8").splitlines() if l.strip()]
+            meta = json.loads(meta_path.read_text(encoding="utf-8")) if meta_path.exists() else {}
+            cens = meta.get("censored_at_round")
+            if cens is not None:
+                continue
+            if len(rows) < forced_rounds:
+                return False
+    return True
+
+
 def is_stale_status(
     payload: dict[str, Any], *, now: datetime | None = None, stale_hours: float = 2.0
 ) -> bool:

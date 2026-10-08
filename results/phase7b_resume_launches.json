@@ -1,0 +1,32 @@
+[
+  {
+    "app_id": "ap-GTAsWFIiFIZkLPMsLkhnJb",
+    "config_id": "qwen38_27b_nothink",
+    "gpu": "A100-80GB",
+    "launch_utc": "2026-10-08T13:43:56Z",
+    "mode": "resume_d64",
+    "object_id": "fc-01M4DW2XV78AAQF3R79HSMR667",
+    "returncode": 0,
+    "stage_cap_usd": 12.990994148571426
+  },
+  {
+    "app_id": "ap-P72Kvs1VXv93hcGrvWO8sP",
+    "config_id": "qwen38_27b_think",
+    "gpu": "A100-80GB",
+    "launch_utc": "2026-10-08T13:44:11Z",
+    "mode": "resume_d64",
+    "object_id": "fc-01M4DW3CHT8P02AVEE6DQSJ1KZ",
+    "returncode": 0,
+    "stage_cap_usd": 12.990994148571426
+  },
+  {
+    "app_id": "ap-4ClOTEgrKuo966WroYlMlU",
+    "config_id": "gemma4_31b",
+    "gpu": "A100-80GB",
+    "launch_utc": "2026-10-08T13:44:28Z",
+    "mode": "resume_d64",
+    "object_id": "fc-01M4DW3XD17SPQ3FWWHZPNAXZW",
+    "returncode": 0,
+    "stage_cap_usd": 12.990994148571426
+  }
+]

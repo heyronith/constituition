@@ -148,10 +148,16 @@ def _generate_impl(
 
     from rc.budget import estimate_modal_usd
     from rc.canary_checks import assert_canary_inputs
-    from rc.chain_runner import Unit, run_config
+    from rc.chain_runner import Unit, run_config, verify_run_consistency
     from rc.config import load_vllm
     from rc.generation import VLLMBackend, load_lock_revision, max_model_len_for
-    from rc.phase7b import parse_tripwire_stats
+    from rc.phase7b import (
+        count_protocol_unit_rounds,
+        estimate_permissive_usd,
+        forced_protocol_complete,
+        parse_tripwire_stats,
+        status_path,
+    )
 
     assert_canary_inputs(root=root)
 
@@ -265,47 +271,109 @@ def _generate_impl(
                 runs_vol.commit()
                 raise RuntimeError("parse_hold")
 
-    # FORCED first
+    # FORCED first (skip entirely when already complete — D64 resume).
     if "FORCED" in protocols:
         forced_units = [u for u in units if u.protocol == "FORCED"]
-        if usd_so_far() + round_usd_est > stage_cap_usd:
+        forced_done = forced_protocol_complete(
+            run_tag,
+            config_id,
+            forced_chains=forced_chains,
+            conditions=conditions,
+            forced_rounds=forced_rounds,
+            root=root,
+        )
+        n_forced_rows_before = count_protocol_unit_rounds(
+            run_tag, config_id, "FORCED", root=root
+        )
+        if forced_done:
+            # Resume: generate nothing for FORCED.
+            n_forced_rows_after = count_protocol_unit_rounds(
+                run_tag, config_id, "FORCED", root=root
+            )
+            if n_forced_rows_after != n_forced_rows_before:
+                raise RuntimeError(
+                    f"FORCED resume mutated rows: {n_forced_rows_before} -> {n_forced_rows_after}"
+                )
             _write_cfg_status(
                 config_id,
                 run_tag=run_tag,
                 stage="generate",
-                state="budget_stop",
+                state="running",
+                protocol="FORCED",
+                note="forced_complete_skip_resume",
+                forced_rows=n_forced_rows_before,
                 usd_so_far=usd_so_far(),
-                budget_stop_reason="pre_forced",
             )
-            return {"state": "budget_stop", "config_id": config_id}
-        try:
-            run_config(
-                backend,
-                config_id,
-                forced_units,
-                rounds=forced_rounds,
-                run_tag=run_tag,
-                root=root,
-                after_round_commit=lambda t: _commit_and_status(
-                    t, "FORCED", forced_rounds
-                ),
-            )
-        except RuntimeError as exc:
-            if "parse_hold" in str(exc):
-                return {"state": "parse_hold", "config_id": config_id}
-            if "budget_stop" in str(exc):
+        else:
+            if usd_so_far() + round_usd_est > stage_cap_usd:
+                _write_cfg_status(
+                    config_id,
+                    run_tag=run_tag,
+                    stage="generate",
+                    state="budget_stop",
+                    usd_so_far=usd_so_far(),
+                    budget_stop_reason="pre_forced",
+                )
                 return {"state": "budget_stop", "config_id": config_id}
-            raise
+            try:
+                run_config(
+                    backend,
+                    config_id,
+                    forced_units,
+                    rounds=forced_rounds,
+                    run_tag=run_tag,
+                    root=root,
+                    after_round_commit=lambda t: _commit_and_status(
+                        t, "FORCED", forced_rounds
+                    ),
+                )
+            except RuntimeError as exc:
+                if "parse_hold" in str(exc):
+                    return {"state": "parse_hold", "config_id": config_id}
+                if "budget_stop" in str(exc):
+                    return {"state": "budget_stop", "config_id": config_id}
+                raise
 
-    # Global Modal projection check before PERMISSIVE — hold, do not drop.
+    # Consistency gate after FORCED (incl. resume skip) before PERMISSIVE.
+    gate_f = verify_run_consistency(run_tag, config_id, root=root)
+    if not gate_f.get("ok"):
+        _write_cfg_status(
+            config_id,
+            run_tag=run_tag,
+            stage="generate",
+            state="failed",
+            error=f"consistency_after_forced n_failed={gate_f.get('n_failed')}",
+        )
+        runs_vol.commit()
+        return {"state": "failed", "config_id": config_id, "gate": gate_f}
+
+    # Global Modal projection check before PERMISSIVE — hold, do not drop (D64).
     if "PERMISSIVE" in protocols:
-        # Conservative: if remaining headroom < permissive estimate, hold.
-        perm_est = estimate_modal_usd(
-            gpu_name,
-            90 * max(len(permissive_chains) * len(conditions), 1) * permissive_rounds,
-            cpu_cores=4.0,
-            memory_gib=16.0,
-            root=root,
+        forced_unit_rounds = max(
+            count_protocol_unit_rounds(run_tag, config_id, "FORCED", root=root),
+            len(forced_chains) * len(conditions) * max(forced_rounds, 1),
+        )
+        perm_unit_rounds = max(
+            len(permissive_chains) * len(conditions) * max(permissive_rounds, 1), 1
+        )
+        # Prefer STATUS usd from completed FORCED (resume); else this container clock.
+        forced_usd = usd_so_far()
+        sp = status_path(run_tag, config_id, root=root)
+        if sp.exists():
+            try:
+                prev = json.loads(sp.read_text(encoding="utf-8"))
+                if prev.get("usd_so_far") is not None and prev.get("state") in {
+                    "budget_hold",
+                    "generate_done",
+                    "running",
+                }:
+                    forced_usd = max(float(prev["usd_so_far"]), forced_usd)
+            except (json.JSONDecodeError, TypeError, ValueError):
+                pass
+        perm_est = estimate_permissive_usd(
+            forced_modal_usd=forced_usd,
+            forced_unit_rounds=forced_unit_rounds,
+            permissive_unit_rounds=perm_unit_rounds,
         )
         if usd_so_far() + perm_est > stage_cap_usd:
             _write_cfg_status(
@@ -314,7 +382,11 @@ def _generate_impl(
                 stage="generate",
                 state="budget_hold",
                 usd_so_far=usd_so_far(),
-                note="before_permissive; human decides per prereg §3.4",
+                perm_est_usd=perm_est,
+                forced_usd_for_est=forced_usd,
+                forced_unit_rounds=forced_unit_rounds,
+                perm_unit_rounds=perm_unit_rounds,
+                note="before_permissive D64; human decides per prereg §3.4",
             )
             runs_vol.commit()
             return {"state": "budget_hold", "config_id": config_id}
@@ -330,6 +402,17 @@ def _generate_impl(
                 t, "PERMISSIVE", permissive_rounds
             ),
         )
+        gate_p = verify_run_consistency(run_tag, config_id, root=root)
+        if not gate_p.get("ok"):
+            _write_cfg_status(
+                config_id,
+                run_tag=run_tag,
+                stage="generate",
+                state="failed",
+                error=f"consistency_after_permissive n_failed={gate_p.get('n_failed')}",
+            )
+            runs_vol.commit()
+            return {"state": "failed", "config_id": config_id, "gate": gate_p}
 
     _write_cfg_status(
         config_id,

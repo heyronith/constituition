@@ -72,6 +72,86 @@ olmo3_7b_dpo           generate     running          2/20          0.152
 
 Five of six remaining configs had committed ≥ round 0 by the single STATUS pull. `qwen38_27b_think` was still finishing FORCED round 0 (thinking latency; Modal app `ap-gvXszpuUssPlTh7VmJJkcc` ephemerally detached with 2 tasks; Volume has `main_v1/qwen38_27b_think/FORCED/`).
 
-## Session 2
+## Session 2 (2026-10-08)
 
-Return and paste: `Phase 7B session 2`.
+### STATUS (session start)
+
+| config | stage | state | rounds | usd |
+|--------|-------|-------|--------|-----|
+| olmo3_7b_final | orchestrate | failed* | — | — |
+| qwen38_27b_nothink | generate | budget_hold | — | 1.572 |
+| qwen38_27b_think | generate | budget_hold | — | 6.505 |
+| gemma4_31b | generate | budget_hold | — | 1.563 |
+| gemma4_12b | generate | parse_hold | 4/20 | 0.374 |
+| olmo3_7b_sft | done | checks_fail | — | Batch done |
+| olmo3_7b_dpo | done | checks_fail | — | Batch done |
+
+\*Prior canary `STATUS.json` only; tree read-only.
+
+### Canary snapshot + consistency
+
+- Canary SHA snapshot re-verify: **OK** (480/480 unchanged).
+- `verify_run_consistency` on all chains generated so far: **OK** for all 7 configs (120+120+120+100+100+100+100 chains; `n_failed=0`). Artifact: `results/phase7b_session2_consistency.json`.
+
+### Completed configs — C1 / C3 / C5 (operational)
+
+| config | C1 | C3 | C5 | notes |
+|--------|----|----|----|-------|
+| olmo3_7b_sft | FAIL | PASS | FAIL | FORCED parse 0.829, censor 0.25; MiMo slots missing 47/500; GPT Batch `batch_6ac7550365108190b7ffbe46f9133329` n=6544 (2625 batch), API ~$4.040; MiMo n=453, ~$0.048 |
+| olmo3_7b_dpo | FAIL | PASS | PASS | PERMISSIVE parse 0.777, censor 0.40; GPT Batch `batch_6ac75501e58c8190bdd166ad4ad0d0d6` n=7670 (3057 batch), API ~$4.725; MiMo n=500, ~$0.055 |
+
+### D64
+
+False `budget_hold` caused by 90 s × unit-round sequential PERMISSIVE estimate (~10× high). Replaced with measured `(FORCED USD / FORCED unit-rounds) × PERMISSIVE unit-rounds × 1.65 × 1.5`. Tests: `tests/test_phase7b_d64.py`. Decision logged.
+
+Example (would clear hold): nothink $1.57→perm_est $0.38; think $6.50→$1.61; gemma31 $1.56→$0.38 (stage cap $12.991).
+
+### Resume relaunches (3 configs)
+
+FORCED asserted complete locally before launch. Apps skip FORCED generation (row-count assert), consistency → PERMISSIVE → consistency → coding (D60/D63 stagger). Artifact: `results/phase7b_resume_launches.json`.
+
+| config | app_id | object_id | launch_utc |
+|--------|--------|-----------|------------|
+| qwen38_27b_nothink | ap-GTAsWFIiFIZkLPMsLkhnJb | fc-01M4DW2XV78AAQF3R79HSMR667 | 2026-10-08T13:43:56Z |
+| qwen38_27b_think | ap-P72Kvs1VXv93hcGrvWO8sP | fc-01M4DW3CHT8P02AVEE6DQSJ1KZ | 2026-10-08T13:44:11Z |
+| gemma4_31b | ap-4ClOTEgrKuo966WroYlMlU | fc-01M4DW3XD17SPQ3FWWHZPNAXZW | 2026-10-08T13:44:28Z |
+
+### gemma4_12b `parse_hold` (diagnose only — not relaunched)
+
+Tripwire: parse_rate **0.882** (<0.90); censor_frac 0.06 (6/100). Artifact: `results/phase7b_gemma4_12b_parse_hold.json`.
+
+Parse rate by round (FORCED, includes retries in denominator):
+
+| round | parse_rate | ok/fail | censored@round |
+|------:|-----------:|--------:|---------------:|
+| 0 | 0.980 | 100/2 | 0 |
+| 1 | 0.907 | 98/10 | 2 |
+| 2 | 0.851 | 97/17 | 1 |
+| 3 | 0.803 | 94/23 | 3 |
+
+All **10** `_parse_hold_samples` classified **(b) model behaviour**: `finish_reason=stop`, output tokens ≪ `max_tokens=4096` (74–97), parse_error **revise text identical**. No harness truncation / length / schema / max_model_len failures in the sample set.
+
+vs `gemma4_31b` same chain/round: R0 NEUTRAL_EDIT chain_0 **prompt_sha and input_constitution_sha match**; 12b parse_error vs 31b parse_ok on that shared prompt. Later rounds diverge (expected once trajectories differ). Rendering path is shared; failure is model revise-identical behaviour concentrated on NEUTRAL_EDIT chains.
+
+### STATUS once (~14 min after resume launch)
+
+| config | stage | state | rounds | usd |
+|--------|-------|-------|--------|-----|
+| qwen38_27b_nothink | generate | running | **1/10** PERMISSIVE | 0.645 |
+| qwen38_27b_think | generate | running | **1/10** PERMISSIVE | 0.578 |
+| gemma4_31b | generate | running | **1/10** PERMISSIVE | 0.555 |
+| gemma4_12b | generate | parse_hold | 4/20 | 0.374 |
+| olmo3_7b_sft / dpo | done | checks_fail | — | Batches done |
+
+D64 resume confirmed: FORCED skipped; PERMISSIVE underway on all three.
+
+### Cumulative spend vs caps (operational)
+
+| | USD | Cap |
+|--|-----|-----|
+| OpenAI (dashboard floor session-1 $12.77 + sft/dpo coding metas $4.040+$4.725) | ~**21.54** (approx; Volume per-config ledgers empty — metas used) | 49 |
+| OpenRouter (sft+dpo metas) | ~**0.15** (+ prior ~0.05 ledger) | 3 |
+| API total (approx) | ~**21.7** | 52 |
+| Modal (repo ledger + STATUS latency ests; not billed invoice) | ledger ~$25.7; session-1 holds + resume in progress | 130 |
+
+7D StrongREJECT forecast unchanged at ~$4.00 (7980 req). No 7D start.

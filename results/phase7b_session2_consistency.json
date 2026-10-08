@@ -1,0 +1,54 @@
+{
+  "canary": {
+    "ok": true,
+    "n_snapshot": 480,
+    "n_current": 480,
+    "missing": [],
+    "added": [],
+    "changed": []
+  },
+  "consistency": {
+    "olmo3_7b_final": {
+      "ok": true,
+      "n_chains": 120,
+      "n_failed": 0,
+      "failed_example": []
+    },
+    "olmo3_7b_sft": {
+      "ok": true,
+      "n_chains": 120,
+      "n_failed": 0,
+      "failed_example": []
+    },
+    "olmo3_7b_dpo": {
+      "ok": true,
+      "n_chains": 120,
+      "n_failed": 0,
+      "failed_example": []
+    },
+    "qwen38_27b_nothink": {
+      "ok": true,
+      "n_chains": 100,
+      "n_failed": 0,
+      "failed_example": []
+    },
+    "qwen38_27b_think": {
+      "ok": true,
+      "n_chains": 100,
+      "n_failed": 0,
+      "failed_example": []
+    },
+    "gemma4_31b": {
+      "ok": true,
+      "n_chains": 100,
+      "n_failed": 0,
+      "failed_example": []
+    },
+    "gemma4_12b": {
+      "ok": true,
+      "n_chains": 100,
+      "n_failed": 0,
+      "failed_example": []
+    }
+  }
+}
