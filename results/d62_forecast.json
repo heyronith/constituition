@@ -1,0 +1,30 @@
+{
+  "api_coding_remaining_6_usd": 27.01716623025017,
+  "api_spent_gt_usd": 12.81902051,
+  "canary_modal_est_usd": 2.00177328,
+  "caps": {
+    "api": 50.0,
+    "modal": 130.0,
+    "openai": 47.0,
+    "openrouter": 3.0
+  },
+  "conservative_per_config_usd": 8.660662765714283,
+  "decision": "D62",
+  "g4_per_config_usd": 8.660662765714283,
+  "gate_pass": false,
+  "h3_modal_high_usd": 15.0,
+  "h3_strongreject_api_usd": 4.0037571875,
+  "headroom_frac": 0.1,
+  "modal_spent_ledger_usd": 25.6849521948442,
+  "n_constitutions_per_config": 38,
+  "openai_dashboard_usd": 12.77,
+  "openai_ledger_usd": 6.829063125000006,
+  "openai_ledger_vs_dashboard_diff": 5.940936874999994,
+  "openrouter_ledger_usd": 0.04902050999999982,
+  "proj_api_usd": 43.83994392775017,
+  "proj_modal_usd": 92.6489287891299,
+  "proj_openai_usd": 43.49990385066778,
+  "proj_openrouter_usd": 0.3400400770823876,
+  "remaining_6_modal_usd": 51.9639765942857,
+  "strongreject_n": 7980
+}
