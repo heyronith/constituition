@@ -1,0 +1,116 @@
+{
+  "qwen38_27b_nothink": {
+    "consistency_ok": true,
+    "n_chains": 120,
+    "n_failed": 0,
+    "status": {
+      "stage": "coding",
+      "state": "running",
+      "rounds_completed": null,
+      "rounds_total": null,
+      "usd_so_far": null,
+      "batch_ids": null
+    },
+    "C1_reported": {
+      "pass": false,
+      "parse_rate": 0.9565024411895251,
+      "censor_frac": 0.03333333333333333,
+      "n_chains": 120,
+      "n_censored": 4,
+      "per_protocol": {
+        "FORCED": {
+          "n_chains": 100,
+          "n_censored": 4,
+          "n_rounds_ok": 1955,
+          "n_rounds_fail": 96,
+          "parse_rate": 0.9531935641150658,
+          "censor_frac": 0.04
+        },
+        "PERMISSIVE": {
+          "n_chains": 20,
+          "n_censored": 0,
+          "n_rounds_ok": 200,
+          "n_rounds_fail": 2,
+          "parse_rate": 0.9900990099009901,
+          "censor_frac": 0.0
+        }
+      }
+    }
+  },
+  "gemma4_31b": {
+    "consistency_ok": true,
+    "n_chains": 120,
+    "n_failed": 0,
+    "status": {
+      "stage": "coding",
+      "state": "running",
+      "rounds_completed": null,
+      "rounds_total": null,
+      "usd_so_far": null,
+      "batch_ids": null
+    },
+    "C1_reported": {
+      "pass": false,
+      "parse_rate": 0.938544961590601,
+      "censor_frac": 0.13333333333333333,
+      "n_chains": 120,
+      "n_censored": 16,
+      "per_protocol": {
+        "FORCED": {
+          "n_chains": 100,
+          "n_censored": 16,
+          "n_rounds_ok": 1877,
+          "n_rounds_fail": 135,
+          "parse_rate": 0.9329025844930418,
+          "censor_frac": 0.16
+        },
+        "PERMISSIVE": {
+          "n_chains": 20,
+          "n_censored": 0,
+          "n_rounds_ok": 200,
+          "n_rounds_fail": 1,
+          "parse_rate": 0.9950248756218906,
+          "censor_frac": 0.0
+        }
+      }
+    }
+  },
+  "qwen38_27b_think": {
+    "consistency_ok": true,
+    "n_chains": 120,
+    "n_failed": 0,
+    "status": {
+      "stage": "generate",
+      "state": "running",
+      "rounds_completed": 5,
+      "rounds_total": 10,
+      "usd_so_far": 2.26209456,
+      "batch_ids": null
+    },
+    "C1_reported": {
+      "pass": true,
+      "parse_rate": 0.9985734664764622,
+      "censor_frac": 0.0,
+      "n_chains": 120,
+      "n_censored": 0,
+      "per_protocol": {
+        "FORCED": {
+          "n_chains": 100,
+          "n_censored": 0,
+          "n_rounds_ok": 2000,
+          "n_rounds_fail": 2,
+          "parse_rate": 0.999000999000999,
+          "censor_frac": 0.0
+        },
+        "PERMISSIVE": {
+          "n_chains": 20,
+          "n_censored": 0,
+          "n_rounds_ok": 100,
+          "n_rounds_fail": 1,
+          "parse_rate": 0.9900990099009901,
+          "censor_frac": 0.0
+        }
+      }
+    }
+  }
+}
