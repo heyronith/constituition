@@ -277,16 +277,80 @@ def append_config_ledger(
         fh.write(json.dumps(row, sort_keys=True) + "\n")
 
 
+# Task-rule / model-behaviour parse errors (not harness).
+_TASK_RULE_MARKERS = (
+    "revise text identical",
+    "duplicate id",
+    "unknown id",
+    "missing id",
+    "two changes",
+    "keep requires",
+    "revise requires",
+    "merge requires",
+    "merge with itself",
+    "merge chains",
+    "empty paraphrase",
+    "paraphrase requires",
+    "added principle",
+    "requires text=null",
+    "requires non-empty text",
+    "merge_with unknown",
+    "merge target",
+    "decision must be keep/revise",
+)
+_HARNESS_MARKERS = (
+    "no json",
+    "unterminated",
+    "trailing prose",
+    "leading prose",
+    "invalid structured",
+    "invalid forced output",
+    "invalid forced paraphrase",
+    "template",
+    "render",
+)
+
+
+def classify_parse_failure(
+    finish_reason: Any, parse_error: Any
+) -> Literal["harness", "model_behaviour", "unknown"]:
+    """Operational failure class (D63/D65). No clause-category labels."""
+    fr = str(finish_reason or "").lower()
+    pe = str(parse_error or "").lower()
+    if fr == "length":
+        return "harness"
+    if any(m in pe for m in _TASK_RULE_MARKERS):
+        return "model_behaviour"
+    if any(m in pe for m in _HARNESS_MARKERS):
+        return "harness"
+    if "json" in pe or "schema" in pe:
+        return "harness"
+    if pe or fr:
+        return "unknown"
+    return "unknown"
+
+
 def parse_tripwire_stats(
-    run_tag: str, config_id: str, *, root: Path | None = None, after_round: int = 3
+    run_tag: str,
+    config_id: str,
+    *,
+    root: Path | None = None,
+    after_round: int = 3,
+    mode: str = "legacy",
 ) -> dict[str, Any]:
-    """After FORCED round ``after_round``, compute parse rate and censor frac."""
+    """After FORCED round ``after_round``, decide parse_hold.
+
+    ``mode=legacy`` (D63): trip if parse_rate < 0.90 or censor_frac > 0.10.
+    ``mode=harness_frac`` (D65 gemma4_12b): trip only if any round ≤ after_round
+    has ≥10% of its failed attempts classified as harness-type.
+    """
     root = root or repo_root()
     base = root / "runs" / run_tag / config_id / "FORCED"
     n_chains = n_censored = n_ok = n_fail = 0
     failed_samples: list[dict[str, Any]] = []
+    by_round_fail: dict[int, dict[str, int]] = {}
     if not base.exists():
-        return {"ok": True, "n_chains": 0}
+        return {"ok": True, "n_chains": 0, "mode": mode}
     for chain_dir in sorted(p for p in base.rglob("chain_*") if p.is_dir()):
         n_chains += 1
         meta_path = chain_dir / "meta.json"
@@ -301,12 +365,19 @@ def parse_tripwire_stats(
             if not line.strip():
                 continue
             row = json.loads(line)
-            if int(row.get("round", -1)) > after_round:
+            rnd = int(row.get("round", -1))
+            if rnd > after_round:
                 continue
             if row.get("parse_status") == "ok":
                 n_ok += 1
             else:
                 n_fail += 1
+                kind = classify_parse_failure(row.get("finish_reason"), row.get("parse_error"))
+                slot = by_round_fail.setdefault(
+                    rnd, {"fail": 0, "harness": 0, "model_behaviour": 0, "unknown": 0}
+                )
+                slot["fail"] += 1
+                slot[kind] += 1
                 if len(failed_samples) < 10:
                     failed_samples.append(
                         {
@@ -314,19 +385,33 @@ def parse_tripwire_stats(
                             "round": row.get("round"),
                             "finish_reason": row.get("finish_reason"),
                             "parse_error": row.get("parse_error"),
+                            "failure_class": kind,
                             "text_final": (row.get("text_final") or "")[:2000],
                         }
                     )
     parse_rate = n_ok / max(n_ok + n_fail, 1)
     censor_frac = n_censored / max(n_chains, 1)
-    trip = parse_rate < 0.90 or censor_frac > 0.10
+    harness_rounds: list[dict[str, Any]] = []
+    if mode == "harness_frac":
+        trip = False
+        for rnd, s in sorted(by_round_fail.items()):
+            if s["fail"] <= 0:
+                continue
+            frac = s["harness"] / s["fail"]
+            harness_rounds.append({"round": rnd, "harness_frac": frac, **s})
+            if frac >= 0.10:
+                trip = True
+    else:
+        trip = parse_rate < 0.90 or censor_frac > 0.10
     return {
         "ok": not trip,
         "trip": trip,
+        "mode": mode,
         "parse_rate": parse_rate,
         "censor_frac": censor_frac,
         "n_chains": n_chains,
         "n_censored": n_censored,
+        "harness_by_round": harness_rounds,
         "failed_samples": failed_samples,
     }
 

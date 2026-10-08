@@ -1,0 +1,10 @@
+{
+  "config_id": "gemma4_12b",
+  "gpu": "L40S",
+  "stage_cap_usd": 12.990994148571426,
+  "app_id": "ap-iZZ20QUClknuhLHCqKwaWo",
+  "object_id": "fc-01M4DYJHWB1QVA7YXFDB57YY9Y",
+  "launch_utc": "2026-10-08T14:27:25Z",
+  "returncode": 0,
+  "mode": "resume_d65_harness_frac"
+}

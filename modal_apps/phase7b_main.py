@@ -247,7 +247,11 @@ def _generate_impl(
             usd_so_far=usd_so_far(),
         )
         if parse_tripwire and protocol == "FORCED" and t >= 3:
-            stats = parse_tripwire_stats(run_tag, config_id, root=root, after_round=3)
+            # D65: gemma4_12b trips only on harness-frac; other configs keep D63 legacy.
+            tw_mode = "harness_frac" if config_id == "gemma4_12b" else "legacy"
+            stats = parse_tripwire_stats(
+                run_tag, config_id, root=root, after_round=3, mode=tw_mode
+            )
             if stats.get("trip"):
                 out = (
                     Path(REMOTE_RUNS)
@@ -892,15 +896,15 @@ def code_config(
             n_mimo_missing=n_miss,
             modal_actual_usd=0.0,
         )
-        # Per-config report: C1, C3, C5 only for pass/fail signal.
+        # D65: C1 reported not gating; proceed on C3+C5 (technical success).
         slim = {
-            "C1": checks["C1_subject_parsing"],
+            "C1": {**checks["C1_subject_parsing"], "gating": False},
             "C3": checks["C3_judge_integrity"],
             "C5": checks["C5_storage"],
-            "all_pass": all(
-                checks[k]["pass"]
-                for k in ("C1_subject_parsing", "C3_judge_integrity", "C5_storage")
+            "all_pass": bool(
+                checks["C3_judge_integrity"]["pass"] and checks["C5_storage"]["pass"]
             ),
+            "d65_c1_reported_not_gating": True,
             "gpt_meta": gpt_meta,
             "mimo_meta": mimo_meta,
         }

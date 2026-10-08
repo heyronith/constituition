@@ -42,6 +42,45 @@ def slot_key(t: dict[str, Any]) -> str:
     return f"{config_id}|{protocol}|{condition}|{fmt}|{chain}|{round_idx}|per_round"
 
 
+def parse_mimo_slot_id(slot_id: str) -> dict[str, Any]:
+    parts = slot_id.split("|")
+    return {
+        "config_id": parts[0],
+        "protocol": parts[1],
+        "condition": parts[2],
+        "fmt": parts[3],
+        "chain_idx": int(parts[4]),
+        "round": int(parts[5]),
+        "kind": parts[6] if len(parts) > 6 else "per_round",
+    }
+
+
+def mimo_slot_post_censor(
+    slot_id: str, *, run_tag: str, root: Path | None = None
+) -> bool:
+    """True if the slot's round is after the chain's censored_at_round (D65/C5)."""
+    root = root or repo_root()
+    info = parse_mimo_slot_id(slot_id)
+    cdir = (
+        root
+        / "runs"
+        / run_tag
+        / info["config_id"]
+        / info["protocol"]
+        / info["condition"]
+        / info["fmt"]
+        / f"chain_{info['chain_idx']}"
+    )
+    meta_path = cdir / "meta.json"
+    if not meta_path.exists():
+        return False
+    meta = json.loads(meta_path.read_text(encoding="utf-8"))
+    cens = meta.get("censored_at_round")
+    if cens is None:
+        return False
+    return int(info["round"]) > int(cens)
+
+
 def extract_main_transitions(run_tag: str, *, root: Path | None = None) -> list[dict[str, Any]]:
     """Main-run extractor: FORCED cum r10/r20; PERMISSIVE cum r10 (D49)."""
     return extract_pilot_transitions(
@@ -223,7 +262,18 @@ def code_mimo_subsample(
             by_slot[sk] = t
     subset = list(by_slot.values())
     present = set(by_slot)
-    n_missing_slots = sum(1 for sid in selected if sid not in present)
+    # D65/C5: slots after right-censor are expected-absent, not integrity failures.
+    missing_uncensored = [
+        sid
+        for sid in selected
+        if sid not in present and not mimo_slot_post_censor(sid, run_tag=run_tag, root=root)
+    ]
+    n_missing_slots = len(missing_uncensored)
+    n_missing_post_censor = sum(
+        1
+        for sid in selected
+        if sid not in present and mimo_slot_post_censor(sid, run_tag=run_tag, root=root)
+    )
     for t in subset:
         t.setdefault("source", "pilot")
         t.setdefault("rewrite", t.get("revised") or t.get("rewrite"))
@@ -246,6 +296,7 @@ def code_mimo_subsample(
         "n": len(rows),
         "n_slots_selected_present": len(subset),
         "n_slots_selected_missing": n_missing_slots,
+        "n_slots_missing_post_censor": n_missing_post_censor,
         "api_usd": getattr(backend.last_cost, "usd", None),
         "job_id": job_id,
     }

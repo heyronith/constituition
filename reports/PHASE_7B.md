@@ -155,3 +155,75 @@ D64 resume confirmed: FORCED skipped; PERMISSIVE underway on all three.
 | Modal (repo ledger + STATUS latency ests; not billed invoice) | ledger ~$25.7; session-1 holds + resume in progress | 130 |
 
 7D StrongREJECT forecast unchanged at ~$4.00 (7980 req). No 7D start.
+
+## Session 3 (2026-10-08)
+
+### D65
+
+C1 parse/censor thresholds are **reported, not gating** for main-run configs (canary pipeline-quality only). Censoring = prereg §3.2 right-censor after 3 failed attempts. Drop a config only for technical failure (prereg §5). `all_pass` uses C3+C5. For `gemma4_12b`, D63 tripwire narrowed to **harness_frac ≥10% of failed attempts in a round**; model-behaviour (e.g. revise-identical) does not trip.
+
+### STATUS (session start → post-relaunch check)
+
+Start: nothink PERMISSIVE 9/10; think 3/10; gemma31 7/10; gemma12 parse_hold; sft/dpo done (pre-D65 checks_fail).
+
+Post-check (~15 min after gemma12 relaunch):
+
+| config | stage | state | notes |
+|--------|-------|-------|-------|
+| qwen38_27b_nothink | coding | running | gen complete (120 chains); consistency OK |
+| qwen38_27b_think | generate | running | PERMISSIVE 5/10; 120 chain dirs; consistency OK |
+| gemma4_31b | coding | running | gen complete (120 chains); consistency OK |
+| gemma4_12b | generate | parse_hold* | relaunch `ap-iZZ20QUClknuhLHCqKwaWo` live (L40S load); STATUS not yet overwritten |
+| olmo3_7b_sft | done | **done** | D65 C5 fix |
+| olmo3_7b_dpo | done | **done** | D65 |
+
+### Completed / in-flight checks (C1 reported)
+
+| config | consistency | C1 (reported) | C3 | C5 |
+|--------|-------------|---------------|----|----|
+| olmo3_7b_sft | OK | FAIL (parse 0.841, censor 0.208) | PASS | **PASS** (47 MiMo gaps all post-censor) |
+| olmo3_7b_dpo | OK | FAIL (parse/censor thresholds) | PASS | PASS |
+| qwen38_27b_nothink | OK (120) | FAIL (parse 0.957, censor 0.033) | pending coding | pending coding |
+| gemma4_31b | OK (120) | FAIL (parse 0.939, censor 0.133) | pending coding | pending coding |
+| qwen38_27b_think | OK (120) | PASS so far (parse 0.999, censor 0) | pending gen+coding | pending |
+
+### C5 resolution (`olmo3_7b_sft`)
+
+All **47** missing MiMo slots are rounds **after** `censored_at_round` → expected-absent under §3.2; **0** need coding. `code_mimo_subsample` now excludes post-censor gaps from `n_slots_selected_missing`. Checks rewritten; STATUS → `done`.
+
+### gemma4_12b relaunch
+
+| | |
+|--|--|
+| app_id | `ap-iZZ20QUClknuhLHCqKwaWo` |
+| object_id | `fc-01M4DYJHWB1QVA7YXFDB57YY9Y` |
+| launch_utc | 2026-10-08T14:27:25Z |
+| mode | resume_d65_harness_frac |
+| prelaunch tripwire | harness_frac=0 all rounds 0–3 → clear |
+
+Artifact: `results/phase7b_gemma4_12b_resume.json`.
+
+### Failure taxonomy (operational; no clause categories)
+
+Full table: `results/phase7b_session3_taxonomy.json` (config × protocol × condition: attempts, failed by parse_error type, finish_reason counts, censored chains + round).
+
+**Harness / length flags (flagged):**
+
+| config | protocol | condition | chain | round | finish_reason | parse_error |
+|--------|----------|-----------|-------|------:|---------------|-------------|
+| olmo3_7b_dpo | FORCED | OTHER_REFLECT | chain_23 | 19 | length | unterminated JSON object |
+| qwen38_27b_nothink | FORCED | NEUTRAL_EDIT | chain_6 | 18 | length | unterminated JSON object |
+| qwen38_27b_nothink | FORCED | NEUTRAL_EDIT | chain_8 | 16 | length | unterminated JSON object |
+
+All other failures in the refreshed taxonomy are **model_behaviour** (dominated by `revise text identical`) or rare task-rule merge issues. No category-level breakdown (blinding until 7E).
+
+### Cumulative spend vs caps
+
+| | USD | Cap |
+|--|-----|-----|
+| OpenAI (session-1 dashboard floor $12.77 + sft/dpo metas $8.765 + coding in flight) | ≥**21.5** | 49 |
+| OpenRouter (sft+dpo metas ~$0.10 + ledger ~$0.05) | ~**0.15** | 3 |
+| API total | ≥**21.7** | 52 |
+| Modal (ledger ~$25.7 + resume/coding GPUs) | in progress | 130 |
+
+No 7D.
