@@ -1,0 +1,45 @@
+{
+  "config_id": "gemma4_12b",
+  "diagnosed_utc": "2026-10-08T20:38:07Z",
+  "cause": "hung_after_preemption_mid_d60",
+  "logs": {
+    "app_id": "ap-N3qlRd0SmVBRUK8cdDfKng",
+    "last_log_utc": "2026-10-08T17:16:14Z",
+    "last_lines": [
+      "Container terminated due to preemption...",
+      "Received a cancellation signal...",
+      "Successfully canceled input..."
+    ]
+  },
+  "batch": {
+    "batch_id": "batch_6ac7bd7f9a788190801f147544dc5f23",
+    "job_id": "phase7b-gpt54-gemma4_12b",
+    "status": "cancelled",
+    "created_utc": "2026-10-08T15:57:51+00:00",
+    "request_counts": {
+      "completed": 2052,
+      "failed": 0,
+      "total": 2132
+    },
+    "in_progress_at_utc": "2026-10-08T15:58:53+00:00",
+    "cancelled_at_utc": "2026-10-08T19:11:48+00:00",
+    "volume_meta_status": "cancelling",
+    "stall_reason": "d60_straggler",
+    "n_missing_for_sync": 80
+  },
+  "lock": {
+    "holder": "gemma4_31b",
+    "utc": "2026-10-08T20:16:25Z",
+    "age_min_at_diagnose": 17,
+    "gemma12_waiting": false,
+    "action": "left_alone_holder_alive"
+  },
+  "mimo": {
+    "rows": 0,
+    "slots": "not_started",
+    "last_write": null
+  },
+  "d67_billing_wait": false,
+  "action": "modal_app_stop + code_only relaunch",
+  "new_app_id": "ap-UktV5RfCplsxCmhQ3cxY8c"
+}

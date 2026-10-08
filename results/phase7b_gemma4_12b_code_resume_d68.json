@@ -1,0 +1,18 @@
+{
+  "config_id": "gemma4_12b",
+  "mode": "code_only_after_preempt_hang_d68",
+  "gpu": "L40S",
+  "stopped_app_id": "ap-N3qlRd0SmVBRUK8cdDfKng",
+  "app_id": "ap-UktV5RfCplsxCmhQ3cxY8c",
+  "object_id": "fc-01M4EKS1GWP2ZBF0W1RJPX9NVS",
+  "launch_utc": "2026-10-08T20:37:58Z",
+  "returncode": 0,
+  "prior_batch_id": "batch_6ac7bd7f9a788190801f147544dc5f23",
+  "prior_batch_status": "cancelled",
+  "prior_request_counts": {
+    "completed": 2052,
+    "failed": 0,
+    "total": 2132
+  },
+  "diagnosis": "preempted_mid_d60_cancel_no_logs_since_17:16Z"
+}

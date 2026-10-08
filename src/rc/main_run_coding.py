@@ -151,6 +151,7 @@ def code_gpt54(
     root: Path,
     job_id: str,
     coding_subdir: str | None = None,
+    on_progress: Any | None = None,
 ) -> tuple[list[dict[str, Any]], dict[str, Any]]:
     # D63: per-config coding dirs when coding_subdir set (concurrent 7B apps).
     coding_root = root / "runs" / run_tag / "coding"
@@ -194,6 +195,7 @@ def code_gpt54(
         root=root,
         job_id=job_id,
         resume_batch_id=resume_id,
+        on_poll=on_progress,
     )
     rows = judge_fate_batch(
         backend,

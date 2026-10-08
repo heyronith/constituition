@@ -245,6 +245,7 @@ class OpenAIBatchBackend:
         sleep_fn: Any | None = None,
         skip_preflight: bool = False,
         resume_batch_id: str | None = None,
+        on_poll: Any | None = None,
     ) -> None:
         self.judge_id = judge_id
         self.work_dir = Path(work_dir)
@@ -261,6 +262,7 @@ class OpenAIBatchBackend:
         self._sleep = sleep_fn or time.sleep
         self.skip_preflight = skip_preflight
         self.resume_batch_id = resume_batch_id
+        self.on_poll = on_poll
         self._created_new_batch = False
         judge = load_judges(self.root).by_id(judge_id)
         self.api_model = judge.api_model or judge.revision
@@ -513,6 +515,19 @@ class OpenAIBatchBackend:
                     "last_progress_at_unix": last_progress_at,
                 }
             )
+            if self.on_poll is not None:
+                try:
+                    self.on_poll(
+                        {
+                            "batch_id": batch_id,
+                            "batch_status": status,
+                            "completed": completed,
+                            "total": total,
+                            "substage": "batch_poll",
+                        }
+                    )
+                except Exception:
+                    pass
             if status in {"completed", "failed", "expired", "cancelled", "cancelling"}:
                 # Wait out cancelling → cancelled and for output_file_id to appear.
                 if status in {"cancelled", "cancelling"}:
@@ -612,7 +627,7 @@ class OpenAIBatchBackend:
         ]
         sync_usd = 0.0
         sync_in = sync_cached = sync_out = 0
-        for i in missing:
+        for sync_i, i in enumerate(missing):
             body = input_rows[i]["body"]
             sync_row = self._sync_one(body)
             sync_row["custom_id"] = f"req-{i}"
@@ -626,6 +641,20 @@ class OpenAIBatchBackend:
                 sync_cached += cached
                 sync_out += out_t
                 sync_usd += usd
+            if self.on_poll is not None and (
+                sync_i == 0 or sync_i + 1 == len(missing) or sync_i % 10 == 0
+            ):
+                try:
+                    self.on_poll(
+                        {
+                            "batch_id": batch_id,
+                            "substage": "sync",
+                            "sync_done": sync_i + 1,
+                            "sync_total": len(missing),
+                        }
+                    )
+                except Exception:
+                    pass
 
         for i in range(len(requests)):
             if i not in missing:

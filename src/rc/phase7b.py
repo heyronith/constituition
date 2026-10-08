@@ -77,6 +77,11 @@ def batch_lock_path(*, root: Path | None = None) -> Path:
     return root / "runs" / MAIN_RUN_TAG / "_locks" / "openai_batch_submit.lock"
 
 
+# D68: orphaned submit locks are stealable after TTL.
+BATCH_LOCK_TTL_S = 3600.0
+CODING_STATUS_HEARTBEAT_S = 900.0
+
+
 def gpu_for_config(config_id: str, *, root: Path | None = None) -> str:
     root = root or repo_root()
     subject = load_models(root).by_id(config_id)
@@ -325,8 +330,13 @@ def acquire_batch_submit_lock(
     min_gap_s: float = 600.0,
     poll_s: float = 15.0,
     max_wait_s: float = 7200.0,
+    ttl_s: float = BATCH_LOCK_TTL_S,
 ) -> None:
-    """Stagger OpenAI Batch submissions ≥ min_gap_s between configs (Volume lock)."""
+    """Stagger OpenAI Batch submissions ≥ min_gap_s between configs (Volume lock).
+
+    D68: locks older than ``ttl_s`` are treated as orphaned and may be stolen.
+    Callers must ``release_batch_submit_lock`` in a ``finally`` block.
+    """
     root = root or repo_root()
     path = batch_lock_path(root=root)
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -343,7 +353,11 @@ def acquire_batch_submit_lock(
                 payload = {}
         last_ts = float(payload.get("unix") or 0.0)
         last_cfg = payload.get("config_id")
-        if last_cfg == config_id or (now - last_ts) >= min_gap_s:
+        age = now - last_ts
+        orphaned = bool(last_ts) and age > ttl_s
+        gap_ok = age >= min_gap_s or not last_ts
+        # Same config, stagger gap elapsed, or D68 orphaned TTL → acquire.
+        if last_cfg == config_id or orphaned or gap_ok:
             path.write_text(
                 json.dumps(
                     {
@@ -351,6 +365,9 @@ def acquire_batch_submit_lock(
                         "unix": now,
                         "utc": utc_now(),
                         "pid": os.getpid(),
+                        "held": True,
+                        "orphaned_steal": orphaned and last_cfg != config_id,
+                        "prior_config_id": last_cfg if orphaned else None,
                     },
                     indent=2,
                     sort_keys=True,
@@ -360,6 +377,82 @@ def acquire_batch_submit_lock(
             )
             return
         time.sleep(poll_s)
+
+
+def release_batch_submit_lock(
+    config_id: str,
+    *,
+    root: Path | None = None,
+) -> bool:
+    """D68: release lock if we hold it; keep unix for submit stagger."""
+    root = root or repo_root()
+    path = batch_lock_path(root=root)
+    if not path.exists():
+        return False
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, OSError):
+        return False
+    if payload.get("config_id") != config_id:
+        return False
+    if not payload.get("held", True):
+        return False
+    payload["held"] = False
+    payload["released_utc"] = utc_now()
+    path.write_text(
+        json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+    )
+    return True
+
+
+def lock_is_orphaned(
+    payload: dict[str, Any],
+    *,
+    now: float | None = None,
+    ttl_s: float = BATCH_LOCK_TTL_S,
+) -> bool:
+    """True if a lock payload is past TTL (D68)."""
+    now = time.time() if now is None else now
+    last_ts = float(payload.get("unix") or 0.0)
+    if not last_ts:
+        return True
+    return (now - last_ts) > ttl_s
+
+
+class CodingStatusHeartbeat:
+    """Write STATUS at least every ``interval_s`` during coding sub-stages."""
+
+    def __init__(
+        self,
+        write_fn: Callable[..., None],
+        *,
+        interval_s: float = CODING_STATUS_HEARTBEAT_S,
+        clock: Callable[[], float] | None = None,
+    ) -> None:
+        self._write = write_fn
+        self.interval_s = interval_s
+        self._clock = clock or time.time
+        self._last: float | None = None
+        self.substage = "coding"
+
+    def pulse(self, substage: str | None = None, *, force: bool = False, **extra: Any) -> bool:
+        if substage is not None:
+            self.substage = substage
+        now = self._clock()
+        if (
+            not force
+            and self._last is not None
+            and (now - self._last) < self.interval_s
+        ):
+            return False
+        self._write(
+            stage="coding",
+            state="running",
+            coding_substage=self.substage,
+            **extra,
+        )
+        self._last = now
+        return True
 
 
 def append_config_ledger(

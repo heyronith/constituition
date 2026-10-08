@@ -330,3 +330,31 @@ Logged in `docs/DECISIONS.md`. Provider billing (`insufficient_quota`, `billing_
 | prior_error | `billing_hard_limit_reached` |
 
 Post-relaunch STATUS: `gemma4_12b` coding/running. think/gemma31 left alone. Artifact: `results/phase7b_gemma4_12b_code_resume_check2.json`.
+
+## gemma4_12b stale diagnose + D68 (2026-10-08)
+
+D55 blinding held. **gemma4_31b not touched** (still coding/running, STATUS 20:44Z).
+
+### Diagnose
+
+| check | result |
+|-------|--------|
+| (a) logs `ap-N3qlRd0SmVBRUK8cdDfKng` | last line **2026-10-08T17:16:14Z** — Modal preemption + input cancel; no further logs |
+| (b) OpenAI Batch | `batch_6ac7bd7f9a788190801f147544dc5f23` (`job_id=phase7b-gpt54-gemma4_12b`): **cancelled**, 2052/2132 completed, 0 failed; created 15:57:51Z; cancelled_at 19:11:48Z; Volume meta still `cancelling` / `d60_straggler` |
+| (c) D63 lock | holder **gemma4_31b** @ 20:16:25Z (~17 min, alive); gemma12 **not** waiting on it → left alone |
+| (d) MiMo | **0** rows / no `mimo_batch` — never started |
+| (e) D67 `api_billing_wait` | **no** |
+
+**Cause:** app hung after preemption mid-D60 cancel/sync (no log/Batch/MiMo progress >60 min). Batch already terminal cancelled with 80 keys needing D60 sync.
+
+### Act
+
+1. `modal app stop -y ap-N3qlRd0SmVBRUK8cdDfKng`
+2. Relaunch `--code-only` resume: `ap-UktV5RfCplsxCmhQ3cxY8c` / `fc-01M4EKS1GWP2ZBF0W1RJPX9NVS` @ 20:37:58Z
+3. STATUS confirmed within 15 min: 20:37:58Z `coding_substage=consistency` → 20:38:22Z `batch_poll`
+
+### D68
+
+Logged in `docs/DECISIONS.md`: lock TTL 60 min + `release_batch_submit_lock` in `finally`; coding STATUS heartbeat ≤15 min (`CodingStatusHeartbeat` on Batch poll / sync / MiMo / checks). Tests: `tests/test_phase7b_d68.py` (PASS).
+
+Artifacts: `results/phase7b_gemma4_12b_stale_diag.json`, `results/phase7b_gemma4_12b_code_resume_d68.json`, `results/phase7b_status_d68.log`.

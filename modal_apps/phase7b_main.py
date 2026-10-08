@@ -633,10 +633,12 @@ def code_config(
     )
     from rc.openai_batch import estimate_batch_usd
     from rc.phase7b import (
+        CodingStatusHeartbeat,
         acquire_batch_submit_lock,
         api_submission_allowed,
         append_config_ledger,
         classify_openai_batch_error,
+        release_batch_submit_lock,
         wait_for_provider_billing,
     )
 
@@ -649,9 +651,11 @@ def code_config(
     def _st(**payload):
         _write_cfg_status(config_id, run_tag=run_tag, **payload)
 
-    _st(stage="coding", state="running")
+    hb = CodingStatusHeartbeat(_st)
+    hb.pulse("start", force=True)
 
     try:
+        hb.pulse("consistency", force=True)
         gate = verify_run_consistency(run_tag, config_id, root=root)
         if not gate.get("ok"):
             _st(
@@ -690,61 +694,76 @@ def code_config(
         gpt_rows = None
         gpt_meta = None
         last_err: Exception | None = None
-        for attempt in range(12):
-            try:
-                gpt_rows, gpt_meta = code_gpt54(
-                    gpt_set,
-                    run_tag=run_tag,
-                    root=root,
-                    job_id=job_id,
-                    coding_subdir=coding_subdir,
-                )
-                last_err = None
-                break
-            except Exception as exc:  # noqa: BLE001
-                last_err = exc
-                kind = classify_openai_batch_error(exc)
-                if kind == "billing":
-                    # D67: provider billing → api_billing_wait + probe; resume when OK.
-                    def _billing_status(payload: dict) -> None:
+
+        def _on_batch_progress(info: dict) -> None:
+            sub = str(info.get("substage") or "batch_poll")
+            hb.pulse(sub, batch_id=info.get("batch_id"), batch_status=info.get("batch_status"),
+                     batch_completed=info.get("completed"), batch_total=info.get("total"),
+                     sync_done=info.get("sync_done"), sync_total=info.get("sync_total"))
+
+        try:
+            for attempt in range(12):
+                try:
+                    hb.pulse("batch_poll", force=True, batch_attempt=attempt + 1)
+                    gpt_rows, gpt_meta = code_gpt54(
+                        gpt_set,
+                        run_tag=run_tag,
+                        root=root,
+                        job_id=job_id,
+                        coding_subdir=coding_subdir,
+                        on_progress=_on_batch_progress,
+                    )
+                    last_err = None
+                    break
+                except Exception as exc:  # noqa: BLE001
+                    last_err = exc
+                    kind = classify_openai_batch_error(exc)
+                    if kind == "billing":
+                        # D67: provider billing → api_billing_wait + probe; resume when OK.
+                        def _billing_status(payload: dict) -> None:
+                            _st(
+                                stage="coding",
+                                batch_attempt=attempt + 1,
+                                **payload,
+                            )
+                            runs_vol.commit()
+
+                        recovered = wait_for_provider_billing(
+                            error=str(exc),
+                            on_status=_billing_status,
+                        )
+                        if recovered:
+                            acquire_batch_submit_lock(config_id, root=root)
+                            continue
+                        return {
+                            "state": "api_billing_wait",
+                            "error": str(exc)[:500],
+                            "exhausted": True,
+                        }
+                    if kind == "rate_limit":
                         _st(
                             stage="coding",
+                            state="api_wait",
+                            error=str(exc)[:500],
                             batch_attempt=attempt + 1,
-                            **payload,
                         )
                         runs_vol.commit()
-
-                    recovered = wait_for_provider_billing(
-                        error=str(exc),
-                        on_status=_billing_status,
-                    )
-                    if recovered:
+                        time.sleep(1800)
                         acquire_batch_submit_lock(config_id, root=root)
                         continue
-                    return {
-                        "state": "api_billing_wait",
-                        "error": str(exc)[:500],
-                        "exhausted": True,
-                    }
-                if kind == "rate_limit":
                     _st(
                         stage="coding",
-                        state="api_wait",
+                        state="failed",
                         error=str(exc)[:500],
                         batch_attempt=attempt + 1,
                     )
                     runs_vol.commit()
-                    time.sleep(1800)
-                    acquire_batch_submit_lock(config_id, root=root)
-                    continue
-                _st(
-                    stage="coding",
-                    state="failed",
-                    error=str(exc)[:500],
-                    batch_attempt=attempt + 1,
-                )
-                runs_vol.commit()
-                raise
+                    raise
+        finally:
+            # D68: always release submit lock after Batch attempt path.
+            release_batch_submit_lock(config_id, root=root)
+            runs_vol.commit()
+
         if gpt_rows is None or gpt_meta is None:
             raise RuntimeError(f"OpenAI Batch exhausted 12 attempts: {last_err}")
 
@@ -762,6 +781,7 @@ def code_config(
         if skip_mimo:
             mimo_rows, mimo_meta, n_miss = [], {"n": 0, "api_usd": 0.0, "skipped": True}, 0
         else:
+            hb.pulse("mimo", force=True)
 
             def _run_mimo() -> tuple[list, dict, int]:
                 if max_mimo is not None:
@@ -811,6 +831,7 @@ def code_config(
             n_miss = 0
             while True:
                 try:
+                    hb.pulse("mimo")
                     mimo_rows, mimo_meta, n_miss = _run_mimo()
                     break
                 except Exception as exc:  # noqa: BLE001
@@ -832,6 +853,7 @@ def code_config(
                     if not provider_down:
                         raise
                     if elapsed < 7200:
+                        hb.pulse("mimo")
                         time.sleep(min(300.0, 30.0 + elapsed / 10.0))
                         continue
                     if elapsed > 86400:
@@ -861,6 +883,7 @@ def code_config(
                 root=root,
             )
 
+        hb.pulse("checks", force=True)
         coding_base = root / "runs" / run_tag / "coding" / coding_subdir
         coding_base.mkdir(parents=True, exist_ok=True)
         gates_gpt = integrity_for_judge(
