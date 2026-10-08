@@ -471,6 +471,9 @@ def judge_fate_batch(
                     "finish_reason": gen.finish_reason,
                     "n_reasoning_tokens": gen.n_reasoning_tokens,
                     "text_reasoning": gen.text_reasoning,
+                    # D60: Batch vs sync-straggler provenance
+                    "submit_mode": getattr(gen, "submit_mode", None),
+                    "request_body_sha256": getattr(gen, "request_body_sha256", None),
                 }
             )
 

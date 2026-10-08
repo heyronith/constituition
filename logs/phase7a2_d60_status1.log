@@ -1,0 +1,33 @@
+{
+  "batch_ids": {
+    "gpt54": "batch_6ac6b190dcdc819087c85c218e21bf8c"
+  },
+  "config_id": "olmo3_7b_final",
+  "last_update_utc": "2026-10-08T03:00:38Z",
+  "note": "d60_resume_batch",
+  "run_tag": "main_v1",
+  "stage": "coding",
+  "state": "running"
+}
+
+stage=coding state=running
+run_tag=main_v1 config=olmo3_7b_final
+rounds_completed=None / None
+parse_failures=None resamples=None
+censored_chains=None
+elapsed_gpu_s=None
+usd_so_far=None usd_projected_total=None
+batch_ids={'gpt54': 'batch_6ac6b190dcdc819087c85c218e21bf8c'}
+last_update_utc=2026-10-08T03:00:38Z
+✓ Initialized. View run at 
+https://modal.com/apps/heyronith/main/ap-eNFlCYPmYV9Iv38fc7ZbVX
+✓ Created objects.
+├── ✓ Uploaded /Users/ronny/Desktop/Research/AI Alignment 
+│   Projects_Claude/Constituition/modal_apps/phase7a2_check_batch.py
+└── ✓ Created Function check.
+[{'id': 'batch_6ac6b190dcdc819087c85c218e21bf8c', 'status': 'cancelling', 
+'completed': 3138, 'failed': 0, 'total': 3148, 'output_file_id': None, 
+'error_file_id': None}]
+Stopping app - local entrypoint completed.
+✓ App completed. View run at 
+https://modal.com/apps/heyronith/main/ap-eNFlCYPmYV9Iv38fc7ZbVX

@@ -25,15 +25,15 @@ def check(batch_ids: list[str]) -> list[dict]:
                 "completed": getattr(b.request_counts, "completed", None),
                 "failed": getattr(b.request_counts, "failed", None),
                 "total": getattr(b.request_counts, "total", None),
+                "output_file_id": b.output_file_id,
+                "error_file_id": getattr(b, "error_file_id", None),
             }
         )
     return out
 
 
 @app.local_entrypoint()
-def main() -> None:
-    ids = [
-        "batch_6ac69ed0b9788190b0e6f8b7bdfbbff3",
-        "batch_6ac697c82fb8819089a03dba6801da20",
-    ]
-    print(check.remote(ids))
+def main(
+    batch_id: str = "batch_6ac6b190dcdc819087c85c218e21bf8c",
+) -> None:
+    print(check.remote([batch_id]))

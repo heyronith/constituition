@@ -117,6 +117,9 @@ class GenerationResult:
     finish_reason: str
     latency_s: float
     flags: list[str] = field(default_factory=list)
+    # D60: OpenAI Batch vs sync-straggler provenance (optional for other backends).
+    submit_mode: str | None = None
+    request_body_sha256: str | None = None
 
 
 class Backend(Protocol):

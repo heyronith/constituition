@@ -560,8 +560,28 @@ def code_canary(
             gpt_set = gpt_set[: max(0, int(max_gpt))]
 
         api0 = spent_api_usd(root)
+        gpt_job = f"phase7a-canary-gpt54-{config_id}"
+        # Surface any Volume/STATUS batch id before the (possibly long) coding call.
+        from rc.main_run_coding import _resume_batch_id
+
+        early_bid = _resume_batch_id(
+            run_tag, root, root / "runs" / run_tag / "coding" / "gpt54_batch", gpt_job
+        )
+        if early_bid:
+            write_status(
+                Path(REMOTE_RUNS) / run_tag / "STATUS.json",
+                {
+                    "run_tag": run_tag,
+                    "stage": "coding",
+                    "state": "running",
+                    "config_id": config_id,
+                    "batch_ids": {"gpt54": early_bid},
+                    "note": "d60_resume_batch",
+                },
+            )
+            runs_vol.commit()
         gpt_rows, gpt_meta = code_gpt54(
-            gpt_set, run_tag=run_tag, root=root, job_id=f"phase7a-canary-gpt54-{config_id}"
+            gpt_set, run_tag=run_tag, root=root, job_id=gpt_job
         )
         if max_mimo is not None:
             # Smoke path: direct MiMo on ≤5 transitions (not design-grid subsample).
@@ -971,7 +991,7 @@ def orchestrate_smoke_d59(git_sha_value: str = "") -> dict:
 
 @app.local_entrypoint()
 def main(mode: str = "canary", rounds: int = 3, stage_cap_usd: float = 0.50) -> None:
-    """mode=detach_test|canary|canary_d59|canary_code|budget_stop_test|smoke_d59"""
+    """mode=detach_test|canary|canary_d59|canary_d59_resume|canary_code|budget_stop_test|smoke_d59"""
     from rc.budget import preflight, spent_modal_usd
     from rc.config import repo_root
     from rc.guards import assert_modal_workspace, check_modal_hf_secret
@@ -1053,31 +1073,49 @@ def main(mode: str = "canary", rounds: int = 3, stage_cap_usd: float = 0.50) -> 
             f"CANARY_CODE spawned object_id={call.object_id} run_tag={MAIN_RUN_TAG}"
         )
         print(f"launch_time_utc={time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime())}")
-    elif mode == "canary_d59":
-        # D59: regenerate stale suffixes on main_v1 then code. Modal +$4; API residual.
+    elif mode in {"canary_d59", "canary_d59_resume"}:
+        # D59: regenerate stale suffixes then code. D60 resume: code_only (skip gen).
         from rc.budget import spent_api_usd as _spent_api
 
+        code_only = mode == "canary_d59_resume"
         api_spent = _spent_api(root)
         api_cap = max(0.5, 6.0 - api_spent)
-        preflight(
-            "L4",
-            12_000,  # sized so estimate ≤ $4 stage top-up
-            phase="7a2",
-            job_id="phase7a2-canary-d59",
-            hard_cap_usd=spent_modal_usd(root) + 4.0,
-            override_job_cap_usd=4.0,
-            cpu_cores=4.0,
-            memory_gib=16.0,
-            root=root,
-        )
+        # Resume is CPU+API only; full d59 still budgets L4 regen headroom.
+        if code_only:
+            preflight(
+                "L4",
+                60,
+                phase="7a2",
+                job_id="phase7a2-canary-d60-resume",
+                hard_cap_usd=spent_modal_usd(root) + 0.50,
+                override_job_cap_usd=0.50,
+                cpu_cores=2.0,
+                memory_gib=8.0,
+                root=root,
+            )
+        else:
+            preflight(
+                "L4",
+                12_000,  # sized so estimate ≤ $4 stage top-up
+                phase="7a2",
+                job_id="phase7a2-canary-d59",
+                hard_cap_usd=spent_modal_usd(root) + 4.0,
+                override_job_cap_usd=4.0,
+                cpu_cores=4.0,
+                memory_gib=16.0,
+                root=root,
+            )
         call = orchestrate_canary.spawn(
             git_sha_value=sha,
-            code_only=False,
+            code_only=code_only,
             stage_cap_usd=4.0,
             stage_api_cap_usd=api_cap,
             run_tag=MAIN_RUN_TAG,
         )
-        print(f"CANARY_D59 spawned object_id={call.object_id} run_tag={MAIN_RUN_TAG}")
+        print(
+            f"CANARY_D59 spawned object_id={call.object_id} run_tag={MAIN_RUN_TAG} "
+            f"code_only={code_only}"
+        )
         print(f"stage_api_cap_usd={api_cap:.4f} (6.0 - spent {api_spent:.4f})")
         print(f"launch_time_utc={time.strftime('%Y-%m-%dT%H:%M:%SZ', time.gmtime())}")
     elif mode == "smoke_d59":

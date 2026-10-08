@@ -65,6 +65,46 @@ def _dedupe_by_transition_id(transitions: list[dict[str, Any]]) -> list[dict[str
     return out
 
 
+def _valid_judgment(row: dict[str, Any]) -> bool:
+    return bool(row.get("fate")) and row.get("parse_status") in {None, "ok", "repaired"}
+
+
+def _load_existing_gpt54(path: Path) -> dict[str, dict[str, Any]]:
+    if not path.exists():
+        return {}
+    by_key: dict[str, dict[str, Any]] = {}
+    for line in path.read_text(encoding="utf-8").splitlines():
+        if not line.strip():
+            continue
+        row = json.loads(line)
+        key = row.get("judgment_key") or row.get("transition_id")
+        if key and _valid_judgment(row):
+            by_key[str(key)] = row
+    return by_key
+
+
+def _resume_batch_id(run_tag: str, root: Path, work_dir: Path, job_id: str) -> str | None:
+    """Prefer Volume batch meta, then STATUS.batch_ids.gpt54 (D60)."""
+    meta_path = work_dir / f"{job_id}_batch.json"
+    if meta_path.exists():
+        try:
+            bid = json.loads(meta_path.read_text(encoding="utf-8")).get("batch_id")
+            if bid:
+                return str(bid)
+        except (json.JSONDecodeError, TypeError, ValueError):
+            pass
+    status_path = root / "runs" / run_tag / "STATUS.json"
+    if status_path.exists():
+        try:
+            payload = json.loads(status_path.read_text(encoding="utf-8"))
+            bid = (payload.get("batch_ids") or {}).get("gpt54")
+            if bid:
+                return str(bid)
+        except (json.JSONDecodeError, TypeError, ValueError):
+            pass
+    return None
+
+
 def code_gpt54(
     transitions: list[dict[str, Any]],
     *,
@@ -73,12 +113,44 @@ def code_gpt54(
     job_id: str,
 ) -> tuple[list[dict[str, Any]], dict[str, Any]]:
     work_dir = root / "runs" / run_tag / "coding" / "gpt54_batch"
-    backend = OpenAIBatchBackend("gpt54", work_dir=work_dir, root=root, job_id=job_id)
+    work_dir.mkdir(parents=True, exist_ok=True)
     transitions = _dedupe_by_transition_id(transitions)
     # judge_fate_batch expects source tagging
     for t in transitions:
         t.setdefault("source", "pilot")
         t.setdefault("rewrite", t.get("revised") or t.get("rewrite"))
+
+    out = root / "runs" / run_tag / "coding" / "gpt54.jsonl"
+    existing = _load_existing_gpt54(out)
+    # Never resubmit a key that already has a valid result (D60).
+    if existing:
+        from rc.judging import judgment_key_for
+
+        needed = [judgment_key_for(t, source=t.get("source") or "pilot") for t in transitions]
+        if needed and all(k in existing for k in needed):
+            rows = [existing[k] for k in needed]
+            meta = {
+                "n": len(rows),
+                "api_usd": 0.0,
+                "batch_id": _resume_batch_id(run_tag, root, work_dir, job_id),
+                "job_id": job_id,
+                "resumed_from_jsonl": True,
+                "n_batch": sum(1 for r in rows if r.get("submit_mode") == "batch"),
+                "n_sync": sum(1 for r in rows if r.get("submit_mode") == "sync"),
+            }
+            (out.parent / "gpt54_meta.json").write_text(
+                json.dumps(meta, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+            )
+            return rows, meta
+
+    resume_id = _resume_batch_id(run_tag, root, work_dir, job_id)
+    backend = OpenAIBatchBackend(
+        "gpt54",
+        work_dir=work_dir,
+        root=root,
+        job_id=job_id,
+        resume_batch_id=resume_id,
+    )
     rows = judge_fate_batch(
         backend,
         "gpt54",
@@ -87,13 +159,18 @@ def code_gpt54(
         rubric_version="v2",
         seed_base=20261004,
     )
+    cost = backend.last_cost
     meta = {
         "n": len(rows),
-        "api_usd": getattr(backend.last_cost, "usd", None),
-        "batch_id": getattr(backend.last_cost, "batch_id", None),
+        "api_usd": getattr(cost, "usd", None),
+        "batch_id": getattr(cost, "batch_id", None) or resume_id,
         "job_id": job_id,
+        "n_batch": getattr(cost, "n_batch", None),
+        "n_sync": getattr(cost, "n_sync", None),
+        "batch_usd": getattr(cost, "batch_usd", None),
+        "sync_usd": getattr(cost, "sync_usd", None),
+        "resumed_batch": bool(resume_id) and not getattr(backend, "_created_new_batch", True),
     }
-    out = root / "runs" / run_tag / "coding" / "gpt54.jsonl"
     out.parent.mkdir(parents=True, exist_ok=True)
     with out.open("w", encoding="utf-8") as fh:
         for r in rows:

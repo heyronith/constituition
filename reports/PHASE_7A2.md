@@ -1,6 +1,6 @@
 # PHASE 7A2 — D59 stop/replace repair, consistency, canary re-run
 
-**Status:** Session 1 in progress.
+**Status:** Session 2 (D60) — resume coding in flight.
 
 ## §0 Stop
 
@@ -63,3 +63,41 @@ See `results/d59_forensics.json` / `results/d59_forensics.md`.
 |---|---|
 | Cancelled Batch (wasted, FINAL) | ~**$1.82** OpenAI (2111/3141 completed) |
 | Ledger note | `cancelled_stale_resume` |
+
+## §6 D60 — Batch straggler sync (Session 2)
+
+| Field | Value |
+|---|---|
+| Decision | **D60** (see `docs/DECISIONS.md`) |
+| Stuck Batch | `batch_6ac6b190dcdc819087c85c218e21bf8c` |
+| Progress at cancel | **3113 / 3148** completed, 0 failed (~6 h no progress on last 35) |
+| Stopped app | `ap-NhwIFsSE4YkMQMC1F2iAKq` (already stopped) |
+| Resume mode | `canary_d59_resume` (skip generation; consistency → ingest → sync remainder → MiMo → gates → C1–C6) |
+| Rule | ≥95% + 60 min stall **or** 8 h wall → cancel → keep completed → sync remainder (byte-identical bodies) |
+| Provenance | `submit_mode` + `request_body_sha256` on every judgment |
+| Ledger | batch @ batch prices; sync @ standard with note `sync_straggler` |
+| Tests | `tests/test_openai_batch_d60.py` (stall→sync; resume no re-submit; body-hash equality) |
+
+### Resume launch
+
+| Field | Value |
+|---|---|
+| Mode | `canary_d59_resume` (`code_only=True`) |
+| App | `ap-keYNfLqFMpN41BUM7ZRElr` |
+| Object | `fc-01M4CQ4FSAKZVC8X9B1HBWYCHQ` |
+| Launch UTC | `2026-10-08T02:58:00Z` |
+| Caps | Modal **$0.50** (CPU); API residual **~$3.95** |
+| First STATUS (~12 min) | `coding` / `running`; `batch_ids.gpt54=batch_6ac6b190…`; note `d60_resume_batch` |
+| Batch at STATUS check | still `cancelling`; completed **3138/3148** (was 3113); `output_file_id=None` — backend waits for terminal + output then syncs remainder |
+
+### Straggler / cost split (operational; finalize when coding completes)
+
+| Metric | Value |
+|---|---|
+| n_batch (at cancel request) | 3113 |
+| n_batch (cancelling progress) | 3138 |
+| n_sync (expected remainder) | ≤35 (≤10 if 3138 hold) |
+| batch_usd | _(pending `gpt54_meta.json`)_ |
+| sync_usd | _(pending; ledger note `sync_straggler`)_ |
+
+D55 blinding: operational metrics only in STATUS/logs (no category erosion / COR−AGENT). No 7B launch.
