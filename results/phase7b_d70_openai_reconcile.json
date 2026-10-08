@@ -1,0 +1,176 @@
+{
+  "as_of_utc": "2026-10-08T22:27:57Z",
+  "openai_dashboard_prompt": null,
+  "openai_dashboard_gt_usd": 40.07,
+  "openai_dashboard_gt_source": "reconstructed: session1_dashboard_12.77 + unique_7b_volume_openai_27.30007125",
+  "inflated_guard_figure_usd": 60.760471875,
+  "inflated_decomposition": {
+    "volume_openai_once": 27.30007125,
+    "path_double_count": 27.30007125,
+    "batch_estimate_7127": 6.160400625,
+    "formula": "2*volume_openai + estimate_batch_usd(7127)"
+  },
+  "openai_entries": [
+    {
+      "source": "local_budget/ledger.jsonl",
+      "job_id": "phase5-battery-label-validity",
+      "usd": 0.10676500000000003,
+      "note": "ok | gpt54 Batch batch_6ac557cbadb88190bf823ef08035523c n=240"
+    },
+    {
+      "source": "local_budget/ledger.jsonl",
+      "job_id": "phase5-battery-harm-refusal",
+      "usd": 0.12041375000000003,
+      "note": "ok | gpt54 Batch batch_6ac5588d81048190912d88c03033f3e0 n=240"
+    },
+    {
+      "source": "local_budget/ledger.jsonl",
+      "job_id": "phase7a-canary-gpt54-olmo3_7b_final",
+      "usd": 1.797035625,
+      "note": "cancelled_stale_resume batch_6ac697c82fb8819089a03dba6801da20 completed_before_cancel=2079/3141"
+    },
+    {
+      "source": "local_budget/ledger.jsonl",
+      "job_id": "phase7a-canary-gpt54-olmo3_7b_final",
+      "usd": 1.824695625,
+      "note": "cancelled_stale_resume FINAL batch_6ac697c82fb8819089a03dba6801da20 completed=2111/3141 (supersedes prior 2079 estimate)"
+    },
+    {
+      "source": "local_budget/ledger.jsonl",
+      "job_id": "phase7a-canary-gpt54-olmo3_7b_final",
+      "usd": -1.797035625,
+      "note": "correction: remove superseded 2079-req estimate; keep FINAL 2111-req row only"
+    },
+    {
+      "source": "local_budget/ledger.jsonl",
+      "job_id": "phase7a-canary-gpt54-olmo3_7b_final",
+      "usd": 4.7470037500000055,
+      "note": "batch_prices batch_id=batch_6ac6b190dcdc819087c85c218e21bf8c n=3138 d60_canary"
+    },
+    {
+      "source": "local_budget/ledger.jsonl",
+      "job_id": "phase7a-canary-gpt54-olmo3_7b_final",
+      "usd": 0.030185,
+      "note": "sync_straggler batch_id=batch_6ac6b190dcdc819087c85c218e21bf8c n=10 d60_error_recode"
+    },
+    {
+      "source": "volume:ledger_main_v1_gemma4_12b.jsonl",
+      "job_id": "phase7b-gpt54-gemma4_12b",
+      "usd": 3.177102500000002,
+      "note": "gpt54 batch_id=batch_6ac7bd7f9a788190801f147544dc5f23 n_batch=2052 n_sync=80"
+    },
+    {
+      "source": "volume:ledger_main_v1_gemma4_31b.cleaned.jsonl",
+      "job_id": "phase7b-gpt54-gemma4_31b",
+      "usd": 4.7320649999999995,
+      "note": "gpt54 batch_id=batch_6ac7b21f58a4819095284c9f6f13756f n_batch=3094 n_sync=0 | d70_dedupe_keep_positive"
+    },
+    {
+      "source": "volume:ledger_main_v1_olmo3_7b_dpo.jsonl",
+      "job_id": "phase7b-gpt54-olmo3_7b_dpo",
+      "usd": 4.725297500000001,
+      "note": "gpt54 batch_id=batch_6ac75501e58c8190bdd166ad4ad0d0d6 n_batch=3057 n_sync=0"
+    },
+    {
+      "source": "volume:ledger_main_v1_olmo3_7b_sft.jsonl",
+      "job_id": "phase7b-gpt54-olmo3_7b_sft",
+      "usd": 4.039831249999996,
+      "note": "gpt54 batch_id=batch_6ac7550365108190b7ffbe46f9133329 n_batch=2625 n_sync=0"
+    },
+    {
+      "source": "volume:ledger_main_v1_qwen38_27b_nothink.jsonl",
+      "job_id": "phase7b-gpt54-qwen38_27b_nothink",
+      "usd": 4.683643749999988,
+      "note": "gpt54 batch_id=batch_6ac7a8dd825c81909c44990e84430662 n_batch=3047 n_sync=0"
+    },
+    {
+      "source": "volume:ledger_main_v1_qwen38_27b_think.jsonl",
+      "job_id": "phase7b-gpt54-qwen38_27b_think",
+      "usd": 5.942131250000018,
+      "note": "gpt54 batch_id=batch_6ac7b48b388481909741557c36082247 n_batch=3788 n_sync=0"
+    }
+  ],
+  "openai_ledger_unique_usd": 40.07,
+  "openrouter_entries": [
+    {
+      "source": "volume:ledger_main_v1_gemma4_12b.jsonl",
+      "job_id": "phase7b-mimo-gemma4_12b",
+      "usd": 0.03903546480000012,
+      "note": "mimo n=358"
+    },
+    {
+      "source": "volume:ledger_main_v1_gemma4_31b.cleaned.jsonl",
+      "job_id": "phase7b-mimo-gemma4_31b",
+      "usd": 0.3819551879999995,
+      "note": "d70_reconcile mimo retries n_passes=8 sum_usd=0.381955 max_pass=0.056005"
+    },
+    {
+      "source": "volume:ledger_main_v1_olmo3_7b_dpo.jsonl",
+      "job_id": "phase7b-mimo-olmo3_7b_dpo",
+      "usd": 0.05536139099999976,
+      "note": "mimo n=500"
+    },
+    {
+      "source": "volume:ledger_main_v1_olmo3_7b_sft.jsonl",
+      "job_id": "phase7b-mimo-olmo3_7b_sft",
+      "usd": 0.04774725899999984,
+      "note": "mimo n=453"
+    },
+    {
+      "source": "volume:ledger_main_v1_qwen38_27b_nothink.jsonl",
+      "job_id": "phase7b-mimo-qwen38_27b_nothink",
+      "usd": 0.04884323099999981,
+      "note": "mimo n=490"
+    },
+    {
+      "source": "volume:ledger_main_v1_qwen38_27b_think.jsonl",
+      "job_id": "phase7b-mimo-qwen38_27b_think",
+      "usd": 0.052179689999999834,
+      "note": "mimo n=500"
+    },
+    {
+      "source": "local_budget/ledger.jsonl",
+      "job_id": "phase7a-canary-mimo-olmo3_7b_final",
+      "usd": 0.04902050999999982,
+      "note": "mimo canary subsample n=500"
+    }
+  ],
+  "openrouter_ledger_usd": 0.6741427337999988,
+  "openai_vs_dashboard": {
+    "ledger": 40.07,
+    "dashboard_gt": 40.07,
+    "diff_ledger_minus_gt": 0.0
+  },
+  "double_counts_found": [
+    "sum_ledgers_api read budget/ and runs/main_v1/budget/ as separate paths though symlinked (2x Volume OpenAI)",
+    "gemma4_31b ledger: 14x $0 openai resume appends + 8x MiMo retry openrouter rows (cleaned to 1 openai + 1 summed OR)",
+    "stale openai_spent_floor=$12.77 stacked mentally with per-config metas in session reports (not in sum_ledgers itself when floor < spent)",
+    "canary cancelled-batch rows retained with correction negative (net kept FINAL+d60; listed for audit)"
+  ],
+  "forecast_7d": {
+    "strongreject_n": 7980,
+    "strongreject_usd": 4.0037571875,
+    "h3_modal_high_usd": 15.0,
+    "openai_spent_guard_base": 40.07,
+    "openrouter_spent": 0.6741427337999988,
+    "modal_october_metered_usd": 74.77088701,
+    "proj_openai": 44.0737571875,
+    "proj_api": 44.7478999213,
+    "proj_modal": 89.77088701,
+    "caps": {
+      "openai": 49,
+      "api": 52,
+      "openrouter": 3,
+      "modal": 130
+    },
+    "headroom": {
+      "openai": 4.9262428125,
+      "api": 7.252100078700003,
+      "modal": 40.229112990000004
+    }
+  },
+  "reconcile_row": {
+    "job_id": "d70-openai-dashboard-reconcile",
+    "usd": 5.940866
+  }
+}

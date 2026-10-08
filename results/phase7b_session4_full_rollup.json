@@ -1,0 +1,524 @@
+{
+  "configs": {
+    "olmo3_7b_final": {
+      "status": {
+        "state": "done",
+        "stage": "done",
+        "checks_pass": false,
+        "batch_ids": null,
+        "last_update_utc": "2026-10-08T21:40:58Z"
+      },
+      "n_chains": 120,
+      "consistency_ok": true,
+      "consistency_n_failed": 0,
+      "C1": null,
+      "C3": null,
+      "C5": null,
+      "C1_pass": null,
+      "C3_pass": null,
+      "C5_pass": null,
+      "all_pass": null,
+      "gpt54": {
+        "api_usd": 4.777188750000006,
+        "n": 7775,
+        "n_batch": 3138,
+        "n_sync": 10,
+        "batch_id": "batch_6ac6b190dcdc819087c85c218e21bf8c",
+        "resumed_from_jsonl": null
+      },
+      "mimo": {
+        "api_usd": 0.04902050999999982,
+        "n": 500,
+        "n_selected": 500,
+        "n_present": 500,
+        "n_missing": 0,
+        "n_post_censor_absent": 0,
+        "n_resumed": null,
+        "n_api_new": null
+      }
+    },
+    "qwen38_27b_nothink": {
+      "status": {
+        "state": "done",
+        "stage": "done",
+        "checks_pass": true,
+        "batch_ids": {
+          "gpt54": "batch_6ac7a8dd825c81909c44990e84430662"
+        },
+        "last_update_utc": "2026-10-08T21:40:46Z"
+      },
+      "n_chains": 120,
+      "consistency_ok": true,
+      "consistency_n_failed": 0,
+      "C1": {
+        "censor_frac": 0.03333333333333333,
+        "gating": false,
+        "n_censored": 4,
+        "n_chains": 120,
+        "parse_rate": 0.9565024411895251,
+        "pass": false,
+        "per_protocol": {
+          "FORCED": {
+            "censor_frac": 0.04,
+            "n_censored": 4,
+            "n_chains": 100,
+            "n_rounds_fail": 96,
+            "n_rounds_ok": 1955,
+            "parse_rate": 0.9531935641150658
+          },
+          "PERMISSIVE": {
+            "censor_frac": 0.0,
+            "n_censored": 0,
+            "n_chains": 20,
+            "n_rounds_fail": 2,
+            "n_rounds_ok": 200,
+            "parse_rate": 0.9900990099009901
+          }
+        }
+      },
+      "C3": {
+        "gpt54_ok": true,
+        "mimo_ok": true,
+        "n_llm": 3148,
+        "n_unparseable": 0,
+        "pass": true,
+        "unparseable_cap": 0.01,
+        "unparseable_rate": 0.0
+      },
+      "C5": {
+        "chain_artifacts": 120,
+        "duplicate_rounds": false,
+        "mimo_slots_missing": 0,
+        "n_chains": 120,
+        "pass": true,
+        "run_manifest_present": true
+      },
+      "C1_pass": false,
+      "C3_pass": true,
+      "C5_pass": true,
+      "all_pass": true,
+      "gpt54": {
+        "api_usd": 4.683643749999988,
+        "n": 7804,
+        "n_batch": 3047,
+        "n_sync": 0,
+        "batch_id": "batch_6ac7a8dd825c81909c44990e84430662",
+        "resumed_from_jsonl": null
+      },
+      "mimo": {
+        "api_usd": 0.04884323099999981,
+        "n": 490,
+        "n_selected": 500,
+        "n_present": 490,
+        "n_missing": 0,
+        "n_post_censor_absent": 10,
+        "n_resumed": null,
+        "n_api_new": null
+      }
+    },
+    "qwen38_27b_think": {
+      "status": {
+        "state": "done",
+        "stage": "done",
+        "checks_pass": true,
+        "batch_ids": {
+          "gpt54": "batch_6ac7b48b388481909741557c36082247"
+        },
+        "last_update_utc": "2026-10-08T16:00:28Z"
+      },
+      "n_chains": 120,
+      "consistency_ok": true,
+      "consistency_n_failed": 0,
+      "C1": {
+        "censor_frac": 0.0,
+        "n_censored": 0,
+        "n_chains": 120,
+        "parse_rate": 0.9986382206082615,
+        "pass": true,
+        "per_protocol": {
+          "FORCED": {
+            "censor_frac": 0.0,
+            "n_censored": 0,
+            "n_chains": 100,
+            "n_rounds_fail": 2,
+            "n_rounds_ok": 2000,
+            "parse_rate": 0.999000999000999
+          },
+          "PERMISSIVE": {
+            "censor_frac": 0.0,
+            "n_censored": 0,
+            "n_chains": 20,
+            "n_rounds_fail": 1,
+            "n_rounds_ok": 200,
+            "parse_rate": 0.9950248756218906
+          }
+        }
+      },
+      "C3": {
+        "gpt54_ok": true,
+        "mimo_ok": true,
+        "n_llm": 3148,
+        "n_unparseable": 0,
+        "pass": true,
+        "unparseable_cap": 0.01,
+        "unparseable_rate": 0.0
+      },
+      "C5": {
+        "chain_artifacts": 120,
+        "duplicate_rounds": false,
+        "mimo_slots_missing": 0,
+        "n_chains": 120,
+        "pass": true,
+        "run_manifest_present": true
+      },
+      "C1_pass": true,
+      "C3_pass": true,
+      "C5_pass": true,
+      "all_pass": true,
+      "gpt54": {
+        "api_usd": 5.942131250000018,
+        "n": 8094,
+        "n_batch": 3788,
+        "n_sync": 0,
+        "batch_id": "batch_6ac7b48b388481909741557c36082247",
+        "resumed_from_jsonl": null
+      },
+      "mimo": {
+        "api_usd": 0.052179689999999834,
+        "n": 500,
+        "n_selected": 500,
+        "n_present": 500,
+        "n_missing": 0,
+        "n_post_censor_absent": 0,
+        "n_resumed": null,
+        "n_api_new": null
+      }
+    },
+    "gemma4_31b": {
+      "status": {
+        "state": "done",
+        "stage": "done",
+        "checks_pass": true,
+        "batch_ids": {
+          "gpt54": "batch_6ac7b21f58a4819095284c9f6f13756f"
+        },
+        "last_update_utc": "2026-10-08T21:58:10Z"
+      },
+      "n_chains": 120,
+      "consistency_ok": true,
+      "consistency_n_failed": 0,
+      "C1": {
+        "censor_frac": 0.13333333333333333,
+        "gating": false,
+        "n_censored": 16,
+        "n_chains": 120,
+        "parse_rate": 0.938544961590601,
+        "pass": false,
+        "per_protocol": {
+          "FORCED": {
+            "censor_frac": 0.16,
+            "n_censored": 16,
+            "n_chains": 100,
+            "n_rounds_fail": 135,
+            "n_rounds_ok": 1877,
+            "parse_rate": 0.9329025844930418
+          },
+          "PERMISSIVE": {
+            "censor_frac": 0.0,
+            "n_censored": 0,
+            "n_chains": 20,
+            "n_rounds_fail": 1,
+            "n_rounds_ok": 200,
+            "parse_rate": 0.9950248756218906
+          }
+        }
+      },
+      "C3": {
+        "gpt54_ok": true,
+        "mimo_ok": true,
+        "n_llm": 3148,
+        "n_unparseable": 0,
+        "pass": true,
+        "unparseable_cap": 0.01,
+        "unparseable_rate": 0.0
+      },
+      "C5": {
+        "chain_artifacts": 120,
+        "duplicate_rounds": false,
+        "mimo_slots_missing": 0,
+        "n_chains": 120,
+        "pass": true,
+        "run_manifest_present": true
+      },
+      "C1_pass": false,
+      "C3_pass": true,
+      "C5_pass": true,
+      "all_pass": true,
+      "gpt54": {
+        "api_usd": 0.0,
+        "n": 7127,
+        "n_batch": 3094,
+        "n_sync": 0,
+        "batch_id": "batch_6ac7b21f58a4819095284c9f6f13756f",
+        "resumed_from_jsonl": true
+      },
+      "mimo": {
+        "api_usd": 0.0,
+        "n": 462,
+        "n_selected": 500,
+        "n_present": 462,
+        "n_missing": 0,
+        "n_post_censor_absent": 38,
+        "n_resumed": 462,
+        "n_api_new": 0
+      }
+    },
+    "gemma4_12b": {
+      "status": {
+        "state": "done",
+        "stage": "done",
+        "checks_pass": true,
+        "batch_ids": {
+          "gpt54": "batch_6ac7bd7f9a788190801f147544dc5f23"
+        },
+        "last_update_utc": "2026-10-08T21:34:49Z"
+      },
+      "n_chains": 120,
+      "consistency_ok": true,
+      "consistency_n_failed": 0,
+      "C1": {
+        "censor_frac": 0.475,
+        "gating": false,
+        "n_censored": 57,
+        "n_chains": 120,
+        "parse_rate": 0.8056779246206559,
+        "pass": false,
+        "per_protocol": {
+          "FORCED": {
+            "censor_frac": 0.54,
+            "n_censored": 54,
+            "n_chains": 100,
+            "n_rounds_fail": 387,
+            "n_rounds_ok": 1460,
+            "parse_rate": 0.7904710341093666
+          },
+          "PERMISSIVE": {
+            "censor_frac": 0.15,
+            "n_censored": 3,
+            "n_chains": 20,
+            "n_rounds_fail": 10,
+            "n_rounds_ok": 186,
+            "parse_rate": 0.9489795918367347
+          }
+        }
+      },
+      "C3": {
+        "gpt54_ok": true,
+        "mimo_ok": true,
+        "n_llm": 3148,
+        "n_unparseable": 0,
+        "pass": true,
+        "unparseable_cap": 0.01,
+        "unparseable_rate": 0.0
+      },
+      "C5": {
+        "chain_artifacts": 120,
+        "duplicate_rounds": false,
+        "mimo_slots_missing": 0,
+        "n_chains": 120,
+        "pass": true,
+        "run_manifest_present": true
+      },
+      "C1_pass": false,
+      "C3_pass": true,
+      "C5_pass": true,
+      "all_pass": true,
+      "gpt54": {
+        "api_usd": 3.177102500000002,
+        "n": 4557,
+        "n_batch": 2052,
+        "n_sync": 80,
+        "batch_id": "batch_6ac7bd7f9a788190801f147544dc5f23",
+        "resumed_from_jsonl": null
+      },
+      "mimo": {
+        "api_usd": 0.03903546480000012,
+        "n": 358,
+        "n_selected": 500,
+        "n_present": 358,
+        "n_missing": 0,
+        "n_post_censor_absent": 142,
+        "n_resumed": null,
+        "n_api_new": null
+      }
+    },
+    "olmo3_7b_sft": {
+      "status": {
+        "state": "done",
+        "stage": "done",
+        "checks_pass": true,
+        "batch_ids": {
+          "gpt54": "batch_6ac7550365108190b7ffbe46f9133329"
+        },
+        "last_update_utc": "2026-10-08T14:26:34Z"
+      },
+      "n_chains": 120,
+      "consistency_ok": true,
+      "consistency_n_failed": 0,
+      "C1": {
+        "censor_frac": 0.20833333333333334,
+        "gating": false,
+        "n_censored": 25,
+        "n_chains": 120,
+        "parse_rate": 0.841034336583298,
+        "pass": false,
+        "per_protocol": {
+          "FORCED": {
+            "censor_frac": 0.25,
+            "n_censored": 25,
+            "n_chains": 100,
+            "n_rounds_fail": 368,
+            "n_rounds_ok": 1784,
+            "parse_rate": 0.828996282527881
+          },
+          "PERMISSIVE": {
+            "censor_frac": 0.0,
+            "n_censored": 0,
+            "n_chains": 20,
+            "n_rounds_fail": 7,
+            "n_rounds_ok": 200,
+            "parse_rate": 0.966183574879227
+          }
+        }
+      },
+      "C3": {
+        "gpt54_ok": true,
+        "mimo_ok": true,
+        "n_llm": 3148,
+        "n_unparseable": 0,
+        "pass": true,
+        "unparseable_cap": 0.01,
+        "unparseable_rate": 0.0
+      },
+      "C5": {
+        "chain_artifacts": 120,
+        "duplicate_rounds": false,
+        "mimo_slots_missing": 0,
+        "n_chains": 120,
+        "pass": true,
+        "run_manifest_present": true
+      },
+      "C1_pass": false,
+      "C3_pass": true,
+      "C5_pass": true,
+      "all_pass": true,
+      "gpt54": {
+        "api_usd": 4.039831249999996,
+        "n": 6544,
+        "n_batch": 2625,
+        "n_sync": 0,
+        "batch_id": "batch_6ac7550365108190b7ffbe46f9133329",
+        "resumed_from_jsonl": null
+      },
+      "mimo": {
+        "api_usd": 0.04774725899999984,
+        "n": 453,
+        "n_selected": 500,
+        "n_present": 453,
+        "n_missing": 0,
+        "n_post_censor_absent": 47,
+        "n_resumed": null,
+        "n_api_new": null
+      }
+    },
+    "olmo3_7b_dpo": {
+      "status": {
+        "state": "done",
+        "stage": "done",
+        "checks_pass": true,
+        "batch_ids": {
+          "gpt54": "batch_6ac75501e58c8190bdd166ad4ad0d0d6"
+        },
+        "last_update_utc": "2026-10-08T14:26:36Z"
+      },
+      "n_chains": 120,
+      "consistency_ok": true,
+      "consistency_n_failed": 0,
+      "C1": {
+        "censor_frac": 0.06666666666666667,
+        "gating": false,
+        "n_censored": 8,
+        "n_chains": 120,
+        "parse_rate": 0.9799453053783045,
+        "pass": false,
+        "per_protocol": {
+          "FORCED": {
+            "censor_frac": 0.0,
+            "n_censored": 0,
+            "n_chains": 100,
+            "n_rounds_fail": 1,
+            "n_rounds_ok": 2000,
+            "parse_rate": 0.9995002498750625
+          },
+          "PERMISSIVE": {
+            "censor_frac": 0.4,
+            "n_censored": 8,
+            "n_chains": 20,
+            "n_rounds_fail": 43,
+            "n_rounds_ok": 150,
+            "parse_rate": 0.7772020725388601
+          }
+        }
+      },
+      "C3": {
+        "gpt54_ok": true,
+        "mimo_ok": true,
+        "n_llm": 3148,
+        "n_unparseable": 0,
+        "pass": true,
+        "unparseable_cap": 0.01,
+        "unparseable_rate": 0.0
+      },
+      "C5": {
+        "chain_artifacts": 120,
+        "duplicate_rounds": false,
+        "mimo_slots_missing": 0,
+        "n_chains": 120,
+        "pass": true,
+        "run_manifest_present": true
+      },
+      "C1_pass": false,
+      "C3_pass": true,
+      "C5_pass": true,
+      "all_pass": true,
+      "gpt54": {
+        "api_usd": 4.725297500000001,
+        "n": 7670,
+        "n_batch": 3057,
+        "n_sync": 0,
+        "batch_id": "batch_6ac75501e58c8190bdd166ad4ad0d0d6",
+        "resumed_from_jsonl": null
+      },
+      "mimo": {
+        "api_usd": 0.05536139099999976,
+        "n": 500,
+        "n_selected": 500,
+        "n_present": 500,
+        "n_missing": 0,
+        "n_post_censor_absent": 0,
+        "n_resumed": null,
+        "n_api_new": null
+      }
+    }
+  },
+  "n_chains_total": 840,
+  "consistency_all_ok": true,
+  "canary_snapshot": {
+    "ok": true,
+    "n_snapshot": 480,
+    "n_current": 480,
+    "missing": [],
+    "added": [],
+    "changed": []
+  }
+}

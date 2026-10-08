@@ -781,15 +781,21 @@ def code_config(
         if gpt_rows is None or gpt_meta is None:
             raise RuntimeError(f"OpenAI Batch exhausted 12 attempts: {last_err}")
 
-        append_config_ledger(
-            run_tag=run_tag,
-            config_id=config_id,
-            platform="openai",
-            actual_usd=float(gpt_meta.get("api_usd") or 0),
-            job_id=job_id,
-            note=f"gpt54 batch_id={gpt_meta.get('batch_id')} n_batch={gpt_meta.get('n_batch')} n_sync={gpt_meta.get('n_sync')}",
-            root=root,
-        )
+        # D70: do not append $0 resume rows (inflates job history; guard uses max/job).
+        gpt_usd = float(gpt_meta.get("api_usd") or 0)
+        if gpt_usd > 0 or not gpt_meta.get("resumed_from_jsonl"):
+            append_config_ledger(
+                run_tag=run_tag,
+                config_id=config_id,
+                platform="openai",
+                actual_usd=gpt_usd,
+                job_id=job_id,
+                note=(
+                    f"gpt54 batch_id={gpt_meta.get('batch_id')} "
+                    f"n_batch={gpt_meta.get('n_batch')} n_sync={gpt_meta.get('n_sync')}"
+                ),
+                root=root,
+            )
 
         skip_mimo = max_mimo is not None and int(max_mimo) <= 0
         if skip_mimo:
@@ -900,15 +906,22 @@ def code_config(
                     runs_vol.commit()
                     time.sleep(3600)
 
-            append_config_ledger(
-                run_tag=run_tag,
-                config_id=config_id,
-                platform="openrouter",
-                actual_usd=float(mimo_meta.get("api_usd") or 0),
-                job_id=f"phase7b-mimo-{config_id}",
-                note=f"mimo n={mimo_meta.get('n')}",
-                root=root,
-            )
+            mimo_usd = float(mimo_meta.get("api_usd") or 0)
+            # D70: skip $0 fully-resumed MiMo ledger appends.
+            if mimo_usd > 0 or int(mimo_meta.get("n_api_new") or 0) > 0:
+                append_config_ledger(
+                    run_tag=run_tag,
+                    config_id=config_id,
+                    platform="openrouter",
+                    actual_usd=mimo_usd,
+                    job_id=f"phase7b-mimo-{config_id}",
+                    note=(
+                        f"mimo n={mimo_meta.get('n')} "
+                        f"n_api_new={mimo_meta.get('n_api_new')} "
+                        f"n_resumed={mimo_meta.get('n_resumed')}"
+                    ),
+                    root=root,
+                )
 
         hb.pulse("checks", force=True)
         coding_base = root / "runs" / run_tag / "coding" / coding_subdir

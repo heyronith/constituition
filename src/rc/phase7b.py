@@ -32,6 +32,12 @@ OPENAI_CAP_USD = 49.0
 OPENROUTER_CAP_USD = 3.0
 MODAL_CAP_USD = 130.0
 
+# D70: OpenAI spend floor for the project-cap guard.
+# Session-1 dashboard GT ($12.77) + unique 7B Volume OpenAI jobs ($27.30007125).
+# Prompt Session 4 left dashboard blank; reconstructed GT used until human overrides
+# via materials/main_run/refs/openai_dashboard_usd.json.
+OPENAI_DASHBOARD_USD = 40.07
+
 COMPUTE_GPU = {
     "modal_a100_80gb": "A100-80GB",
     "modal_l40s": "L40S",
@@ -270,21 +276,43 @@ def wait_for_provider_billing(
             return False
 
 
+def load_openai_dashboard_usd(root: Path | None = None) -> float:
+    """D70 human OpenAI Usage dashboard GT (override file), else OPENAI_DASHBOARD_USD."""
+    root = root or repo_root()
+    path = root / "materials" / "main_run" / "refs" / "openai_dashboard_usd.json"
+    if path.exists():
+        payload = json.loads(path.read_text(encoding="utf-8"))
+        return float(payload["openai_dashboard_usd"])
+    return float(OPENAI_DASHBOARD_USD)
+
+
 def sum_ledgers_api(
     run_tag: str = MAIN_RUN_TAG, *, root: Path | None = None
 ) -> dict[str, float]:
-    """Sum OpenAI/OpenRouter from all per-config ledgers + repo ledger."""
+    """Sum OpenAI/OpenRouter from all per-config ledgers + repo ledger.
+
+    D70: dedupe ledger *paths* by ``resolve()`` so a ``budget/`` symlink to
+    Volume ``runs/<tag>/budget`` is never double-counted (this produced the
+    false ``openai 60.76`` guard figure: 2×$27.30 + Batch estimate).
+    """
     root = root or repo_root()
     totals = {"openai": 0.0, "openrouter": 0.0, "modal": 0.0}
-    paths = [root / "budget" / "ledger.jsonl"]
-    paths.extend(sorted((root / "budget").glob(f"ledger_{run_tag}_*.jsonl")))
-    # Volume-mounted copies under runs/
+    candidates = [root / "budget" / "ledger.jsonl"]
+    candidates.extend(sorted((root / "budget").glob(f"ledger_{run_tag}_*.jsonl")))
     vol_budget = root / "runs" / run_tag / "budget"
     if vol_budget.exists():
-        paths.extend(sorted(vol_budget.glob(f"ledger_{run_tag}_*.jsonl")))
-    for path in paths:
+        candidates.extend(sorted(vol_budget.glob(f"ledger_{run_tag}_*.jsonl")))
+    seen_paths: set[Path] = set()
+    for path in candidates:
         if not path.exists():
             continue
+        try:
+            key = path.resolve()
+        except OSError:
+            key = path
+        if key in seen_paths:
+            continue
+        seen_paths.add(key)
         for line in path.read_text(encoding="utf-8").splitlines():
             if not line.strip():
                 continue
@@ -302,13 +330,15 @@ def api_submission_allowed(
     platform: str = "openai",
     caps: Caps | None = None,
     root: Path | None = None,
-    openai_spent_floor: float = 12.77,
+    openai_spent_floor: float | None = None,
 ) -> tuple[bool, str]:
-    """Global API guard before Batch submit (D62/D63)."""
+    """Global API guard before Batch submit (D62/D63/D70)."""
     caps = caps or Caps()
     spent = sum_ledgers_api(root=root)
-    # Dashboard floor for OpenAI (ledger under-counts).
-    oa = max(spent["openai"], openai_spent_floor)
+    # D70: floor = reconciled OpenAI dashboard GT (not the stale $12.77 alone).
+    if openai_spent_floor is None:
+        openai_spent_floor = load_openai_dashboard_usd(root)
+    oa = max(spent["openai"], float(openai_spent_floor))
     or_ = spent["openrouter"]
     if platform == "openai":
         if oa + estimate_usd > caps.openai:

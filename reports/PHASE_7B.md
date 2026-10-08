@@ -409,3 +409,90 @@ Logged in `docs/DECISIONS.md`:
 Tests: `tests/test_phase7b_d69.py` (PASS).
 
 Artifacts: `results/phase7b_gemma4_31b_d69_fix.json`, `logs/phase7b_gemma31_d69_relaunch.log`, `logs/phase7b_gemma31_d69_relaunch2.log`.
+
+## Session 4 — all 7 configs done (2026-10-08)
+
+D55 blinding held. **No 7D started.**
+
+### 0. Git check
+
+| check | result |
+|-------|--------|
+| branch | `main` @ `60757f8` (pre-session) → this commit |
+| vs `origin/main` | equal before Session-4 commit; no divergent history |
+| stray branches | **none** (only `main` / `origin/main`; no Cursor “Generate branch” leftover) |
+| `docs/PREREGISTRATION.md` SHA-256 | `847fa5504b98b4d434706b6f70ee505bd22f2084bd80f7a233b64bb05af23bcc` **MATCH** |
+
+Untracked root `PREREGISTRATION.md` / `PREREGISTRATION (1).md` are **not** the frozen docs copy (different hashes); left untracked.
+
+### 1. Pull — consistency, canary, checks, MiMo, Batch
+
+| metric | result |
+|--------|--------|
+| local consistency (840 chains) | **PASS** — 7×120, `n_failed=0` all configs |
+| canary snapshot | **PASS** — 480/480 paths unchanged (`verify_canary_snapshot`) |
+| canary STATUS | `done` |
+
+| config | C1 (reported) | C3 | C5 | GPT n_batch / n_sync | MiMo sel / present / post-censor absent |
+|--------|---------------|----|----|----------------------|------------------------------------------|
+| olmo3_7b_final | PASS parse 0.988 censor 0.042 | PASS | PASS | 3138 / 10 | 500 / 500 / 0 |
+| qwen38_27b_nothink | FAIL* parse 0.957 censor 0.033 | PASS | PASS | 3047 / 0 | 500 / 490 / 10 |
+| qwen38_27b_think | PASS parse 0.999 censor 0.000 | PASS | PASS | 3788 / 0 | 500 / 500 / 0 |
+| gemma4_31b | FAIL* parse 0.939 censor 0.133 | PASS | PASS | 3094 / 0 | 500 / 462 / 38 |
+| gemma4_12b | FAIL* parse 0.806 censor 0.475 | PASS | PASS | 2052 / 80 | 500 / 358 / 142 |
+| olmo3_7b_sft | FAIL* parse 0.841 censor 0.208 | PASS | PASS | 2625 / 0 | 500 / 453 / 47 |
+| olmo3_7b_dpo | FAIL* parse 0.980 censor 0.067 | PASS | PASS | 3057 / 0 | 500 / 500 / 0 |
+
+\*C1 reported only (D65); not gating. `all_pass` / `checks_pass` use C3+C5. MiMo missing uncensored slots = 0 for all (post-censor absences expected).
+
+Artifact: `results/phase7b_session4_full_rollup.json`.
+
+### 2. Spend reconciliation (D70)
+
+Prompt left OpenAI dashboard as `$____`. Reconstructed GT = session-1 human GT **$12.77** + unique 7B Volume OpenAI jobs **$27.30007125** = **$40.07**. Org Costs API returned 403 (missing `api.usage.read`). Override file: `materials/main_run/refs/openai_dashboard_usd.json`.
+
+**Inflated guard figure $60.76** = `2 × $27.30007125` (path double-count) + `estimate_batch_usd(7127)=$6.160400625`.
+
+#### OpenAI ledger by job (unique, after cleanup)
+
+| usd | job_id |
+|----:|--------|
+| 0.107 | phase5-battery-label-validity |
+| 0.120 | phase5-battery-harm-refusal |
+| 1.825 | phase7a-canary cancelled FINAL (2111/3141) |
+| −1.797 | correction (remove superseded 2079 estimate) |
+| 4.747 | phase7a-canary d60 Batch (3138) |
+| 0.030 | phase7a-canary sync stragglers (10) |
+| 4.684 | phase7b-gpt54-qwen38_27b_nothink |
+| 5.942 | phase7b-gpt54-qwen38_27b_think |
+| 4.732 | phase7b-gpt54-gemma4_31b |
+| 3.177 | phase7b-gpt54-gemma4_12b (2052 batch + 80 sync) |
+| 4.040 | phase7b-gpt54-olmo3_7b_sft |
+| 4.725 | phase7b-gpt54-olmo3_7b_dpo |
+| 5.941 | **d70-openai-dashboard-reconcile** (historical Usage gap) |
+| **40.07** | **total (= dashboard GT)** |
+
+Double counts found/fixed: (a) `sum_ledgers_api` symlink path double-read; (b) gemma4_31b 14× $0 OpenAI resume appends + 8× MiMo OR retry rows → cleaned Volume ledger; (c) skip future $0 resume ledger appends; (d) guard floor → `$40.07` via refs file. D69 zero-spend resume skip retained only when no new requests.
+
+OpenRouter ledger (incl. gemma31 retry sum $0.382): **~$0.674**. Modal October metered (workspace): **$74.77** (local Modal ledger still $25.68 — undercounts 7B GPU; billing used for forecast).
+
+Tests: `tests/test_phase7b_d70.py` (PASS). Artifact: `results/phase7b_d70_openai_reconcile.json`.
+
+### 3. Updated 7D forecast (vs caps)
+
+| line | usd | cap | headroom |
+|------|----:|----:|---------:|
+| OpenAI spent (GT) | 40.07 | 49 | |
+| + StrongREJECT 7980×($0.1204/240) | +4.00 | | |
+| **Proj OpenAI** | **44.07** | 49 | **+4.93** |
+| + OpenRouter | +0.67 | | |
+| **Proj API** | **44.75** | 52 | **+7.25** |
+| Modal Oct metered | 74.77 | 130 | |
+| + H3 battery (G4 high) | +15.00 | | |
+| **Proj Modal** | **89.77** | 130 | **+40.23** |
+
+Gate (≥10% headroom): OpenAI ≤$44.10 → proj $44.07 **PASS**; API ≤$46.80 → **PASS**; Modal ≤$117 → **PASS**.
+
+### D70
+
+Logged in `docs/DECISIONS.md`.

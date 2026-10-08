@@ -1,0 +1,345 @@
+{
+  "total": 27.300071250000002,
+  "entries": [
+    {
+      "file": "ledger_main_v1_gemma4_12b.jsonl",
+      "line": 1,
+      "job_id": "phase7b-gpt54-gemma4_12b",
+      "usd": 3.177102500000002,
+      "note": "gpt54 batch_id=batch_6ac7bd7f9a788190801f147544dc5f23 n_batch=2052 n_sync=80",
+      "keys": [
+        "actual_usd",
+        "config_id",
+        "gpu",
+        "job_id",
+        "note",
+        "phase",
+        "platform",
+        "timestamp_utc"
+      ]
+    },
+    {
+      "file": "ledger_main_v1_gemma4_31b.jsonl",
+      "line": 1,
+      "job_id": "phase7b-gpt54-gemma4_31b",
+      "usd": 4.7320649999999995,
+      "note": "gpt54 batch_id=batch_6ac7b21f58a4819095284c9f6f13756f n_batch=3094 n_sync=0",
+      "keys": [
+        "actual_usd",
+        "config_id",
+        "gpu",
+        "job_id",
+        "note",
+        "phase",
+        "platform",
+        "timestamp_utc"
+      ]
+    },
+    {
+      "file": "ledger_main_v1_gemma4_31b.jsonl",
+      "line": 2,
+      "job_id": "phase7b-gpt54-gemma4_31b",
+      "usd": 0.0,
+      "note": "gpt54 batch_id=batch_6ac7b21f58a4819095284c9f6f13756f n_batch=3094 n_sync=0",
+      "keys": [
+        "actual_usd",
+        "config_id",
+        "gpu",
+        "job_id",
+        "note",
+        "phase",
+        "platform",
+        "timestamp_utc"
+      ]
+    },
+    {
+      "file": "ledger_main_v1_gemma4_31b.jsonl",
+      "line": 4,
+      "job_id": "phase7b-gpt54-gemma4_31b",
+      "usd": 0.0,
+      "note": "gpt54 batch_id=batch_6ac7b21f58a4819095284c9f6f13756f n_batch=3094 n_sync=0",
+      "keys": [
+        "actual_usd",
+        "config_id",
+        "gpu",
+        "job_id",
+        "note",
+        "phase",
+        "platform",
+        "timestamp_utc"
+      ]
+    },
+    {
+      "file": "ledger_main_v1_gemma4_31b.jsonl",
+      "line": 6,
+      "job_id": "phase7b-gpt54-gemma4_31b",
+      "usd": 0.0,
+      "note": "gpt54 batch_id=batch_6ac7b21f58a4819095284c9f6f13756f n_batch=3094 n_sync=0",
+      "keys": [
+        "actual_usd",
+        "config_id",
+        "gpu",
+        "job_id",
+        "note",
+        "phase",
+        "platform",
+        "timestamp_utc"
+      ]
+    },
+    {
+      "file": "ledger_main_v1_gemma4_31b.jsonl",
+      "line": 7,
+      "job_id": "phase7b-gpt54-gemma4_31b",
+      "usd": 0.0,
+      "note": "gpt54 batch_id=batch_6ac7b21f58a4819095284c9f6f13756f n_batch=3094 n_sync=0",
+      "keys": [
+        "actual_usd",
+        "config_id",
+        "gpu",
+        "job_id",
+        "note",
+        "phase",
+        "platform",
+        "timestamp_utc"
+      ]
+    },
+    {
+      "file": "ledger_main_v1_gemma4_31b.jsonl",
+      "line": 8,
+      "job_id": "phase7b-gpt54-gemma4_31b",
+      "usd": 0.0,
+      "note": "gpt54 batch_id=batch_6ac7b21f58a4819095284c9f6f13756f n_batch=3094 n_sync=0",
+      "keys": [
+        "actual_usd",
+        "config_id",
+        "gpu",
+        "job_id",
+        "note",
+        "phase",
+        "platform",
+        "timestamp_utc"
+      ]
+    },
+    {
+      "file": "ledger_main_v1_gemma4_31b.jsonl",
+      "line": 10,
+      "job_id": "phase7b-gpt54-gemma4_31b",
+      "usd": 0.0,
+      "note": "gpt54 batch_id=batch_6ac7b21f58a4819095284c9f6f13756f n_batch=3094 n_sync=0",
+      "keys": [
+        "actual_usd",
+        "config_id",
+        "gpu",
+        "job_id",
+        "note",
+        "phase",
+        "platform",
+        "timestamp_utc"
+      ]
+    },
+    {
+      "file": "ledger_main_v1_gemma4_31b.jsonl",
+      "line": 12,
+      "job_id": "phase7b-gpt54-gemma4_31b",
+      "usd": 0.0,
+      "note": "gpt54 batch_id=batch_6ac7b21f58a4819095284c9f6f13756f n_batch=3094 n_sync=0",
+      "keys": [
+        "actual_usd",
+        "config_id",
+        "gpu",
+        "job_id",
+        "note",
+        "phase",
+        "platform",
+        "timestamp_utc"
+      ]
+    },
+    {
+      "file": "ledger_main_v1_gemma4_31b.jsonl",
+      "line": 13,
+      "job_id": "phase7b-gpt54-gemma4_31b",
+      "usd": 0.0,
+      "note": "gpt54 batch_id=batch_6ac7b21f58a4819095284c9f6f13756f n_batch=3094 n_sync=0",
+      "keys": [
+        "actual_usd",
+        "config_id",
+        "gpu",
+        "job_id",
+        "note",
+        "phase",
+        "platform",
+        "timestamp_utc"
+      ]
+    },
+    {
+      "file": "ledger_main_v1_gemma4_31b.jsonl",
+      "line": 14,
+      "job_id": "phase7b-gpt54-gemma4_31b",
+      "usd": 0.0,
+      "note": "gpt54 batch_id=batch_6ac7b21f58a4819095284c9f6f13756f n_batch=3094 n_sync=0",
+      "keys": [
+        "actual_usd",
+        "config_id",
+        "gpu",
+        "job_id",
+        "note",
+        "phase",
+        "platform",
+        "timestamp_utc"
+      ]
+    },
+    {
+      "file": "ledger_main_v1_gemma4_31b.jsonl",
+      "line": 16,
+      "job_id": "phase7b-gpt54-gemma4_31b",
+      "usd": 0.0,
+      "note": "gpt54 batch_id=batch_6ac7b21f58a4819095284c9f6f13756f n_batch=3094 n_sync=0",
+      "keys": [
+        "actual_usd",
+        "config_id",
+        "gpu",
+        "job_id",
+        "note",
+        "phase",
+        "platform",
+        "timestamp_utc"
+      ]
+    },
+    {
+      "file": "ledger_main_v1_gemma4_31b.jsonl",
+      "line": 18,
+      "job_id": "phase7b-gpt54-gemma4_31b",
+      "usd": 0.0,
+      "note": "gpt54 batch_id=batch_6ac7b21f58a4819095284c9f6f13756f n_batch=3094 n_sync=0",
+      "keys": [
+        "actual_usd",
+        "config_id",
+        "gpu",
+        "job_id",
+        "note",
+        "phase",
+        "platform",
+        "timestamp_utc"
+      ]
+    },
+    {
+      "file": "ledger_main_v1_gemma4_31b.jsonl",
+      "line": 20,
+      "job_id": "phase7b-gpt54-gemma4_31b",
+      "usd": 0.0,
+      "note": "gpt54 batch_id=batch_6ac7b21f58a4819095284c9f6f13756f n_batch=3094 n_sync=0",
+      "keys": [
+        "actual_usd",
+        "config_id",
+        "gpu",
+        "job_id",
+        "note",
+        "phase",
+        "platform",
+        "timestamp_utc"
+      ]
+    },
+    {
+      "file": "ledger_main_v1_gemma4_31b.jsonl",
+      "line": 22,
+      "job_id": "phase7b-gpt54-gemma4_31b",
+      "usd": 0.0,
+      "note": "gpt54 batch_id=batch_6ac7b21f58a4819095284c9f6f13756f n_batch=3094 n_sync=0",
+      "keys": [
+        "actual_usd",
+        "config_id",
+        "gpu",
+        "job_id",
+        "note",
+        "phase",
+        "platform",
+        "timestamp_utc"
+      ]
+    },
+    {
+      "file": "ledger_main_v1_gemma4_31b.jsonl",
+      "line": 23,
+      "job_id": "phase7b-gpt54-gemma4_31b",
+      "usd": 0.0,
+      "note": "gpt54 batch_id=batch_6ac7b21f58a4819095284c9f6f13756f n_batch=3094 n_sync=0",
+      "keys": [
+        "actual_usd",
+        "config_id",
+        "gpu",
+        "job_id",
+        "note",
+        "phase",
+        "platform",
+        "timestamp_utc"
+      ]
+    },
+    {
+      "file": "ledger_main_v1_olmo3_7b_dpo.jsonl",
+      "line": 1,
+      "job_id": "phase7b-gpt54-olmo3_7b_dpo",
+      "usd": 4.725297500000001,
+      "note": "gpt54 batch_id=batch_6ac75501e58c8190bdd166ad4ad0d0d6 n_batch=3057 n_sync=0",
+      "keys": [
+        "actual_usd",
+        "config_id",
+        "gpu",
+        "job_id",
+        "note",
+        "phase",
+        "platform",
+        "timestamp_utc"
+      ]
+    },
+    {
+      "file": "ledger_main_v1_olmo3_7b_sft.jsonl",
+      "line": 1,
+      "job_id": "phase7b-gpt54-olmo3_7b_sft",
+      "usd": 4.039831249999996,
+      "note": "gpt54 batch_id=batch_6ac7550365108190b7ffbe46f9133329 n_batch=2625 n_sync=0",
+      "keys": [
+        "actual_usd",
+        "config_id",
+        "gpu",
+        "job_id",
+        "note",
+        "phase",
+        "platform",
+        "timestamp_utc"
+      ]
+    },
+    {
+      "file": "ledger_main_v1_qwen38_27b_nothink.jsonl",
+      "line": 1,
+      "job_id": "phase7b-gpt54-qwen38_27b_nothink",
+      "usd": 4.683643749999988,
+      "note": "gpt54 batch_id=batch_6ac7a8dd825c81909c44990e84430662 n_batch=3047 n_sync=0",
+      "keys": [
+        "actual_usd",
+        "config_id",
+        "gpu",
+        "job_id",
+        "note",
+        "phase",
+        "platform",
+        "timestamp_utc"
+      ]
+    },
+    {
+      "file": "ledger_main_v1_qwen38_27b_think.jsonl",
+      "line": 1,
+      "job_id": "phase7b-gpt54-qwen38_27b_think",
+      "usd": 5.942131250000018,
+      "note": "gpt54 batch_id=batch_6ac7b48b388481909741557c36082247 n_batch=3788 n_sync=0",
+      "keys": [
+        "actual_usd",
+        "config_id",
+        "gpu",
+        "job_id",
+        "note",
+        "phase",
+        "platform",
+        "timestamp_utc"
+      ]
+    }
+  ]
+}
