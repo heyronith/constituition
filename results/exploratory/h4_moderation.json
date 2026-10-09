@@ -10,6 +10,20 @@
         "ci_low": 0.0,
         "ci_high": 0.2791019441469982,
         "n_reps": 1000
+      },
+      "exact_rr_ci": {
+        "method": "exact_conditional_poisson_rr_clopper_pearson",
+        "n_cor": 3,
+        "n_agent": 19,
+        "n_total": 22,
+        "E_COR": 1397.0,
+        "E_AGENT": 1232.0,
+        "hr_point": 0.1392457521757149,
+        "ci_low": 0.0263908667848013,
+        "ci_high": 0.47303373272192883,
+        "pi_ci_low": 0.02905585112874668,
+        "pi_ci_high": 0.34912209725740806,
+        "zero_cor_events": false
       }
     },
     "gemma4_31b": {
@@ -21,6 +35,20 @@
         "ci_low": 0.0,
         "ci_high": 0.0,
         "n_reps": 1000
+      },
+      "exact_rr_ci": {
+        "method": "exact_conditional_poisson_rr_clopper_pearson",
+        "n_cor": 0,
+        "n_agent": 9,
+        "n_total": 9,
+        "E_COR": 2435.0,
+        "E_AGENT": 2304.0,
+        "hr_point": 0.0,
+        "ci_low": 0.0,
+        "ci_high": 0.4793741102418537,
+        "pi_ci_low": 0.0,
+        "pi_ci_high": 0.3362671168799428,
+        "zero_cor_events": true
       }
     },
     "olmo3_7b_dpo": {
@@ -32,6 +60,20 @@
         "ci_low": 0.14515159235447253,
         "ci_high": 1.372209449199508,
         "n_reps": 1000
+      },
+      "exact_rr_ci": {
+        "method": "exact_conditional_poisson_rr_clopper_pearson",
+        "n_cor": 6,
+        "n_agent": 10,
+        "n_total": 16,
+        "E_COR": 2420.0,
+        "E_AGENT": 2385.0,
+        "hr_point": 0.5913223140495868,
+        "ci_low": 0.176630519574268,
+        "ci_high": 1.7957470005157123,
+        "pi_ci_low": 0.15198367508112207,
+        "pi_ci_high": 0.6456539056979218,
+        "zero_cor_events": false
       }
     },
     "olmo3_7b_final": {
@@ -43,6 +85,20 @@
         "ci_low": 0.3301578449858301,
         "ci_high": 1.8588588804172663,
         "n_reps": 1000
+      },
+      "exact_rr_ci": {
+        "method": "exact_conditional_poisson_rr_clopper_pearson",
+        "n_cor": 13,
+        "n_agent": 16,
+        "n_total": 29,
+        "E_COR": 2350.0,
+        "E_AGENT": 2290.0,
+        "hr_point": 0.7917553191489362,
+        "ci_low": 0.3503570275171173,
+        "ci_high": 1.7556030884898826,
+        "pi_ci_low": 0.2644553037067049,
+        "pi_ci_high": 0.6430612891960847,
+        "zero_cor_events": false
       }
     },
     "olmo3_7b_sft": {
@@ -54,6 +110,20 @@
         "ci_low": 0.6255993829948246,
         "ci_high": 2.471675494798578,
         "n_reps": 1000
+      },
+      "exact_rr_ci": {
+        "method": "exact_conditional_poisson_rr_clopper_pearson",
+        "n_cor": 17,
+        "n_agent": 13,
+        "n_total": 30,
+        "E_COR": 1958.0,
+        "E_AGENT": 1990.0,
+        "hr_point": 1.3290641942327335,
+        "ci_low": 0.6079177551122712,
+        "ci_high": 2.975459894087751,
+        "pi_ci_low": 0.37427345060922074,
+        "pi_ci_high": 0.745392450096737,
+        "zero_cor_events": false
       }
     },
     "qwen38_27b_nothink": {
@@ -65,6 +135,20 @@
         "ci_low": 0.8373422301831082,
         "ci_high": 1.8195851040545528,
         "n_reps": 1000
+      },
+      "exact_rr_ci": {
+        "method": "exact_conditional_poisson_rr_clopper_pearson",
+        "n_cor": 31,
+        "n_agent": 27,
+        "n_total": 58,
+        "E_COR": 2140.0,
+        "E_AGENT": 2260.0,
+        "hr_point": 1.2125302872966424,
+        "ci_low": 0.7003172395524675,
+        "ci_high": 2.1115126926341876,
+        "pi_ci_low": 0.39872490719438325,
+        "pi_ci_high": 0.666599650355953,
+        "zero_cor_events": false
       }
     },
     "qwen38_27b_think": {
@@ -76,6 +160,20 @@
         "ci_low": 0.0,
         "ci_high": 0.20172588575790845,
         "n_reps": 1000
+      },
+      "exact_rr_ci": {
+        "method": "exact_conditional_poisson_rr_clopper_pearson",
+        "n_cor": 2,
+        "n_agent": 26,
+        "n_total": 28,
+        "E_COR": 2486.0,
+        "E_AGENT": 2222.0,
+        "hr_point": 0.06875425459496255,
+        "ci_low": 0.007908477801106116,
+        "ci_high": 0.2746207551256998,
+        "pi_ci_low": 0.008770496703527133,
+        "pi_ci_high": 0.23503477317459073,
+        "zero_cor_events": false
       }
     }
   },

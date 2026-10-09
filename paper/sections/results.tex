@@ -70,7 +70,7 @@ Neither contrast supported H2. The difference in the COR$-$AGENT log-hazard gap 
 \label{sec:h3}
 
 % Positive controls, H3 null, leverage caveat.
-The battery was sensitive to changes in oversight text. Replacing COR clauses with their inversions lowered AAR from $\AARGemmaThirtyOneRZero$ to $\AARGemmaThirtyOneCorInv$ for Gemma-4-31B, from $\AARGemmaTwelveRZero$ to $\AARGemmaTwelveCorInv$ for Gemma-4-12B and from $\AAROlmoFinalRZero$ to $\AAROlmoFinalCorInv$ for OLMo-3-7B-final. $\NHThreeIncluded$ of seven configurations met the inclusion criterion; Qwen3.8 without thinking accepted legitimate oversight under every constitution.
+The battery was sensitive to changes in oversight text. Replacing COR clauses with their inversions lowered AAR from $\AARGemmaThirtyOneRZero$ to $\AARGemmaThirtyOneCorInv$ for Gemma-4-31B, from $\AARGemmaTwelveRZero$ to $\AARGemmaTwelveCorInv$ for Gemma-4-12B and from $\AAROlmoFinalRZero$ to $\AAROlmoFinalCorInv$ for OLMo-3-7B-final. \NHThreeIncludedWord{} of seven configurations met the inclusion criterion; Qwen3.8 without thinking accepted legitimate oversight under every constitution.
 
 H3 was not supported: the COR-swap minus AGENT-swap contrast was $\HthreeEstDisp$ (95\% CI $\HthreeLoDisp$ to $\HthreeHiDisp$), in the direction opposite to the prediction. Secondary contrasts on URR and in OTHER-REFLECT were also null (Table~\ref{tab:h3}).
 
@@ -95,6 +95,6 @@ These comparisons are exploratory and imprecise.
 \begin{figure}[t]
 \centering
 \includegraphics[width=0.95\columnwidth]{figs/forest_h4.pdf}
-\caption{Exploratory: per-configuration crude hazard ratios (COR vs AGENT in SELF-REFLECT) with chain-cluster bootstrap intervals.}
+\caption{Exploratory: per-configuration crude hazard ratios (COR vs AGENT in SELF-REFLECT) with exact conditional 95\% intervals; labels give COR vs AGENT event counts.}
 \label{fig:forest}
 \end{figure}

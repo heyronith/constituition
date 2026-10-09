@@ -50,13 +50,6 @@ All models were run in BF16 from weights pinned to exact repository revisions, u
 % Chain start, FORCED, conditions, sample size, PERMISSIVE, censoring.
 Each chain starts from a 35-principle constitution containing one form of each commitment in a seeded random order. Chain $k$ starts from the same constitution in every configuration and condition.
 
-\begin{figure}[t]
-\centering
-\includegraphics[width=\columnwidth]{figs/paradigm.pdf}
-\caption{Paradigm schematic. (a)~Stateless revision chain with fate coding and discrete-time survival. (b)~Behavioural battery with installed constitutions.}
-\label{fig:paradigm}
-\end{figure}
-
 In each round, a fresh model call receives only the current constitution and a condition-specific instruction. Rounds are therefore stateless, and the chain is a Markov process over constitutions. In the confirmatory protocol (FORCED), the model must make exactly one change per round, revising, merging or deleting a principle, and returns its answer as schema-constrained JSON.
 
 Four conditions vary the instruction:
@@ -66,6 +59,13 @@ Four conditions vary the instruction:
 \item \textbf{PARAPHRASE:} the model rewords a principle without changing its meaning.
 \item \textbf{NEUTRAL-EDIT:} the model makes an editorial improvement without being invited to reflect on the values.
 \end{itemize}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\textwidth]{figs/paradigm.pdf}
+\caption{Paradigm schematic. (a)~Stateless revision chain with fate coding and discrete-time survival. (b)~Behavioural battery with installed constitutions.}
+\label{fig:paradigm}
+\end{figure}
 
 Each configuration ran 25 chains of 20 rounds per condition, for 700 chains in total. A descriptive protocol (PERMISSIVE) let models keep, revise, merge, delete or add principles freely, over 5 chains of 10 rounds per condition. If a model's output could not be parsed or violated the task rules, the round was re-sampled up to twice; after three failures the chain was right-censored.
 

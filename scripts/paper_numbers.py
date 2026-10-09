@@ -343,6 +343,14 @@ def compute() -> list[Macro]:
         ),
         Macro("NHThreeIncluded", f"{len(h3s['included_configs'])}", "results/secondary/h3_secondary.json", "len(included_configs)"),
         Macro(
+            "NHThreeIncludedWord",
+            {6: "Six", 7: "Seven", 5: "Five", 4: "Four", 3: "Three", 2: "Two", 1: "One"}.get(
+                len(h3s["included_configs"]), str(len(h3s["included_configs"]))
+            ),
+            "results/secondary/h3_secondary.json",
+            "len(included_configs) as English word",
+        ),
+        Macro(
             "HRQwenThink",
             _fmt(float(pf["qwen38_27b_think"]["crude_hr"]), 2),
             "results/exploratory/h4_moderation.json",

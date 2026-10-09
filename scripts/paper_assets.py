@@ -23,6 +23,47 @@ SEED = 20261004
 # Wong colour-blind-safe palette
 COLS = {"COR": "#E69F00", "AGENT": "#56B4E9", "SELF": "#009E73", "other": "#0072B2"}
 
+# Readable names aligned with Table 2 (Model / Manipulation).
+CONFIG_DISPLAY: dict[str, tuple[str, str]] = {
+    "qwen38_27b_nothink": ("Qwen3.8-27B", "thinking off"),
+    "qwen38_27b_think": ("Qwen3.8-27B", "thinking on"),
+    "gemma4_12b": ("Gemma-4-12B-it", "---"),
+    "gemma4_31b": ("Gemma-4-31B-it", "---"),
+    "olmo3_7b_sft": ("OLMo-3-7B", "SFT"),
+    "olmo3_7b_dpo": ("OLMo-3-7B", "DPO"),
+    "olmo3_7b_final": ("OLMo-3-7B", "final (RLVR)"),
+}
+CONFIG_ORDER = [
+    "qwen38_27b_nothink",
+    "qwen38_27b_think",
+    "gemma4_12b",
+    "gemma4_31b",
+    "olmo3_7b_sft",
+    "olmo3_7b_dpo",
+    "olmo3_7b_final",
+]
+
+
+def config_display_name(config_id: str) -> str:
+    model, manip = CONFIG_DISPLAY.get(config_id, (config_id, ""))
+    if manip in ("", "---"):
+        return model
+    return f"{model} ({manip})"
+
+
+def config_forest_label(config_id: str, n_cor: int, n_agent: int) -> str:
+    """Y-axis label: readable name + COR vs AGENT event counts."""
+    model, manip = CONFIG_DISPLAY.get(config_id, (config_id, ""))
+    if config_id == "qwen38_27b_think":
+        short = "Qwen3.8-27B (thinking)"
+    elif config_id == "qwen38_27b_nothink":
+        short = "Qwen3.8-27B (no thinking)"
+    elif manip in ("", "---"):
+        short = model
+    else:
+        short = f"{model} ({manip})"
+    return f"{short} — {n_cor} vs {n_agent} events"
+
 
 _UNICODE_ASCII = {
     "≤": "<=",
@@ -131,14 +172,27 @@ Cat. & ID & Commitment & Example (form A) \\
 
 
 def write_table_models() -> None:
+    roles = {
+        "qwen38_27b_nothink": "family A",
+        "qwen38_27b_think": "reasoning",
+        "gemma4_31b": "family B, large",
+        "gemma4_12b": "scale",
+        "olmo3_7b_sft": "post-training",
+        "olmo3_7b_dpo": "post-training",
+        "olmo3_7b_final": "post-training",
+    }
+    # Table 2 order: Qwen pair, Gemma 31B then 12B (as in prior draft), OLMo stages
+    order = [
+        "qwen38_27b_nothink",
+        "qwen38_27b_think",
+        "gemma4_31b",
+        "gemma4_12b",
+        "olmo3_7b_sft",
+        "olmo3_7b_dpo",
+        "olmo3_7b_final",
+    ]
     models = [
-        ("qwen38_27b_nothink", "Qwen3.8-27B", "thinking off", "family A"),
-        ("qwen38_27b_think", "Qwen3.8-27B", "thinking on", "reasoning"),
-        ("gemma4_31b", "Gemma-4-31B-it", "---", "family B, large"),
-        ("gemma4_12b", "Gemma-4-12B-it", "---", "scale"),
-        ("olmo3_7b_sft", "OLMo-3-7B", "SFT", "post-training"),
-        ("olmo3_7b_dpo", "OLMo-3-7B", "DPO", "post-training"),
-        ("olmo3_7b_final", "OLMo-3-7B", "final (RLVR)", "post-training"),
+        (cid, CONFIG_DISPLAY[cid][0], CONFIG_DISPLAY[cid][1], roles[cid]) for cid in order
     ]
     rows = "\n".join(
         f"{esc(a)} & {esc(b)} & {esc(c)} & {esc(d)} \\\\" for a, b, c, d in models
@@ -173,8 +227,11 @@ def write_table_h1_robustness() -> None:
          f"[{rob['chain_cluster_bootstrap']['ci_low']:.3f}, {rob['chain_cluster_bootstrap']['ci_high']:.3f}]",
          "2000 reps"),
         ("LOIO drop AGENT1", f"{rob['leave_one_item_out']['AGENT1']['crude_hr']:.3f}", "---", "crude"),
-        ("Item permutation $p$", f"{rob['item_permutation']['p_one_sided_le_obs']:.3f}", "---", "252 relabelings"),
+        # Label contains math; do not run through esc() (would break $p$).
+        ("Item permutation $p$", f"{rob['item_permutation']['p_one_sided_le_obs']:.3f}", "---", "252 relabelings", True),
     ]
+    # Convert earlier rows to (label, hr, ci, method, raw_label)
+    rows = [(a, b, c, d, False) for a, b, c, d in rows[:-1]] + [rows[-1]]
     for name, key in [
         ("glmmTMB full RE", "glmmTMB"),
         ("sandwich item cluster", "gee_item"),
@@ -183,9 +240,19 @@ def write_table_h1_robustness() -> None:
         r = ia.get(key) or {}
         if r.get("ok"):
             rows.append(
-                (name, f"{r['hr']:.3f}", f"[{r.get('ci_low', float('nan')):.3f}, {r.get('ci_high', float('nan')):.3f}]", r.get("method", ""))
+                (
+                    name,
+                    f"{r['hr']:.3f}",
+                    f"[{r.get('ci_low', float('nan')):.3f}, {r.get('ci_high', float('nan')):.3f}]",
+                    r.get("method", ""),
+                    False,
+                )
             )
-    body = "\n".join(f"{esc(a)} & {b} & {c} & {esc(d)} \\\\" for a, b, c, d in rows)
+    body_lines = []
+    for a, b, c, d, raw in rows:
+        lab = a if raw else esc(a)
+        body_lines.append(f"{lab} & {b} & {c} & {esc(d)} \\\\")
+    body = "\n".join(body_lines)
     tex = rf"""% Auto-generated --- SECONDARY robustness
 \begin{{table}}[t]
 \centering
@@ -244,9 +311,14 @@ def write_table_h3() -> None:
     conf = json.loads((ROOT / "results/confirmatory.json").read_text())
     h3 = conf["hypotheses"]["H3"]
     rows = []
-    for cfg, r in h3["inclusion"]["per_config"].items():
+    # Stable order matching Table 2 / Figure 4 name map
+    per = h3["inclusion"]["per_config"]
+    for cfg in CONFIG_ORDER:
+        if cfg not in per:
+            continue
+        r = per[cfg]
         rows.append(
-            f"{esc(cfg)} & {r['AAR_R0']:.3f} & {r['AAR_COR_INV']:.3f} & {r['delta']:.3f} & "
+            f"{esc(config_display_name(cfg))} & {r['AAR_R0']:.3f} & {r['AAR_COR_INV']:.3f} & {r['delta']:.3f} & "
             f"{'yes' if r['included'] else 'no'} \\\\"
         )
     body = "\n".join(rows)
@@ -267,6 +339,90 @@ Config & AAR(R0) & AAR(COR\_INV) & $\Delta$ & Included \\
 \end{{table}}
 """
     (TAB / "h3.tex").write_text(tex)
+
+
+def _clopper_pearson(k: int, n: int, alpha: float = 0.05) -> tuple[float, float]:
+    """Exact Clopper–Pearson CI for a binomial proportion."""
+    from scipy.stats import beta
+
+    if n <= 0:
+        return float("nan"), float("nan")
+    if k <= 0:
+        lo = 0.0
+    else:
+        lo = float(beta.ppf(alpha / 2, k, n - k + 1))
+    if k >= n:
+        hi = 1.0
+    else:
+        hi = float(beta.ppf(1 - alpha / 2, k + 1, n - k))
+    return lo, hi
+
+
+def _pi_to_hr(pi: float, e_cor: float, e_agent: float) -> float:
+    if pi != pi or e_cor <= 0 or e_agent <= 0:
+        return float("nan")
+    if pi <= 0.0:
+        return 0.0
+    if pi >= 1.0:
+        return float("inf")
+    return (pi * e_agent) / ((1.0 - pi) * e_cor)
+
+
+def update_h4_exact_ci() -> dict:
+    """Add exact conditional Poisson rate-ratio CIs to h4_moderation.json; write forest CSV."""
+    path = ROOT / "results/exploratory/h4_moderation.json"
+    h4 = json.loads(path.read_text())
+    haz = pd.read_csv(ROOT / "results/hazard_table_main_v1.csv.gz")
+    sr = haz[(haz.condition == "SELF_REFLECT") & (haz.category.isin(["COR", "AGENT"]))]
+    exp = (
+        sr.groupby(["config", "category"])
+        .size()
+        .unstack("category")
+        .rename(columns={"COR": "E_COR", "AGENT": "E_AGENT"})
+    )
+    forest_rows = []
+    for cfg in CONFIG_ORDER:
+        block = h4["per_config_forest"][cfg]
+        n_cor = int(block["n_cor_events"])
+        n_agent = int(block["n_agent_events"])
+        hr = float(block["crude_hr"])
+        e_cor = float(exp.loc[cfg, "E_COR"])
+        e_agent = float(exp.loc[cfg, "E_AGENT"])
+        n = n_cor + n_agent
+        pi_lo, pi_hi = _clopper_pearson(n_cor, n)
+        hr_lo = _pi_to_hr(pi_lo, e_cor, e_agent)
+        hr_hi = _pi_to_hr(pi_hi, e_cor, e_agent)
+        exact = {
+            "method": "exact_conditional_poisson_rr_clopper_pearson",
+            "n_cor": n_cor,
+            "n_agent": n_agent,
+            "n_total": n,
+            "E_COR": e_cor,
+            "E_AGENT": e_agent,
+            "hr_point": hr,
+            "ci_low": None if hr_lo == float("inf") else hr_lo,
+            "ci_high": None if hr_hi == float("inf") else hr_hi,
+            "pi_ci_low": pi_lo,
+            "pi_ci_high": pi_hi,
+            "zero_cor_events": n_cor == 0,
+        }
+        block["exact_rr_ci"] = exact
+        forest_rows.append(
+            {
+                "config": cfg,
+                "label": config_forest_label(cfg, n_cor, n_agent),
+                "hr": hr,
+                "ci_low": hr_lo if hr_lo != float("inf") else float("nan"),
+                "ci_high": hr_hi if hr_hi != float("inf") else float("nan"),
+                "n_cor": n_cor,
+                "n_agent": n_agent,
+                "zero_cor": int(n_cor == 0),
+            }
+        )
+    path.write_text(json.dumps(h4, indent=2) + "\n")
+    pd.DataFrame(forest_rows).to_csv(ROOT / "results/figs/forest_h4.csv", index=False)
+    pd.DataFrame(forest_rows).to_csv(FIG / "forest_h4.csv", index=False)
+    return h4
 
 
 def write_table_confirmatory() -> None:
@@ -329,6 +485,8 @@ ID & Date & Summary \\
 
 
 def write_figs() -> None:
+    # Exact RR CIs + forest CSV (keeps bootstrap keys in JSON)
+    update_h4_exact_ci()
     # Reuse CSVs from 7E-C; regenerate PDFs with R (colour-blind-safe)
     r_script = r'''
 cols <- c(COR="#E69F00", AGENT="#56B4E9", SELF="#009E73")
@@ -371,22 +529,38 @@ for (cond in unique(dec$condition)) {
 }
 dev.off()
 
-# Forest EXPLORATORY
-fo <- read.csv("results/figs/forest_h4.csv", stringsAsFactors=FALSE)
-pdf("paper/figs/forest_h4.pdf", width=7, height=5)
-par(mar=c(4,10,3,1))
-ord <- order(fo$hr); fo <- fo[ord,]
-y <- seq_len(nrow(fo))
-plot(fo$hr, y, pch=16, xlim=range(c(fo$ci_low, fo$ci_high, 1), na.rm=TRUE),
-     ylim=c(0.5,nrow(fo)+0.5), xlab="Crude HR (EXPLORATORY)", ylab="", yaxt="n",
+# Forest EXPLORATORY — exact conditional RR CIs, log x-axis, fixed row order
+fo <- read.csv("paper/figs/forest_h4.csv", stringsAsFactors=FALSE)
+# CSV order = CONFIG_ORDER; draw first row at top
+n <- nrow(fo)
+y <- rev(seq_len(n))
+finite_hi <- fo$ci_high[is.finite(fo$ci_high) & !is.na(fo$ci_high)]
+finite_lo <- fo$ci_low[is.finite(fo$ci_low) & !is.na(fo$ci_low) & fo$ci_low > 0]
+xmax <- max(c(finite_hi, 1.5), na.rm=TRUE) * 1.15
+xmin <- min(c(finite_lo[finite_lo > 0], 0.02), na.rm=TRUE)
+if (!is.finite(xmin) || xmin <= 0) xmin <- 0.02
+pdf("paper/figs/forest_h4.pdf", width=7.2, height=4.8)
+par(mar=c(4.2, 14.5, 2.2, 1.2))
+plot(NA, xlim=c(xmin, xmax), ylim=c(0.5, n+0.5), log="x",
+     xlab="Crude HR (EXPLORATORY; log scale)", ylab="", yaxt="n",
      main="EXPLORATORY: per-config HR")
-axis(2, at=y, labels=fo$config, las=1, cex.axis=0.8)
-segments(fo$ci_low, y, fo$ci_high, y, lwd=2, col="#0072B2")
-abline(v=1, lty=3)
+abline(v=1, lty=3, col="#666666")
+axis(2, at=y, labels=fo$label, las=1, cex.axis=0.72)
+for (i in seq_len(n)) {
+  yi <- y[i]
+  lo <- fo$ci_low[i]; hi <- fo$ci_high[i]; hr <- fo$hr[i]
+  if (isTRUE(fo$zero_cor[i] == 1)) {
+    # Upper-bound arrow only (0 COR events)
+    arrows(xmin, yi, hi, yi, length=0.08, lwd=2, col="#0072B2", code=2)
+    text(hi, yi, "  0 COR events", pos=4, cex=0.65, col="#D55E00")
+  } else {
+    segments(max(lo, xmin), yi, hi, yi, lwd=2, col="#0072B2")
+    points(hr, yi, pch=16, cex=1.1, col="#0072B2")
+  }
+}
 dev.off()
 
 # Positive controls vs swaps (from battery)
-# Written by Python companion CSV if present
 if (file.exists("paper/figs/pos_controls.csv")) {
   pc <- read.csv("paper/figs/pos_controls.csv", stringsAsFactors=FALSE)
   pdf("paper/figs/pos_controls.pdf", width=8, height=5)
@@ -406,66 +580,77 @@ if (file.exists("paper/figs/pos_controls.csv")) {
   dev.off()
 }
 
-# Paradigm schematic — two panels (Wong CB-safe), single-column width
+# Paradigm schematic — compact two panels, cairo Unicode arrows, tight margins
 W <- list(blue="#0072B2", orange="#E69F00", green="#009E73",
           sky="#56B4E9", verm="#D55E00", purple="#CC79A7", black="#000000")
-box <- function(x0,y0,x1,y1, col, fill=NA, lwd=1.6) {
+box <- function(x0,y0,x1,y1, col, fill=NA, lwd=1.4) {
   rect(x0,y0,x1,y1, border=col, col=fill, lwd=lwd)
 }
 arr <- function(x0,y0,x1,y1, col=W$black) {
-  arrows(x0,y0,x1,y1, length=0.08, lwd=1.4, col=col)
+  arrows(x0,y0,x1,y1, length=0.07, lwd=1.3, col=col)
+}
+# Drawn arrows + composed subscripts (no plotmath / Unicode dependency).
+# ~0.55 of a text page at \textwidth (≈6.3in wide, ≤5in tall)
+pdf("paper/figs/paradigm.pdf", width=6.3, height=4.6)
+par(mfrow=c(2,1), mar=c(0.2,0.3,1.05,0.3), oma=c(0,0,0,0))
+# Draw C with a lowered subscript string (t or t+1)
+draw_C <- function(x, y, sub="t", cex=1.1, col=W$blue, font=2) {
+  text(x, y, "C", cex=cex, font=font, col=col, adj=c(1, 0.5))
+  text(x + 0.02, y - 0.14*cex, sub, cex=0.55*cex, font=font, col=col, adj=c(0, 0.5))
 }
 
-pdf("paper/figs/paradigm.pdf", width=6.5, height=6.8)
-par(mfrow=c(2,1), mar=c(0.6,0.6,1.6,0.6))
-
 ## (a) Chain loop
-plot(NA, xlim=c(0,10), ylim=c(0,6.2), axes=FALSE, xlab="", ylab="",
+plot(NA, xlim=c(0,10), ylim=c(0,5.5), axes=FALSE, xlab="", ylab="", xaxs="i", yaxs="i",
      main="(a) Chain loop (stateless; t = 1...20)")
-box(0.2, 3.6, 2.4, 5.4, W$blue, "#E8F4FA")
-text(1.3, 4.7, expression(C[t]), cex=1.15, font=2, col=W$blue)
-text(1.3, 4.15, "35 principles\nopaque IDs", cex=0.72)
-box(3.0, 3.4, 6.2, 5.6, W$orange, "#FFF6E5")
-text(4.6, 5.15, "Model (stateless)", cex=0.85, font=2, col=W$orange)
-text(4.6, 4.55, "sees only C_t +\ncondition instruction", cex=0.7)
-text(4.6, 3.7, "SELF / OTHER \"Pellam\"\nPARAPHRASE / NEUTRAL", cex=0.62)
-arr(2.45, 4.5, 2.95, 4.5, W$blue)
-box(6.7, 3.8, 9.0, 5.2, W$green, "#E8F7F1")
-text(7.85, 4.7, "Exactly one\nchange", cex=0.8, font=2, col=W$green)
-text(7.85, 4.1, "revise / merge / delete", cex=0.65)
-arr(6.25, 4.5, 6.65, 4.5, W$orange)
-box(7.0, 1.6, 9.3, 3.1, W$blue, "#E8F4FA")
-text(8.15, 2.55, expression(C[t+1]), cex=1.1, font=2, col=W$blue)
-text(8.15, 2.0, "next round input", cex=0.68)
-arr(7.85, 3.75, 8.15, 3.15, W$green)
-arr(7.0, 2.35, 1.3, 2.35, W$sky)
-arr(1.3, 2.35, 1.3, 3.55, W$sky)
-text(4.0, 2.7, "repeat (Markov)", cex=0.7, col=W$sky)
-box(0.3, 0.15, 6.0, 1.45, W$verm, "#FDEEE8")
-text(3.15, 1.15, "Side branch (each change)", cex=0.75, font=2, col=W$verm)
-text(3.15, 0.55, expression(paste("GPT-5.4 fate (+25% MiMo) ", rightarrow, " erosion event")), cex=0.62)
-text(3.15, 0.28, expression(paste(rightarrow, " discrete-time survival: COR vs AGENT vs SELF")), cex=0.62)
-arr(7.3, 3.9, 5.5, 1.5, W$verm)
+box(0.25, 3.3, 2.35, 5.1, W$blue, "#E8F4FA")
+draw_C(1.35, 4.5, "t", cex=1.2)
+text(1.3, 3.8, "35 principles\nopaque IDs", cex=0.62)
+box(2.9, 3.15, 6.15, 5.25, W$orange, "#FFF6E5")
+text(4.525, 4.9, "Model (stateless)", cex=0.78, font=2, col=W$orange)
+text(4.15, 4.4, "sees only", cex=0.62, adj=c(1,0.5))
+draw_C(4.35, 4.4, "t", cex=0.7, col=W$black, font=1)
+text(4.55, 4.4, "+", cex=0.62, adj=c(0,0.5))
+text(4.525, 4.0, "condition instruction", cex=0.62)
+text(4.525, 3.45, "SELF / OTHER \"Pellam\"\nPARAPHRASE / NEUTRAL", cex=0.55)
+arr(2.4, 4.2, 2.85, 4.2, W$blue)
+box(6.55, 3.5, 8.85, 4.9, W$green, "#E8F7F1")
+text(7.7, 4.45, "Exactly one\nchange", cex=0.72, font=2, col=W$green)
+text(7.7, 3.8, "revise / merge / delete", cex=0.55)
+arr(6.2, 4.2, 6.5, 4.2, W$orange)
+box(6.9, 1.5, 9.15, 2.9, W$blue, "#E8F4FA")
+draw_C(8.15, 2.45, "t+1", cex=1.05)
+text(8.025, 1.85, "next round input", cex=0.58)
+arr(7.7, 3.45, 8.0, 2.95, W$green)
+arr(6.9, 2.2, 1.3, 2.2, W$sky)
+arr(1.3, 2.2, 1.3, 3.25, W$sky)
+text(4.0, 2.5, "repeat (Markov)", cex=0.6, col=W$sky)
+box(0.25, 0.12, 6.2, 1.3, W$verm, "#FDEEE8")
+text(3.225, 1.05, "Side branch (each change)", cex=0.68, font=2, col=W$verm)
+text(0.4, 0.68, "GPT-5.4 fate (+25% MiMo)", cex=0.55, adj=c(0,0.5))
+arrows(3.35, 0.68, 3.65, 0.68, length=0.06, lwd=1.2, col=W$black)
+text(3.75, 0.68, "erosion event", cex=0.55, adj=c(0,0.5))
+arrows(0.4, 0.35, 0.7, 0.35, length=0.06, lwd=1.2, col=W$black)
+text(0.8, 0.35, "discrete-time survival: COR vs AGENT vs SELF", cex=0.55, adj=c(0,0.5))
+arr(7.1, 3.55, 5.6, 1.35, W$verm)
 
 ## (b) Behaviour test
-plot(NA, xlim=c(0,10), ylim=c(0,5.5), axes=FALSE, xlab="", ylab="",
+plot(NA, xlim=c(0,10), ylim=c(0,4.6), axes=FALSE, xlab="", ylab="", xaxs="i", yaxs="i",
      main="(b) Behaviour test (chains 0-4)")
-box(0.2, 3.2, 2.6, 5.0, W$blue, "#E8F4FA")
-text(1.4, 4.4, "Build installs", cex=0.8, font=2, col=W$blue)
-text(1.4, 3.7, "R0, R20,\nCOR-swap, AGENT-swap\n(+ COR_INV / AGENT_INV)", cex=0.62)
-arr(2.65, 4.1, 3.15, 4.1)
-box(3.2, 3.2, 5.8, 5.0, W$orange, "#FFF6E5")
-text(4.5, 4.4, "System prompt", cex=0.8, font=2, col=W$orange)
-text(4.5, 3.7, "install constitution\nas system message", cex=0.68)
-arr(5.85, 4.1, 6.35, 4.1)
-box(6.4, 3.0, 9.7, 5.2, W$green, "#E8F7F1")
-text(8.05, 4.55, "B1 oversight scenarios", cex=0.8, font=2, col=W$green)
-text(8.05, 3.7, "authorized: accept?\nunauthorized: refuse?", cex=0.68)
-arr(8.05, 2.95, 8.05, 2.35)
-box(6.2, 0.6, 9.7, 2.3, W$purple, "#F7EAF3")
-text(7.95, 1.7, "Outcomes", cex=0.8, font=2, col=W$purple)
-text(7.95, 1.1, "AAR  /  URR", cex=0.9)
-text(3.2, 1.5, "none = no installed constitution\n(positive-control path uses INV)", cex=0.65, col=W$black)
+box(0.2, 2.35, 2.85, 4.25, W$blue, "#E8F4FA")
+text(1.525, 3.85, "Build installs", cex=0.75, font=2, col=W$blue)
+text(1.525, 3.05, "R0, R20, COR-swap,\nAGENT-swap, none\n(+ COR_INV / AGENT_INV)", cex=0.55)
+arr(2.9, 3.3, 3.35, 3.3)
+box(3.4, 2.45, 5.9, 4.15, W$orange, "#FFF6E5")
+text(4.65, 3.7, "System prompt", cex=0.75, font=2, col=W$orange)
+text(4.65, 3.05, "install constitution\nas system message", cex=0.58)
+arr(5.95, 3.3, 6.4, 3.3)
+box(6.45, 2.35, 9.7, 4.25, W$green, "#E8F7F1")
+text(8.075, 3.7, "B1 oversight scenarios", cex=0.72, font=2, col=W$green)
+text(8.075, 2.95, "authorized: accept?\nunauthorized: refuse?", cex=0.58)
+arr(8.075, 2.3, 8.075, 1.85)
+box(6.45, 0.35, 9.7, 1.75, W$purple, "#F7EAF3")
+text(8.075, 1.3, "Outcomes", cex=0.75, font=2, col=W$purple)
+text(8.075, 0.75, "AAR  /  URR", cex=0.85)
 
 dev.off()
 cat("figs ok\n")

@@ -39,22 +39,38 @@ for (cond in unique(dec$condition)) {
 }
 dev.off()
 
-# Forest EXPLORATORY
-fo <- read.csv("results/figs/forest_h4.csv", stringsAsFactors=FALSE)
-pdf("paper/figs/forest_h4.pdf", width=7, height=5)
-par(mar=c(4,10,3,1))
-ord <- order(fo$hr); fo <- fo[ord,]
-y <- seq_len(nrow(fo))
-plot(fo$hr, y, pch=16, xlim=range(c(fo$ci_low, fo$ci_high, 1), na.rm=TRUE),
-     ylim=c(0.5,nrow(fo)+0.5), xlab="Crude HR (EXPLORATORY)", ylab="", yaxt="n",
+# Forest EXPLORATORY — exact conditional RR CIs, log x-axis, fixed row order
+fo <- read.csv("paper/figs/forest_h4.csv", stringsAsFactors=FALSE)
+# CSV order = CONFIG_ORDER; draw first row at top
+n <- nrow(fo)
+y <- rev(seq_len(n))
+finite_hi <- fo$ci_high[is.finite(fo$ci_high) & !is.na(fo$ci_high)]
+finite_lo <- fo$ci_low[is.finite(fo$ci_low) & !is.na(fo$ci_low) & fo$ci_low > 0]
+xmax <- max(c(finite_hi, 1.5), na.rm=TRUE) * 1.15
+xmin <- min(c(finite_lo[finite_lo > 0], 0.02), na.rm=TRUE)
+if (!is.finite(xmin) || xmin <= 0) xmin <- 0.02
+pdf("paper/figs/forest_h4.pdf", width=7.2, height=4.8)
+par(mar=c(4.2, 14.5, 2.2, 1.2))
+plot(NA, xlim=c(xmin, xmax), ylim=c(0.5, n+0.5), log="x",
+     xlab="Crude HR (EXPLORATORY; log scale)", ylab="", yaxt="n",
      main="EXPLORATORY: per-config HR")
-axis(2, at=y, labels=fo$config, las=1, cex.axis=0.8)
-segments(fo$ci_low, y, fo$ci_high, y, lwd=2, col="#0072B2")
-abline(v=1, lty=3)
+abline(v=1, lty=3, col="#666666")
+axis(2, at=y, labels=fo$label, las=1, cex.axis=0.72)
+for (i in seq_len(n)) {
+  yi <- y[i]
+  lo <- fo$ci_low[i]; hi <- fo$ci_high[i]; hr <- fo$hr[i]
+  if (isTRUE(fo$zero_cor[i] == 1)) {
+    # Upper-bound arrow only (0 COR events)
+    arrows(xmin, yi, hi, yi, length=0.08, lwd=2, col="#0072B2", code=2)
+    text(hi, yi, "  0 COR events", pos=4, cex=0.65, col="#D55E00")
+  } else {
+    segments(max(lo, xmin), yi, hi, yi, lwd=2, col="#0072B2")
+    points(hr, yi, pch=16, cex=1.1, col="#0072B2")
+  }
+}
 dev.off()
 
 # Positive controls vs swaps (from battery)
-# Written by Python companion CSV if present
 if (file.exists("paper/figs/pos_controls.csv")) {
   pc <- read.csv("paper/figs/pos_controls.csv", stringsAsFactors=FALSE)
   pdf("paper/figs/pos_controls.pdf", width=8, height=5)
@@ -74,66 +90,77 @@ if (file.exists("paper/figs/pos_controls.csv")) {
   dev.off()
 }
 
-# Paradigm schematic — two panels (Wong CB-safe), single-column width
+# Paradigm schematic — compact two panels, cairo Unicode arrows, tight margins
 W <- list(blue="#0072B2", orange="#E69F00", green="#009E73",
           sky="#56B4E9", verm="#D55E00", purple="#CC79A7", black="#000000")
-box <- function(x0,y0,x1,y1, col, fill=NA, lwd=1.6) {
+box <- function(x0,y0,x1,y1, col, fill=NA, lwd=1.4) {
   rect(x0,y0,x1,y1, border=col, col=fill, lwd=lwd)
 }
 arr <- function(x0,y0,x1,y1, col=W$black) {
-  arrows(x0,y0,x1,y1, length=0.08, lwd=1.4, col=col)
+  arrows(x0,y0,x1,y1, length=0.07, lwd=1.3, col=col)
+}
+# Drawn arrows + composed subscripts (no plotmath / Unicode dependency).
+# ~0.55 of a text page at \textwidth (≈6.3in wide, ≤5in tall)
+pdf("paper/figs/paradigm.pdf", width=6.3, height=4.6)
+par(mfrow=c(2,1), mar=c(0.2,0.3,1.05,0.3), oma=c(0,0,0,0))
+# Draw C with a lowered subscript string (t or t+1)
+draw_C <- function(x, y, sub="t", cex=1.1, col=W$blue, font=2) {
+  text(x, y, "C", cex=cex, font=font, col=col, adj=c(1, 0.5))
+  text(x + 0.02, y - 0.14*cex, sub, cex=0.55*cex, font=font, col=col, adj=c(0, 0.5))
 }
 
-pdf("paper/figs/paradigm.pdf", width=6.5, height=6.8)
-par(mfrow=c(2,1), mar=c(0.6,0.6,1.6,0.6))
-
 ## (a) Chain loop
-plot(NA, xlim=c(0,10), ylim=c(0,6.2), axes=FALSE, xlab="", ylab="",
+plot(NA, xlim=c(0,10), ylim=c(0,5.5), axes=FALSE, xlab="", ylab="", xaxs="i", yaxs="i",
      main="(a) Chain loop (stateless; t = 1...20)")
-box(0.2, 3.6, 2.4, 5.4, W$blue, "#E8F4FA")
-text(1.3, 4.7, expression(C[t]), cex=1.15, font=2, col=W$blue)
-text(1.3, 4.15, "35 principles\nopaque IDs", cex=0.72)
-box(3.0, 3.4, 6.2, 5.6, W$orange, "#FFF6E5")
-text(4.6, 5.15, "Model (stateless)", cex=0.85, font=2, col=W$orange)
-text(4.6, 4.55, "sees only C_t +\ncondition instruction", cex=0.7)
-text(4.6, 3.7, "SELF / OTHER \"Pellam\"\nPARAPHRASE / NEUTRAL", cex=0.62)
-arr(2.45, 4.5, 2.95, 4.5, W$blue)
-box(6.7, 3.8, 9.0, 5.2, W$green, "#E8F7F1")
-text(7.85, 4.7, "Exactly one\nchange", cex=0.8, font=2, col=W$green)
-text(7.85, 4.1, "revise / merge / delete", cex=0.65)
-arr(6.25, 4.5, 6.65, 4.5, W$orange)
-box(7.0, 1.6, 9.3, 3.1, W$blue, "#E8F4FA")
-text(8.15, 2.55, expression(C[t+1]), cex=1.1, font=2, col=W$blue)
-text(8.15, 2.0, "next round input", cex=0.68)
-arr(7.85, 3.75, 8.15, 3.15, W$green)
-arr(7.0, 2.35, 1.3, 2.35, W$sky)
-arr(1.3, 2.35, 1.3, 3.55, W$sky)
-text(4.0, 2.7, "repeat (Markov)", cex=0.7, col=W$sky)
-box(0.3, 0.15, 6.0, 1.45, W$verm, "#FDEEE8")
-text(3.15, 1.15, "Side branch (each change)", cex=0.75, font=2, col=W$verm)
-text(3.15, 0.55, expression(paste("GPT-5.4 fate (+25% MiMo) ", rightarrow, " erosion event")), cex=0.62)
-text(3.15, 0.28, expression(paste(rightarrow, " discrete-time survival: COR vs AGENT vs SELF")), cex=0.62)
-arr(7.3, 3.9, 5.5, 1.5, W$verm)
+box(0.25, 3.3, 2.35, 5.1, W$blue, "#E8F4FA")
+draw_C(1.35, 4.5, "t", cex=1.2)
+text(1.3, 3.8, "35 principles\nopaque IDs", cex=0.62)
+box(2.9, 3.15, 6.15, 5.25, W$orange, "#FFF6E5")
+text(4.525, 4.9, "Model (stateless)", cex=0.78, font=2, col=W$orange)
+text(4.15, 4.4, "sees only", cex=0.62, adj=c(1,0.5))
+draw_C(4.35, 4.4, "t", cex=0.7, col=W$black, font=1)
+text(4.55, 4.4, "+", cex=0.62, adj=c(0,0.5))
+text(4.525, 4.0, "condition instruction", cex=0.62)
+text(4.525, 3.45, "SELF / OTHER \"Pellam\"\nPARAPHRASE / NEUTRAL", cex=0.55)
+arr(2.4, 4.2, 2.85, 4.2, W$blue)
+box(6.55, 3.5, 8.85, 4.9, W$green, "#E8F7F1")
+text(7.7, 4.45, "Exactly one\nchange", cex=0.72, font=2, col=W$green)
+text(7.7, 3.8, "revise / merge / delete", cex=0.55)
+arr(6.2, 4.2, 6.5, 4.2, W$orange)
+box(6.9, 1.5, 9.15, 2.9, W$blue, "#E8F4FA")
+draw_C(8.15, 2.45, "t+1", cex=1.05)
+text(8.025, 1.85, "next round input", cex=0.58)
+arr(7.7, 3.45, 8.0, 2.95, W$green)
+arr(6.9, 2.2, 1.3, 2.2, W$sky)
+arr(1.3, 2.2, 1.3, 3.25, W$sky)
+text(4.0, 2.5, "repeat (Markov)", cex=0.6, col=W$sky)
+box(0.25, 0.12, 6.2, 1.3, W$verm, "#FDEEE8")
+text(3.225, 1.05, "Side branch (each change)", cex=0.68, font=2, col=W$verm)
+text(0.4, 0.68, "GPT-5.4 fate (+25% MiMo)", cex=0.55, adj=c(0,0.5))
+arrows(3.35, 0.68, 3.65, 0.68, length=0.06, lwd=1.2, col=W$black)
+text(3.75, 0.68, "erosion event", cex=0.55, adj=c(0,0.5))
+arrows(0.4, 0.35, 0.7, 0.35, length=0.06, lwd=1.2, col=W$black)
+text(0.8, 0.35, "discrete-time survival: COR vs AGENT vs SELF", cex=0.55, adj=c(0,0.5))
+arr(7.1, 3.55, 5.6, 1.35, W$verm)
 
 ## (b) Behaviour test
-plot(NA, xlim=c(0,10), ylim=c(0,5.5), axes=FALSE, xlab="", ylab="",
+plot(NA, xlim=c(0,10), ylim=c(0,4.6), axes=FALSE, xlab="", ylab="", xaxs="i", yaxs="i",
      main="(b) Behaviour test (chains 0-4)")
-box(0.2, 3.2, 2.6, 5.0, W$blue, "#E8F4FA")
-text(1.4, 4.4, "Build installs", cex=0.8, font=2, col=W$blue)
-text(1.4, 3.7, "R0, R20,\nCOR-swap, AGENT-swap\n(+ COR_INV / AGENT_INV)", cex=0.62)
-arr(2.65, 4.1, 3.15, 4.1)
-box(3.2, 3.2, 5.8, 5.0, W$orange, "#FFF6E5")
-text(4.5, 4.4, "System prompt", cex=0.8, font=2, col=W$orange)
-text(4.5, 3.7, "install constitution\nas system message", cex=0.68)
-arr(5.85, 4.1, 6.35, 4.1)
-box(6.4, 3.0, 9.7, 5.2, W$green, "#E8F7F1")
-text(8.05, 4.55, "B1 oversight scenarios", cex=0.8, font=2, col=W$green)
-text(8.05, 3.7, "authorized: accept?\nunauthorized: refuse?", cex=0.68)
-arr(8.05, 2.95, 8.05, 2.35)
-box(6.2, 0.6, 9.7, 2.3, W$purple, "#F7EAF3")
-text(7.95, 1.7, "Outcomes", cex=0.8, font=2, col=W$purple)
-text(7.95, 1.1, "AAR  /  URR", cex=0.9)
-text(3.2, 1.5, "none = no installed constitution\n(positive-control path uses INV)", cex=0.65, col=W$black)
+box(0.2, 2.35, 2.85, 4.25, W$blue, "#E8F4FA")
+text(1.525, 3.85, "Build installs", cex=0.75, font=2, col=W$blue)
+text(1.525, 3.05, "R0, R20, COR-swap,\nAGENT-swap, none\n(+ COR_INV / AGENT_INV)", cex=0.55)
+arr(2.9, 3.3, 3.35, 3.3)
+box(3.4, 2.45, 5.9, 4.15, W$orange, "#FFF6E5")
+text(4.65, 3.7, "System prompt", cex=0.75, font=2, col=W$orange)
+text(4.65, 3.05, "install constitution\nas system message", cex=0.58)
+arr(5.95, 3.3, 6.4, 3.3)
+box(6.45, 2.35, 9.7, 4.25, W$green, "#E8F7F1")
+text(8.075, 3.7, "B1 oversight scenarios", cex=0.72, font=2, col=W$green)
+text(8.075, 2.95, "authorized: accept?\nunauthorized: refuse?", cex=0.58)
+arr(8.075, 2.3, 8.075, 1.85)
+box(6.45, 0.35, 9.7, 1.75, W$purple, "#F7EAF3")
+text(8.075, 1.3, "Outcomes", cex=0.75, font=2, col=W$purple)
+text(8.075, 0.75, "AAR  /  URR", cex=0.85)
 
 dev.off()
 cat("figs ok\n")

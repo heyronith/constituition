@@ -77,7 +77,9 @@ def test_required_macros_present():
         "NSubordCOR",
         "NHFiveAdded",
         "NCalib",
+        "NHThreeIncludedWord",
     ]
     names = {m.name for m in compute()}
     missing = [r for r in required if r not in names]
     assert not missing, missing
+

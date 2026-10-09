@@ -516,6 +516,12 @@
     "key": "len(included_configs)"
   },
   {
+    "name": "NHThreeIncludedWord",
+    "value": "Six",
+    "source": "results/secondary/h3_secondary.json",
+    "key": "len(included_configs) as English word"
+  },
+  {
     "name": "HRQwenThink",
     "value": "0.07",
     "source": "results/exploratory/h4_moderation.json",
