@@ -1,0 +1,116 @@
+{
+  "checks": {
+    "battery_b1_sha": {
+      "actual": "351e18deecfb8995b2a7e65658da622ea9aad769f33e4284631d0a06bcffc3e1",
+      "expected": "351e18deecfb8995b2a7e65658da622ea9aad769f33e4284631d0a06bcffc3e1",
+      "ok": true
+    },
+    "freeze": {
+      "analysis/confirmatory/common.R": {
+        "actual": "146fe57b09472ed1f62a61c7f6cd6b4d5e76496b3d81c609bee0cbe15a7f7938",
+        "expected": "146fe57b09472ed1f62a61c7f6cd6b4d5e76496b3d81c609bee0cbe15a7f7938",
+        "ok": true
+      },
+      "analysis/confirmatory/h1.R": {
+        "actual": "50590fccfaa14ccd0621aec5c7ae827a81d86137b0fddfa94d5fb34f6b77847e",
+        "expected": "50590fccfaa14ccd0621aec5c7ae827a81d86137b0fddfa94d5fb34f6b77847e",
+        "ok": true
+      },
+      "analysis/confirmatory/h2.R": {
+        "actual": "f1b75e35107c668701b3128c022f54f2c665fdf12a695740baab71302598626b",
+        "expected": "f1b75e35107c668701b3128c022f54f2c665fdf12a695740baab71302598626b",
+        "ok": true
+      },
+      "analysis/confirmatory/h3.R": {
+        "actual": "eda244d489828b929fc75be559ef5bbf0a4b9ffaa89a7972c25bfdfa852345a9",
+        "expected": "eda244d489828b929fc75be559ef5bbf0a4b9ffaa89a7972c25bfdfa852345a9",
+        "ok": true
+      },
+      "analysis/confirmatory/reliability.R": {
+        "actual": "b63eb9421d5a7878886f12c84f77e455c23e82f71e0a6a4eabac8663b7364669",
+        "expected": "b63eb9421d5a7878886f12c84f77e455c23e82f71e0a6a4eabac8663b7364669",
+        "ok": true
+      },
+      "analysis/confirmatory/run_confirmatory.R": {
+        "actual": "72302af7bbd829d24d895013b242d6fecd5cfed99ad92061c39a05dc271b13ba",
+        "expected": "72302af7bbd829d24d895013b242d6fecd5cfed99ad92061c39a05dc271b13ba",
+        "ok": true
+      },
+      "analysis/confirmatory/sensitivity.R": {
+        "actual": "e74b063f62b3cd8ef251598921d8afd7091e9b9e2ce51000b45305199e12e64e",
+        "expected": "e74b063f62b3cd8ef251598921d8afd7091e9b9e2ce51000b45305199e12e64e",
+        "ok": true
+      },
+      "analysis/confirmatory/simulate.R": {
+        "actual": "45e76211c49fba7f396eeda13c62a643779f89428382466d17aa26925238c219",
+        "expected": "45e76211c49fba7f396eeda13c62a643779f89428382466d17aa26925238c219",
+        "ok": true
+      },
+      "docs/PREREGISTRATION.md": {
+        "actual": "847fa5504b98b4d434706b6f70ee505bd22f2084bd80f7a233b64bb05af23bcc",
+        "expected": "847fa5504b98b4d434706b6f70ee505bd22f2084bd80f7a233b64bb05af23bcc",
+        "ok": true
+      },
+      "docs/PREREGISTRATION.pdf": {
+        "actual": "4dc2f5841ad3d322255dce27cd772677027126a1233b7cdceee8baa332b6caf4",
+        "expected": "4dc2f5841ad3d322255dce27cd772677027126a1233b7cdceee8baa332b6caf4",
+        "ok": true
+      },
+      "scripts/build_hazard_table.py": {
+        "actual": "ed37904c8131bbd196bf655b389709d7abb2010da2e9521d3182bddc795649c4",
+        "expected_stub": "9fad75560310eb5edde757802ece7ffb55db9c1e08458368446db7b4385241e7",
+        "note": "builder changed post-freeze (D76/D78); not confirmatory R",
+        "ok": true
+      },
+      "src/rc/exact_tests.py": {
+        "actual": "2b43c07ada9496354fa101f8f22a4b2a9375c19651e3ad3ccb6fd42741499b2a",
+        "expected": "2b43c07ada9496354fa101f8f22a4b2a9375c19651e3ad3ccb6fd42741499b2a",
+        "ok": true
+      },
+      "src/rc/krippendorff_alpha.py": {
+        "actual": "1d6caedcfc8d18d1130d920bdf0dfe9f98efe6bd9e5956a8f741319f6296a542",
+        "expected": "1d6caedcfc8d18d1130d920bdf0dfe9f98efe6bd9e5956a8f741319f6296a542",
+        "ok": true
+      }
+    },
+    "freeze_failures": [],
+    "hazard_sha": {
+      "actual": "1e1f81e00cbe728f6f02a64d8439b2ccd4e6e4dc2282025b89dbdc632430c1d2",
+      "expected": "1e1f81e00cbe728f6f02a64d8439b2ccd4e6e4dc2282025b89dbdc632430c1d2",
+      "ok": true
+    },
+    "r_env": {
+      "R": {
+        "actual": "R version 4.6.1 (2026-06-24)",
+        "expected": "R version 4.6.1 (2026-06-24)",
+        "ok": true
+      },
+      "geepack": {
+        "actual": "1.3.13",
+        "expected": "1.3.13",
+        "ok": true
+      },
+      "jsonlite": {
+        "actual": "2.0.0",
+        "expected": "2.0.0",
+        "ok": true
+      },
+      "lme4": {
+        "actual": "2.0.6",
+        "expected": "2.0.6",
+        "ok": true
+      }
+    },
+    "r_env_ok": true
+  },
+  "git_commit": "bd46338861cf8d2c2461ad8bd1d974bfe2b46ebe",
+  "phase": "7E-B",
+  "pre_run_ok": true,
+  "run": {
+    "exit_code": 0,
+    "finished_utc": "2026-10-09T18:12:04Z",
+    "out_json_exists": true,
+    "out_md_exists": true
+  },
+  "utc": "2026-10-09T18:10:42Z"
+}
