@@ -1,19 +1,20 @@
-% Bibliography for reflective-corrigibility manuscript.
+% Bibliography for reflective-corrigibility manuscript (Phase 8B).
+% arXiv entries fetched from export.arxiv.org API on 2026-10-09.
 % Verified entries lack UNVERIFIED tags. Never invent bibliographic data.
 
 @inproceedings{soares2015corrigibility,
   title     = {Corrigibility},
   author    = {Soares, Nate and Fallenstein, Benja and Armstrong, Stuart and Yudkowsky, Eliezer},
-  booktitle = {Workshops at the Twenty-Ninth AAAI Conference on Artificial Intelligence},
+  booktitle = {Workshops at the Twenty-Ninth {AAAI} Conference on Artificial Intelligence},
   year      = {2015},
-  note      = {Artificial Intelligence and Ethics workshop; AAAI WS paper 10124},
+  note      = {Artificial Intelligence and Ethics workshop; {AAAI} {WS} paper 10124},
   url       = {https://cdn.aaai.org/ocs/ws/ws0067/10124-45900-1-PB.pdf}
 }
 
 @inproceedings{perez2023modelwritten,
   title     = {Discovering Language Model Behaviors with Model-Written Evaluations},
   author    = {Perez, Ethan and Ringer, Sam and Luko{\v{s}}i{\=u}t{\.e}, Kamil{\.e} and Nguyen, Karina and Chen, Edwin and Heiner, Scott and Pettit, Craig and Olsson, Catherine and Kundu, Sandipan and Kadavath, Saurav and others},
-  booktitle = {Findings of the Association for Computational Linguistics: ACL 2023},
+  booktitle = {Findings of the Association for Computational Linguistics: {ACL} 2023},
   pages     = {13387--13434},
   year      = {2023},
   address   = {Toronto, Canada},
@@ -56,53 +57,317 @@
   doi     = {10.1111/j.1468-2958.2004.tb00738.x}
 }
 
+@article{bates2015lme4,
+  title   = {Fitting Linear Mixed-Effects Models Using {lme4}},
+  author  = {Bates, Douglas and M{\"a}chler, Martin and Bolker, Ben and Walker, Steve},
+  journal = {Journal of Statistical Software},
+  volume  = {67},
+  number  = {1},
+  pages   = {1--48},
+  year    = {2015},
+  doi     = {10.18637/jss.v067.i01},
+  url     = {https://www.jstatsoft.org/article/view/v067i01}
+}
+
+@article{brooks2017glmmtmb,
+  title   = {{glmmTMB} Balances Speed and Flexibility Among Packages for Zero-inflated Generalized Linear Mixed Modeling},
+  author  = {Brooks, Mollie E. and Kristensen, Kasper and van Benthem, Koen J. and Magnusson, Arni and Berg, Casper W. and Nielsen, Anders and Skaug, Hans J. and M{\"a}chler, Martin and Bolker, Benjamin M.},
+  journal = {The R Journal},
+  volume  = {9},
+  number  = {2},
+  pages   = {378--400},
+  year    = {2017},
+  doi     = {10.32614/RJ-2017-066},
+  url     = {https://journal.r-project.org/archive/2017/RJ-2017-066/}
+}
+
+% Model cards / tech reports (URLs from configs/models.yaml comments)
+@misc{qwen38modelcard,
+  title        = {{Qwen3.8-27B} Model Card},
+  author       = {{Qwen Team}},
+  year         = {2026},
+  url          = {https://huggingface.co/Qwen/Qwen3.8-27B},
+  note         = {Hugging Face model card; sampling parameters as used in configs/models.yaml}
+}
+
+@misc{gemma4modelcard,
+  title        = {{Gemma} 4 Model Card},
+  author       = {{Google}},
+  year         = {2026},
+  url          = {https://ai.google.dev/gemma/docs/core/model_card_4},
+  note         = {Also https://huggingface.co/google/gemma-4-31B-it; Hub IDs from configs/models.yaml}
+}
+
+@misc{olmo3modelcard,
+  title        = {{OLMo} 3 7B Instruct Model Card},
+  author       = {{Allen Institute for AI}},
+  year         = {2026},
+  url          = {https://huggingface.co/allenai/Olmo-3-7B-Instruct},
+  note         = {SFT/DPO stage cards: https://huggingface.co/allenai/Olmo-3-7B-Instruct-SFT and https://huggingface.co/allenai/Olmo-3-7B-Instruct-DPO}
+}
+
+@misc{github_constdrift,
+  title        = {heyuday/const-drift-inspect},
+  year         = {2026},
+  url          = {https://github.com/heyuday/const-drift-inspect},
+  note         = {accessed 2026-10-09}
+}
+
+@misc{github_valuedrift,
+  title        = {Wu-Jinzhou/constitutional-value-drift},
+  year         = {2026},
+  url          = {https://github.com/Wu-Jinzhou/constitutional-value-drift},
+  note         = {accessed 2026-10-09}
+}
+
+% --- arXiv entries (API-verified) ---
 @article{bai2022constitutional,
-  title   = {Constitutional {AI}: Harmlessness from {AI} Feedback},
-  author  = {Bai, Yuntao and Kadavath, Saurav and Kundu, Sandipan and Askell, Amanda and Kernion, Jackson and Jones, Andy and Chen, Anna and Goldie, Anna and Mirhoseini, Azalia and McKinnon, Cameron and others},
-  journal = {arXiv preprint arXiv:2212.08073},
-  year    = {2022},
-  url     = {https://arxiv.org/abs/2212.08073}
+  title         = {Constitutional {AI}: Harmlessness from {AI} Feedback},
+  author        = {Bai, Yuntao and Kadavath, Saurav and Kundu, Sandipan and Askell, Amanda and Kernion, Jackson and Jones, Andy and Chen, Anna and Goldie, Anna and Mirhoseini, Azalia and McKinnon, Cameron and Chen, Carol and Olsson, Catherine and Olah, Christopher and Hernandez, Danny and Drain, Dawn and Ganguli, Deep and Li, Dustin and Tran-Johnson, Eli and Perez, Ethan and Kerr, Jamie and Mueller, Jared and Ladish, Jeffrey and Landau, Joshua and Ndousse, Kamal and Lukosuite, Kamile and Lovitt, Liane and Sellitto, Michael and Elhage, Nelson and Schiefer, Nicholas and Mercado, Noemi and DasSarma, Nova and Lasenby, Robert and Larson, Robin and Ringer, Sam and Johnston, Scott and Kravec, Shauna and Showk, Sheer El and Fort, Stanislav and Lanham, Tamera and Telleen-Lawton, Timothy and Conerly, Tom and Henighan, Tom and Hume, Tristan and Bowman, Samuel R. and Hatfield-Dodds, Zac and Mann, Ben and Amodei, Dario and Joseph, Nicholas and McCandlish, Sam and Brown, Tom and Kaplan, Jared},
+  year          = {2022},
+  eprint        = {2212.08073},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.AI},
+  url           = {https://arxiv.org/abs/2212.08073}
+}
+
+@article{huang2024collective,
+  title         = {Collective Constitutional {AI}: Aligning a Language Model with Public Input},
+  author        = {Huang, Saffron and Siddarth, Divya and Lovitt, Liane and Liao, Thomas I. and Durmus, Esin and Tamkin, Alex and Ganguli, Deep},
+  year          = {2024},
+  eprint        = {2406.07814},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.AI},
+  url           = {https://arxiv.org/abs/2406.07814}
+}
+
+@article{kundu2023specific,
+  title         = {Specific versus General Principles for Constitutional {AI}},
+  author        = {Kundu, Sandipan and Bai, Yuntao and Kadavath, Saurav and Askell, Amanda and Callahan, Andrew and Chen, Anna and Goldie, Anna and Balwit, Avital and Mirhoseini, Azalia and McLean, Brayden and Olsson, Catherine and Evraets, Cassie and Tran-Johnson, Eli and Durmus, Esin and Perez, Ethan and Kernion, Jackson and Kerr, Jamie and Ndousse, Kamal and Nguyen, Karina and Elhage, Nelson and Cheng, Newton and Schiefer, Nicholas and DasSarma, Nova and Rausch, Oliver and Larson, Robin and Yang, Shannon and Kravec, Shauna and Telleen-Lawton, Timothy and Liao, Thomas I. and Henighan, Tom and Hume, Tristan and Hatfield-Dodds, Zac and Mindermann, Sören and Joseph, Nicholas and McCandlish, Sam and Kaplan, Jared},
+  year          = {2023},
+  eprint        = {2310.13798},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.AI},
+  url           = {https://arxiv.org/abs/2310.13798}
+}
+
+@article{jakkli2026constitutions,
+  title         = {How Well Do Models Follow Their Constitutions?},
+  author        = {Jakkli, Arya and Rajamanoharan, Senthooran and Nanda, Neel},
+  year          = {2026},
+  eprint        = {2605.24229},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.AI},
+  url           = {https://arxiv.org/abs/2605.24229}
+}
+
+@article{madaan2023selfrefine,
+  title         = {Self-Refine: Iterative Refinement with Self-Feedback},
+  author        = {Madaan, Aman and Tandon, Niket and Gupta, Prakhar and Hallinan, Skyler and Gao, Luyu and Wiegreffe, Sarah and Alon, Uri and Dziri, Nouha and Prabhumoye, Shrimai and Yang, Yiming and Gupta, Shashank and Majumder, Bodhisattwa Prasad and Hermann, Katherine and Welleck, Sean and Yazdanbakhsh, Amir and Clark, Peter},
+  year          = {2023},
+  eprint        = {2303.17651},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.AI},
+  url           = {https://arxiv.org/abs/2303.17651}
+}
+
+@article{perez2024telephone,
+  title         = {When {LLMs} Play the Telephone Game: Cultural Attractors as Conceptual Tools to Evaluate {LLMs} in Multi-turn Settings},
+  author        = {Perez, Jérémy and Kovač, Grgur and Léger, Corentin and Colas, Cédric and Molinaro, Gaia and Derex, Maxime and Oudeyer, Pierre-Yves and Moulin-Frier, Clément},
+  year          = {2024},
+  eprint        = {2407.04503},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.AI},
+  url           = {https://arxiv.org/abs/2407.04503}
+}
+
+@article{mohamed2025broken,
+  title         = {{LLM} as a Broken Telephone: Iterative Generation Distorts Information},
+  author        = {Mohamed, Amr and Geng, Mingmeng and Vazirgiannis, Michalis and Shang, Guokan},
+  year          = {2025},
+  eprint        = {2502.20258},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.AI},
+  url           = {https://arxiv.org/abs/2502.20258}
+}
+
+@article{geng2026markovian,
+  title         = {Markovian Generation Chains in Large Language Models},
+  author        = {Geng, Mingmeng and Mohamed, Amr and Shang, Guokan and Vazirgiannis, Michalis and Poibeau, Thierry},
+  year          = {2026},
+  eprint        = {2603.11228},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.AI},
+  url           = {https://arxiv.org/abs/2603.11228}
+}
+
+@article{wu2026converge,
+  title         = {Do Language Models Converge to Themselves? Recursive Self-Refinement as Textual Relaxation},
+  author        = {Wu, Xuening and Xu, Qianya and Kang, Yanlan and Chen, Zeping and Liu, Yubin and Yin, Shenqin},
+  year          = {2026},
+  eprint        = {2607.22653},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.AI},
+  url           = {https://arxiv.org/abs/2607.22653}
+}
+
+@article{das2026selfpropagating,
+  title         = {Self-Propagating Misalignment in {LLM} Agents, and Why Auditing or Disabling Memory Is Not Enough},
+  author        = {Das, Debeshee and Tay, Jacqueline and Tsai, Bruce and Huang, David and Rando, Javier},
+  year          = {2026},
+  eprint        = {2610.04083},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.AI},
+  url           = {https://arxiv.org/abs/2610.04083}
 }
 
 @article{das2026seabench,
-  title   = {{SEABench}: Benchmarking Endogenous Misalignment in Self-Evolving Agents},
-  author  = {Das, Saswat and Viswanathan, Parvati and Donnelly, Daniel and Huang, Chang and Abdelnabi, Sahar and Fioretto, Ferdinando},
-  journal = {arXiv preprint arXiv:2609.35596},
-  year    = {2026},
-  url     = {https://arxiv.org/abs/2609.35596}
+  title         = {{SEABench}: Benchmarking Endogenous Misalignment In Self-Evolving Agents},
+  author        = {Das, Saswat and Viswanathan, Parvati and Donnelly, Daniel and Huang, Chang and Abdelnabi, Sahar and Fioretto, Ferdinando},
+  year          = {2026},
+  eprint        = {2609.35596},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.AI},
+  url           = {https://arxiv.org/abs/2609.35596}
 }
 
 @article{han2025alignmenttipping,
-  title   = {Alignment Tipping Process: How Self-Evolution Pushes {LLM} Agents Off the Rails},
-  author  = {Han, Siwei and Xiong, Kaiwen and Liu, Jiaqi and Ye, Xinyu and Su, Yaofeng and Duan, Wenbo and Liu, Xinyuan and Xie, Cihang and Bansal, Mohit and Ding, Mingyu and Zhang, Linjun and Yao, Huaxiu},
-  journal = {arXiv preprint arXiv:2510.04860},
-  year    = {2025},
-  url     = {https://arxiv.org/abs/2510.04860}
+  title         = {Alignment Tipping Process: How Self-Evolution Pushes {LLM} Agents Off the Rails},
+  author        = {Han, Siwei and Xiong, Kaiwen and Liu, Jiaqi and Ye, Xinyu and Su, Yaofeng and Duan, Wenbo and Liu, Xinyuan and Xie, Cihang and Bansal, Mohit and Ding, Mingyu and Zhang, Linjun and Yao, Huaxiu},
+  year          = {2025},
+  eprint        = {2510.04860},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.AI},
+  url           = {https://arxiv.org/abs/2510.04860}
 }
 
-% UNVERIFIED: outline mentions Collective CAI / concurrent GitHub pipelines / ROGUE /
-% self-refine / telephone-game LM chains — add verified keys when author confirms exact papers.
-
-@misc{unverified_collective_cai,
-  title        = {Collective Constitutional {AI} (placeholder)},
-  note         = {UNVERIFIED: exact bibliographic record not confirmed in Phase 8},
-  year         = {2023}
+@article{arike2025goaldraft,
+  title         = {Technical Report: Evaluating Goal Drift in Language Model Agents},
+  author        = {Arike, Rauno and Donoway, Elizabeth and Bartsch, Henning and Hobbhahn, Marius},
+  year          = {2025},
+  eprint        = {2505.02709},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.AI},
+  url           = {https://arxiv.org/abs/2505.02709}
 }
 
-@misc{unverified_rogue,
-  title        = {{ROGUE} / shutdown-resistance evaluation (placeholder)},
-  note         = {UNVERIFIED: exact bibliographic record not confirmed in Phase 8},
-  year         = {2024}
+@article{menon2026inherited,
+  title         = {Inherited Goal Drift: Contextual Pressure Can Undermine Agentic Goals},
+  author        = {Menon, Achyutha and Saebo, Magnus and Crosse, Tyler and Gibson, Spencer and Jang, Eyon and Cruz, Diogo},
+  year          = {2026},
+  eprint        = {2603.03258},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.AI},
+  url           = {https://arxiv.org/abs/2603.03258}
 }
 
-@misc{unverified_selfrefine,
-  title        = {Self-Refine (placeholder)},
-  note         = {UNVERIFIED: Madaan et al.\ Self-Refine exact record to be confirmed by author},
-  year         = {2023}
+@article{greenblatt2024alignmentfaking,
+  title         = {Alignment faking in large language models},
+  author        = {Greenblatt, Ryan and Denison, Carson and Wright, Benjamin and Roger, Fabien and MacDiarmid, Monte and Marks, Sam and Treutlein, Johannes and Belonax, Tim and Chen, Jack and Duvenaud, David and Khan, Akbir and Michael, Julian and Mindermann, Sören and Perez, Ethan and Petrini, Linda and Uesato, Jonathan and Kaplan, Jared and Shlegeris, Buck and Bowman, Samuel R. and Hubinger, Evan},
+  year          = {2024},
+  eprint        = {2412.14093},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.AI},
+  url           = {https://arxiv.org/abs/2412.14093}
 }
 
-@misc{unverified_concurrent_github,
-  title        = {Concurrent constitutional self-revision GitHub pipelines (placeholder)},
-  note         = {UNVERIFIED: cite neutrally once author names the repositories},
-  year         = {2025}
+@article{meinke2024scheming,
+  title         = {Frontier Models are Capable of In-context Scheming},
+  author        = {Meinke, Alexander and Schoen, Bronson and Scheurer, Jérémy and Balesni, Mikita and Shah, Rusheb and Hobbhahn, Marius},
+  year          = {2024},
+  eprint        = {2412.04984},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.AI},
+  url           = {https://arxiv.org/abs/2412.04984}
 }
+
+@article{schlatter2025shutdown,
+  title         = {Incomplete Tasks Induce Shutdown Resistance in Some Frontier {LLMs}},
+  author        = {Schlatter, Jeremy and Weinstein-Raun, Benjamin and Ladish, Jeffrey},
+  year          = {2025},
+  eprint        = {2509.14260},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.AI},
+  url           = {https://arxiv.org/abs/2509.14260}
+}
+
+@article{tien2026rogue,
+  title         = {{ROGUE}: Evaluating Corrigibility Failures in Frontier Computer-Use Agents},
+  author        = {Tien, Jeremy and Anand, Abishek and Tuan, Yu-Rou and Shen, Yuchen and Kolter, J. Zico and Nayebi, Aran},
+  year          = {2026},
+  eprint        = {2606.00341},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.AI},
+  url           = {https://arxiv.org/abs/2606.00341}
+}
+
+@article{bogdanov2026survival,
+  title         = {Evaluation of Multi-Turn Consistency in {LLM} Agents: Survival Analysis and Failure-Rationale Taxonomy},
+  author        = {Bogdanov, Igor and Manakina, Olga and Lung, Chung-Horng},
+  year          = {2026},
+  eprint        = {2609.29508},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.AI},
+  url           = {https://arxiv.org/abs/2609.29508}
+}
+
+@article{norman2026reliability,
+  title         = {Reliability without Validity: A Systematic, Large-Scale Evaluation of {LLM}-as-a-Judge Models Across Agreement, Consistency, and Bias},
+  author        = {Norman, Justin D. and Rivera, Michael U. and Hughes, D. Alex},
+  year          = {2026},
+  eprint        = {2606.19544},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.AI},
+  url           = {https://arxiv.org/abs/2606.19544}
+}
+
+@article{mukherjee2026geometry,
+  title         = {The Geometry of {LLM}-as-Judge: Why Inter-{LLM} Consensus Is Not Human Alignment},
+  author        = {Mukherjee, Sourabrata and Hamna, Hamna and Bali, Kalika and Sitaram, Sunayana},
+  year          = {2026},
+  eprint        = {2606.03043},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.AI},
+  url           = {https://arxiv.org/abs/2606.03043}
+}
+
+@article{lin2021truthfulqa,
+  title         = {{TruthfulQA}: Measuring How Models Mimic Human Falsehoods},
+  author        = {Lin, Stephanie and Hilton, Jacob and Evans, Owain},
+  year          = {2021},
+  eprint        = {2109.07958},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.AI},
+  url           = {https://arxiv.org/abs/2109.07958}
+}
+
+@article{souly2024strongreject,
+  title         = {A {StrongREJECT} for Empty Jailbreaks},
+  author        = {Souly, Alexandra and Lu, Qingyuan and Bowen, Dillon and Trinh, Tu and Hsieh, Elvis and Pandey, Sana and Abbeel, Pieter and Svegliato, Justin and Emmons, Scott and Watkins, Olivia and Toyer, Sam},
+  year          = {2024},
+  eprint        = {2402.10260},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.AI},
+  url           = {https://arxiv.org/abs/2402.10260}
+}
+
+@article{wang2024mmlupro,
+  title         = {{MMLU-Pro}: A More Robust and Challenging Multi-Task Language Understanding Benchmark},
+  author        = {Wang, Yubo and Ma, Xueguang and Zhang, Ge and Ni, Yuansheng and Chandra, Abhranil and Guo, Shiguang and Ren, Weiming and Arulraj, Aaran and He, Xuan and Jiang, Ziyan and Li, Tianle and Ku, Max and Wang, Kai and Zhuang, Alex and Fan, Rongqi and Yue, Xiang and Chen, Wenhu},
+  year          = {2024},
+  eprint        = {2406.01574},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.AI},
+  url           = {https://arxiv.org/abs/2406.01574}
+}
+
+@article{kwon2023vllm,
+  title         = {Efficient Memory Management for Large Language Model Serving with PagedAttention},
+  author        = {Kwon, Woosuk and Li, Zhuohan and Zhuang, Siyuan and Sheng, Ying and Zheng, Lianmin and Yu, Cody Hao and Gonzalez, Joseph E. and Zhang, Hao and Stoica, Ion},
+  year          = {2023},
+  eprint        = {2309.06180},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.AI},
+  url           = {https://arxiv.org/abs/2309.06180}
+}
+
