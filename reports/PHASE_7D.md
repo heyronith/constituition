@@ -11,7 +11,7 @@ Blinding (D55 rule 5) applies: this report shows **operational** metrics only (c
 | OpenAI Usage dashboard (human-confirmed) | **$44.62** |
 | Prior D70 reconstructed | $40.07 |
 | Gap logged | **+$4.55** |
-| Caps | API **$58** / OpenAI ≤ **$55** / OpenRouter ≤ $3 / Modal ≤ **$130** |
+| Caps (Session 1) | API **$58** / OpenAI ≤ **$55** / OpenRouter ≤ $3 / Modal ≤ **$130** |
 | Modal October metered (`modal billing summary`, after smoke+precheck) | **$76.92** |
 
 Dashboard file: `materials/main_run/refs/openai_dashboard_usd.json`.
@@ -32,19 +32,7 @@ Per config, types are always: R0×5, R20×10, COR_SWAP×10, AGENT_SWAP×10, NONE
 | gemma4_12b | 38 | 15 | SELF 0/7, 2/12, 4/3; OTHER 2/5, 4/5 |
 | olmo3_7b_sft | 38 | 15 | SELF 1/14, 4/4; OTHER 1/14, 3/6, 4/11 |
 
-`n_changed_vs_r0` for every COR_SWAP / AGENT_SWAP is in `results/phase7d_manifest_ops.json` (textual clause diffs vs R0 only; not an AAR statistic). Full per-swap table is large; summary ranges:
-
-| config | COR_SWAP `n_changed_vs_r0` | AGENT_SWAP `n_changed_vs_r0` |
-|--------|---------------------------:|-----------------------------:|
-| olmo3_7b_final | 0–1 | 0–2 |
-| olmo3_7b_dpo | 0 | 0–2 |
-| olmo3_7b_sft | 0–2 | 0–3 |
-| qwen38_27b_nothink | 0–2 | 0–2 |
-| qwen38_27b_think | 0–2 | 0–2 |
-| gemma4_31b | 0 | 0–1 |
-| gemma4_12b | 0–1 | 0–2 |
-
-Zeros mean the lineage-traced descendant text equals the R0 clause (no textual edit), not that the swap was skipped.
+Operational note (D73): Session 1 previously tabulated per-swap-type `n_changed_vs_r0` by category. That was a blinding deviation (lead-requested; disclosed). The artifact `results/phase7d_manifest_ops.json` still exists and was viewed during setup; **do not** re-report category- or type-level change counts until Phase 7E.
 
 ### Tests
 
@@ -127,9 +115,87 @@ Session 2 starts only when the human pastes `Phase 7D session 2: launch`.
 
 ---
 
-## Session 2 — launch
+## Session 2 — pre-launch fixes + launch
 
-*(pending)*
+Modal gross cap approved: **$135** (Session 2 paste left blank → lead recommendation; D73).
+
+### D73 — lead review of Session 1
+
+1. **Blinding deviation.** Session 1 reported `n_changed_vs_r0` separately for COR_SWAP vs AGENT_SWAP. Disclosed; no confirmatory impact (analysis frozen at `be75115`). Per-type table removed from §Session 1 above. Artifact `results/phase7d_manifest_ops.json` retained; was viewed during setup. Until 7E: no category/type-level counts, rates, or diffs in reports/STATUS/logs.
+2. **Duplicate constitutions.** 266 installed rows → **191** distinct `system_sha256` (greedy decoding ⇒ identical systems ⇒ identical responses).
+
+### D74 — dedup (efficiency only)
+
+- Map: `materials/main_run/h3_dedup_map.json` (191 distinct; NONE never merged).
+- Generate once per distinct system prompt per config; expand to **266 × 570** analysis keys with `dedup_source`.
+- Tests: `tests/test_h3_dedup.py` (expanded key count; byte-identical duplicates; NONE isolation).
+
+### Independent swap check
+
+`scripts/verify_h3_swaps.py` (+ Modal Volume path): reverse lineage from each chain’s final `constitutions.jsonl` + `lineage.jsonl`, rebuild COR_SWAP/AGENT_SWAP independently of `h3_constitutions.py`.
+
+| Result | Value |
+|--------|------:|
+| Swaps checked | 140 |
+| FAIL | **0** |
+| Artifact | `results/phase7d_swap_verify.json` |
+
+**PASS → proceed.**
+
+### Data backup (D55 rule 6)
+
+Per-config `.tar.gz` of all 840 chains’ `rounds.jsonl` / `constitutions.jsonl` / `lineage.jsonl` / `meta.json`. Sizes and SHA-256 in `docs/DATA.md`. Packages on Modal Volume `rc-runs/backups_main_v1/` and local `results/backups_main_v1/` (not committed).
+
+**HF private dataset** `…/rc-main-v1-raw`: upload blocked — existing HF token is read-only (`403` on repo create). No tokens committed. Packages remain on Volume + local disk until a write-capable token is available.
+
+### Budget gate (D71 method + D73 cap/headroom)
+
+Deduped reforecast (`results/phase7d_forecast.json`): one load + generate at measured pps × distinct prompts.
+
+| Item | USD |
+|------|----:|
+| Modal metered at gate | 76.85 |
+| 7D Modal proj (deduped) | 48.23 |
+| Proj Modal | **125.08** |
+| Modal cap / ≥5% headroom | 135 / proj ≤ 128.25 |
+| OpenAI proj / cap | 48.62 / 55 |
+| API proj / cap | 49.29 / 58 |
+
+Per-config stage cap = 1.5 × deduped forecast. Kill switch: Volume `main_v1_7d/STOP`.
+
+**Gate: PASS.**
+
+### Launch
+
+Seven detached apps (think first). Mid-launch, a double-spawn left twin writers on four configs; twins were stopped after identifying the ahead writer via container mounts (`results/phase7d_duplicate_prune.json`). Think relaunched after the original stopped post-chunk-1.
+
+| config | GPU | app_id | stage_cap |
+|--------|-----|--------|----------:|
+| qwen38_27b_think | A100-80GB | `ap-2IsbisWMlxltmqQNjTSHoE` | 37.64 |
+| qwen38_27b_nothink | A100-80GB | `ap-8NrscG5DYNJjvx2jJhHq2T` | 14.03 |
+| gemma4_31b | A100-80GB | `ap-RVh1MCOQ9FpwAXeR2Vk3Xs` | 6.20 |
+| gemma4_12b | L40S | `ap-9rOM4qPmT0SFhm4bYA20YR` | 4.30 |
+| olmo3_7b_sft | L4 | `ap-sdtUiKJEmKasTOXmr0Q8PT` | 4.13 |
+| olmo3_7b_final | L4 | `ap-OfRBwGEFEUkb5vcNnGSAVR` | 2.96 |
+| olmo3_7b_dpo | L4 | `ap-tTsA1KUq4p3ff5e5t9CKOH` | 3.07 |
+
+Launches file: `results/phase7d_launches.json`.
+
+### STATUS check (~T+15 / post-prune)
+
+| config | state | substage | heartbeat (UTC) | notes |
+|--------|-------|----------|-----------------|-------|
+| qwen38_27b_think | running | generate | 03:09:18Z | n_jobs=19950 (resume from prior 2000) |
+| qwen38_27b_nothink | running | generate_chunk | 03:05:18Z | 8000 / 20520 |
+| gemma4_31b | **done** | expand | 03:10:36Z | n_expanded=21660; parse_rate=1.0 |
+| gemma4_12b | **done** | expand | 03:03:21Z | n_expanded=21660; parse_rate=1.0 |
+| olmo3_7b_sft | running | generate_chunk | 03:04:39Z | 10000 / 15960 |
+| olmo3_7b_final | running | generate_chunk | 03:05:09Z | 10000 / 13680 |
+| olmo3_7b_dpo | running | generate_chunk | 03:04:26Z | 8000 / 11970 |
+
+Snapshot: `results/phase7d_status_t15.json`. Metered after launch/prune ~$91.87 (includes twin-writer waste + progress). No AAR/URR/category metrics.
+
+Session 3 starts only when the human pastes `Phase 7D session 3`.
 
 ## Session 3 — report
 

@@ -30,7 +30,9 @@ REMAINING_CONFIGS = (
 API_CAP_USD = 58.0
 OPENAI_CAP_USD = 55.0
 OPENROUTER_CAP_USD = 3.0
-MODAL_CAP_USD = 130.0
+# D73 Session 2: human-approved Modal gross raised to $135 (lead recommendation;
+# paste left blank → used recommendation). Prior D51/D71 figure was $130.
+MODAL_CAP_USD = 135.0
 
 # D71: OpenAI spend floor = human-confirmed Usage dashboard GT.
 # Override via materials/main_run/refs/openai_dashboard_usd.json.

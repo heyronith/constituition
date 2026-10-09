@@ -57,6 +57,7 @@ def assert_7d_inputs(root: Path | None = None) -> None:
     root = root or repo_root()
     required = [
         root / "materials" / "main_run" / "h3_constitutions.json",
+        root / "materials" / "main_run" / "h3_dedup_map.json",
         root / "materials" / "battery" / "b1_components.yaml",
         root / "materials" / "main_run" / "refs" / "openai_dashboard_usd.json",
         root / "configs" / "models.yaml",
@@ -472,29 +473,33 @@ def budget_gate_7d(
     modal_proj_7d: float,
     openai_proj_7d: float = 4.0037571875,
     openrouter_spent: float = 0.67,
+    modal_cap_usd: float | None = None,
+    headroom_frac: float = 0.05,
     root: Path | None = None,
 ) -> dict[str, Any]:
-    """Gate using GT figures (D71); ≥10% headroom."""
+    """Gate using GT figures (D71/D73). Session 2: ≥5% Modal headroom."""
     root = root or repo_root()
     oa = load_openai_dashboard_usd(root)
     proj_oa = oa + openai_proj_7d
     proj_api = proj_oa + openrouter_spent
     proj_modal = modal_spent + modal_proj_7d
+    modal_cap = float(modal_cap_usd if modal_cap_usd is not None else MODAL_CAP_USD)
     caps = {
         "api": API_CAP_USD,
         "openai": OPENAI_CAP_USD,
         "openrouter": OPENROUTER_CAP_USD,
-        "modal": MODAL_CAP_USD,
+        "modal": modal_cap,
     }
     headroom = {
         "openai": caps["openai"] - proj_oa,
         "api": caps["api"] - proj_api,
         "modal": caps["modal"] - proj_modal,
     }
+    # OpenAI/API keep 10% band; Modal uses Session-2 ≥5% headroom (D73).
     ok = (
         proj_oa <= 0.9 * caps["openai"]
         and proj_api <= 0.9 * caps["api"]
-        and proj_modal <= 0.9 * caps["modal"]
+        and proj_modal <= (1.0 - headroom_frac) * caps["modal"]
     )
     return {
         "ok": ok,

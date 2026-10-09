@@ -24,6 +24,7 @@ VLLM_VERSION = "0.30.0"
 SMOKE_ID = "qwen35_08b_smoke"
 SMOKE_TAG = "smoke_7d"
 PRECHECK_TAG = "precheck_7d"
+LAUNCH_TAG = "main_v1_7d"
 
 app = modal.App(APP_NAME)
 hf_vol = modal.Volume.from_name(HF_VOLUME, create_if_missing=True)
@@ -56,6 +57,10 @@ image = (
     .add_local_dir("src", remote_path=f"{REMOTE_REPO}/src")
     .add_local_dir("configs", remote_path=f"{REMOTE_REPO}/configs")
     .add_local_dir("materials", remote_path=f"{REMOTE_REPO}/materials")
+    .add_local_file(
+        "results/phase7d_precheck.json",
+        remote_path=f"{REMOTE_REPO}/results/phase7d_precheck.json",
+    )
 )
 
 cpu_image = (
@@ -174,6 +179,10 @@ def _run_battery_gpu(
         hb.pulse("generate", force=True, n_jobs=len(jobs))
 
         def _prog(info: dict) -> None:
+            # Global kill switch (D73): Volume flag stops all 7D apps cleanly.
+            stop = Path(REMOTE_RUNS) / run_tag / "STOP"
+            if stop.exists():
+                raise RuntimeError(f"global kill switch: {stop}")
             # Commit responses before STATUS so a heartbeat bug cannot lose keys.
             runs_vol.commit()
             payload = {k: v for k, v in info.items() if k != "substage"}
@@ -425,6 +434,105 @@ def precheck_a100(config_id: str, git_sha_value: str = "") -> dict:
     )
 
 
+def _launch_one(
+    config_id: str,
+    gpu: str,
+    *,
+    git_sha_value: str = "",
+    stage_cap_usd: float = 40.0,
+) -> dict:
+    """Full deduped battery for one config; expand to 38×570 analysis keys."""
+    import os
+    import sys
+
+    if git_sha_value:
+        os.environ["RC_GIT_SHA"] = git_sha_value
+    sys.path.insert(0, f"{REMOTE_REPO}/src")
+    os.chdir(REMOTE_REPO)
+    root = _link_runs()
+
+    from rc.h3_dedup import canonical_rows_for_config, expand_responses_for_config
+    from rc.phase7d import config_out_dir
+
+    cons = canonical_rows_for_config(config_id, root=root)
+    summary = _run_battery_gpu(
+        config_id,
+        gpu,
+        run_tag=LAUNCH_TAG,
+        constitutions=cons,
+        b1_limit=None,
+        b2_limit=None,
+        b5_limit=None,
+        b6_limit=None,
+        chunk_size=2000,
+        git_sha_value=git_sha_value,
+    )
+    resp = config_out_dir(LAUNCH_TAG, config_id, root=root) / "responses.jsonl"
+    exp = expand_responses_for_config(resp, config_id, root=root)
+    summary["expand"] = exp
+    summary["stage_cap_usd"] = stage_cap_usd
+    out = Path(REMOTE_RUNS) / LAUNCH_TAG / config_id / "summary.json"
+    out.write_text(json.dumps(summary, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    _write_status(
+        config_id,
+        LAUNCH_TAG,
+        stage="battery",
+        state="done" if exp.get("ok") else "expand_failed",
+        coding_substage="expand",
+        n_expanded=exp.get("n_expanded"),
+        parse_rate=summary.get("parse_rate"),
+        n_finish_length=summary.get("n_finish_length"),
+    )
+    runs_vol.commit()
+    return summary
+
+
+@app.function(
+    image=image,
+    gpu="L4",
+    volumes={HF_CACHE: hf_vol, REMOTE_RUNS: runs_vol},
+    secrets=[modal.Secret.from_name("hf-token")],
+    timeout=24 * 3600,
+    retries=3,
+    cpu=4,
+    memory=16384,
+)
+def launch_l4(config_id: str, git_sha_value: str = "", stage_cap_usd: float = 40.0) -> dict:
+    return _launch_one(config_id, "L4", git_sha_value=git_sha_value, stage_cap_usd=stage_cap_usd)
+
+
+@app.function(
+    image=image,
+    gpu="L40S",
+    volumes={HF_CACHE: hf_vol, REMOTE_RUNS: runs_vol},
+    secrets=[modal.Secret.from_name("hf-token")],
+    timeout=24 * 3600,
+    retries=3,
+    cpu=4,
+    memory=32768,
+)
+def launch_l40s(config_id: str, git_sha_value: str = "", stage_cap_usd: float = 40.0) -> dict:
+    return _launch_one(
+        config_id, "L40S", git_sha_value=git_sha_value, stage_cap_usd=stage_cap_usd
+    )
+
+
+@app.function(
+    image=image,
+    gpu="A100-80GB",
+    volumes={HF_CACHE: hf_vol, REMOTE_RUNS: runs_vol},
+    secrets=[modal.Secret.from_name("hf-token")],
+    timeout=24 * 3600,
+    retries=3,
+    cpu=8,
+    memory=65536,
+)
+def launch_a100(config_id: str, git_sha_value: str = "", stage_cap_usd: float = 40.0) -> dict:
+    return _launch_one(
+        config_id, "A100-80GB", git_sha_value=git_sha_value, stage_cap_usd=stage_cap_usd
+    )
+
+
 @app.local_entrypoint()
 def main(
     mode: str = "smoke",
@@ -642,4 +750,41 @@ def main(
         print(json.dumps(out, indent=2, default=str)[:4000])
         return
 
-    raise SystemExit(f"unknown mode {mode}; Session 1 supports smoke|precheck only")
+    if mode == "config":
+        # Single-config full run (use with `modal run --detach`).
+        from rc.h3_dedup import load_dedup_map
+
+        gpu = gpu_for_config(config_id, root=root)
+        dmap = load_dedup_map(root)["configs"][config_id]
+        n_prompts = int(dmap["n_generate_prompts"])
+        # Preflight window from Session-1 measured pps (not a pessimistic floor).
+        pre = json.loads(
+            (root / "results" / "phase7d_precheck.json").read_text(encoding="utf-8")
+        )
+        pps = float(pre[config_id]["prompts_per_s"]) or 1e-6
+        load_s = float(pre[config_id].get("model_load_s") or 300)
+        preflight_s = int(load_s + n_prompts / pps + 900)
+        # stage_cap_usd from caller = 1.5 × deduped forecast (must cover estimate)
+        preflight(
+            gpu,
+            preflight_s,
+            phase="7d_launch",
+            job_id=f"phase7d-{config_id}",
+            hard_cap_usd=spent_modal_usd(root) + stage_cap_usd,
+            override_job_cap_usd=stage_cap_usd,
+            cpu_cores=8.0 if gpu == "A100-80GB" else 4.0,
+            memory_gib=64.0 if gpu == "A100-80GB" else (
+                32.0 if gpu == "L40S" else 16.0
+            ),
+            root=root,
+        )
+        fn = {"L4": launch_l4, "L40S": launch_l40s, "A100-80GB": launch_a100}[gpu]
+        print(f"LAUNCH config={config_id} gpu={gpu} stage_cap={stage_cap_usd}")
+        # Detached launches must spawn (not remote) so the client can exit.
+        call = fn.spawn(config_id, sha, stage_cap_usd)
+        print(f"spawned object_id={call.object_id}")
+        return
+
+    raise SystemExit(
+        f"unknown mode {mode}; supports smoke|precheck|config"
+    )

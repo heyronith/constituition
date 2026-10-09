@@ -1,0 +1,1128 @@
+{
+  "n": 140,
+  "n_fail": 0,
+  "all_pass": true,
+  "results": [
+    {
+      "status": "PASS",
+      "constitution_id": "olmo3_7b_final|COR_SWAP|SELF_REFLECT|chain_0",
+      "config_id": "olmo3_7b_final",
+      "condition": "SELF_REFLECT",
+      "chain": 0,
+      "type": "COR_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "olmo3_7b_final|AGENT_SWAP|SELF_REFLECT|chain_0",
+      "config_id": "olmo3_7b_final",
+      "condition": "SELF_REFLECT",
+      "chain": 0,
+      "type": "AGENT_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "olmo3_7b_final|COR_SWAP|SELF_REFLECT|chain_1",
+      "config_id": "olmo3_7b_final",
+      "condition": "SELF_REFLECT",
+      "chain": 1,
+      "type": "COR_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "olmo3_7b_final|AGENT_SWAP|SELF_REFLECT|chain_1",
+      "config_id": "olmo3_7b_final",
+      "condition": "SELF_REFLECT",
+      "chain": 1,
+      "type": "AGENT_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "olmo3_7b_final|COR_SWAP|SELF_REFLECT|chain_2",
+      "config_id": "olmo3_7b_final",
+      "condition": "SELF_REFLECT",
+      "chain": 2,
+      "type": "COR_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "olmo3_7b_final|AGENT_SWAP|SELF_REFLECT|chain_2",
+      "config_id": "olmo3_7b_final",
+      "condition": "SELF_REFLECT",
+      "chain": 2,
+      "type": "AGENT_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "olmo3_7b_final|COR_SWAP|SELF_REFLECT|chain_3",
+      "config_id": "olmo3_7b_final",
+      "condition": "SELF_REFLECT",
+      "chain": 3,
+      "type": "COR_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "olmo3_7b_final|AGENT_SWAP|SELF_REFLECT|chain_3",
+      "config_id": "olmo3_7b_final",
+      "condition": "SELF_REFLECT",
+      "chain": 3,
+      "type": "AGENT_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "olmo3_7b_final|COR_SWAP|SELF_REFLECT|chain_4",
+      "config_id": "olmo3_7b_final",
+      "condition": "SELF_REFLECT",
+      "chain": 4,
+      "type": "COR_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "olmo3_7b_final|AGENT_SWAP|SELF_REFLECT|chain_4",
+      "config_id": "olmo3_7b_final",
+      "condition": "SELF_REFLECT",
+      "chain": 4,
+      "type": "AGENT_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "olmo3_7b_final|COR_SWAP|OTHER_REFLECT|chain_0",
+      "config_id": "olmo3_7b_final",
+      "condition": "OTHER_REFLECT",
+      "chain": 0,
+      "type": "COR_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "olmo3_7b_final|AGENT_SWAP|OTHER_REFLECT|chain_0",
+      "config_id": "olmo3_7b_final",
+      "condition": "OTHER_REFLECT",
+      "chain": 0,
+      "type": "AGENT_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "olmo3_7b_final|COR_SWAP|OTHER_REFLECT|chain_1",
+      "config_id": "olmo3_7b_final",
+      "condition": "OTHER_REFLECT",
+      "chain": 1,
+      "type": "COR_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "olmo3_7b_final|AGENT_SWAP|OTHER_REFLECT|chain_1",
+      "config_id": "olmo3_7b_final",
+      "condition": "OTHER_REFLECT",
+      "chain": 1,
+      "type": "AGENT_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "olmo3_7b_final|COR_SWAP|OTHER_REFLECT|chain_2",
+      "config_id": "olmo3_7b_final",
+      "condition": "OTHER_REFLECT",
+      "chain": 2,
+      "type": "COR_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "olmo3_7b_final|AGENT_SWAP|OTHER_REFLECT|chain_2",
+      "config_id": "olmo3_7b_final",
+      "condition": "OTHER_REFLECT",
+      "chain": 2,
+      "type": "AGENT_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "olmo3_7b_final|COR_SWAP|OTHER_REFLECT|chain_3",
+      "config_id": "olmo3_7b_final",
+      "condition": "OTHER_REFLECT",
+      "chain": 3,
+      "type": "COR_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "olmo3_7b_final|AGENT_SWAP|OTHER_REFLECT|chain_3",
+      "config_id": "olmo3_7b_final",
+      "condition": "OTHER_REFLECT",
+      "chain": 3,
+      "type": "AGENT_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "olmo3_7b_final|COR_SWAP|OTHER_REFLECT|chain_4",
+      "config_id": "olmo3_7b_final",
+      "condition": "OTHER_REFLECT",
+      "chain": 4,
+      "type": "COR_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "olmo3_7b_final|AGENT_SWAP|OTHER_REFLECT|chain_4",
+      "config_id": "olmo3_7b_final",
+      "condition": "OTHER_REFLECT",
+      "chain": 4,
+      "type": "AGENT_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "qwen38_27b_nothink|COR_SWAP|SELF_REFLECT|chain_0",
+      "config_id": "qwen38_27b_nothink",
+      "condition": "SELF_REFLECT",
+      "chain": 0,
+      "type": "COR_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "qwen38_27b_nothink|AGENT_SWAP|SELF_REFLECT|chain_0",
+      "config_id": "qwen38_27b_nothink",
+      "condition": "SELF_REFLECT",
+      "chain": 0,
+      "type": "AGENT_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "qwen38_27b_nothink|COR_SWAP|SELF_REFLECT|chain_1",
+      "config_id": "qwen38_27b_nothink",
+      "condition": "SELF_REFLECT",
+      "chain": 1,
+      "type": "COR_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "qwen38_27b_nothink|AGENT_SWAP|SELF_REFLECT|chain_1",
+      "config_id": "qwen38_27b_nothink",
+      "condition": "SELF_REFLECT",
+      "chain": 1,
+      "type": "AGENT_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "qwen38_27b_nothink|COR_SWAP|SELF_REFLECT|chain_2",
+      "config_id": "qwen38_27b_nothink",
+      "condition": "SELF_REFLECT",
+      "chain": 2,
+      "type": "COR_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "qwen38_27b_nothink|AGENT_SWAP|SELF_REFLECT|chain_2",
+      "config_id": "qwen38_27b_nothink",
+      "condition": "SELF_REFLECT",
+      "chain": 2,
+      "type": "AGENT_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "qwen38_27b_nothink|COR_SWAP|SELF_REFLECT|chain_3",
+      "config_id": "qwen38_27b_nothink",
+      "condition": "SELF_REFLECT",
+      "chain": 3,
+      "type": "COR_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "qwen38_27b_nothink|AGENT_SWAP|SELF_REFLECT|chain_3",
+      "config_id": "qwen38_27b_nothink",
+      "condition": "SELF_REFLECT",
+      "chain": 3,
+      "type": "AGENT_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "qwen38_27b_nothink|COR_SWAP|SELF_REFLECT|chain_4",
+      "config_id": "qwen38_27b_nothink",
+      "condition": "SELF_REFLECT",
+      "chain": 4,
+      "type": "COR_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "qwen38_27b_nothink|AGENT_SWAP|SELF_REFLECT|chain_4",
+      "config_id": "qwen38_27b_nothink",
+      "condition": "SELF_REFLECT",
+      "chain": 4,
+      "type": "AGENT_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "qwen38_27b_nothink|COR_SWAP|OTHER_REFLECT|chain_0",
+      "config_id": "qwen38_27b_nothink",
+      "condition": "OTHER_REFLECT",
+      "chain": 0,
+      "type": "COR_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "qwen38_27b_nothink|AGENT_SWAP|OTHER_REFLECT|chain_0",
+      "config_id": "qwen38_27b_nothink",
+      "condition": "OTHER_REFLECT",
+      "chain": 0,
+      "type": "AGENT_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "qwen38_27b_nothink|COR_SWAP|OTHER_REFLECT|chain_1",
+      "config_id": "qwen38_27b_nothink",
+      "condition": "OTHER_REFLECT",
+      "chain": 1,
+      "type": "COR_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "qwen38_27b_nothink|AGENT_SWAP|OTHER_REFLECT|chain_1",
+      "config_id": "qwen38_27b_nothink",
+      "condition": "OTHER_REFLECT",
+      "chain": 1,
+      "type": "AGENT_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "qwen38_27b_nothink|COR_SWAP|OTHER_REFLECT|chain_2",
+      "config_id": "qwen38_27b_nothink",
+      "condition": "OTHER_REFLECT",
+      "chain": 2,
+      "type": "COR_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "qwen38_27b_nothink|AGENT_SWAP|OTHER_REFLECT|chain_2",
+      "config_id": "qwen38_27b_nothink",
+      "condition": "OTHER_REFLECT",
+      "chain": 2,
+      "type": "AGENT_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "qwen38_27b_nothink|COR_SWAP|OTHER_REFLECT|chain_3",
+      "config_id": "qwen38_27b_nothink",
+      "condition": "OTHER_REFLECT",
+      "chain": 3,
+      "type": "COR_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "qwen38_27b_nothink|AGENT_SWAP|OTHER_REFLECT|chain_3",
+      "config_id": "qwen38_27b_nothink",
+      "condition": "OTHER_REFLECT",
+      "chain": 3,
+      "type": "AGENT_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "qwen38_27b_nothink|COR_SWAP|OTHER_REFLECT|chain_4",
+      "config_id": "qwen38_27b_nothink",
+      "condition": "OTHER_REFLECT",
+      "chain": 4,
+      "type": "COR_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "qwen38_27b_nothink|AGENT_SWAP|OTHER_REFLECT|chain_4",
+      "config_id": "qwen38_27b_nothink",
+      "condition": "OTHER_REFLECT",
+      "chain": 4,
+      "type": "AGENT_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "qwen38_27b_think|COR_SWAP|SELF_REFLECT|chain_0",
+      "config_id": "qwen38_27b_think",
+      "condition": "SELF_REFLECT",
+      "chain": 0,
+      "type": "COR_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "qwen38_27b_think|AGENT_SWAP|SELF_REFLECT|chain_0",
+      "config_id": "qwen38_27b_think",
+      "condition": "SELF_REFLECT",
+      "chain": 0,
+      "type": "AGENT_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "qwen38_27b_think|COR_SWAP|SELF_REFLECT|chain_1",
+      "config_id": "qwen38_27b_think",
+      "condition": "SELF_REFLECT",
+      "chain": 1,
+      "type": "COR_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "qwen38_27b_think|AGENT_SWAP|SELF_REFLECT|chain_1",
+      "config_id": "qwen38_27b_think",
+      "condition": "SELF_REFLECT",
+      "chain": 1,
+      "type": "AGENT_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "qwen38_27b_think|COR_SWAP|SELF_REFLECT|chain_2",
+      "config_id": "qwen38_27b_think",
+      "condition": "SELF_REFLECT",
+      "chain": 2,
+      "type": "COR_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "qwen38_27b_think|AGENT_SWAP|SELF_REFLECT|chain_2",
+      "config_id": "qwen38_27b_think",
+      "condition": "SELF_REFLECT",
+      "chain": 2,
+      "type": "AGENT_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "qwen38_27b_think|COR_SWAP|SELF_REFLECT|chain_3",
+      "config_id": "qwen38_27b_think",
+      "condition": "SELF_REFLECT",
+      "chain": 3,
+      "type": "COR_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "qwen38_27b_think|AGENT_SWAP|SELF_REFLECT|chain_3",
+      "config_id": "qwen38_27b_think",
+      "condition": "SELF_REFLECT",
+      "chain": 3,
+      "type": "AGENT_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "qwen38_27b_think|COR_SWAP|SELF_REFLECT|chain_4",
+      "config_id": "qwen38_27b_think",
+      "condition": "SELF_REFLECT",
+      "chain": 4,
+      "type": "COR_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "qwen38_27b_think|AGENT_SWAP|SELF_REFLECT|chain_4",
+      "config_id": "qwen38_27b_think",
+      "condition": "SELF_REFLECT",
+      "chain": 4,
+      "type": "AGENT_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "qwen38_27b_think|COR_SWAP|OTHER_REFLECT|chain_0",
+      "config_id": "qwen38_27b_think",
+      "condition": "OTHER_REFLECT",
+      "chain": 0,
+      "type": "COR_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "qwen38_27b_think|AGENT_SWAP|OTHER_REFLECT|chain_0",
+      "config_id": "qwen38_27b_think",
+      "condition": "OTHER_REFLECT",
+      "chain": 0,
+      "type": "AGENT_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "qwen38_27b_think|COR_SWAP|OTHER_REFLECT|chain_1",
+      "config_id": "qwen38_27b_think",
+      "condition": "OTHER_REFLECT",
+      "chain": 1,
+      "type": "COR_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "qwen38_27b_think|AGENT_SWAP|OTHER_REFLECT|chain_1",
+      "config_id": "qwen38_27b_think",
+      "condition": "OTHER_REFLECT",
+      "chain": 1,
+      "type": "AGENT_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "qwen38_27b_think|COR_SWAP|OTHER_REFLECT|chain_2",
+      "config_id": "qwen38_27b_think",
+      "condition": "OTHER_REFLECT",
+      "chain": 2,
+      "type": "COR_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "qwen38_27b_think|AGENT_SWAP|OTHER_REFLECT|chain_2",
+      "config_id": "qwen38_27b_think",
+      "condition": "OTHER_REFLECT",
+      "chain": 2,
+      "type": "AGENT_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "qwen38_27b_think|COR_SWAP|OTHER_REFLECT|chain_3",
+      "config_id": "qwen38_27b_think",
+      "condition": "OTHER_REFLECT",
+      "chain": 3,
+      "type": "COR_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "qwen38_27b_think|AGENT_SWAP|OTHER_REFLECT|chain_3",
+      "config_id": "qwen38_27b_think",
+      "condition": "OTHER_REFLECT",
+      "chain": 3,
+      "type": "AGENT_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "qwen38_27b_think|COR_SWAP|OTHER_REFLECT|chain_4",
+      "config_id": "qwen38_27b_think",
+      "condition": "OTHER_REFLECT",
+      "chain": 4,
+      "type": "COR_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "qwen38_27b_think|AGENT_SWAP|OTHER_REFLECT|chain_4",
+      "config_id": "qwen38_27b_think",
+      "condition": "OTHER_REFLECT",
+      "chain": 4,
+      "type": "AGENT_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "gemma4_31b|COR_SWAP|SELF_REFLECT|chain_0",
+      "config_id": "gemma4_31b",
+      "condition": "SELF_REFLECT",
+      "chain": 0,
+      "type": "COR_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "gemma4_31b|AGENT_SWAP|SELF_REFLECT|chain_0",
+      "config_id": "gemma4_31b",
+      "condition": "SELF_REFLECT",
+      "chain": 0,
+      "type": "AGENT_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "gemma4_31b|COR_SWAP|SELF_REFLECT|chain_1",
+      "config_id": "gemma4_31b",
+      "condition": "SELF_REFLECT",
+      "chain": 1,
+      "type": "COR_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "gemma4_31b|AGENT_SWAP|SELF_REFLECT|chain_1",
+      "config_id": "gemma4_31b",
+      "condition": "SELF_REFLECT",
+      "chain": 1,
+      "type": "AGENT_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "gemma4_31b|COR_SWAP|SELF_REFLECT|chain_2",
+      "config_id": "gemma4_31b",
+      "condition": "SELF_REFLECT",
+      "chain": 2,
+      "type": "COR_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "gemma4_31b|AGENT_SWAP|SELF_REFLECT|chain_2",
+      "config_id": "gemma4_31b",
+      "condition": "SELF_REFLECT",
+      "chain": 2,
+      "type": "AGENT_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "gemma4_31b|COR_SWAP|SELF_REFLECT|chain_3",
+      "config_id": "gemma4_31b",
+      "condition": "SELF_REFLECT",
+      "chain": 3,
+      "type": "COR_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "gemma4_31b|AGENT_SWAP|SELF_REFLECT|chain_3",
+      "config_id": "gemma4_31b",
+      "condition": "SELF_REFLECT",
+      "chain": 3,
+      "type": "AGENT_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "gemma4_31b|COR_SWAP|SELF_REFLECT|chain_4",
+      "config_id": "gemma4_31b",
+      "condition": "SELF_REFLECT",
+      "chain": 4,
+      "type": "COR_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "gemma4_31b|AGENT_SWAP|SELF_REFLECT|chain_4",
+      "config_id": "gemma4_31b",
+      "condition": "SELF_REFLECT",
+      "chain": 4,
+      "type": "AGENT_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "gemma4_31b|COR_SWAP|OTHER_REFLECT|chain_0",
+      "config_id": "gemma4_31b",
+      "condition": "OTHER_REFLECT",
+      "chain": 0,
+      "type": "COR_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "gemma4_31b|AGENT_SWAP|OTHER_REFLECT|chain_0",
+      "config_id": "gemma4_31b",
+      "condition": "OTHER_REFLECT",
+      "chain": 0,
+      "type": "AGENT_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "gemma4_31b|COR_SWAP|OTHER_REFLECT|chain_1",
+      "config_id": "gemma4_31b",
+      "condition": "OTHER_REFLECT",
+      "chain": 1,
+      "type": "COR_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "gemma4_31b|AGENT_SWAP|OTHER_REFLECT|chain_1",
+      "config_id": "gemma4_31b",
+      "condition": "OTHER_REFLECT",
+      "chain": 1,
+      "type": "AGENT_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "gemma4_31b|COR_SWAP|OTHER_REFLECT|chain_2",
+      "config_id": "gemma4_31b",
+      "condition": "OTHER_REFLECT",
+      "chain": 2,
+      "type": "COR_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "gemma4_31b|AGENT_SWAP|OTHER_REFLECT|chain_2",
+      "config_id": "gemma4_31b",
+      "condition": "OTHER_REFLECT",
+      "chain": 2,
+      "type": "AGENT_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "gemma4_31b|COR_SWAP|OTHER_REFLECT|chain_3",
+      "config_id": "gemma4_31b",
+      "condition": "OTHER_REFLECT",
+      "chain": 3,
+      "type": "COR_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "gemma4_31b|AGENT_SWAP|OTHER_REFLECT|chain_3",
+      "config_id": "gemma4_31b",
+      "condition": "OTHER_REFLECT",
+      "chain": 3,
+      "type": "AGENT_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "gemma4_31b|COR_SWAP|OTHER_REFLECT|chain_4",
+      "config_id": "gemma4_31b",
+      "condition": "OTHER_REFLECT",
+      "chain": 4,
+      "type": "COR_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "gemma4_31b|AGENT_SWAP|OTHER_REFLECT|chain_4",
+      "config_id": "gemma4_31b",
+      "condition": "OTHER_REFLECT",
+      "chain": 4,
+      "type": "AGENT_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "gemma4_12b|COR_SWAP|SELF_REFLECT|chain_0",
+      "config_id": "gemma4_12b",
+      "condition": "SELF_REFLECT",
+      "chain": 0,
+      "type": "COR_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "gemma4_12b|AGENT_SWAP|SELF_REFLECT|chain_0",
+      "config_id": "gemma4_12b",
+      "condition": "SELF_REFLECT",
+      "chain": 0,
+      "type": "AGENT_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "gemma4_12b|COR_SWAP|SELF_REFLECT|chain_1",
+      "config_id": "gemma4_12b",
+      "condition": "SELF_REFLECT",
+      "chain": 1,
+      "type": "COR_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "gemma4_12b|AGENT_SWAP|SELF_REFLECT|chain_1",
+      "config_id": "gemma4_12b",
+      "condition": "SELF_REFLECT",
+      "chain": 1,
+      "type": "AGENT_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "gemma4_12b|COR_SWAP|SELF_REFLECT|chain_2",
+      "config_id": "gemma4_12b",
+      "condition": "SELF_REFLECT",
+      "chain": 2,
+      "type": "COR_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "gemma4_12b|AGENT_SWAP|SELF_REFLECT|chain_2",
+      "config_id": "gemma4_12b",
+      "condition": "SELF_REFLECT",
+      "chain": 2,
+      "type": "AGENT_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "gemma4_12b|COR_SWAP|SELF_REFLECT|chain_3",
+      "config_id": "gemma4_12b",
+      "condition": "SELF_REFLECT",
+      "chain": 3,
+      "type": "COR_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "gemma4_12b|AGENT_SWAP|SELF_REFLECT|chain_3",
+      "config_id": "gemma4_12b",
+      "condition": "SELF_REFLECT",
+      "chain": 3,
+      "type": "AGENT_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "gemma4_12b|COR_SWAP|SELF_REFLECT|chain_4",
+      "config_id": "gemma4_12b",
+      "condition": "SELF_REFLECT",
+      "chain": 4,
+      "type": "COR_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "gemma4_12b|AGENT_SWAP|SELF_REFLECT|chain_4",
+      "config_id": "gemma4_12b",
+      "condition": "SELF_REFLECT",
+      "chain": 4,
+      "type": "AGENT_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "gemma4_12b|COR_SWAP|OTHER_REFLECT|chain_0",
+      "config_id": "gemma4_12b",
+      "condition": "OTHER_REFLECT",
+      "chain": 0,
+      "type": "COR_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "gemma4_12b|AGENT_SWAP|OTHER_REFLECT|chain_0",
+      "config_id": "gemma4_12b",
+      "condition": "OTHER_REFLECT",
+      "chain": 0,
+      "type": "AGENT_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "gemma4_12b|COR_SWAP|OTHER_REFLECT|chain_1",
+      "config_id": "gemma4_12b",
+      "condition": "OTHER_REFLECT",
+      "chain": 1,
+      "type": "COR_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "gemma4_12b|AGENT_SWAP|OTHER_REFLECT|chain_1",
+      "config_id": "gemma4_12b",
+      "condition": "OTHER_REFLECT",
+      "chain": 1,
+      "type": "AGENT_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "gemma4_12b|COR_SWAP|OTHER_REFLECT|chain_2",
+      "config_id": "gemma4_12b",
+      "condition": "OTHER_REFLECT",
+      "chain": 2,
+      "type": "COR_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "gemma4_12b|AGENT_SWAP|OTHER_REFLECT|chain_2",
+      "config_id": "gemma4_12b",
+      "condition": "OTHER_REFLECT",
+      "chain": 2,
+      "type": "AGENT_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "gemma4_12b|COR_SWAP|OTHER_REFLECT|chain_3",
+      "config_id": "gemma4_12b",
+      "condition": "OTHER_REFLECT",
+      "chain": 3,
+      "type": "COR_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "gemma4_12b|AGENT_SWAP|OTHER_REFLECT|chain_3",
+      "config_id": "gemma4_12b",
+      "condition": "OTHER_REFLECT",
+      "chain": 3,
+      "type": "AGENT_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "gemma4_12b|COR_SWAP|OTHER_REFLECT|chain_4",
+      "config_id": "gemma4_12b",
+      "condition": "OTHER_REFLECT",
+      "chain": 4,
+      "type": "COR_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "gemma4_12b|AGENT_SWAP|OTHER_REFLECT|chain_4",
+      "config_id": "gemma4_12b",
+      "condition": "OTHER_REFLECT",
+      "chain": 4,
+      "type": "AGENT_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "olmo3_7b_sft|COR_SWAP|SELF_REFLECT|chain_0",
+      "config_id": "olmo3_7b_sft",
+      "condition": "SELF_REFLECT",
+      "chain": 0,
+      "type": "COR_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "olmo3_7b_sft|AGENT_SWAP|SELF_REFLECT|chain_0",
+      "config_id": "olmo3_7b_sft",
+      "condition": "SELF_REFLECT",
+      "chain": 0,
+      "type": "AGENT_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "olmo3_7b_sft|COR_SWAP|SELF_REFLECT|chain_1",
+      "config_id": "olmo3_7b_sft",
+      "condition": "SELF_REFLECT",
+      "chain": 1,
+      "type": "COR_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "olmo3_7b_sft|AGENT_SWAP|SELF_REFLECT|chain_1",
+      "config_id": "olmo3_7b_sft",
+      "condition": "SELF_REFLECT",
+      "chain": 1,
+      "type": "AGENT_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "olmo3_7b_sft|COR_SWAP|SELF_REFLECT|chain_2",
+      "config_id": "olmo3_7b_sft",
+      "condition": "SELF_REFLECT",
+      "chain": 2,
+      "type": "COR_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "olmo3_7b_sft|AGENT_SWAP|SELF_REFLECT|chain_2",
+      "config_id": "olmo3_7b_sft",
+      "condition": "SELF_REFLECT",
+      "chain": 2,
+      "type": "AGENT_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "olmo3_7b_sft|COR_SWAP|SELF_REFLECT|chain_3",
+      "config_id": "olmo3_7b_sft",
+      "condition": "SELF_REFLECT",
+      "chain": 3,
+      "type": "COR_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "olmo3_7b_sft|AGENT_SWAP|SELF_REFLECT|chain_3",
+      "config_id": "olmo3_7b_sft",
+      "condition": "SELF_REFLECT",
+      "chain": 3,
+      "type": "AGENT_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "olmo3_7b_sft|COR_SWAP|SELF_REFLECT|chain_4",
+      "config_id": "olmo3_7b_sft",
+      "condition": "SELF_REFLECT",
+      "chain": 4,
+      "type": "COR_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "olmo3_7b_sft|AGENT_SWAP|SELF_REFLECT|chain_4",
+      "config_id": "olmo3_7b_sft",
+      "condition": "SELF_REFLECT",
+      "chain": 4,
+      "type": "AGENT_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "olmo3_7b_sft|COR_SWAP|OTHER_REFLECT|chain_0",
+      "config_id": "olmo3_7b_sft",
+      "condition": "OTHER_REFLECT",
+      "chain": 0,
+      "type": "COR_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "olmo3_7b_sft|AGENT_SWAP|OTHER_REFLECT|chain_0",
+      "config_id": "olmo3_7b_sft",
+      "condition": "OTHER_REFLECT",
+      "chain": 0,
+      "type": "AGENT_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "olmo3_7b_sft|COR_SWAP|OTHER_REFLECT|chain_1",
+      "config_id": "olmo3_7b_sft",
+      "condition": "OTHER_REFLECT",
+      "chain": 1,
+      "type": "COR_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "olmo3_7b_sft|AGENT_SWAP|OTHER_REFLECT|chain_1",
+      "config_id": "olmo3_7b_sft",
+      "condition": "OTHER_REFLECT",
+      "chain": 1,
+      "type": "AGENT_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "olmo3_7b_sft|COR_SWAP|OTHER_REFLECT|chain_2",
+      "config_id": "olmo3_7b_sft",
+      "condition": "OTHER_REFLECT",
+      "chain": 2,
+      "type": "COR_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "olmo3_7b_sft|AGENT_SWAP|OTHER_REFLECT|chain_2",
+      "config_id": "olmo3_7b_sft",
+      "condition": "OTHER_REFLECT",
+      "chain": 2,
+      "type": "AGENT_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "olmo3_7b_sft|COR_SWAP|OTHER_REFLECT|chain_3",
+      "config_id": "olmo3_7b_sft",
+      "condition": "OTHER_REFLECT",
+      "chain": 3,
+      "type": "COR_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "olmo3_7b_sft|AGENT_SWAP|OTHER_REFLECT|chain_3",
+      "config_id": "olmo3_7b_sft",
+      "condition": "OTHER_REFLECT",
+      "chain": 3,
+      "type": "AGENT_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "olmo3_7b_sft|COR_SWAP|OTHER_REFLECT|chain_4",
+      "config_id": "olmo3_7b_sft",
+      "condition": "OTHER_REFLECT",
+      "chain": 4,
+      "type": "COR_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "olmo3_7b_sft|AGENT_SWAP|OTHER_REFLECT|chain_4",
+      "config_id": "olmo3_7b_sft",
+      "condition": "OTHER_REFLECT",
+      "chain": 4,
+      "type": "AGENT_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "olmo3_7b_dpo|COR_SWAP|SELF_REFLECT|chain_0",
+      "config_id": "olmo3_7b_dpo",
+      "condition": "SELF_REFLECT",
+      "chain": 0,
+      "type": "COR_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "olmo3_7b_dpo|AGENT_SWAP|SELF_REFLECT|chain_0",
+      "config_id": "olmo3_7b_dpo",
+      "condition": "SELF_REFLECT",
+      "chain": 0,
+      "type": "AGENT_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "olmo3_7b_dpo|COR_SWAP|SELF_REFLECT|chain_1",
+      "config_id": "olmo3_7b_dpo",
+      "condition": "SELF_REFLECT",
+      "chain": 1,
+      "type": "COR_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "olmo3_7b_dpo|AGENT_SWAP|SELF_REFLECT|chain_1",
+      "config_id": "olmo3_7b_dpo",
+      "condition": "SELF_REFLECT",
+      "chain": 1,
+      "type": "AGENT_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "olmo3_7b_dpo|COR_SWAP|SELF_REFLECT|chain_2",
+      "config_id": "olmo3_7b_dpo",
+      "condition": "SELF_REFLECT",
+      "chain": 2,
+      "type": "COR_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "olmo3_7b_dpo|AGENT_SWAP|SELF_REFLECT|chain_2",
+      "config_id": "olmo3_7b_dpo",
+      "condition": "SELF_REFLECT",
+      "chain": 2,
+      "type": "AGENT_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "olmo3_7b_dpo|COR_SWAP|SELF_REFLECT|chain_3",
+      "config_id": "olmo3_7b_dpo",
+      "condition": "SELF_REFLECT",
+      "chain": 3,
+      "type": "COR_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "olmo3_7b_dpo|AGENT_SWAP|SELF_REFLECT|chain_3",
+      "config_id": "olmo3_7b_dpo",
+      "condition": "SELF_REFLECT",
+      "chain": 3,
+      "type": "AGENT_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "olmo3_7b_dpo|COR_SWAP|SELF_REFLECT|chain_4",
+      "config_id": "olmo3_7b_dpo",
+      "condition": "SELF_REFLECT",
+      "chain": 4,
+      "type": "COR_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "olmo3_7b_dpo|AGENT_SWAP|SELF_REFLECT|chain_4",
+      "config_id": "olmo3_7b_dpo",
+      "condition": "SELF_REFLECT",
+      "chain": 4,
+      "type": "AGENT_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "olmo3_7b_dpo|COR_SWAP|OTHER_REFLECT|chain_0",
+      "config_id": "olmo3_7b_dpo",
+      "condition": "OTHER_REFLECT",
+      "chain": 0,
+      "type": "COR_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "olmo3_7b_dpo|AGENT_SWAP|OTHER_REFLECT|chain_0",
+      "config_id": "olmo3_7b_dpo",
+      "condition": "OTHER_REFLECT",
+      "chain": 0,
+      "type": "AGENT_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "olmo3_7b_dpo|COR_SWAP|OTHER_REFLECT|chain_1",
+      "config_id": "olmo3_7b_dpo",
+      "condition": "OTHER_REFLECT",
+      "chain": 1,
+      "type": "COR_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "olmo3_7b_dpo|AGENT_SWAP|OTHER_REFLECT|chain_1",
+      "config_id": "olmo3_7b_dpo",
+      "condition": "OTHER_REFLECT",
+      "chain": 1,
+      "type": "AGENT_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "olmo3_7b_dpo|COR_SWAP|OTHER_REFLECT|chain_2",
+      "config_id": "olmo3_7b_dpo",
+      "condition": "OTHER_REFLECT",
+      "chain": 2,
+      "type": "COR_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "olmo3_7b_dpo|AGENT_SWAP|OTHER_REFLECT|chain_2",
+      "config_id": "olmo3_7b_dpo",
+      "condition": "OTHER_REFLECT",
+      "chain": 2,
+      "type": "AGENT_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "olmo3_7b_dpo|COR_SWAP|OTHER_REFLECT|chain_3",
+      "config_id": "olmo3_7b_dpo",
+      "condition": "OTHER_REFLECT",
+      "chain": 3,
+      "type": "COR_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "olmo3_7b_dpo|AGENT_SWAP|OTHER_REFLECT|chain_3",
+      "config_id": "olmo3_7b_dpo",
+      "condition": "OTHER_REFLECT",
+      "chain": 3,
+      "type": "AGENT_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "olmo3_7b_dpo|COR_SWAP|OTHER_REFLECT|chain_4",
+      "config_id": "olmo3_7b_dpo",
+      "condition": "OTHER_REFLECT",
+      "chain": 4,
+      "type": "COR_SWAP"
+    },
+    {
+      "status": "PASS",
+      "constitution_id": "olmo3_7b_dpo|AGENT_SWAP|OTHER_REFLECT|chain_4",
+      "config_id": "olmo3_7b_dpo",
+      "condition": "OTHER_REFLECT",
+      "chain": 4,
+      "type": "AGENT_SWAP"
+    }
+  ],
+  "exit_code": 0
+}

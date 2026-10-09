@@ -1,0 +1,15 @@
+{
+  "n_jobs": 80,
+  "n_pending_start": 60,
+  "n_written": 60,
+  "n_chunks": 3,
+  "elapsed_s": 16.302663326263428,
+  "prompts_per_s": 3.6803802421252607,
+  "parse_rate": 1.0,
+  "n_finish_length": 0,
+  "out_path": "/rc/runs/smoke_7d/qwen35_08b_smoke/responses.jsonl",
+  "config_id": "qwen35_08b_smoke",
+  "gpu": "L4",
+  "run_tag": "smoke_7d",
+  "model_load_s": 352.307605571
+}

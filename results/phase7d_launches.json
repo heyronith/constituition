@@ -1,0 +1,59 @@
+[
+  {
+    "config_id": "qwen38_27b_think",
+    "gpu": "A100-80GB",
+    "stage_cap_usd": 37.642727040000004,
+    "app_id": "ap-2IsbisWMlxltmqQNjTSHoE",
+    "object_id": "fc-01M4F9SSMV71VQK0R18G14QRNK",
+    "launch_utc": "2026-10-09T03:02:38Z",
+    "note": "relaunch after original stopped post-chunk1; duplicates pruned"
+  },
+  {
+    "config_id": "qwen38_27b_nothink",
+    "gpu": "A100-80GB",
+    "stage_cap_usd": 14.03275476,
+    "app_id": "ap-8NrscG5DYNJjvx2jJhHq2T",
+    "object_id": "fc-01M4F8KST9NFBN777MFNQRRBX0",
+    "launch_utc": "2026-10-09T02:42:06Z"
+  },
+  {
+    "config_id": "gemma4_31b",
+    "gpu": "A100-80GB",
+    "stage_cap_usd": 6.195694799999999,
+    "app_id": "ap-RVh1MCOQ9FpwAXeR2Vk3Xs",
+    "launch_utc": "2026-10-09T02:41:53Z",
+    "note": "identified via container mount; original launches.json had wrong app"
+  },
+  {
+    "config_id": "gemma4_12b",
+    "gpu": "L40S",
+    "stage_cap_usd": 4.304065919999999,
+    "app_id": "ap-9rOM4qPmT0SFhm4bYA20YR",
+    "launch_utc": "2026-10-09T02:42:08Z",
+    "note": "identified via container mount"
+  },
+  {
+    "config_id": "olmo3_7b_sft",
+    "gpu": "L4",
+    "stage_cap_usd": 4.13092368,
+    "app_id": "ap-sdtUiKJEmKasTOXmr0Q8PT",
+    "object_id": "fc-01M4F8NP5GPTQH2M4PAZ2X9E9H",
+    "launch_utc": "2026-10-09T02:43:08Z"
+  },
+  {
+    "config_id": "olmo3_7b_final",
+    "gpu": "L4",
+    "stage_cap_usd": 2.96453976,
+    "app_id": "ap-OfRBwGEFEUkb5vcNnGSAVR",
+    "launch_utc": "2026-10-09T02:42:39Z",
+    "note": "kept ahead writer (8000 rows); stopped lagging Kaz twin"
+  },
+  {
+    "config_id": "olmo3_7b_dpo",
+    "gpu": "L4",
+    "stage_cap_usd": 3.0728568000000003,
+    "app_id": "ap-tTsA1KUq4p3ff5e5t9CKOH",
+    "object_id": "fc-01M4F8Q2JBRPRAZFDY0ED3410M",
+    "launch_utc": "2026-10-09T02:43:53Z"
+  }
+]

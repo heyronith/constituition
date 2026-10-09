@@ -1,0 +1,86 @@
+[
+  {
+    "config_id": "qwen38_27b_think",
+    "state": "running",
+    "coding_substage": "generate",
+    "last_update_utc": "2026-10-09T03:09:18Z",
+    "n_jobs": 19950,
+    "chunks_done": null,
+    "rows_written": null,
+    "pending_left": null,
+    "n_expanded": null,
+    "parse_rate": null
+  },
+  {
+    "config_id": "qwen38_27b_nothink",
+    "state": "running",
+    "coding_substage": "generate_chunk",
+    "last_update_utc": "2026-10-09T03:05:18Z",
+    "n_jobs": null,
+    "chunks_done": 4,
+    "rows_written": 8000,
+    "pending_left": 12520,
+    "n_expanded": null,
+    "parse_rate": null
+  },
+  {
+    "config_id": "gemma4_31b",
+    "state": "done",
+    "coding_substage": "expand",
+    "last_update_utc": "2026-10-09T03:10:36Z",
+    "n_jobs": null,
+    "chunks_done": null,
+    "rows_written": null,
+    "pending_left": null,
+    "n_expanded": 21660,
+    "parse_rate": 1.0
+  },
+  {
+    "config_id": "gemma4_12b",
+    "state": "done",
+    "coding_substage": "expand",
+    "last_update_utc": "2026-10-09T03:03:21Z",
+    "n_jobs": null,
+    "chunks_done": null,
+    "rows_written": null,
+    "pending_left": null,
+    "n_expanded": 21660,
+    "parse_rate": 1.0
+  },
+  {
+    "config_id": "olmo3_7b_sft",
+    "state": "running",
+    "coding_substage": "generate_chunk",
+    "last_update_utc": "2026-10-09T03:04:39Z",
+    "n_jobs": null,
+    "chunks_done": 5,
+    "rows_written": 10000,
+    "pending_left": 5960,
+    "n_expanded": null,
+    "parse_rate": null
+  },
+  {
+    "config_id": "olmo3_7b_final",
+    "state": "running",
+    "coding_substage": "generate_chunk",
+    "last_update_utc": "2026-10-09T03:05:09Z",
+    "n_jobs": null,
+    "chunks_done": 5,
+    "rows_written": 10000,
+    "pending_left": 3680,
+    "n_expanded": null,
+    "parse_rate": null
+  },
+  {
+    "config_id": "olmo3_7b_dpo",
+    "state": "running",
+    "coding_substage": "generate_chunk",
+    "last_update_utc": "2026-10-09T03:04:26Z",
+    "n_jobs": null,
+    "chunks_done": 4,
+    "rows_written": 8000,
+    "pending_left": 3970,
+    "n_expanded": null,
+    "parse_rate": null
+  }
+]

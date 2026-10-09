@@ -1,0 +1,36 @@
+{
+  "stopped_duplicates": [
+    {
+      "app_id": "ap-glARGaSgrf7xUU1gBaisPf",
+      "was": "olmo3_7b_dpo twin"
+    },
+    {
+      "app_id": "ap-Kaz2Fwz1leanxtmdqQJ1LU",
+      "was": "olmo3_7b_final lagging twin"
+    },
+    {
+      "app_id": "ap-HKgWoaN1QmSCkDtBYFVFdq",
+      "was": "olmo3_7b_sft twin"
+    },
+    {
+      "app_id": "ap-nyebkI1HtEWFPGZsLZTfw0",
+      "was": "qwen38_27b_nothink twin"
+    }
+  ],
+  "stopped_zombies": [
+    "ap-LVvlEtmFcLainrlfceSHbp",
+    "ap-qX1BimUA4yBIK3IedySXNx",
+    "ap-dc0vwTIBtmxntGTAmorBr9",
+    "ap-QVg8NEyirI7jDQsZsRmJz3"
+  ],
+  "active_after": [
+    "ap-2IsbisWMlxltmqQNjTSHoE",
+    "ap-8NrscG5DYNJjvx2jJhHq2T",
+    "ap-RVh1MCOQ9FpwAXeR2Vk3Xs",
+    "ap-9rOM4qPmT0SFhm4bYA20YR",
+    "ap-sdtUiKJEmKasTOXmr0Q8PT",
+    "ap-OfRBwGEFEUkb5vcNnGSAVR",
+    "ap-tTsA1KUq4p3ff5e5t9CKOH"
+  ],
+  "utc": "2026-10-09T03:03:52Z"
+}

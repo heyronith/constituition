@@ -160,6 +160,9 @@ judges: {}
     (root / "materials" / "main_run" / "h3_constitutions.json").write_text(
         json.dumps(man) + "\n"
     )
+    (root / "materials" / "main_run" / "h3_dedup_map.json").write_text(
+        json.dumps({"configs": {}})+"\n"
+    )
 
 
 def test_assert_7d_inputs_and_resume(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
