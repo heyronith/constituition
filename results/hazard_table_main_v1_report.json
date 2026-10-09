@@ -1,18 +1,134 @@
 {
+  "coverage": {
+    "at_risk_touch_gap_examples": [],
+    "at_risk_touch_gaps_n": 0,
+    "at_risk_touches": 10277,
+    "at_risk_touches_coded": 10277,
+    "censor_assert_fail": 0,
+    "censor_assert_ok": 99,
+    "code_without_touch": 0,
+    "mimo_gap_examples": [],
+    "mimo_slots_joined": 3263,
+    "mimo_slots_needed": 3263,
+    "ok": true,
+    "post_risk_code_ok": 3174
+  },
   "events_match": true,
   "every_at_risk_has_event_value": true,
+  "judgment_sources": {
+    "gemma4_12b": {
+      "gpt54": [
+        "/Users/ronny/Desktop/Research/AI Alignment Projects_Claude/Constituition/runs/main_v1/coding/gemma4_12b/gpt54.jsonl(+4557)"
+      ],
+      "mimo": [
+        "/Users/ronny/Desktop/Research/AI Alignment Projects_Claude/Constituition/runs/main_v1/coding/gemma4_12b/mimo.jsonl(+358)"
+      ]
+    },
+    "gemma4_31b": {
+      "gpt54": [
+        "/Users/ronny/Desktop/Research/AI Alignment Projects_Claude/Constituition/runs/main_v1/coding/gemma4_31b/gpt54.jsonl(+7127)"
+      ],
+      "mimo": [
+        "/Users/ronny/Desktop/Research/AI Alignment Projects_Claude/Constituition/runs/main_v1/coding/gemma4_31b/mimo.jsonl(+462)"
+      ]
+    },
+    "olmo3_7b_dpo": {
+      "gpt54": [
+        "/Users/ronny/Desktop/Research/AI Alignment Projects_Claude/Constituition/runs/main_v1/coding/olmo3_7b_dpo/gpt54.jsonl(+7670)"
+      ],
+      "mimo": [
+        "/Users/ronny/Desktop/Research/AI Alignment Projects_Claude/Constituition/runs/main_v1/coding/olmo3_7b_dpo/mimo.jsonl(+500)"
+      ]
+    },
+    "olmo3_7b_final": {
+      "gpt54": [
+        "/Users/ronny/Desktop/Research/AI Alignment Projects_Claude/Constituition/runs/main_v1/coding/olmo3_7b_final/gpt54.jsonl(+7775)"
+      ],
+      "mimo": [
+        "/Users/ronny/Desktop/Research/AI Alignment Projects_Claude/Constituition/runs/main_v1/coding/olmo3_7b_final/mimo.jsonl(+500)"
+      ]
+    },
+    "olmo3_7b_sft": {
+      "gpt54": [
+        "/Users/ronny/Desktop/Research/AI Alignment Projects_Claude/Constituition/runs/main_v1/coding/olmo3_7b_sft/gpt54.jsonl(+6544)"
+      ],
+      "mimo": [
+        "/Users/ronny/Desktop/Research/AI Alignment Projects_Claude/Constituition/runs/main_v1/coding/olmo3_7b_sft/mimo.jsonl(+453)"
+      ]
+    },
+    "qwen38_27b_nothink": {
+      "gpt54": [
+        "/Users/ronny/Desktop/Research/AI Alignment Projects_Claude/Constituition/runs/main_v1/coding/qwen38_27b_nothink/gpt54.jsonl(+7804)"
+      ],
+      "mimo": [
+        "/Users/ronny/Desktop/Research/AI Alignment Projects_Claude/Constituition/runs/main_v1/coding/qwen38_27b_nothink/mimo.jsonl(+490)"
+      ]
+    },
+    "qwen38_27b_think": {
+      "gpt54": [
+        "/Users/ronny/Desktop/Research/AI Alignment Projects_Claude/Constituition/runs/main_v1/coding/qwen38_27b_think/gpt54.jsonl(+8094)"
+      ],
+      "mimo": [
+        "/Users/ronny/Desktop/Research/AI Alignment Projects_Claude/Constituition/runs/main_v1/coding/qwen38_27b_think/mimo.jsonl(+500)"
+      ]
+    }
+  },
   "n_chains": 700,
-  "n_coded_rows_hashed": 5650,
-  "n_events_builder": 1284,
-  "n_events_independent": 1284,
-  "n_events_table": 1284,
-  "n_rows": 444253,
+  "n_coded_rows_hashed": 10277,
+  "n_events_builder": 2342,
+  "n_events_independent": 2342,
+  "n_events_table": 2342,
+  "n_rows": 431359,
   "out": "results/hazard_table_main_v1.csv.gz",
+  "per_config": {
+    "gemma4_12b": {
+      "events": 211,
+      "fate_rows": 1279,
+      "mimo_coded_rows": 302,
+      "rows": 49248
+    },
+    "gemma4_31b": {
+      "events": 349,
+      "fate_rows": 1385,
+      "mimo_coded_rows": 332,
+      "rows": 60955
+    },
+    "olmo3_7b_dpo": {
+      "events": 238,
+      "fate_rows": 1260,
+      "mimo_coded_rows": 309,
+      "rows": 67274
+    },
+    "olmo3_7b_final": {
+      "events": 272,
+      "fate_rows": 1384,
+      "mimo_coded_rows": 354,
+      "rows": 67051
+    },
+    "olmo3_7b_sft": {
+      "events": 242,
+      "fate_rows": 1437,
+      "mimo_coded_rows": 375,
+      "rows": 60183
+    },
+    "qwen38_27b_nothink": {
+      "events": 577,
+      "fate_rows": 1674,
+      "mimo_coded_rows": 399,
+      "rows": 62030
+    },
+    "qwen38_27b_think": {
+      "events": 453,
+      "fate_rows": 1858,
+      "mimo_coded_rows": 440,
+      "rows": 64618
+    }
+  },
   "prompt_hash_gate": {
-    "n_checked": 5407,
+    "n_checked": 10016,
     "n_mismatch": 0,
     "ok": true
   },
-  "sha256": "a8818407a2aa4d01b7ddee949f259367b355e9e986a8f9b2aed9075d9902359f",
+  "sha256": "1e1f81e00cbe728f6f02a64d8439b2ccd4e6e4dc2282025b89dbdc632430c1d2",
   "trace_out": "/Users/ronny/Desktop/Research/AI Alignment Projects_Claude/Constituition/results/hazard_trace_examples.md"
 }

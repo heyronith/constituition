@@ -6,8 +6,12 @@
       "method": "glmm_drop_item_chain"
     },
     "H2a": {
-      "fallback_log": "glmm_full",
-      "method": "glmm_full"
+      "fallback_log": [
+        "glmm_full",
+        "glmm_drop_item",
+        "glmm_drop_item_chain"
+      ],
+      "method": "glmm_drop_item_chain"
     },
     "H2b": {
       "fallback_log": [
@@ -22,7 +26,6 @@
       "method": "glmm_full"
     }
   },
-  "note": "Estimates redacted for blinding (D55/D73). Local full payload: dryrun_permuted.full.json (do not commit).",
-  "runtime_s": 91.656,
-  "warnings": []
+  "note": "7E-A3 post-D78 rebuild; estimates redacted (D55/D73).",
+  "runtime_s": 63.549
 }

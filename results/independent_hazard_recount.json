@@ -1,0 +1,91 @@
+{
+  "match_events_per_config": true,
+  "recount": {
+    "gemma4_12b": {
+      "deletions": 7,
+      "erosion_codes": 293,
+      "expected_first_events": 211,
+      "n_gpt_codes": 4557,
+      "touches": 1512
+    },
+    "gemma4_31b": {
+      "deletions": 6,
+      "erosion_codes": 528,
+      "expected_first_events": 349,
+      "n_gpt_codes": 7127,
+      "touches": 1947
+    },
+    "olmo3_7b_dpo": {
+      "deletions": 0,
+      "erosion_codes": 520,
+      "expected_first_events": 238,
+      "n_gpt_codes": 7670,
+      "touches": 2000
+    },
+    "olmo3_7b_final": {
+      "deletions": 0,
+      "erosion_codes": 465,
+      "expected_first_events": 272,
+      "n_gpt_codes": 7775,
+      "touches": 2000
+    },
+    "olmo3_7b_sft": {
+      "deletions": 0,
+      "erosion_codes": 335,
+      "expected_first_events": 242,
+      "n_gpt_codes": 6544,
+      "touches": 1784
+    },
+    "qwen38_27b_nothink": {
+      "deletions": 251,
+      "erosion_codes": 758,
+      "expected_first_events": 577,
+      "n_gpt_codes": 7804,
+      "touches": 2064
+    },
+    "qwen38_27b_think": {
+      "deletions": 10,
+      "erosion_codes": 524,
+      "expected_first_events": 453,
+      "n_gpt_codes": 8094,
+      "touches": 2144
+    }
+  },
+  "table": {
+    "gemma4_12b": {
+      "events": 211,
+      "fate_rows": 1279,
+      "rows": 49248
+    },
+    "gemma4_31b": {
+      "events": 349,
+      "fate_rows": 1385,
+      "rows": 60955
+    },
+    "olmo3_7b_dpo": {
+      "events": 238,
+      "fate_rows": 1260,
+      "rows": 67274
+    },
+    "olmo3_7b_final": {
+      "events": 272,
+      "fate_rows": 1384,
+      "rows": 67051
+    },
+    "olmo3_7b_sft": {
+      "events": 242,
+      "fate_rows": 1437,
+      "rows": 60183
+    },
+    "qwen38_27b_nothink": {
+      "events": 577,
+      "fate_rows": 1674,
+      "rows": 62030
+    },
+    "qwen38_27b_think": {
+      "events": 453,
+      "fate_rows": 1858,
+      "rows": 64618
+    }
+  }
+}

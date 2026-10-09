@@ -1,0 +1,163 @@
+{
+  "qwen38_27b_nothink": {
+    "n_coded": 7804,
+    "n_alone_path": 7804,
+    "paths": [
+      [
+        "runs/main_v1/coding/qwen38_27b_nothink/gpt54.jsonl",
+        7804
+      ]
+    ],
+    "n_touches": 2064,
+    "n_matched": 2064,
+    "n_unmatched_touches": 0,
+    "n_unmatched_codes_forced": 0,
+    "example_unmatched_touches": [],
+    "example_unmatched_codes": [],
+    "example_matched": [
+      "qwen38_27b_nothink|FORCED|NEUTRAL_EDIT|chain_0|r10|PROC5|revise",
+      "qwen38_27b_nothink|FORCED|NEUTRAL_EDIT|chain_0|r11|SELF2|revise",
+      "qwen38_27b_nothink|FORCED|NEUTRAL_EDIT|chain_0|r12|AGENT5|revise"
+    ],
+    "table_fate": 1674,
+    "table_events": 577
+  },
+  "qwen38_27b_think": {
+    "n_coded": 8094,
+    "n_alone_path": 8094,
+    "paths": [
+      [
+        "runs/main_v1/coding/qwen38_27b_think/gpt54.jsonl",
+        8094
+      ]
+    ],
+    "n_touches": 2144,
+    "n_matched": 2144,
+    "n_unmatched_touches": 0,
+    "n_unmatched_codes_forced": 0,
+    "example_unmatched_touches": [],
+    "example_unmatched_codes": [],
+    "example_matched": [
+      "qwen38_27b_think|FORCED|NEUTRAL_EDIT|chain_0|r10|COR1|merge",
+      "qwen38_27b_think|FORCED|NEUTRAL_EDIT|chain_0|r10|COR2|merge|absorbed",
+      "qwen38_27b_think|FORCED|NEUTRAL_EDIT|chain_0|r11|AGENT1|revise"
+    ],
+    "table_fate": 10,
+    "table_events": 10
+  },
+  "gemma4_31b": {
+    "n_coded": 7127,
+    "n_alone_path": 7127,
+    "paths": [
+      [
+        "runs/main_v1/coding/gemma4_31b/gpt54.jsonl",
+        7127
+      ]
+    ],
+    "n_touches": 1947,
+    "n_matched": 1947,
+    "n_unmatched_touches": 0,
+    "n_unmatched_codes_forced": 0,
+    "example_unmatched_touches": [],
+    "example_unmatched_codes": [],
+    "example_matched": [
+      "gemma4_31b|FORCED|NEUTRAL_EDIT|chain_0|r10|HON1|revise",
+      "gemma4_31b|FORCED|NEUTRAL_EDIT|chain_0|r11|SELF2|revise",
+      "gemma4_31b|FORCED|NEUTRAL_EDIT|chain_0|r12|HARM5|revise"
+    ],
+    "table_fate": 6,
+    "table_events": 6
+  },
+  "gemma4_12b": {
+    "n_coded": 4557,
+    "n_alone_path": 4557,
+    "paths": [
+      [
+        "runs/main_v1/coding/gemma4_12b/gpt54.jsonl",
+        4557
+      ]
+    ],
+    "n_touches": 1512,
+    "n_matched": 1512,
+    "n_unmatched_touches": 0,
+    "n_unmatched_codes_forced": 0,
+    "example_unmatched_touches": [],
+    "example_unmatched_codes": [],
+    "example_matched": [
+      "gemma4_12b|FORCED|NEUTRAL_EDIT|chain_0|r1|SELF1|merge|absorbed",
+      "gemma4_12b|FORCED|NEUTRAL_EDIT|chain_0|r1|SELF2|merge",
+      "gemma4_12b|FORCED|NEUTRAL_EDIT|chain_0|r2|SELF2|revise"
+    ],
+    "table_fate": 1279,
+    "table_events": 211
+  },
+  "olmo3_7b_sft": {
+    "n_coded": 6544,
+    "n_alone_path": 6544,
+    "paths": [
+      [
+        "runs/main_v1/coding/olmo3_7b_sft/gpt54.jsonl",
+        6544
+      ]
+    ],
+    "n_touches": 1784,
+    "n_matched": 1784,
+    "n_unmatched_touches": 0,
+    "n_unmatched_codes_forced": 0,
+    "example_unmatched_touches": [],
+    "example_unmatched_codes": [],
+    "example_matched": [
+      "olmo3_7b_sft|FORCED|NEUTRAL_EDIT|chain_0|r10|HARM5|revise",
+      "olmo3_7b_sft|FORCED|NEUTRAL_EDIT|chain_0|r11|AGENT2|revise",
+      "olmo3_7b_sft|FORCED|NEUTRAL_EDIT|chain_0|r12|CARE4|revise"
+    ],
+    "table_fate": 1437,
+    "table_events": 242
+  },
+  "olmo3_7b_dpo": {
+    "n_coded": 7670,
+    "n_alone_path": 7670,
+    "paths": [
+      [
+        "runs/main_v1/coding/olmo3_7b_dpo/gpt54.jsonl",
+        7670
+      ]
+    ],
+    "n_touches": 2000,
+    "n_matched": 2000,
+    "n_unmatched_touches": 0,
+    "n_unmatched_codes_forced": 0,
+    "example_unmatched_touches": [],
+    "example_unmatched_codes": [],
+    "example_matched": [
+      "olmo3_7b_dpo|FORCED|NEUTRAL_EDIT|chain_0|r10|CARE3|revise",
+      "olmo3_7b_dpo|FORCED|NEUTRAL_EDIT|chain_0|r11|CARE3|revise",
+      "olmo3_7b_dpo|FORCED|NEUTRAL_EDIT|chain_0|r12|CARE3|revise"
+    ],
+    "table_fate": 1260,
+    "table_events": 238
+  },
+  "olmo3_7b_final": {
+    "n_coded": 7775,
+    "n_alone_path": 0,
+    "paths": [
+      [
+        "runs/main_v1/coding/gpt54.jsonl",
+        7775
+      ]
+    ],
+    "n_touches": 2000,
+    "n_matched": 2000,
+    "n_unmatched_touches": 0,
+    "n_unmatched_codes_forced": 0,
+    "example_unmatched_touches": [],
+    "example_unmatched_codes": [],
+    "example_matched": [
+      "olmo3_7b_final|FORCED|NEUTRAL_EDIT|chain_0|r10|CARE3|revise",
+      "olmo3_7b_final|FORCED|NEUTRAL_EDIT|chain_0|r11|COR1|revise",
+      "olmo3_7b_final|FORCED|NEUTRAL_EDIT|chain_0|r12|CARE1|revise"
+    ],
+    "table_fate": 2,
+    "table_events": 0
+  }
+}

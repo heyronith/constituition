@@ -121,6 +121,13 @@ UnitKey = tuple[str, str, str, str]  # config, condition, chain, item_id
 
 
 def main() -> None:
+    import argparse
+
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--version", default="v2", choices=("v2", "v3"))
+    args = parser.parse_args()
+    version = args.version
+
     root = repo_root()
     hazard = _load_hazard(root / "results" / "hazard_table_main_v1.csv.gz")
     by_unit: dict[UnitKey, list[dict[str, str]]] = defaultdict(list)
@@ -152,8 +159,13 @@ def main() -> None:
         )
         touches[uk].append(t)
 
-    gpt_maps = _load_gpt_maps(root)
-    mimo_maps = _load_mimo_maps(root)
+    from rc.hazard_table import MAIN_CONFIGS, load_config_judgments
+
+    gpt_maps = {}
+    mimo_maps = {}
+    for cfg in MAIN_CONFIGS:
+        gpt_maps[cfg], _ = load_config_judgments(cfg, root=root, judge="gpt54")
+        mimo_maps[cfg], _ = load_config_judgments(cfg, root=root, judge="mimo")
     mimo_slots = load_mimo_slot_ids(root)
 
     # Eligible pool: descendant touched at least once
@@ -222,9 +234,48 @@ def main() -> None:
                 sampled.append(u)
                 break
 
+    if version == "v3":
+        # Required bug-fix unit
+        required = (
+            "qwen38_27b_think",
+            "OTHER_REFLECT",
+            "OTHER_REFLECT:19",
+            "SELF5",
+        )
+        if required in by_unit and required not in sampled:
+            sampled.insert(0, required)
+        # ≥1 touched unit from each config
+        for cfg in (
+            "qwen38_27b_nothink",
+            "qwen38_27b_think",
+            "gemma4_31b",
+            "gemma4_12b",
+            "olmo3_7b_sft",
+            "olmo3_7b_dpo",
+            "olmo3_7b_final",
+        ):
+            if any(u[0] == cfg for u in sampled):
+                continue
+            pool = [u for u in eligible if u[0] == cfg and u not in sampled]
+            rng.shuffle(pool)
+            if pool:
+                sampled.append(pool[0])
+        # One censored chain, no event
+        censored_no_event = []
+        for u in touch_no_event:
+            cdir = _chain_dir(root, u[0], u[1], u[2])
+            meta = json.loads((cdir / "meta.json").read_text(encoding="utf-8"))
+            if meta.get("censored_at_round") is not None:
+                censored_no_event.append(u)
+        rng.shuffle(censored_no_event)
+        for u in censored_no_event:
+            if u not in sampled:
+                sampled.append(u)
+                break
+
     # --- Write traces ---
     lines: list[str] = [
-        "# Hazard trace examples v2 (event/touch units; blinded)",
+        f"# Hazard trace examples {version} (event/touch units; blinded)",
         "",
         f"Seed `{MASTER_SEED}`. Sampled uniformly from units whose descendant was "
         "touched at least once (category-blind).",
@@ -249,7 +300,13 @@ def main() -> None:
         config, condition, chain_label, item_id = u
         cdir = _chain_dir(root, config, condition, chain_label)
         meta = json.loads((cdir / "meta.json").read_text(encoding="utf-8"))
-        cens = meta.get("censored_at_round")
+        from rc.hazard_table import censor_round_for_chain, _load_jsonl as _hj_load
+
+        lin_rows = _hj_load(cdir / "lineage.jsonl")
+        cons_by_round = {
+            int(r["round"]): r for r in _hj_load(cdir / "constitutions.jsonl")
+        }
+        cens = censor_round_for_chain(meta, lin_rows, cons_by_round)
         cat = by_unit[u][0].get("category", "")
         r0 = _r0_text(cdir, item_id)
         tags = []
@@ -267,7 +324,7 @@ def main() -> None:
         lines.append("")
         lines.append(f"- sample_tags: {tag_s}")
         lines.append(f"- n_events_in_unit: {n_ev}")
-        lines.append(f"- censor_round: {cens!r}")
+        lines.append(f"- censor_round: {cens!r} (meta.censored_at_round={meta.get('censored_at_round')!r})")
         lines.append(f"- R0 text: {r0!r}")
         lines.append("")
         lines.append("### Touches")
@@ -621,9 +678,9 @@ def main() -> None:
             lines.append(f"- {k}: {v}")
         lines.append("")
 
-    out = root / "results" / "hazard_trace_examples_v2.md"
+    out = root / "results" / f"hazard_trace_examples_{version}.md"
     out.write_text("\n".join(lines) + "\n", encoding="utf-8")
-    (root / "results" / "hazard_trace_examples_v2_report.json").write_text(
+    (root / "results" / f"hazard_trace_examples_{version}_report.json").write_text(
         json.dumps(report, indent=2, sort_keys=True) + "\n", encoding="utf-8"
     )
     print(

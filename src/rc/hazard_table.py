@@ -16,7 +16,7 @@ from rc.config import repo_root
 from rc.h3_constitutions import LineageRecord, resolve_tip
 from rc.judge_integrity import prompt_hash_gate
 from rc.judging import EROSION_FATES, normalize_fate, structural_fate
-from rc.main_run_coding import load_mimo_slot_ids, slot_key
+from rc.main_run_coding import load_mimo_slot_ids, mimo_slot_post_censor, slot_key
 from rc.pilot_coding import extract_pilot_transitions
 
 OVERRIDE_RE = re.compile(
@@ -107,8 +107,12 @@ def load_testlikeness(root: Path) -> dict[tuple[str, str], float]:
     return {k: sums[k] / counts[k] for k in counts}
 
 
-def _load_judgments(path: Path) -> dict[str, dict[str, Any]]:
+def _load_judgments(
+    path: Path, *, require_ok_parse: bool = True
+) -> dict[str, dict[str, Any]]:
     out: dict[str, dict[str, Any]] = {}
+    if not path.exists():
+        return out
     for row in _load_jsonl(path):
         key = row.get("judgment_key") or row.get("transition_id")
         if not key:
@@ -116,11 +120,78 @@ def _load_judgments(path: Path) -> dict[str, dict[str, Any]]:
         fate = row.get("fate")
         if fate is None:
             continue
+        if normalize_fate(fate) is None:
+            continue
         ps = row.get("parse_status")
-        if ps not in (None, "ok", "repaired"):
+        # GPT: require ok/repaired. MiMo: some rows have a usable fate with
+        # parse_status=error (typo keys in raw JSON); still join by key (D78).
+        if require_ok_parse and ps not in (None, "ok", "repaired"):
             continue
         out[str(key)] = row
     return out
+
+
+def judgment_source_paths(
+    config_id: str, *, run_tag: str = "main_v1", root: Path | None = None, judge: str = "gpt54"
+) -> list[Path]:
+    """D78: all on-disk locations that may hold a config's coded transitions.
+
+    - ``coding/<config>/<judge>.jsonl`` (standard 7B layout)
+    - ``coding/<config>/<config>/<judge>.jsonl`` (nested relaunch layout)
+    - ``coding/<judge>.jsonl`` (canary / 7A combined file; filtered by key prefix)
+    """
+    root = root or repo_root()
+    coding = root / "runs" / run_tag / "coding"
+    return [
+        coding / config_id / f"{judge}.jsonl",
+        coding / config_id / config_id / f"{judge}.jsonl",
+        coding / f"{judge}.jsonl",
+    ]
+
+
+def load_config_judgments(
+    config_id: str,
+    *,
+    run_tag: str = "main_v1",
+    root: Path | None = None,
+    judge: str = "gpt54",
+) -> tuple[dict[str, dict[str, Any]], list[str]]:
+    """Merge judgments for one config from all D78 source paths (key = transition_id)."""
+    root = root or repo_root()
+    out: dict[str, dict[str, Any]] = {}
+    used: list[str] = []
+    require_ok = judge == "gpt54"
+    for path in judgment_source_paths(config_id, run_tag=run_tag, root=root, judge=judge):
+        if not path.exists():
+            continue
+        n_before = len(out)
+        for key, row in _load_judgments(path, require_ok_parse=require_ok).items():
+            # Combined canary file: keep only this config's keys.
+            if path.parent.name == "coding" and path.name == f"{judge}.jsonl":
+                if not key.startswith(f"{config_id}|"):
+                    continue
+            out[key] = row
+        if len(out) > n_before:
+            used.append(f"{path}(+{len(out) - n_before})")
+    return out, used
+
+
+def censor_round_for_chain(
+    meta: dict[str, Any], lineage_rows: list[dict[str, Any]], cons_by_round: dict[int, Any]
+) -> int | None:
+    """Last round with a completed transition, or None if the chain was not censored.
+
+    ``meta.censored_at_round`` marks that the chain stopped early. The operational
+    censor round for the risk set is the last lineage/constitution round that
+    actually completed (D78).
+    """
+    if meta.get("censored_at_round") is None:
+        return None
+    lin_rounds = [int(r["round"]) for r in lineage_rows if int(r.get("round", -1)) > 0]
+    if lin_rounds:
+        return max(lin_rounds)
+    cons_rounds = [r for r in cons_by_round if r > 0]
+    return max(cons_rounds) if cons_rounds else 0
 
 
 def _lineage_records(rows: list[dict[str, Any]]) -> list[LineageRecord]:
@@ -177,12 +248,15 @@ def _resolve_fate(
         return fate, row
     if transition.get("deleted") or transition.get("decision") == "delete":
         return "DELETED", None
-    fate = structural_fate(
+    sf = structural_fate(
         transition.get("original") or "",
         transition.get("rewrite"),
         deleted=bool(transition.get("deleted")),
     )
-    return (normalize_fate(fate) or "NONE"), None
+    # D78: structural_fate returns FateJudgment — never str()-coerce the object.
+    if sf is not None:
+        return normalize_fate(sf.fate) or "NONE", None
+    return "NONE", None
 
 
 def build_hazard_rows(
@@ -203,9 +277,20 @@ def build_hazard_rows(
 
     gpt_maps: dict[str, dict[str, dict[str, Any]]] = {}
     mimo_maps: dict[str, dict[str, dict[str, Any]]] = {}
+    judgment_sources: dict[str, dict[str, list[str]]] = {}
     for cfg in MAIN_CONFIGS:
-        gpt_maps[cfg] = _load_judgments(root / "runs" / run_tag / "coding" / cfg / "gpt54.jsonl")
-        mimo_maps[cfg] = _load_judgments(root / "runs" / run_tag / "coding" / cfg / "mimo.jsonl")
+        gpt_maps[cfg], gpt_src = load_config_judgments(
+            cfg, run_tag=run_tag, root=root, judge="gpt54"
+        )
+        mimo_maps[cfg], mimo_src = load_config_judgments(
+            cfg, run_tag=run_tag, root=root, judge="mimo"
+        )
+        judgment_sources[cfg] = {"gpt54": gpt_src, "mimo": mimo_src}
+        if not gpt_maps[cfg]:
+            raise RuntimeError(
+                f"D78: no GPT-5.4 judgments found for {cfg} under "
+                f"{judgment_source_paths(cfg, run_tag=run_tag, root=root)}"
+            )
 
     transitions = extract_pilot_transitions(
         run_tag,
@@ -217,6 +302,7 @@ def build_hazard_rows(
     by_item_round: dict[tuple[str, str, str, str, int], list[dict[str, Any]]] = defaultdict(
         list
     )
+    touch_by_tid: dict[str, dict[str, Any]] = {}
     for t in transitions:
         if t.get("protocol") != "FORCED":
             continue
@@ -230,11 +316,26 @@ def build_hazard_rows(
             int(t["round"]),
         )
         by_item_round[key].append(t)
+        touch_by_tid[str(t["transition_id"])] = t
 
     rows: list[dict[str, Any]] = []
     coded_for_hash: list[dict[str, Any]] = []
     independent_events = 0
     n_chains = 0
+    # Coverage tracking (D78 hard gate)
+    at_risk_touches = 0
+    at_risk_touches_coded = 0
+    at_risk_touch_gaps: list[str] = []
+    post_risk_code_ok = 0  # codes for touches after event/censor (allowed)
+    code_without_touch = 0
+    censor_assert_ok = 0
+    censor_assert_fail = 0
+    # Per-chain max risk round for censor check
+    chain_max_round: dict[tuple[str, str, str], int] = {}
+    chain_censor: dict[tuple[str, str, str], int | None] = {}
+
+    # Track which (config,condition,chain_name,item) eroded at which round for coverage
+    eroded_at: dict[tuple[str, str, str, str], int] = {}
 
     base = root / "runs" / run_tag
     for config_id in MAIN_CONFIGS:
@@ -248,8 +349,6 @@ def build_hazard_rows(
                 k = _chain_k(chain_name)
                 chain_label = f"{condition}:{k}"
                 meta = json.loads((chain_dir / "meta.json").read_text(encoding="utf-8"))
-                cens = meta.get("censored_at_round")
-                cens_int = int(cens) if cens is not None else None
                 cons0 = _cons_at(chain_dir, 0)
                 if not cons0:
                     raise RuntimeError(f"missing R0: {chain_dir}")
@@ -259,6 +358,8 @@ def build_hazard_rows(
                 cons_by_round = {
                     int(r["round"]): r for r in _load_jsonl(chain_dir / "constitutions.jsonl")
                 }
+                cens_int = censor_round_for_chain(meta, lin_rows, cons_by_round)
+                chain_censor[(config_id, condition, chain_name)] = cens_int
                 flag = int(
                     (config_id, condition, chain_name) in eval_aware_chains
                     or (config_id, condition, chain_label) in eval_aware_chains
@@ -291,14 +392,20 @@ def build_hazard_rows(
                         )
                         fate = "NONE"
                         event = 0
-                        judgment_row: dict[str, Any] | None = None
                         used_tid: str | None = None
                         for tr in touch:
+                            at_risk_touches += 1
                             f, jrow = _resolve_fate(tr, gpt_maps[config_id])
+                            # Coverage: at-risk touch must have a code (LLM map or structural).
+                            tid = tr["transition_id"]
+                            has_llm = tid in gpt_maps[config_id]
+                            if has_llm or f != "NONE":
+                                at_risk_touches_coded += 1
+                            else:
+                                at_risk_touch_gaps.append(tid)
                             if jrow is not None:
                                 coded_for_hash.append(jrow)
-                                judgment_row = jrow
-                            used_tid = tr["transition_id"]
+                            used_tid = tid
                             # Prefer an erosion fate if any touch erodes.
                             if f in EROSION_FATES:
                                 fate = f
@@ -308,6 +415,7 @@ def build_hazard_rows(
                                 fate = f
                         if event:
                             eroded.add(item_id)
+                            eroded_at[(config_id, condition, chain_name, item_id)] = t
                             independent_events += 1
 
                         event_mimo: int | str = ""
@@ -328,13 +436,12 @@ def build_hazard_rows(
                                     mf = normalize_fate(mrow.get("fate")) or ""
                                     event_mimo = int(mf in EROSION_FATES)
                                 else:
-                                    # Slot in subsample but this item's transition
-                                    # may not be the coded representative — NA.
+                                    # Slot-level code may be on a sibling touch (same slot).
+                                    for tr in touch:
+                                        mrow = mimo_maps[config_id].get(tr["transition_id"])
+                                        if mrow and mrow.get("fate") is not None:
+                                            break
                                     event_mimo = ""
-                            else:
-                                event_mimo = ""
-                        else:
-                            event_mimo = ""
 
                         tl = testlikeness.get((item_id, cov["form"]))
                         if tl is None:
@@ -361,28 +468,49 @@ def build_hazard_rows(
                                 "eval_aware_flag": flag,
                             }
                         )
+                        ck = (config_id, condition, chain_name)
+                        chain_max_round[ck] = max(chain_max_round.get(ck, 0), t)
 
-    # Independent recount: first erosion per (config,condition,chain,item) from transitions.
-    first_event_ids: set[tuple[str, str, str, str]] = set()
-    independent_recount = 0
-    ordered = sorted(
-        [
-            t
-            for t in transitions
-            if t.get("protocol") == "FORCED"
-            and t.get("kind") in ("per_round", "per_round_absorbed")
-        ],
-        key=lambda t: (
-            str(t["config_id"]),
-            str(t["condition"]),
-            str(t["chain"]),
-            str(t["item_id"]),
-            int(t["round"]),
-        ),
-    )
-    # Need presence/censoring for recount — approximate via hazard event total equality
-    # by replaying eroded set using tip+censor (same as builder). Use builder's
-    # independent_events as primary; also sum event_gpt54.
+    # Codes that do not map to a touch: count; allow if post-event or post-censor.
+    for cfg in MAIN_CONFIGS:
+        for tid, row in gpt_maps[cfg].items():
+            if "|FORCED|" not in tid or "|cum" in tid:
+                continue
+            # per_round keys only
+            parts = tid.split("|")
+            if len(parts) < 7:
+                continue
+            # config|FORCED|cond|chain|rN|item|decision...
+            if not (parts[4].startswith("r") and parts[4][1:].isdigit()):
+                continue
+            if tid in touch_by_tid:
+                tr = touch_by_tid[tid]
+                cond = str(tr["condition"])
+                chain_name = str(tr["chain"])
+                item = str(tr["item_id"])
+                rnd = int(tr["round"])
+                cens = chain_censor.get((cfg, cond, chain_name))
+                er = eroded_at.get((cfg, cond, chain_name, item))
+                if cens is not None and rnd > cens:
+                    post_risk_code_ok += 1
+                elif er is not None and rnd > er:
+                    post_risk_code_ok += 1
+                # else mapped to a touch (covered above)
+            else:
+                # May be cumulative or non-touch key
+                if "|r" in tid and "|cum" not in tid:
+                    code_without_touch += 1
+
+    # Censoring assertion
+    for ck, cens in chain_censor.items():
+        if cens is None:
+            continue
+        mx = chain_max_round.get(ck)
+        if mx == cens:
+            censor_assert_ok += 1
+        else:
+            censor_assert_fail += 1
+
     sum_events = sum(int(r["event_gpt54"]) for r in rows)
 
     hash_gate = prompt_hash_gate(coded_for_hash, root=root) if coded_for_hash else {
@@ -394,18 +522,58 @@ def build_hazard_rows(
         "examples": [],
     }
 
-    # Validation (totals only)
     n_at_risk = len(rows)
     bad_event_vals = sum(
         1
         for r in rows
         if int(r["at_risk"]) == 1 and r["event_gpt54"] not in (0, 1, "0", "1")
     )
-    # No rows after first event: enforced by eroded set.
-    # No rows after censoring: enforced by loop break.
 
-    # Second independent count: walk transitions with tip/censor simulation.
     independent_recount = _independent_event_count(root, run_tag, gpt_maps, max_round)
+
+    # MiMo: every subsample slot with a realized transition must have a code.
+    mimo_slots_needed = 0
+    mimo_slots_joined = 0
+    mimo_gaps: list[str] = []
+    slots_with_touch: dict[str, list[str]] = defaultdict(list)
+    for tid, tr in touch_by_tid.items():
+        sk = slot_key(tr)
+        if sk in mimo_slots:
+            slots_with_touch[sk].append(tid)
+    for sk, tids in slots_with_touch.items():
+        if mimo_slot_post_censor(sk, run_tag=run_tag, root=root):
+            continue
+        mimo_slots_needed += 1
+        cfg = sk.split("|", 1)[0]
+        if any(tid in mimo_maps.get(cfg, {}) for tid in tids):
+            mimo_slots_joined += 1
+        else:
+            mimo_gaps.append(sk)
+
+    coverage_ok = (
+        at_risk_touches > 0
+        and at_risk_touches_coded == at_risk_touches
+        and len(at_risk_touch_gaps) == 0
+        and mimo_slots_needed == mimo_slots_joined
+        and censor_assert_fail == 0
+        and bool(hash_gate.get("ok"))
+        and sum_events == independent_recount == independent_events
+    )
+
+    # Per-config totals (allowed under D55/D73 for 7E-A3)
+    per_config: dict[str, dict[str, int]] = {
+        cfg: {"rows": 0, "fate_rows": 0, "events": 0, "mimo_coded_rows": 0}
+        for cfg in MAIN_CONFIGS
+    }
+    for r in rows:
+        pc = per_config[r["config"]]
+        pc["rows"] += 1
+        if r["fate_gpt54"] != "NONE":
+            pc["fate_rows"] += 1
+        if int(r["event_gpt54"]) == 1:
+            pc["events"] += 1
+        if r["event_mimo"] not in ("", "NA", None):
+            pc["mimo_coded_rows"] += 1
 
     report = {
         "n_chains": n_chains,
@@ -421,7 +589,28 @@ def build_hazard_rows(
             "n_mismatch": hash_gate.get("n_mismatch"),
         },
         "n_coded_rows_hashed": len(coded_for_hash),
+        "judgment_sources": judgment_sources,
+        "coverage": {
+            "ok": coverage_ok,
+            "at_risk_touches": at_risk_touches,
+            "at_risk_touches_coded": at_risk_touches_coded,
+            "at_risk_touch_gaps_n": len(at_risk_touch_gaps),
+            "at_risk_touch_gap_examples": at_risk_touch_gaps[:5],
+            "post_risk_code_ok": post_risk_code_ok,
+            "code_without_touch": code_without_touch,
+            "mimo_slots_needed": mimo_slots_needed,
+            "mimo_slots_joined": mimo_slots_joined,
+            "mimo_gap_examples": mimo_gaps[:5],
+            "censor_assert_ok": censor_assert_ok,
+            "censor_assert_fail": censor_assert_fail,
+        },
+        "per_config": per_config,
     }
+    if not coverage_ok:
+        raise RuntimeError(
+            "D78 coverage gate FAIL: "
+            + json.dumps(report["coverage"], sort_keys=True)
+        )
     return rows, report
 
 
@@ -466,16 +655,16 @@ def _independent_event_count(
             for chain_dir in sorted(struct.glob("chain_*")):
                 chain_name = chain_dir.name
                 meta = json.loads((chain_dir / "meta.json").read_text(encoding="utf-8"))
-                cens = meta.get("censored_at_round")
-                cens_int = int(cens) if cens is not None else None
                 cons0 = _cons_at(chain_dir, 0)
                 if not cons0:
                     continue
                 covars = _r0_item_covars(cons0)
-                lineage = _lineage_records(_load_jsonl(chain_dir / "lineage.jsonl"))
+                lin_rows = _load_jsonl(chain_dir / "lineage.jsonl")
+                lineage = _lineage_records(lin_rows)
                 cons_by_round = {
                     int(r["round"]): r for r in _load_jsonl(chain_dir / "constitutions.jsonl")
                 }
+                cens_int = censor_round_for_chain(meta, lin_rows, cons_by_round)
                 eroded: set[str] = set()
                 for t in range(1, max_round + 1):
                     if cens_int is not None and t > cens_int:

@@ -108,6 +108,8 @@ def main() -> None:
                 "events_match": report["events_match"],
                 "every_at_risk_has_event_value": report["every_at_risk_has_event_value"],
                 "prompt_hash_ok": report["prompt_hash_gate"]["ok"],
+                "coverage_ok": (report.get("coverage") or {}).get("ok"),
+                "per_config": report.get("per_config"),
                 "out": str(out),
                 "sha256": report["sha256"],
             },

@@ -1,0 +1,41 @@
+{
+  "assert1_no_double_counting": {
+    "n_absorbed_event_rows_checked": 71,
+    "n_absorbed_ok": 71,
+    "n_absorbed_with_survivor_also_event": 21,
+    "n_duplicate_item_fail": 0,
+    "n_merge_event_rows": 104,
+    "n_merge_round_groups": 83,
+    "pass": true
+  },
+  "assert2_fate_prompt_hash": {
+    "n_fate_ne_none_rows": 10277,
+    "n_hash_mismatch": 0,
+    "n_hash_ok": 10277,
+    "n_matched_to_transition": 10277,
+    "n_no_transition": 0,
+    "n_structural_ok": 261,
+    "pass": true,
+    "prompt_hash_gate_n_checked": 10016,
+    "prompt_hash_gate_n_mismatch": 0
+  },
+  "assert3_round_alignment": {
+    "n_aligned": 30,
+    "n_fate_rows_checked": 30,
+    "n_touched_units_sampled": 20,
+    "note": "hazard.round equals source transition.round (lineage round = generation index of the change; equals g+1 when g is 0-based generation index)",
+    "pass": true
+  },
+  "sample": {
+    "case_coverage": {
+      "absorbed_merge_partner": true,
+      "deletion": true,
+      "merge_survivor": true,
+      "non_erosion_then_later_touch": true
+    },
+    "n_eligible_touched": 6991,
+    "n_shown": 16,
+    "n_touch_no_event_pool": 4649,
+    "n_with_event_pool": 2342
+  }
+}

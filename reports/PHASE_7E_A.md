@@ -159,3 +159,60 @@ The v1 traces (`results/hazard_trace_examples.md`) were category-blind but lande
 | 3. Round alignment (20 random touched units) | **PASS** | 21/21 fate rows; hazard round = source transition round |
 
 **STOP.** Still no 7E-B real-label analysis.
+
+---
+
+## §7 D78 join fix and re-lock (7E-A3)
+
+### Diagnosis
+
+The 7E-A hazard table (`a8818407…`) is **invalid**. Builder opened only `coding/<config>/gpt54.jsonl`.
+
+| config | Where codes actually lived | Invalid table fate rows / events |
+|---|---|---:|
+| gemma4_12b | flat path | 1279 / 211 |
+| olmo3_7b_dpo | flat path | 1260 / 238 |
+| olmo3_7b_sft | flat path | 1437 / 242 |
+| qwen38_27b_nothink | flat path | 1674 / 577 |
+| **gemma4_31b** | nested `coding/<cfg>/<cfg>/gpt54.jsonl` | **6 / 6** |
+| **olmo3_7b_final** | canary `coding/gpt54.jsonl` only | **2 / 0** |
+| **qwen38_27b_think** | nested path | **10 / 10** |
+
+Key format was correct; files were not loaded. Empty maps left only structural DELETED events (and rare stringified `FateJudgment` “fates”). The prior “independent recount” reused the same maps. Details: `results/phase7e_a3_diagnosis.md`.
+
+### Fix
+
+- `load_config_judgments`: merge flat + nested + canary paths (D40 key join unchanged).
+- Structural path uses `FateJudgment.fate`, not `str(object)`.
+- `censor_round` = last completed transition when censored.
+- Hard coverage gate (FAIL → STOP): 10277/10277 at-risk touches coded; 3263/3263 MiMo slots joined; prompt-hash OK.
+
+### Rebuilt table (per-config totals only)
+
+| config | rows | fate rows | events | MiMo-coded rows |
+|---|---:|---:|---:|---:|
+| gemma4_12b | 49248 | 1279 | 211 | 302 |
+| gemma4_31b | 60955 | 1385 | 349 | 332 |
+| olmo3_7b_dpo | 67274 | 1260 | 238 | 309 |
+| olmo3_7b_final | 67051 | 1384 | 272 | 354 |
+| olmo3_7b_sft | 60183 | 1437 | 242 | 375 |
+| qwen38_27b_nothink | 62030 | 1674 | 577 | 399 |
+| qwen38_27b_think | 64618 | 1858 | 453 | 440 |
+| **total** | **431359** | | **2342** | |
+
+New SHA-256: `1e1f81e00cbe728f6f02a64d8439b2ccd4e6e4dc2282025b89dbdc632430c1d2`.
+
+Independent recount (`scripts/independent_hazard_recount.py`, no shared code with `hazard_table.py`): **events match per config**.
+
+B1 battery SHA **unchanged** (`351e18de…`).
+
+### Re-verify
+
+- Traces: `results/hazard_trace_examples_v3.md` — includes `qwen38_27b_think | OTHER_REFLECT:19 | SELF5` with round-4 **WEAKENED** event=1; ≥1 touched unit per config; censored no-event example; assertions PASS.
+- Dry run (permuted): completed (~64s); H1 `glmm_drop_item_chain`; H2a/H2b `glmm_drop_item_chain`; H3 `glmm_full`. No estimates reported.
+
+### Lock
+
+`docs/ANALYSIS_LOCK.md` updated; old hash marked **INVALID (D78)**.
+
+**STOP.** No real-label analysis (7E-B).
