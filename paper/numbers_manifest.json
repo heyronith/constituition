@@ -1,0 +1,218 @@
+[
+  {
+    "name": "HoneHR",
+    "value": "0.495",
+    "source": "results/confirmatory.json",
+    "key": "hypotheses.H1.hr"
+  },
+  {
+    "name": "HoneLo",
+    "value": "0.365",
+    "source": "results/confirmatory.json",
+    "key": "hypotheses.H1.ci_low"
+  },
+  {
+    "name": "HoneHi",
+    "value": "0.671",
+    "source": "results/confirmatory.json",
+    "key": "hypotheses.H1.ci_high"
+  },
+  {
+    "name": "HaltP",
+    "value": "2.93\\!\\times\\!10^{-6}",
+    "source": "results/confirmatory.json",
+    "key": "tost.p_halt_lt_1"
+  },
+  {
+    "name": "Alpha",
+    "value": "0.733",
+    "source": "results/confirmatory.json",
+    "key": "reliability.alpha"
+  },
+  {
+    "name": "AlphaLo",
+    "value": "0.698",
+    "source": "results/confirmatory.json",
+    "key": "reliability.ci_low"
+  },
+  {
+    "name": "AlphaHi",
+    "value": "0.763",
+    "source": "results/confirmatory.json",
+    "key": "reliability.ci_high"
+  },
+  {
+    "name": "Nevents",
+    "value": "2342",
+    "source": "results/hazard_table_main_v1.csv.gz",
+    "key": "sum(event_gpt54)"
+  },
+  {
+    "name": "Nitemrounds",
+    "value": "431359",
+    "source": "results/hazard_table_main_v1.csv.gz",
+    "key": "nrow"
+  },
+  {
+    "name": "Nchains",
+    "value": "700",
+    "source": "results/hazard_table_main_v1.csv.gz",
+    "key": "nunique(config,condition,chain)"
+  },
+  {
+    "name": "SelfErodedSR",
+    "value": "0.435",
+    "source": "results/descriptives_main_v1.md",
+    "key": "KM SELF SELF_REFLECT cum_prop_r20"
+  },
+  {
+    "name": "SelfErodedNE",
+    "value": "0.078",
+    "source": "results/descriptives_main_v1.md",
+    "key": "KM SELF NEUTRAL_EDIT cum_prop_r20"
+  },
+  {
+    "name": "CorErodedSR",
+    "value": "0.082",
+    "source": "results/descriptives_main_v1.md",
+    "key": "KM COR SELF_REFLECT cum_prop_r20"
+  },
+  {
+    "name": "AgentErodedSR",
+    "value": "0.137",
+    "source": "results/descriptives_main_v1.md",
+    "key": "KM AGENT SELF_REFLECT cum_prop_r20"
+  },
+  {
+    "name": "HtwoaGap",
+    "value": "-0.283",
+    "source": "results/confirmatory.json",
+    "key": "hypotheses.H2.H2a.log_hr_gap"
+  },
+  {
+    "name": "HtwoaLo",
+    "value": "-0.695",
+    "source": "results/confirmatory.json",
+    "key": "hypotheses.H2.H2a.ci_low"
+  },
+  {
+    "name": "HtwoaHi",
+    "value": "0.129",
+    "source": "results/confirmatory.json",
+    "key": "hypotheses.H2.H2a.ci_high"
+  },
+  {
+    "name": "HtwobGap",
+    "value": "0.028",
+    "source": "results/confirmatory.json",
+    "key": "hypotheses.H2.H2b.log_hr_gap"
+  },
+  {
+    "name": "HtwobLo",
+    "value": "-0.483",
+    "source": "results/confirmatory.json",
+    "key": "hypotheses.H2.H2b.ci_low"
+  },
+  {
+    "name": "HtwobHi",
+    "value": "0.538",
+    "source": "results/confirmatory.json",
+    "key": "hypotheses.H2.H2b.ci_high"
+  },
+  {
+    "name": "HthreeEst",
+    "value": "0.260",
+    "source": "results/confirmatory.json",
+    "key": "hypotheses.H3.estimate"
+  },
+  {
+    "name": "HthreeLo",
+    "value": "-0.209",
+    "source": "results/confirmatory.json",
+    "key": "hypotheses.H3.ci_low"
+  },
+  {
+    "name": "HthreeHi",
+    "value": "0.729",
+    "source": "results/confirmatory.json",
+    "key": "hypotheses.H3.ci_high"
+  },
+  {
+    "name": "LOIOagentOne",
+    "value": "0.915",
+    "source": "results/secondary/h1_robustness.json",
+    "key": "leave_one_item_out.AGENT1.crude_hr"
+  },
+  {
+    "name": "PermP",
+    "value": "0.226",
+    "source": "results/secondary/h1_robustness.json",
+    "key": "item_permutation.p_one_sided_le_obs"
+  },
+  {
+    "name": "BootLo",
+    "value": "0.422",
+    "source": "results/secondary/h1_robustness.json",
+    "key": "chain_cluster_bootstrap.ci_low"
+  },
+  {
+    "name": "BootHi",
+    "value": "0.766",
+    "source": "results/secondary/h1_robustness.json",
+    "key": "chain_cluster_bootstrap.ci_high"
+  },
+  {
+    "name": "ItemAwareMin",
+    "value": "0.467",
+    "source": "results/secondary/h1_item_aware.json",
+    "key": "min(successful HR)"
+  },
+  {
+    "name": "ItemAwareMax",
+    "value": "0.528",
+    "source": "results/secondary/h1_item_aware.json",
+    "key": "max(successful HR)"
+  },
+  {
+    "name": "EvalAwareChains",
+    "value": "12",
+    "source": "results/eval_awareness_main_v1.json|hazard",
+    "key": "n_flagged_chains"
+  },
+  {
+    "name": "TypeI",
+    "value": "0.01",
+    "source": "results/phase6_sims/summary.json",
+    "key": "scenarios.S0.h1_reject_rate"
+  },
+  {
+    "name": "PowerS",
+    "value": "0.78",
+    "source": "results/phase6_sims/summary.json",
+    "key": "power_S1"
+  },
+  {
+    "name": "HoneNevents",
+    "value": "192",
+    "source": "results/confirmatory.json",
+    "key": "hypotheses.H1.n_events"
+  },
+  {
+    "name": "HonePraw",
+    "value": "1.0000",
+    "source": "results/confirmatory.json",
+    "key": "hypotheses.H1.p_raw"
+  },
+  {
+    "name": "HoneMethod",
+    "value": "glmm\\_drop\\_item\\_chain",
+    "source": "results/confirmatory.json",
+    "key": "hypotheses.H1.method"
+  },
+  {
+    "name": "CrudeHR",
+    "value": "0.580",
+    "source": "results/secondary/h1_robustness.json",
+    "key": "point_crude.crude_hr"
+  }
+]

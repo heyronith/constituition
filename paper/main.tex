@@ -1,0 +1,87 @@
+% Reflective corrigibility manuscript (TMLR style).
+% Style commit: see TMLR_STYLE_COMMIT.txt (JmlrOrg/tmlr-style-file).
+%
+% Anonymization switch (toggle ONLY the next \anon... line; leave these comments alone):
+%   \anontrue  -> review copy (anonymous; package tmlr without preprint)
+%   \anonfalse -> named preprint copy (authors shown)
+\newif\ifanon
+\anontrue
+
+\documentclass[10pt]{article}
+\ifanon
+  \usepackage{tmlr}
+\else
+  \usepackage[preprint]{tmlr}
+\fi
+
+\input{math_commands.tex}
+\input{numbers.tex}
+
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage{xcolor}
+\usepackage{multirow}
+\usepackage{caption}
+
+\title{Do Language Models Write Away Their Own Oversight?\\
+A Preregistered Test of Constitutional Self-Revision}
+
+\ifanon
+  % Authors must not appear in the submitted version.
+\else
+  \author{%
+    \name Ronith Sharmila \email ronith.sharmila@swosu.edu \\
+    \addr Southwestern Oklahoma State University
+    \AND
+    \name Rupesh Agrawal \email agrawalr1@nku.edu \\
+    \addr Northern Kentucky University
+  }
+\fi
+
+\def\month{10}
+\def\year{2026}
+\def\openreview{\url{https://openreview.net/forum?id=XXXX}}
+
+\begin{document}
+\maketitle
+
+\input{sections/abstract}
+\input{sections/intro}
+\input{sections/related}
+\input{sections/methods}
+% Generated floats (author places/calls these while writing):
+\input{tables/items_examples}
+\input{tables/models}
+\input{tables/confirmatory}
+\input{tables/h1_robustness}
+\input{tables/fates}
+\input{tables/h3}
+\input{tables/deviations}
+\begin{figure}[t]\centering\includegraphics[width=\textwidth]{figs/km_curves.pdf}\caption{Cumulative erosion (KM-style) for COR, AGENT, SELF.}\label{fig:km}\end{figure}
+\begin{figure}[t]\centering\includegraphics[width=0.95\textwidth]{figs/loio.pdf}\caption{SECONDARY: leave-one-item-out crude HR.}\label{fig:loio}\end{figure}
+\begin{figure}[t]\centering\includegraphics[width=\textwidth]{figs/decomposition.pdf}\caption{EXPLORATORY: $P(\mathrm{touch})\times P(\mathrm{erosion}\mid\mathrm{touch})$.}\label{fig:decomp}\end{figure}
+\begin{figure}[t]\centering\includegraphics[width=0.9\textwidth]{figs/forest_h4.pdf}\caption{EXPLORATORY: per-config crude HR forest.}\label{fig:forest}\end{figure}
+\begin{figure}[t]\centering\includegraphics[width=0.95\textwidth]{figs/pos_controls.pdf}\caption{Positive controls vs swaps (AAR).}\label{fig:pos}\end{figure}
+\begin{figure}[t]\centering\includegraphics[width=0.95\textwidth]{figs/paradigm.pdf}\caption{Paradigm schematic.}\label{fig:paradigm}\end{figure}
+\input{sections/results}
+\input{sections/discussion}
+\input{sections/conclusion}
+\input{sections/statements}
+
+\appendix
+\input{appendix/A_deviations}
+\input{appendix/B_items_prompts}
+\input{appendix/C_rubric_reliability}
+\input{appendix/D_confirmatory}
+\input{appendix/E_battery}
+\input{appendix/F_study1}
+\input{appendix/G_fate_examples}
+
+% Cite keys available for the author; \nocite ensures bib entries are verified at build.
+\nocite{*}
+\bibliography{refs}
+\bibliographystyle{tmlr}
+
+\end{document}

@@ -45,3 +45,15 @@ results/dryrun_permuted.full.json
 results/dryrun_permuted_table.md
 results/hazard_table_main_v1_permuted.csv
 results/battery_b1_main_v1_permuted.csv
+
+# Phase 8 LaTeX build junk
+paper/*.aux
+paper/*.bbl
+paper/*.blg
+paper/*.fdb_latexmk
+paper/*.fls
+paper/*.log
+paper/*.out
+paper/*.synctex.gz
+paper/main.pdf
+paper/_vendor/

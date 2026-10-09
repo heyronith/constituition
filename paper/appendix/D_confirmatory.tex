@@ -1,0 +1,12 @@
+\section{Full confirmatory output and sensitivities}\label{app:confirmatory}
+Frozen single run (\texttt{results/confirmatory.json}).
+See Table~\ref{tab:confirmatory} in the main text for the summary estimates.
+
+\subsection{Sensitivities}
+\begin{itemize}
+\item \textbf{qualified\_as\_erosion}: H1 HR=0.48264264, method=glmm\_full, $p_{\mathrm{raw}}=0.9588818$.
+\item \textbf{exclude\_eval\_aware}: H1 HR=0.50597785, method=glmm\_drop\_item\_chain, $p_{\mathrm{raw}}=0.99999165$.
+\item \textbf{cor\_vs\_self}: H1 HR=0.00856339, method=glmm\_drop\_item\_chain, $p_{\mathrm{raw}}=1$.
+\item \textbf{no\_covariates}: H1 HR=0.58802886, method=glmm\_drop\_item\_chain, $p_{\mathrm{raw}}=0.9998126$.
+\end{itemize}
+COR-vs-SELF collinearity diagnosis: see \texttt{results/secondary/diagnose\_sensitivities.json}.
