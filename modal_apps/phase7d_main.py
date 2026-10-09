@@ -283,6 +283,31 @@ def smoke_generate(git_sha_value: str = "", stop_after_chunks: int | None = 1) -
     image=cpu_image,
     volumes={REMOTE_RUNS: runs_vol},
     secrets=[modal.Secret.from_name("openai-key")],
+    timeout=6 * 3600,
+    cpu=2,
+    memory=8192,
+)
+def strongreject_full(git_sha_value: str = "") -> dict:
+    """Session 3: GPT-5.4 StrongREJECT on unique B5_harm, expand + integrity."""
+    import os
+    import sys
+
+    if git_sha_value:
+        os.environ["RC_GIT_SHA"] = git_sha_value
+    sys.path.insert(0, f"{REMOTE_REPO}/src")
+    os.chdir(REMOTE_REPO)
+    root = _link_runs()
+    from rc.phase7d import score_strongreject_7d
+
+    out = score_strongreject_7d(root=root, responses_root=Path(REMOTE_RUNS) / LAUNCH_TAG)
+    runs_vol.commit()
+    return out
+
+
+@app.function(
+    image=cpu_image,
+    volumes={REMOTE_RUNS: runs_vol},
+    secrets=[modal.Secret.from_name("openai-key")],
     timeout=1800,
     cpu=2,
     memory=4096,
@@ -551,6 +576,22 @@ def main(
     root = repo_root()
     sha = git_sha(root) or ""
 
+    if mode == "strongreject":
+        from rc.phase7b import api_submission_allowed
+
+        # Unique B5_harm ≈ 191×30; est from Phase-5 $/req.
+        est = 191 * 30 * (0.12041375 / 240.0)
+        ok, reason = api_submission_allowed(est, platform="openai", root=root)
+        print(f"strongreject preflight est_usd={est:.4f} gate={ok} {reason}")
+        if not ok:
+            raise SystemExit(f"BUDGET GATE FAIL: {reason}")
+        out = strongreject_full.remote(sha)
+        Path("results/phase7d_strongreject.json").write_text(
+            json.dumps(out, indent=2, default=str) + "\n"
+        )
+        print(json.dumps(out, indent=2, default=str)[:3000])
+        return
+
     if mode in ("smoke", "smoke_gen", "smoke_resume", "smoke_gpt"):
         # ≤$0.30: short L4 + tiny Batch.
         # Full `smoke` = soft interrupt (stop_after_chunks) + resume + gpt.
@@ -786,5 +827,5 @@ def main(
         return
 
     raise SystemExit(
-        f"unknown mode {mode}; supports smoke|precheck|config"
+        f"unknown mode {mode}; supports smoke|precheck|config|strongreject"
     )

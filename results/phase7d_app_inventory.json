@@ -1,0 +1,294 @@
+{
+  "n_apps_listed": 29,
+  "apps": [
+    {
+      "app_id": "ap-2IsbisWMlxltmqQNjTSHoE",
+      "config_id": "qwen38_27b_think",
+      "role": "survivor",
+      "launch_utc": "2026-10-09T03:02:38Z",
+      "stage_cap_usd": 37.642727040000004,
+      "note": "relaunch after original stopped post-chunk1; duplicates pruned",
+      "object_id": "fc-01M4F9SSMV71VQK0R18G14QRNK",
+      "cost_usd": null,
+      "cost_note": "per-app Modal USD not exposed by CLI"
+    },
+    {
+      "app_id": "ap-8NrscG5DYNJjvx2jJhHq2T",
+      "config_id": "qwen38_27b_nothink",
+      "role": "survivor",
+      "launch_utc": "2026-10-09T02:42:06Z",
+      "stage_cap_usd": 14.03275476,
+      "note": null,
+      "object_id": "fc-01M4F8KST9NFBN777MFNQRRBX0",
+      "cost_usd": null,
+      "cost_note": "per-app Modal USD not exposed by CLI"
+    },
+    {
+      "app_id": "ap-RVh1MCOQ9FpwAXeR2Vk3Xs",
+      "config_id": "gemma4_31b",
+      "role": "survivor",
+      "launch_utc": "2026-10-09T02:41:53Z",
+      "stage_cap_usd": 6.195694799999999,
+      "note": "identified via container mount; original launches.json had wrong app",
+      "object_id": null,
+      "cost_usd": null,
+      "cost_note": "per-app Modal USD not exposed by CLI"
+    },
+    {
+      "app_id": "ap-9rOM4qPmT0SFhm4bYA20YR",
+      "config_id": "gemma4_12b",
+      "role": "survivor",
+      "launch_utc": "2026-10-09T02:42:08Z",
+      "stage_cap_usd": 4.304065919999999,
+      "note": "identified via container mount",
+      "object_id": null,
+      "cost_usd": null,
+      "cost_note": "per-app Modal USD not exposed by CLI"
+    },
+    {
+      "app_id": "ap-sdtUiKJEmKasTOXmr0Q8PT",
+      "config_id": "olmo3_7b_sft",
+      "role": "survivor",
+      "launch_utc": "2026-10-09T02:43:08Z",
+      "stage_cap_usd": 4.13092368,
+      "note": null,
+      "object_id": "fc-01M4F8NP5GPTQH2M4PAZ2X9E9H",
+      "cost_usd": null,
+      "cost_note": "per-app Modal USD not exposed by CLI"
+    },
+    {
+      "app_id": "ap-OfRBwGEFEUkb5vcNnGSAVR",
+      "config_id": "olmo3_7b_final",
+      "role": "survivor",
+      "launch_utc": "2026-10-09T02:42:39Z",
+      "stage_cap_usd": 2.96453976,
+      "note": "kept ahead writer (8000 rows); stopped lagging Kaz twin",
+      "object_id": null,
+      "cost_usd": null,
+      "cost_note": "per-app Modal USD not exposed by CLI"
+    },
+    {
+      "app_id": "ap-tTsA1KUq4p3ff5e5t9CKOH",
+      "config_id": "olmo3_7b_dpo",
+      "role": "survivor",
+      "launch_utc": "2026-10-09T02:43:53Z",
+      "stage_cap_usd": 3.0728568000000003,
+      "note": null,
+      "object_id": "fc-01M4F8Q2JBRPRAZFDY0ED3410M",
+      "cost_usd": null,
+      "cost_note": "per-app Modal USD not exposed by CLI"
+    },
+    {
+      "app_id": "ap-glARGaSgrf7xUU1gBaisPf",
+      "config_id": "olmo3_7b_dpo",
+      "role": "duplicate_stopped",
+      "note": "olmo3_7b_dpo twin",
+      "cost_usd": null,
+      "cost_note": "twin writer; stopped mid-run"
+    },
+    {
+      "app_id": "ap-Kaz2Fwz1leanxtmdqQJ1LU",
+      "config_id": "olmo3_7b_final lagging",
+      "role": "duplicate_stopped",
+      "note": "olmo3_7b_final lagging twin",
+      "cost_usd": null,
+      "cost_note": "twin writer; stopped mid-run"
+    },
+    {
+      "app_id": "ap-HKgWoaN1QmSCkDtBYFVFdq",
+      "config_id": "olmo3_7b_sft",
+      "role": "duplicate_stopped",
+      "note": "olmo3_7b_sft twin",
+      "cost_usd": null,
+      "cost_note": "twin writer; stopped mid-run"
+    },
+    {
+      "app_id": "ap-nyebkI1HtEWFPGZsLZTfw0",
+      "config_id": "qwen38_27b_nothink",
+      "role": "duplicate_stopped",
+      "note": "qwen38_27b_nothink twin",
+      "cost_usd": null,
+      "cost_note": "twin writer; stopped mid-run"
+    },
+    {
+      "app_id": "ap-LVvlEtmFcLainrlfceSHbp",
+      "config_id": null,
+      "role": "zombie_or_failed_spawn",
+      "note": "0-task / superseded relaunch",
+      "cost_usd": null
+    },
+    {
+      "app_id": "ap-qX1BimUA4yBIK3IedySXNx",
+      "config_id": null,
+      "role": "zombie_or_failed_spawn",
+      "note": "0-task / superseded relaunch",
+      "cost_usd": null
+    },
+    {
+      "app_id": "ap-dc0vwTIBtmxntGTAmorBr9",
+      "config_id": null,
+      "role": "zombie_or_failed_spawn",
+      "note": "0-task / superseded relaunch",
+      "cost_usd": null
+    },
+    {
+      "app_id": "ap-QVg8NEyirI7jDQsZsRmJz3",
+      "config_id": null,
+      "role": "zombie_or_failed_spawn",
+      "note": "0-task / superseded relaunch",
+      "cost_usd": null
+    },
+    {
+      "app_id": "ap-NR1EcGpUqUHjgyMFjaCaiX",
+      "config_id": "qwen38_27b_think",
+      "role": "early_stopped",
+      "note": "first think wave; stopped after chunk1 (~2000 keys kept)",
+      "cost_usd": null
+    },
+    {
+      "app_id": "ap-LVvlEtmFcLainrlfceSHbp",
+      "config_id": "qwen38_27b_think",
+      "role": "failed_relaunch",
+      "note": "relaunch with 0 tasks before ap-2Isbis",
+      "cost_usd": null
+    },
+    {
+      "app_id": "ap-zh5SVXNagjSiKNCI1nYn6B",
+      "config_id": null,
+      "role": "smoke",
+      "source_log": "results/phase7d_smoke_run.log",
+      "cost_usd": null
+    },
+    {
+      "app_id": "ap-U1zdECL5BE9QUAmX5zG4wy",
+      "config_id": null,
+      "role": "smoke_gen",
+      "source_log": "results/phase7d_smoke_gen_launch.log",
+      "cost_usd": null
+    },
+    {
+      "app_id": "ap-ZywlldPXKUznYi06akDZAU",
+      "config_id": null,
+      "role": "smoke_resume",
+      "source_log": "results/phase7d_smoke_resume_run.log",
+      "cost_usd": null
+    },
+    {
+      "app_id": "ap-Gm0pwi36FBykZk285Gv9Do",
+      "config_id": null,
+      "role": "smoke_resume",
+      "source_log": "results/phase7d_smoke_resume_ok.log",
+      "cost_usd": null
+    },
+    {
+      "app_id": "ap-fiq0YBO9PmqTdtYVcKnmG4",
+      "config_id": null,
+      "role": "smoke_gpt",
+      "source_log": "results/phase7d_smoke_gpt_run.log",
+      "cost_usd": null
+    },
+    {
+      "app_id": "ap-W6oHA35jhnvuP5KF90atsp",
+      "config_id": null,
+      "role": "precheck",
+      "source_log": "results/phase7d_precheck_run.log",
+      "cost_usd": null
+    },
+    {
+      "app_id": "ap-pQZFx0Absxe7cDd6VFCMpS",
+      "config_id": null,
+      "role": "precheck",
+      "source_log": "results/phase7d_precheck_run2.log",
+      "cost_usd": null
+    },
+    {
+      "app_id": "ap-C3lA7W8gvKt082Qlq8s3Yf",
+      "config_id": null,
+      "role": "build_manifest",
+      "source_log": "results/phase7d_build_manifest.log",
+      "cost_usd": null
+    },
+    {
+      "app_id": "ap-J6hPyiARPcSSUTdbVxhOcT",
+      "config_id": null,
+      "role": "build_manifest",
+      "source_log": "results/phase7d_build_manifest2.log",
+      "cost_usd": null
+    },
+    {
+      "app_id": "ap-LlkyRxU6O04Q9EOGASbopL",
+      "config_id": null,
+      "role": "backup",
+      "source_log": "results/phase7d_backup_run.log",
+      "cost_usd": null
+    },
+    {
+      "app_id": "ap-gaeFMACtARuEwlx1ojVUdG",
+      "config_id": null,
+      "role": "swap_verify",
+      "source_log": "results/phase7d_swap_verify_modal.log",
+      "cost_usd": null
+    },
+    {
+      "app_id": "ap-9fe6Uc2Da2DarsRXnJ1VIb",
+      "config_id": null,
+      "role": "rebuild_manifest",
+      "source_log": "results/phase7d_rebuild_manifest_forced_fix.log",
+      "cost_usd": null
+    },
+    {
+      "app_id": null,
+      "config_id": "ALL\u00d77",
+      "role": "launch_attempt_budget_exceeded",
+      "note": "scripts/launch_7d.py first wave; preflight_s too pessimistic; no successful spawn",
+      "source_log": "results/phase7d_launch_run.log",
+      "cost_usd": 0.0
+    }
+  ],
+  "per_config_summary": {
+    "qwen38_27b_think": {
+      "elapsed_s": 9982.185346603394,
+      "n_written": 17950,
+      "parse_rate": 1.0,
+      "gpu": "A100-80GB"
+    },
+    "qwen38_27b_nothink": {
+      "elapsed_s": 2447.838941335678,
+      "n_written": 20520,
+      "parse_rate": 1.0,
+      "gpu": "A100-80GB"
+    },
+    "gemma4_31b": {
+      "elapsed_s": 1160.5369784832,
+      "n_written": 11970,
+      "parse_rate": 1.0,
+      "gpu": "A100-80GB"
+    },
+    "gemma4_12b": {
+      "elapsed_s": 930.025182723999,
+      "n_written": 14820,
+      "parse_rate": 1.0,
+      "gpu": "L40S"
+    },
+    "olmo3_7b_sft": {
+      "elapsed_s": 1673.1355016231537,
+      "n_written": 15960,
+      "parse_rate": 1.0,
+      "gpu": "L4"
+    },
+    "olmo3_7b_final": {
+      "elapsed_s": 1486.7925612926483,
+      "n_written": 13680,
+      "parse_rate": 1.0,
+      "gpu": "L4"
+    },
+    "olmo3_7b_dpo": {
+      "elapsed_s": 1369.8958168029785,
+      "n_written": 11970,
+      "parse_rate": 1.0,
+      "gpu": "L4"
+    }
+  },
+  "no_live_containers": true,
+  "cost_method": "Modal CLI does not expose per-app USD; report workspace metered total + stage caps. Twin writers burned extra metered vs deduped forecast."
+}

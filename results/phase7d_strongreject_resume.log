@@ -1,0 +1,119 @@
+✓ Initialized. View run at 
+https://modal.com/apps/heyronith/main/ap-VFg49tgVYXgh2kGGnnlWUK
+✓ Created objects.
+├── ✓ Uploaded /Users/ronny/Desktop/Research/AI Alignment 
+│   Projects_Claude/Constituition/modal_apps/phase7d_main.py
+├── ✓ Uploaded results/phase7d_precheck.json
+├── ✓ Uploaded /Users/ronny/Desktop/Research/AI Alignment 
+│   Projects_Claude/Constituition/configs
+├── ✓ Uploaded /Users/ronny/Desktop/Research/AI Alignment 
+│   Projects_Claude/Constituition/materials
+├── ✓ Uploaded /Users/ronny/Desktop/Research/AI Alignment 
+│   Projects_Claude/Constituition/src
+├── ✓ Created Function strongreject_full.
+├── ✓ Created Function smoke_gpt_batch.
+├── ✓ Created Function smoke_generate.
+├── ✓ Created Function precheck_l4.
+├── ✓ Created Function precheck_l40s.
+├── ✓ Created Function precheck_a100.
+├── ✓ Created Function launch_l4.
+├── ✓ Created Function launch_l40s.
+└── ✓ Created Function launch_a100.
+strongreject preflight est_usd=2.8749 gate=True ok
+WARNING: Logs may not be continuous
+WARNING: Logs may not be continuous
+WARNING: Logs may not be continuous
+WARNING: Logs may not be continuous
+WARNING: Logs may not be continuous
+WARNING: Logs may not be continuous
+WARNING: Logs may not be continuous
+WARNING: Logs may not be continuous
+WARNING: Logs may not be continuous
+WARNING: Logs may not be continuous
+WARNING: Logs may not be continuous
+WARNING: Logs may not be continuous
+WARNING: Logs may not be continuous
+WARNING: Logs may not be continuous
+WARNING: Logs may not be continuous
+WARNING: Logs may not be continuous
+WARNING: Logs may not be continuous
+WARNING: Logs may not be continuous
+WARNING: Logs may not be continuous
+WARNING: Logs may not be continuous
+WARNING: Logs may not be continuous
+WARNING: Logs may not be continuous
+WARNING: Logs may not be continuous
+WARNING: Logs may not be continuous
+WARNING: Logs may not be continuous
+WARNING: Logs may not be continuous
+WARNING: Logs may not be continuous
+WARNING: Logs may not be continuous
+WARNING: Logs may not be continuous
+WARNING: Logs may not be continuous
+WARNING: Logs may not be continuous
+WARNING: Logs may not be continuous
+WARNING: Logs may not be continuous
+WARNING: Logs may not be continuous
+WARNING: Logs may not be continuous
+WARNING: Logs may not be continuous
+WARNING: Logs may not be continuous
+WARNING: Logs may not be continuous
+WARNING: Logs may not be continuous
+WARNING: Logs may not be continuous
+WARNING: Logs may not be continuous
+WARNING: Logs may not be continuous
+WARNING: Logs may not be continuous
+WARNING: Logs may not be continuous
+WARNING: Logs may not be continuous
+WARNING: Logs may not be continuous
+WARNING: Logs may not be continuous
+WARNING: Logs may not be continuous
+WARNING: Logs may not be continuous
+WARNING: Logs may not be continuous
+WARNING: Logs may not be continuous
+WARNING: Logs may not be continuous
+WARNING: Logs may not be continuous
+WARNING: Logs may not be continuous
+WARNING: Logs may not be continuous
+WARNING: Logs may not be continuous
+WARNING: Logs may not be continuous
+WARNING: Logs may not be continuous
+WARNING: Logs may not be continuous
+WARNING: Logs may not be continuous
+WARNING: Logs may not be continuous
+WARNING: Logs may not be continuous
+WARNING: Logs may not be continuous
+WARNING: Logs may not be continuous
+WARNING: Logs may not be continuous
+WARNING: Logs may not be continuous
+WARNING: Logs may not be continuous
+WARNING: Logs may not be continuous
+Container terminated due to preemption. Your Function will be restarted with the same input. For more details, see https://modal.com/docs/guide/preemption
+{
+  "run_tag": "main_v1_7d",
+  "n_unique_scored": 5730,
+  "n_expanded": 7980,
+  "n_expected_expanded": 7980,
+  "one_to_one_ok": true,
+  "n_missing": 0,
+  "n_extra": 0,
+  "missing_sample": [],
+  "extra_sample": [],
+  "prompt_hash_ok": true,
+  "n_prompt_hash_mismatch": 0,
+  "prompt_hash_examples": [],
+  "parse_rate_expanded": 1.0,
+  "n_batch": 5728,
+  "n_sync": 2,
+  "api_usd": 2.556268749999997,
+  "batch_usd": 2.554868749999997,
+  "sync_usd": 0.0014000000000000002,
+  "batch_id": "batch_6ac8e478c5b88190a72494b5057dc0ec",
+  "est_usd_preflight": 2.87487828125,
+  "integrity_ok": true,
+  "unique_path": "/rc-runs/main_v1_7d/harm_refusal/scored_unique.jsonl",
+  "expanded_path": "/rc-runs/main_v1_7d/harm_refusal/scored_expanded.jsonl"
+}
+Stopping app - local entrypoint completed.
+✓ App completed. View run at 
+https://modal.com/apps/heyronith/main/ap-VFg49tgVYXgh2kGGnnlWUK

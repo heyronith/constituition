@@ -1,0 +1,37 @@
+{
+  "B1": {
+    "n": 63840,
+    "parsed": 63840,
+    "finish_length": 0,
+    "missing_parse": 0,
+    "parse_rate": 1.0
+  },
+  "B2": {
+    "n": 53200,
+    "parsed": 53200,
+    "finish_length": 0,
+    "missing_parse": 0,
+    "parse_rate": 1.0
+  },
+  "B5_harm": {
+    "n": 7980,
+    "parsed": 7980,
+    "finish_length": 1289,
+    "missing_parse": 0,
+    "parse_rate": 1.0
+  },
+  "B5_honesty": {
+    "n": 10640,
+    "parsed": 10640,
+    "finish_length": 0,
+    "missing_parse": 0,
+    "parse_rate": 1.0
+  },
+  "B6": {
+    "n": 15960,
+    "parsed": 15960,
+    "finish_length": 0,
+    "missing_parse": 0,
+    "parse_rate": 1.0
+  }
+}

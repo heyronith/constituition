@@ -1,0 +1,72 @@
+[
+  {
+    "config_id": "qwen38_27b_think",
+    "state": "done",
+    "last_update_utc": "2026-10-09T05:55:52Z",
+    "n_expanded": 21660,
+    "parse_rate": 1.0,
+    "elapsed_s": 9982.185346603394,
+    "n_raw_written_summary": 17950,
+    "gpu": "A100-80GB"
+  },
+  {
+    "config_id": "qwen38_27b_nothink",
+    "state": "done",
+    "last_update_utc": "2026-10-09T03:30:53Z",
+    "n_expanded": 21660,
+    "parse_rate": 1.0,
+    "elapsed_s": 2447.838941335678,
+    "n_raw_written_summary": 20520,
+    "gpu": "A100-80GB"
+  },
+  {
+    "config_id": "gemma4_31b",
+    "state": "done",
+    "last_update_utc": "2026-10-09T03:10:36Z",
+    "n_expanded": 21660,
+    "parse_rate": 1.0,
+    "elapsed_s": 1160.5369784832,
+    "n_raw_written_summary": 11970,
+    "gpu": "A100-80GB"
+  },
+  {
+    "config_id": "gemma4_12b",
+    "state": "done",
+    "last_update_utc": "2026-10-09T03:03:21Z",
+    "n_expanded": 21660,
+    "parse_rate": 1.0,
+    "elapsed_s": 930.025182723999,
+    "n_raw_written_summary": 14820,
+    "gpu": "L40S"
+  },
+  {
+    "config_id": "olmo3_7b_sft",
+    "state": "done",
+    "last_update_utc": "2026-10-09T03:15:08Z",
+    "n_expanded": 21660,
+    "parse_rate": 1.0,
+    "elapsed_s": 1673.1355016231537,
+    "n_raw_written_summary": 15960,
+    "gpu": "L4"
+  },
+  {
+    "config_id": "olmo3_7b_final",
+    "state": "done",
+    "last_update_utc": "2026-10-09T03:11:57Z",
+    "n_expanded": 21660,
+    "parse_rate": 1.0,
+    "elapsed_s": 1486.7925612926483,
+    "n_raw_written_summary": 13680,
+    "gpu": "L4"
+  },
+  {
+    "config_id": "olmo3_7b_dpo",
+    "state": "done",
+    "last_update_utc": "2026-10-09T03:12:00Z",
+    "n_expanded": 21660,
+    "parse_rate": 1.0,
+    "elapsed_s": 1369.8958168029785,
+    "n_raw_written_summary": 11970,
+    "gpu": "L4"
+  }
+]

@@ -199,4 +199,91 @@ Session 3 starts only when the human pastes `Phase 7D session 3`.
 
 ## Session 3 — report
 
-*(pending; no AAR / H3 stats — Phase 7E)*
+Operational metrics only (D55/D73). **No AAR / URR / H3 statistics** (Phase 7E).
+
+### Twin-writer audit
+
+No 7D GPU apps still running (container list empty).
+
+Per-config raw `responses.jsonl`: **every key appears exactly once** (0 duplicate-key rows; 0 body conflicts). Expanded files likewise unique. Artifact: `results/phase7d_session3_audit.json`.
+
+Modal apps launched for 7D (survivors, twins, zombies, smoke/precheck/build — reconstructed from launches, prune log, and run logs; CLI no longer lists aged-out apps). Per-app USD is **not** exposed by Modal CLI; stage caps and workspace metered total are the cost ground truth.
+
+| Role | app_id | config |
+|------|--------|--------|
+| survivor | `ap-2IsbisWMlxltmqQNjTSHoE` | qwen38_27b_think |
+| survivor | `ap-8NrscG5DYNJjvx2jJhHq2T` | qwen38_27b_nothink |
+| survivor | `ap-RVh1MCOQ9FpwAXeR2Vk3Xs` | gemma4_31b |
+| survivor | `ap-9rOM4qPmT0SFhm4bYA20YR` | gemma4_12b |
+| survivor | `ap-sdtUiKJEmKasTOXmr0Q8PT` | olmo3_7b_sft |
+| survivor | `ap-OfRBwGEFEUkb5vcNnGSAVR` | olmo3_7b_final |
+| survivor | `ap-tTsA1KUq4p3ff5e5t9CKOH` | olmo3_7b_dpo |
+| early_stopped | `ap-NR1EcGpUqUHjgyMFjaCaiX` | qwen38_27b_think (chunk1 kept) |
+| duplicate_stopped | `ap-nyebkI1…` / `ap-glAR…` / `ap-HKgW…` / `ap-Kaz2…` | nothink / dpo / sft / final twins |
+| zombie/failed spawn | `ap-LVvl…`, `ap-qX1B…`, `ap-dc0v…`, `ap-QVg8…` | superseded |
+| smoke / precheck / build / backup / verify | see `results/phase7d_app_inventory.json` | — |
+
+Full inventory + notes: `results/phase7d_app_inventory.json`.
+
+### Keys present (expanded)
+
+| config | expected | present | missing | raw unique |
+|--------|--------:|--------:|--------:|-----------:|
+| qwen38_27b_think | 21660 | 21660 | 0 | 19950 |
+| qwen38_27b_nothink | 21660 | 21660 | 0 | 20520 |
+| gemma4_31b | 21660 | 21660 | 0 | 11970 |
+| gemma4_12b | 21660 | 21660 | 0 | 14820 |
+| olmo3_7b_sft | 21660 | 21660 | 0 | 15960 |
+| olmo3_7b_final | 21660 | 21660 | 0 | 13680 |
+| olmo3_7b_dpo | 21660 | 21660 | 0 | 11970 |
+
+**PASS:** 7 × 21660 analysis keys; no missing.
+
+### Dedup expansion (D74)
+
+191 distinct systems → generate once; expand to 266 × 570. Duplicate member rows are **byte-identical** to their `dedup_source` (0 mismatches). NONE never merged.
+
+### Parse rates (operational, all configs pooled)
+
+| component | n | parse_rate | finish_reason=length |
+|-----------|--:|----------:|---------------------:|
+| B1 | 63840 | 1.0 | 0 |
+| B2 | 53200 | 1.0 | 0 |
+| B5_honesty | 10640 | 1.0 | 0 |
+| B5_harm | 7980 | 1.0 (free) | 1289 |
+| B6 | 15960 | 1.0 | 0 |
+
+Per-config STATUS parse_rate (non-harm) = **1.0** for all seven. `results/phase7d_session3_parse.json`.
+
+### StrongREJECT GPT-5.4 (D60/D61)
+
+Scored **5730** unique B5_harm rows (distinct systems × 30), expanded to **7980** analysis judgments.
+
+| Check | Result |
+|-------|--------|
+| one-to-one vs expected keys | **PASS** (0 missing / 0 extra) |
+| judge `prompt_sha256` recompute | **PASS** (0 mismatches) |
+| `integrity_ok` | **true** |
+| parse_rate (refusal JSON) | **1.0** |
+| Batch / sync (D60) | **5728** batch + **2** sync |
+| API USD | **$2.556** (`batch_6ac8e478c5b88190a72494b5057dc0ec`) |
+| errors | 2 sync-stragglers recovered; no residual missing keys |
+
+Artifacts: Volume `main_v1_7d/harm_refusal/`; `results/phase7d_strongreject.json`.
+
+### Spend vs caps
+
+| Source | USD | Cap | OK? |
+|--------|----:|----:|:---:|
+| Modal metered (Session 3) | **99.63** | 135 | yes |
+| OpenAI dashboard (file, D71) | **44.62** (as of 2026-10-08) | 55 | — |
+| + StrongREJECT (ledger) | +2.56 → **~47.18** est. | 55 | yes* |
+| API est. (OA est. + OR ledger ~0.05) | **~47.23** | 58 | yes* |
+
+\*OpenAI Usage dashboard has not been re-confirmed after StrongREJECT. **Human: please paste the current OpenAI Usage dashboard total** so the GT file can be updated. Estimated post-SR totals clear caps with headroom.
+
+`results/phase7d_session3_spend.json`.
+
+### Session 3 decision
+
+Battery generate + expand + StrongREJECT integrity **complete**. Confirmatory H3 analysis remains Phase **7E** (frozen code).

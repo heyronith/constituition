@@ -512,3 +512,229 @@ def budget_gate_7d(
         "modal_spent": modal_spent,
         "modal_proj_7d": modal_proj_7d,
     }
+
+
+def _refusal_judge_user(request: str, response: str) -> str:
+    return (
+        f"{REFUSAL_JUDGE_PROMPT}\n\n"
+        f"REQUEST: {request}\n"
+        f"RESPONSE: {response}"
+    )
+
+
+def score_strongreject_7d(
+    *,
+    run_tag: str = MAIN_7D_TAG,
+    root: Path | None = None,
+    backend: Any | None = None,
+    responses_root: Path | None = None,
+) -> dict[str, Any]:
+    """Score B5_harm refusals with GPT-5.4 (unique systems), expand to analysis keys.
+
+    Operational only: no refusal rates by constitution/type. Integrity = 1–1 join
+    on ``response_key`` plus recompute of judge ``prompt_sha256``.
+    """
+    from collections import defaultdict
+
+    from rc.h3_constitutions import CONFIGS_7
+    from rc.h3_dedup import load_dedup_map
+    from rc.openai_batch import OpenAIBatchBackend
+    from rc.phase7b import api_submission_allowed
+
+    root = root or repo_root()
+    assert_7d_inputs(root)
+    dmap = load_dedup_map(root)
+    harm_items = {
+        str(r["item_id"]): str(r["prompt"])
+        for r in load_jsonl(battery_dir(root) / "b5_harm.jsonl")
+    }
+    base = responses_root or (root / "runs" / run_tag)
+    work = base / "harm_refusal"
+    work.mkdir(parents=True, exist_ok=True)
+
+    # Collect unique (config, canonical constitution) B5_harm rows from raw files.
+    pairs: list[dict[str, Any]] = []
+    for cid in CONFIGS_7:
+        path = base / cid / "responses.jsonl"
+        if not path.exists():
+            raise FileNotFoundError(path)
+        for line in path.read_text(encoding="utf-8").splitlines():
+            if not line.strip():
+                continue
+            row = json.loads(line)
+            if row.get("component") != "B5_harm":
+                continue
+            iid = str(row["item_id"])
+            if iid not in harm_items:
+                raise KeyError(f"unknown B5_harm item_id {iid}")
+            pairs.append(
+                {
+                    "response_key": row["response_key"],
+                    "config_id": cid,
+                    "constitution_id": row["constitution_id"],
+                    "item_id": iid,
+                    "order": int(row["order"]),
+                    "request": harm_items[iid],
+                    "response": row.get("raw_final") or "",
+                    "subject_prompt_sha256": row.get("prompt_sha256"),
+                }
+            )
+
+    expected_unique = int(dmap["n_distinct_system_total"]) * len(harm_items)
+    if len(pairs) != expected_unique:
+        raise ValueError(
+            f"unique B5_harm rows {len(pairs)} != expected {expected_unique}"
+        )
+
+    # ~Phase-5 $/req × unique count (D62 used 7980; unique is cheaper).
+    est_usd = len(pairs) * (0.12041375 / 240.0)
+    ok, reason = api_submission_allowed(est_usd, platform="openai", root=root)
+    if not ok:
+        raise RuntimeError(f"StrongREJECT budget gate FAIL: {reason}")
+
+    if backend is None:
+        backend = OpenAIBatchBackend(
+            "gpt54",
+            work_dir=work,
+            root=root,
+            job_id=f"{run_tag}-strongreject",
+        )
+
+    reqs: list[GenerationRequest] = []
+    judge_hashes: list[str] = []
+    for i, p in enumerate(pairs):
+        user = _refusal_judge_user(p["request"], p["response"])
+        jsha = sha256_bytes(user.encode("utf-8"))
+        judge_hashes.append(jsha)
+        req = build_request(
+            user,
+            "gpt54",
+            seed=20261004 + i,
+            schema_name="battery_refusal",
+            root=root,
+        )
+        req.max_tokens = 32
+        reqs.append(req)
+
+    gens = backend.generate(reqs)
+    cost = getattr(backend, "last_cost", None)
+    scored_unique: list[dict[str, Any]] = []
+    for p, gen, jsha in zip(pairs, gens, judge_hashes, strict=True):
+        refused, parsed = parse_refusal_json(gen.text_final)
+        scored_unique.append(
+            {
+                "judgment_key": p["response_key"],
+                "response_key": p["response_key"],
+                "config_id": p["config_id"],
+                "constitution_id": p["constitution_id"],
+                "item_id": p["item_id"],
+                "order": p["order"],
+                "request": p["request"],
+                "response": p["response"],
+                "refused": refused,
+                "parsed": parsed,
+                "raw_final": gen.text_final,
+                "prompt_sha256": jsha,
+                "submit_mode": getattr(gen, "submit_mode", None),
+                "request_body_sha256": getattr(gen, "request_body_sha256", None),
+            }
+        )
+
+    unique_path = work / "scored_unique.jsonl"
+    with unique_path.open("w", encoding="utf-8") as fh:
+        for rec in scored_unique:
+            fh.write(json.dumps(rec, sort_keys=True) + "\n")
+
+    # Expand to all analysis constitution_ids via dedup map.
+    by_can: dict[tuple[str, str, str, int], dict[str, Any]] = {}
+    for rec in scored_unique:
+        by_can[
+            (
+                rec["config_id"],
+                rec["constitution_id"],
+                rec["item_id"],
+                int(rec["order"]),
+            )
+        ] = rec
+
+    expanded: list[dict[str, Any]] = []
+    for cid in CONFIGS_7:
+        source_of = dmap["configs"][cid]["source_of"]
+        for member_id, can_id in sorted(source_of.items()):
+            for iid in sorted(harm_items):
+                src = by_can.get((cid, can_id, iid, 0))
+                if src is None:
+                    raise KeyError(f"missing unique score {cid}|{can_id}|{iid}")
+                rk = response_key(cid, member_id, "B5_harm", iid, 0)
+                expanded.append(
+                    {
+                        **src,
+                        "judgment_key": rk,
+                        "response_key": rk,
+                        "constitution_id": member_id,
+                        "dedup_source": can_id,
+                    }
+                )
+
+    exp_path = work / "scored_expanded.jsonl"
+    with exp_path.open("w", encoding="utf-8") as fh:
+        for rec in expanded:
+            fh.write(json.dumps(rec, sort_keys=True) + "\n")
+
+    # Integrity: 1–1 with expected expanded B5_harm keys; prompt-hash recompute.
+    expected_keys: set[str] = set()
+    for cid in CONFIGS_7:
+        for member_id in dmap["configs"][cid]["source_of"]:
+            for iid in harm_items:
+                expected_keys.add(response_key(cid, member_id, "B5_harm", iid, 0))
+    got_keys = [r["judgment_key"] for r in expanded]
+    if len(got_keys) != len(set(got_keys)):
+        raise ValueError("duplicate judgment_key in StrongREJECT expanded scores")
+    got_set = set(got_keys)
+    missing = sorted(expected_keys - got_set)
+    extra = sorted(got_set - expected_keys)
+    one_to_one_ok = not missing and not extra
+
+    hash_mismatches = []
+    for rec in expanded:
+        user = _refusal_judge_user(rec["request"], rec["response"])
+        recomputed = sha256_bytes(user.encode("utf-8"))
+        if recomputed != rec.get("prompt_sha256"):
+            hash_mismatches.append(
+                {
+                    "judgment_key": rec["judgment_key"],
+                    "stored": rec.get("prompt_sha256"),
+                    "recomputed": recomputed,
+                }
+            )
+
+    n_parsed = sum(1 for r in expanded if r.get("parsed"))
+    summary = {
+        "run_tag": run_tag,
+        "n_unique_scored": len(scored_unique),
+        "n_expanded": len(expanded),
+        "n_expected_expanded": len(expected_keys),
+        "one_to_one_ok": one_to_one_ok,
+        "n_missing": len(missing),
+        "n_extra": len(extra),
+        "missing_sample": missing[:10],
+        "extra_sample": extra[:10],
+        "prompt_hash_ok": len(hash_mismatches) == 0,
+        "n_prompt_hash_mismatch": len(hash_mismatches),
+        "prompt_hash_examples": hash_mismatches[:10],
+        "parse_rate_expanded": n_parsed / max(len(expanded), 1),
+        "n_batch": int(getattr(cost, "n_batch", 0) or 0),
+        "n_sync": int(getattr(cost, "n_sync", 0) or 0),
+        "api_usd": float(getattr(cost, "usd", 0) or 0),
+        "batch_usd": float(getattr(cost, "batch_usd", 0) or 0),
+        "sync_usd": float(getattr(cost, "sync_usd", 0) or 0),
+        "batch_id": getattr(cost, "batch_id", None),
+        "est_usd_preflight": est_usd,
+        "integrity_ok": one_to_one_ok and len(hash_mismatches) == 0,
+        "unique_path": str(unique_path),
+        "expanded_path": str(exp_path),
+    }
+    (work / "summary.json").write_text(
+        json.dumps(summary, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+    )
+    return summary

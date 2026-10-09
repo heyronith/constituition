@@ -1,0 +1,25 @@
+{
+  "modal_metered": 99.63,
+  "modal_cap": 135.0,
+  "openai_dashboard_file": 44.62,
+  "openai_dashboard_as_of": "2026-10-08T23:41:00Z",
+  "openai_dashboard_note": "D71 figure; predates Session-3 StrongREJECT. Ask human for current Usage dashboard.",
+  "strongreject_api_usd": 2.556268749999997,
+  "openai_estimated_post_sr": 47.17626874999999,
+  "openrouter_ledger": 0.04902050999999982,
+  "api_estimated_post_sr": 47.22528925999999,
+  "openai_cap": 55.0,
+  "api_cap": 58.0,
+  "openrouter_cap": 3.0,
+  "vs_caps": {
+    "modal_ok": true,
+    "openai_ok_estimated": true,
+    "api_ok_estimated": true
+  },
+  "ledger_totals": {
+    "openai": 12.769929125000004,
+    "openrouter": 0.04902050999999982,
+    "modal": 25.6849521948442
+  },
+  "oa_7d_ledger_usd": 2.556987499999997
+}

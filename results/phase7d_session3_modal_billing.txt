@@ -1,0 +1,9 @@
+                                      
+  Metered Cost:                99.63  
+    Ephemeral Apps:            92.56  
+    Volumes:                    7.07  
+  Free Storage:                -7.07  
+  Credits:                    -30.00  
+  Network Egress Allowance:    -0.38  
+  Billed Cost:                $62.18  
+                                      
