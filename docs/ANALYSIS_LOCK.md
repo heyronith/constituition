@@ -6,7 +6,7 @@
 
 ## Builder commit
 
-Lock commit is the Phase 7E-A commit that adds this file (parent `2405e385ca741d109d402980d12bfd8b76985580`). After push, `git log -1 --format=%H -- docs/ANALYSIS_LOCK.md` is authoritative.
+Builder / lock commit: `169839b98e0c96634b01b701c8d85f6d38a8c7c4` (parent `2405e385ca741d109d402980d12bfd8b76985580`).
 
 ## R environment (`results/analysis_env.json`)
 
