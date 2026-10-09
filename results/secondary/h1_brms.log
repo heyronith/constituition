@@ -1,0 +1,19 @@
+Compiling Stan program...
+Start sampling
+Warning messages:
+1: Bulk Effective Samples Size (ESS) is too low, indicating posterior means and medians may be unreliable.
+Running the chains for more iterations may help. See
+https://mc-stan.org/misc/warnings.html#bulk-ess 
+2: Tail Effective Samples Size (ESS) is too low, indicating posterior variances and tail quantiles may be unreliable.
+Running the chains for more iterations may help. See
+https://mc-stan.org/misc/warnings.html#tail-ess 
+               Estimate  Est.Error        Q2.5       Q97.5
+Intercept    -7.6290517 1.20045882 -10.0049654 -5.30582046
+COR          -0.6388899 0.59473988  -1.9785629  0.50472158
+log_round    -0.1578038 0.08046659  -0.3142955 -0.01301245
+override     -0.2503980 0.58922668  -1.2249357  0.98335865
+testlikeness  0.6230832 0.20773825   0.2116731  1.03723574
+formB        -0.2044725 0.14589037  -0.4857704  0.03504405
+        Estimate Est.Error      Q2.5     Q97.5
+b_COR -0.6388899 0.5947399 -1.978563 0.5047216
+brms HR 0.5278781 CI 0.1382678 1.656524 

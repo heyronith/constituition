@@ -1,0 +1,14 @@
+{
+  "wrote": [
+    "results/exploratory/h4_moderation.json",
+    "results/exploratory/reflection_effect.json",
+    "results/exploratory/censoring_check.json",
+    "results/exploratory/h5_emergent.json",
+    "results/exploratory/erosion_decomposition.json",
+    "results/exploratory/fate_mix.json"
+  ],
+  "h5_counts": {
+    "OTHER": 208,
+    "AUTONOMY": 4
+  }
+}

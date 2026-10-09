@@ -1,0 +1,92 @@
+{
+  "label": "EXPLORATORY (not preregistered)",
+  "per_config_forest": {
+    "gemma4_12b": {
+      "n_cor_events": 3,
+      "n_agent_events": 19,
+      "crude_hr": 0.1392457521757149,
+      "chain_bootstrap": {
+        "point": 0.1392457521757149,
+        "ci_low": 0.0,
+        "ci_high": 0.2791019441469982,
+        "n_reps": 1000
+      }
+    },
+    "gemma4_31b": {
+      "n_cor_events": 0,
+      "n_agent_events": 9,
+      "crude_hr": 0.0,
+      "chain_bootstrap": {
+        "point": 0.0,
+        "ci_low": 0.0,
+        "ci_high": 0.0,
+        "n_reps": 1000
+      }
+    },
+    "olmo3_7b_dpo": {
+      "n_cor_events": 6,
+      "n_agent_events": 10,
+      "crude_hr": 0.5913223140495868,
+      "chain_bootstrap": {
+        "point": 0.5913223140495868,
+        "ci_low": 0.14515159235447253,
+        "ci_high": 1.372209449199508,
+        "n_reps": 1000
+      }
+    },
+    "olmo3_7b_final": {
+      "n_cor_events": 13,
+      "n_agent_events": 16,
+      "crude_hr": 0.7917553191489362,
+      "chain_bootstrap": {
+        "point": 0.7917553191489362,
+        "ci_low": 0.3301578449858301,
+        "ci_high": 1.8588588804172663,
+        "n_reps": 1000
+      }
+    },
+    "olmo3_7b_sft": {
+      "n_cor_events": 17,
+      "n_agent_events": 13,
+      "crude_hr": 1.3290641942327335,
+      "chain_bootstrap": {
+        "point": 1.3290641942327335,
+        "ci_low": 0.6255993829948246,
+        "ci_high": 2.471675494798578,
+        "n_reps": 1000
+      }
+    },
+    "qwen38_27b_nothink": {
+      "n_cor_events": 31,
+      "n_agent_events": 27,
+      "crude_hr": 1.2125302872966424,
+      "chain_bootstrap": {
+        "point": 1.2125302872966424,
+        "ci_low": 0.8373422301831082,
+        "ci_high": 1.8195851040545528,
+        "n_reps": 1000
+      }
+    },
+    "qwen38_27b_think": {
+      "n_cor_events": 2,
+      "n_agent_events": 26,
+      "crude_hr": 0.06875425459496255,
+      "chain_bootstrap": {
+        "point": 0.06875425459496255,
+        "ci_low": 0.0,
+        "ci_high": 0.20172588575790845,
+        "n_reps": 1000
+      }
+    }
+  },
+  "qwen_thinking": {
+    "nothink_hr": 1.2125302872966424,
+    "think_hr": 0.06875425459496255,
+    "log_ratio": -2.8699259820638696
+  },
+  "olmo_stage": {
+    "sft": 1.3290641942327335,
+    "dpo": 0.5913223140495868,
+    "final": 0.7917553191489362
+  }
+}

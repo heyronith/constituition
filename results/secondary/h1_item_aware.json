@@ -1,0 +1,99 @@
+{
+  "label": "SECONDARY (preregistered)",
+  "n_rows": 29869,
+  "n_events": 192,
+  "glm_item_cluster_bootstrap": {
+    "method": "glm_cloglog_item_cluster_bootstrap",
+    "ok": true,
+    "log_hr": -0.71778391,
+    "hr": 0.48783214,
+    "ci_low": 0.08363102,
+    "ci_high": 1.86655808,
+    "n_boot": 498,
+    "note": "Point = pooled glm; CI from 1000 item-cluster bootstrap replicates."
+  },
+  "gee_item": {
+    "method": "glm_cloglog_sandwich_cluster_item",
+    "ok": true,
+    "log_hr": -0.71778391,
+    "hr": 0.48783214,
+    "se": 0.40929187,
+    "ci_low": 0.21871599,
+    "ci_high": 1.08807863,
+    "z": -1.7537214,
+    "extra": {
+      "note": "geepack geeglm hangs on n≈30k; HC0 cluster-robust SE by item_id on pooled glm."
+    }
+  },
+  "glmmTMB": {
+    "method": "glmmTMB_binomial_cloglog",
+    "ok": true,
+    "log_hr": -0.76216851,
+    "hr": 0.46665338,
+    "se": 0.45049864,
+    "ci_low": 0.19298755,
+    "ci_high": 1.12839086,
+    "z": -1.69183311,
+    "extra": {
+      "attempted": true,
+      "conv": 0,
+      "message": "relative convergence (4)",
+      "VarCorr": {
+        "config": 0.31671739,
+        "chain": 4.71879115e-08,
+        "item_id": 0.41162154
+      }
+    },
+    "attempted": true
+  },
+  "lme4_optimizers": {
+    "bobyqa": {
+      "method": "lme4_bobyqa",
+      "ok": true,
+      "log_hr": -0.7619739,
+      "hr": 0.46674421,
+      "se": 0.44963718,
+      "ci_low": 0.19335129,
+      "ci_high": 1.12670651,
+      "z": -1.69464167,
+      "extra": {
+        "isSingular": true,
+        "messages": "",
+        "VarCorr": {
+          "chain": 0,
+          "item_id": 0.4115801,
+          "config": 0.31666734
+        }
+      }
+    },
+    "nlminbwrap": {
+      "method": "lme4_nlminbwrap",
+      "ok": true,
+      "log_hr": -0.76198805,
+      "hr": 0.46673761,
+      "se": 0.44964503,
+      "ci_low": 0.19334558,
+      "ci_high": 1.12670791,
+      "z": -1.69464353,
+      "extra": {
+        "isSingular": true,
+        "messages": "",
+        "VarCorr": {
+          "chain": 0,
+          "item_id": 0.41159758,
+          "config": 0.31669257
+        }
+      }
+    }
+  },
+  "brms": {
+    "attempted": true,
+    "ok": true,
+    "method": "brms_cloglog",
+    "log_hr": -0.63888985,
+    "hr": 0.52787812,
+    "ci_low": 0.1382678,
+    "ci_high": 1.65652424,
+    "note": "2 chains x 400 iter; weakly informative priors; ESS warnings possible on short run."
+  }
+}

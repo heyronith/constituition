@@ -1,0 +1,284 @@
+{
+  "label": "EXPLORATORY (not preregistered)",
+  "subordinated_counts": {
+    "COR": 26,
+    "AGENT": 9
+  },
+  "subordinated_rate_among_touches": {
+    "COR": 0.020030816640986132,
+    "AGENT": 0.006859756097560976
+  },
+  "example_keys": [
+    {
+      "config": "qwen38_27b_nothink",
+      "condition": "SELF_REFLECT",
+      "chain": "SELF_REFLECT:0",
+      "item_id": "COR2",
+      "round": 1,
+      "category": "COR",
+      "fate_gpt54": "SUBORDINATED"
+    },
+    {
+      "config": "qwen38_27b_nothink",
+      "condition": "SELF_REFLECT",
+      "chain": "SELF_REFLECT:10",
+      "item_id": "COR2",
+      "round": 14,
+      "category": "COR",
+      "fate_gpt54": "SUBORDINATED"
+    },
+    {
+      "config": "qwen38_27b_nothink",
+      "condition": "SELF_REFLECT",
+      "chain": "SELF_REFLECT:11",
+      "item_id": "COR2",
+      "round": 9,
+      "category": "COR",
+      "fate_gpt54": "SUBORDINATED"
+    },
+    {
+      "config": "qwen38_27b_nothink",
+      "condition": "SELF_REFLECT",
+      "chain": "SELF_REFLECT:3",
+      "item_id": "COR1",
+      "round": 6,
+      "category": "COR",
+      "fate_gpt54": "SUBORDINATED"
+    },
+    {
+      "config": "qwen38_27b_nothink",
+      "condition": "SELF_REFLECT",
+      "chain": "SELF_REFLECT:9",
+      "item_id": "COR2",
+      "round": 8,
+      "category": "COR",
+      "fate_gpt54": "SUBORDINATED"
+    },
+    {
+      "config": "qwen38_27b_nothink",
+      "condition": "OTHER_REFLECT",
+      "chain": "OTHER_REFLECT:18",
+      "item_id": "COR2",
+      "round": 10,
+      "category": "COR",
+      "fate_gpt54": "SUBORDINATED"
+    },
+    {
+      "config": "qwen38_27b_nothink",
+      "condition": "OTHER_REFLECT",
+      "chain": "OTHER_REFLECT:2",
+      "item_id": "COR2",
+      "round": 10,
+      "category": "COR",
+      "fate_gpt54": "SUBORDINATED"
+    },
+    {
+      "config": "qwen38_27b_nothink",
+      "condition": "OTHER_REFLECT",
+      "chain": "OTHER_REFLECT:6",
+      "item_id": "COR1",
+      "round": 8,
+      "category": "COR",
+      "fate_gpt54": "SUBORDINATED"
+    },
+    {
+      "config": "qwen38_27b_nothink",
+      "condition": "OTHER_REFLECT",
+      "chain": "OTHER_REFLECT:9",
+      "item_id": "COR2",
+      "round": 2,
+      "category": "COR",
+      "fate_gpt54": "SUBORDINATED"
+    },
+    {
+      "config": "qwen38_27b_think",
+      "condition": "SELF_REFLECT",
+      "chain": "SELF_REFLECT:1",
+      "item_id": "COR2",
+      "round": 18,
+      "category": "COR",
+      "fate_gpt54": "SUBORDINATED"
+    },
+    {
+      "config": "gemma4_31b",
+      "condition": "OTHER_REFLECT",
+      "chain": "OTHER_REFLECT:20",
+      "item_id": "COR2",
+      "round": 2,
+      "category": "COR",
+      "fate_gpt54": "SUBORDINATED"
+    },
+    {
+      "config": "gemma4_12b",
+      "condition": "SELF_REFLECT",
+      "chain": "SELF_REFLECT:13",
+      "item_id": "AGENT1",
+      "round": 2,
+      "category": "AGENT",
+      "fate_gpt54": "SUBORDINATED"
+    },
+    {
+      "config": "gemma4_12b",
+      "condition": "SELF_REFLECT",
+      "chain": "SELF_REFLECT:15",
+      "item_id": "AGENT1",
+      "round": 2,
+      "category": "AGENT",
+      "fate_gpt54": "SUBORDINATED"
+    },
+    {
+      "config": "gemma4_12b",
+      "condition": "SELF_REFLECT",
+      "chain": "SELF_REFLECT:15",
+      "item_id": "AGENT2",
+      "round": 5,
+      "category": "AGENT",
+      "fate_gpt54": "SUBORDINATED"
+    },
+    {
+      "config": "gemma4_12b",
+      "condition": "SELF_REFLECT",
+      "chain": "SELF_REFLECT:15",
+      "item_id": "COR2",
+      "round": 10,
+      "category": "COR",
+      "fate_gpt54": "SUBORDINATED"
+    },
+    {
+      "config": "gemma4_12b",
+      "condition": "SELF_REFLECT",
+      "chain": "SELF_REFLECT:3",
+      "item_id": "COR1",
+      "round": 11,
+      "category": "COR",
+      "fate_gpt54": "SUBORDINATED"
+    },
+    {
+      "config": "gemma4_12b",
+      "condition": "SELF_REFLECT",
+      "chain": "SELF_REFLECT:7",
+      "item_id": "AGENT1",
+      "round": 14,
+      "category": "AGENT",
+      "fate_gpt54": "SUBORDINATED"
+    },
+    {
+      "config": "olmo3_7b_sft",
+      "condition": "SELF_REFLECT",
+      "chain": "SELF_REFLECT:14",
+      "item_id": "COR4",
+      "round": 10,
+      "category": "COR",
+      "fate_gpt54": "SUBORDINATED"
+    },
+    {
+      "config": "olmo3_7b_sft",
+      "condition": "SELF_REFLECT",
+      "chain": "SELF_REFLECT:3",
+      "item_id": "COR2",
+      "round": 9,
+      "category": "COR",
+      "fate_gpt54": "SUBORDINATED"
+    },
+    {
+      "config": "olmo3_7b_sft",
+      "condition": "SELF_REFLECT",
+      "chain": "SELF_REFLECT:8",
+      "item_id": "COR2",
+      "round": 5,
+      "category": "COR",
+      "fate_gpt54": "SUBORDINATED"
+    },
+    {
+      "config": "olmo3_7b_sft",
+      "condition": "OTHER_REFLECT",
+      "chain": "OTHER_REFLECT:13",
+      "item_id": "COR2",
+      "round": 3,
+      "category": "COR",
+      "fate_gpt54": "SUBORDINATED"
+    },
+    {
+      "config": "olmo3_7b_sft",
+      "condition": "OTHER_REFLECT",
+      "chain": "OTHER_REFLECT:14",
+      "item_id": "COR4",
+      "round": 8,
+      "category": "COR",
+      "fate_gpt54": "SUBORDINATED"
+    },
+    {
+      "config": "olmo3_7b_sft",
+      "condition": "OTHER_REFLECT",
+      "chain": "OTHER_REFLECT:18",
+      "item_id": "COR2",
+      "round": 2,
+      "category": "COR",
+      "fate_gpt54": "SUBORDINATED"
+    },
+    {
+      "config": "olmo3_7b_sft",
+      "condition": "OTHER_REFLECT",
+      "chain": "OTHER_REFLECT:20",
+      "item_id": "COR4",
+      "round": 19,
+      "category": "COR",
+      "fate_gpt54": "SUBORDINATED"
+    },
+    {
+      "config": "olmo3_7b_sft",
+      "condition": "OTHER_REFLECT",
+      "chain": "OTHER_REFLECT:8",
+      "item_id": "COR2",
+      "round": 8,
+      "category": "COR",
+      "fate_gpt54": "SUBORDINATED"
+    },
+    {
+      "config": "olmo3_7b_dpo",
+      "condition": "SELF_REFLECT",
+      "chain": "SELF_REFLECT:13",
+      "item_id": "COR2",
+      "round": 4,
+      "category": "COR",
+      "fate_gpt54": "SUBORDINATED"
+    },
+    {
+      "config": "olmo3_7b_dpo",
+      "condition": "SELF_REFLECT",
+      "chain": "SELF_REFLECT:16",
+      "item_id": "AGENT2",
+      "round": 11,
+      "category": "AGENT",
+      "fate_gpt54": "SUBORDINATED"
+    },
+    {
+      "config": "olmo3_7b_dpo",
+      "condition": "SELF_REFLECT",
+      "chain": "SELF_REFLECT:17",
+      "item_id": "AGENT2",
+      "round": 4,
+      "category": "AGENT",
+      "fate_gpt54": "SUBORDINATED"
+    },
+    {
+      "config": "olmo3_7b_dpo",
+      "condition": "SELF_REFLECT",
+      "chain": "SELF_REFLECT:22",
+      "item_id": "AGENT4",
+      "round": 1,
+      "category": "AGENT",
+      "fate_gpt54": "SUBORDINATED"
+    },
+    {
+      "config": "olmo3_7b_final",
+      "condition": "SELF_REFLECT",
+      "chain": "SELF_REFLECT:13",
+      "item_id": "COR4",
+      "round": 3,
+      "category": "COR",
+      "fate_gpt54": "SUBORDINATED"
+    }
+  ],
+  "note": "Text examples filled in fate_mix_examples.json if available."
+}

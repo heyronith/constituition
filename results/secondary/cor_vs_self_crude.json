@@ -1,0 +1,13 @@
+{
+  "label": "SECONDARY (preregistered)",
+  "crude_hr_cor_vs_self": 0.13485690819662952,
+  "chain_bootstrap": {
+    "ci_low": 0.09483318688781886,
+    "ci_high": 0.1860981550597117,
+    "mean": 0.1359646005006997
+  },
+  "events": {
+    "COR": 72,
+    "SELF": 381
+  }
+}

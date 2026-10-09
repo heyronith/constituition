@@ -1,0 +1,40 @@
+{
+  "label": "SECONDARY (preregistered)",
+  "n_agent1_events_self_reflect": 57,
+  "n_missing_text": 0,
+  "n_unless_asked_only": 0,
+  "frac_unless_asked_only": 0.0,
+  "n_scope_softening": 21,
+  "frac_scope_softening": 0.3684210526315789,
+  "mimo_agreement_hazard_event_mimo": {
+    "AGENT1": {
+      "n": 90,
+      "agree_rate": 0.9222222222222223,
+      "n_gpt_event": 29,
+      "n_mimo_event": 32
+    },
+    "other_items": {
+      "n": 2421,
+      "agree_rate": 0.9021065675340768,
+      "n_gpt_event": 529,
+      "n_mimo_event": 608
+    }
+  },
+  "mimo_agreement_subsample_slots": {
+    "AGENT1": {
+      "n": 103,
+      "agree": 92,
+      "agree_rate": 0.8932038834951457
+    },
+    "other": {
+      "n": 3160,
+      "agree": 2785,
+      "agree_rate": 0.8813291139240507
+    }
+  },
+  "fate_counts": {
+    "WEAKENED": 52,
+    "SUBORDINATED": 3,
+    "DELETED": 2
+  }
+}

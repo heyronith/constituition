@@ -1,0 +1,193 @@
+{
+  "label": "EXPLORATORY (not preregistered)",
+  "by_condition": {
+    "NEUTRAL_EDIT": {
+      "COR": {
+        "p_touch": 0.026866644929898924,
+        "p_erosion_given_touch": 0.08495145631067962,
+        "product": 0.0022823606129768505,
+        "p_touch_ci": [
+          0.02189406099518459,
+          0.03159910052432062
+        ],
+        "p_erosion_given_touch_ci": [
+          0.06196194407826268,
+          0.11046664626682987
+        ],
+        "n_touches": 412,
+        "n_erosion_events": 35
+      },
+      "AGENT": {
+        "p_touch": 0.027959866220735787,
+        "p_erosion_given_touch": 0.14114832535885166,
+        "product": 0.003946488294314381,
+        "p_touch_ci": [
+          0.02323662082623996,
+          0.033085874994844215
+        ],
+        "p_erosion_given_touch_ci": [
+          0.10737655800575263,
+          0.18229070958786395
+        ],
+        "n_touches": 418,
+        "n_erosion_events": 59
+      },
+      "SELF": {
+        "p_touch": 0.02810335641981886,
+        "p_erosion_given_touch": 0.16113744075829384,
+        "product": 0.004528502930207778,
+        "p_touch_ci": [
+          0.02380235017260951,
+          0.03285682897022144
+        ],
+        "p_erosion_given_touch_ci": [
+          0.12734526000920388,
+          0.19222431422529906
+        ],
+        "n_touches": 422,
+        "n_erosion_events": 68
+      }
+    },
+    "OTHER_REFLECT": {
+      "COR": {
+        "p_touch": 0.011539708265802268,
+        "p_erosion_given_touch": 0.4550561797752809,
+        "product": 0.005251215559157212,
+        "p_touch_ci": [
+          0.009237083712268316,
+          0.013979858666835565
+        ],
+        "p_erosion_given_touch_ci": [
+          0.3778932645897323,
+          0.5268890252454418
+        ],
+        "n_touches": 178,
+        "n_erosion_events": 81
+      },
+      "AGENT": {
+        "p_touch": 0.012240307000132327,
+        "p_erosion_given_touch": 0.5567567567567567,
+        "product": 0.0068148736271007,
+        "p_touch_ci": [
+          0.009930702818767321,
+          0.014843089755281957
+        ],
+        "p_erosion_given_touch_ci": [
+          0.46601276765527333,
+          0.654930607034017
+        ],
+        "n_touches": 185,
+        "n_erosion_events": 103
+      },
+      "SELF": {
+        "p_touch": 0.046171541242195205,
+        "p_erosion_given_touch": 0.5711743772241993,
+        "product": 0.02637200131449228,
+        "p_touch_ci": [
+          0.03971549156888905,
+          0.05307829248204422
+        ],
+        "p_erosion_given_touch_ci": [
+          0.5214953393380812,
+          0.6177060149517777
+        ],
+        "n_touches": 562,
+        "n_erosion_events": 321
+      }
+    },
+    "PARAPHRASE": {
+      "COR": {
+        "p_touch": 0.030035538232259545,
+        "p_erosion_given_touch": 0.009541984732824428,
+        "product": 0.00028659864725438496,
+        "p_touch_ci": [
+          0.027510050426750886,
+          0.0326587695633441
+        ],
+        "p_erosion_given_touch_ci": [
+          0.0019879729559153015,
+          0.01869246385942805
+        ],
+        "n_touches": 524,
+        "n_erosion_events": 5
+      },
+      "AGENT": {
+        "p_touch": 0.028048640587358037,
+        "p_erosion_given_touch": 0.018404907975460124,
+        "product": 0.0005162326488470805,
+        "p_touch_ci": [
+          0.025627750299893195,
+          0.03029737915324407
+        ],
+        "p_erosion_given_touch_ci": [
+          0.006437080444591174,
+          0.032388663967611336
+        ],
+        "n_touches": 489,
+        "n_erosion_events": 9
+      },
+      "SELF": {
+        "p_touch": 0.03131475938291504,
+        "p_erosion_given_touch": 0.03308823529411765,
+        "product": 0.001036150126640571,
+        "p_touch_ci": [
+          0.028816474284033854,
+          0.034064847059996343
+        ],
+        "p_erosion_given_touch_ci": [
+          0.01935864537310518,
+          0.04817013719618358
+        ],
+        "n_touches": 544,
+        "n_erosion_events": 18
+      }
+    },
+    "SELF_REFLECT": {
+      "COR": {
+        "p_touch": 0.01211642302120374,
+        "p_erosion_given_touch": 0.391304347826087,
+        "product": 0.004741209008297115,
+        "p_touch_ci": [
+          0.009831671321261113,
+          0.01453539833129014
+        ],
+        "p_erosion_given_touch_ci": [
+          0.3150598011264863,
+          0.4686159015464335
+        ],
+        "n_touches": 184,
+        "n_erosion_events": 72
+      },
+      "AGENT": {
+        "p_touch": 0.014983314036641014,
+        "p_erosion_given_touch": 0.5454545454545454,
+        "product": 0.008172716747258734,
+        "p_touch_ci": [
+          0.01226421701736444,
+          0.01777839438344267
+        ],
+        "p_erosion_given_touch_ci": [
+          0.4617781950258557,
+          0.6340237616293688
+        ],
+        "n_touches": 220,
+        "n_erosion_events": 120
+      },
+      "SELF": {
+        "p_touch": 0.051305711912891024,
+        "p_erosion_given_touch": 0.685251798561151,
+        "product": 0.03515733136476885,
+        "p_touch_ci": [
+          0.04396988412020681,
+          0.06001206616301733
+        ],
+        "p_erosion_given_touch_ci": [
+          0.6176830585728239,
+          0.7417608141375066
+        ],
+        "n_touches": 556,
+        "n_erosion_events": 381
+      }
+    }
+  }
+}

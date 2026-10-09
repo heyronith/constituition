@@ -1,0 +1,55 @@
+{
+  "label": "EXPLORATORY (not preregistered)",
+  "configs": {
+    "gemma4_12b": {
+      "n_censored_chains_forced": 54,
+      "fail_revise_identical_category_counts": {
+        "CARE": 112,
+        "PROC": 40,
+        "SELF": 107,
+        "AGENT": 39,
+        "HON": 30,
+        "COR": 41,
+        "HARM": 18
+      },
+      "success_touch_category_counts": {
+        "AGENT": 202,
+        "COR": 170,
+        "CARE": 276,
+        "HON": 157,
+        "HARM": 132,
+        "PROC": 213,
+        "SELF": 362
+      },
+      "crude_hr_all": 0.1392457521757149,
+      "crude_hr_exclude_censored": 0.17596741344195518,
+      "n_events_all": 22,
+      "n_events_excl": 6
+    },
+    "olmo3_7b_sft": {
+      "n_censored_chains_forced": 25,
+      "fail_revise_identical_category_counts": {
+        "PROC": 36,
+        "AGENT": 51,
+        "HON": 36,
+        "SELF": 70,
+        "COR": 62,
+        "HARM": 37,
+        "CARE": 76
+      },
+      "success_touch_category_counts": {
+        "HON": 288,
+        "HARM": 254,
+        "COR": 229,
+        "AGENT": 265,
+        "CARE": 248,
+        "PROC": 213,
+        "SELF": 287
+      },
+      "crude_hr_all": 1.3290641942327335,
+      "crude_hr_exclude_censored": 1.3383401920438958,
+      "n_events_all": 30,
+      "n_events_excl": 23
+    }
+  }
+}

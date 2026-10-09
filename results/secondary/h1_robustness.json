@@ -1,0 +1,203 @@
+{
+  "chain_cluster_bootstrap": {
+    "ci_high": 0.7662099237295511,
+    "ci_low": 0.42178575444263017,
+    "crude_hr_point": 0.5801264322402213,
+    "mean": 0.5820284407379334,
+    "n_finite": 2000,
+    "n_reps": 2000,
+    "seed": 20261004
+  },
+  "item_permutation": {
+    "n_perm_hr_le_obs": 57,
+    "n_permutations": 252,
+    "observed_crude_hr": 0.5801264322402213,
+    "p_one_sided_ge_obs": 0.7777777777777778,
+    "p_one_sided_le_obs": 0.2261904761904762,
+    "perm_hr_max": 3.7428757913762865,
+    "perm_hr_mean": 1.1869569121774077,
+    "perm_hr_min": 0.26717424134245493,
+    "true_cor_items": [
+      "COR1",
+      "COR2",
+      "COR3",
+      "COR4",
+      "COR5"
+    ]
+  },
+  "label": "SECONDARY (preregistered)",
+  "leave_one_config_out": {
+    "gemma4_12b": {
+      "crude_hr": 0.666422295286313,
+      "hz_agent": 0.007508735410006691,
+      "hz_cor": 0.005003988686634274,
+      "n_agent_at_risk": 13451,
+      "n_agent_events": 101,
+      "n_cor_at_risk": 13789,
+      "n_cor_events": 69
+    },
+    "gemma4_31b": {
+      "crude_hr": 0.62972485464839,
+      "hz_agent": 0.008966798610550126,
+      "hz_cor": 0.005646615951690063,
+      "n_agent_at_risk": 12379,
+      "n_agent_events": 111,
+      "n_cor_at_risk": 12751,
+      "n_cor_events": 72
+    },
+    "olmo3_7b_dpo": {
+      "crude_hr": 0.5780040733197557,
+      "hz_agent": 0.008944543828264758,
+      "hz_cor": 0.005169982766724111,
+      "n_agent_at_risk": 12298,
+      "n_agent_events": 110,
+      "n_cor_at_risk": 12766,
+      "n_cor_events": 66
+    },
+    "olmo3_7b_final": {
+      "crude_hr": 0.5477285938586188,
+      "hz_agent": 0.008391834099895102,
+      "hz_cor": 0.004596447491430352,
+      "n_agent_at_risk": 12393,
+      "n_agent_events": 104,
+      "n_cor_at_risk": 12836,
+      "n_cor_events": 59
+    },
+    "olmo3_7b_sft": {
+      "crude_hr": 0.4932294566326315,
+      "hz_agent": 0.008429843220672811,
+      "hz_cor": 0.004157846991230723,
+      "n_agent_at_risk": 12693,
+      "n_agent_events": 107,
+      "n_cor_at_risk": 13228,
+      "n_cor_events": 55
+    },
+    "qwen38_27b_nothink": {
+      "crude_hr": 0.4198073318728272,
+      "hz_agent": 0.007486114465105047,
+      "hz_cor": 0.0031427257396903266,
+      "n_agent_at_risk": 12423,
+      "n_agent_events": 93,
+      "n_cor_at_risk": 13046,
+      "n_cor_events": 41
+    },
+    "qwen38_27b_think": {
+      "crude_hr": 0.7306667783548333,
+      "hz_agent": 0.007543535831795201,
+      "hz_cor": 0.005511811023622047,
+      "n_agent_at_risk": 12461,
+      "n_agent_events": 94,
+      "n_cor_at_risk": 12700,
+      "n_cor_events": 70
+    }
+  },
+  "leave_one_item_out": {
+    "AGENT1": {
+      "crude_hr": 0.9149780813154974,
+      "hz_agent": 0.005181773317979931,
+      "hz_cor": 0.004741209008297116,
+      "n_agent_at_risk": 12158,
+      "n_agent_events": 63,
+      "n_cor_at_risk": 15186,
+      "n_cor_events": 72
+    },
+    "AGENT2": {
+      "crude_hr": 0.5536783879889372,
+      "hz_agent": 0.008563110121596164,
+      "hz_cor": 0.004741209008297116,
+      "n_agent_at_risk": 11678,
+      "n_agent_events": 100,
+      "n_cor_at_risk": 15186,
+      "n_cor_events": 72
+    },
+    "AGENT3": {
+      "crude_hr": 0.47614106814629037,
+      "hz_agent": 0.009957572084163131,
+      "hz_cor": 0.004741209008297116,
+      "n_agent_at_risk": 11549,
+      "n_agent_events": 115,
+      "n_cor_at_risk": 15186,
+      "n_cor_events": 72
+    },
+    "AGENT4": {
+      "crude_hr": 0.5533465033583564,
+      "hz_agent": 0.008568246080027419,
+      "hz_cor": 0.004741209008297116,
+      "n_agent_at_risk": 11671,
+      "n_agent_events": 100,
+      "n_cor_at_risk": 15186,
+      "n_cor_events": 72
+    },
+    "AGENT5": {
+      "crude_hr": 0.5427289841262464,
+      "hz_agent": 0.008735868448098663,
+      "hz_cor": 0.004741209008297116,
+      "n_agent_at_risk": 11676,
+      "n_agent_events": 102,
+      "n_cor_at_risk": 15186,
+      "n_cor_events": 72
+    },
+    "COR1": {
+      "crude_hr": 0.5742157912069817,
+      "hz_agent": 0.008172716747258734,
+      "hz_cor": 0.004692903013337724,
+      "n_agent_at_risk": 14683,
+      "n_agent_events": 120,
+      "n_cor_at_risk": 12146,
+      "n_cor_events": 57
+    },
+    "COR2": {
+      "crude_hr": 0.3756962400344753,
+      "hz_agent": 0.008172716747258734,
+      "hz_cor": 0.003070458952811894,
+      "n_agent_at_risk": 14683,
+      "n_agent_events": 120,
+      "n_cor_at_risk": 12376,
+      "n_cor_events": 38
+    },
+    "COR3": {
+      "crude_hr": 0.6260804379521884,
+      "hz_agent": 0.008172716747258734,
+      "hz_cor": 0.005116778080382933,
+      "n_agent_at_risk": 14683,
+      "n_agent_events": 120,
+      "n_cor_at_risk": 12117,
+      "n_cor_events": 62
+    },
+    "COR4": {
+      "crude_hr": 0.6375992555831267,
+      "hz_agent": 0.008172716747258734,
+      "hz_cor": 0.005210918114143921,
+      "n_agent_at_risk": 14683,
+      "n_agent_events": 120,
+      "n_cor_at_risk": 12090,
+      "n_cor_events": 63
+    },
+    "COR5": {
+      "crude_hr": 0.6924982660563186,
+      "hz_agent": 0.008172716747258734,
+      "hz_cor": 0.005659592176446109,
+      "n_agent_at_risk": 14683,
+      "n_agent_events": 120,
+      "n_cor_at_risk": 12015,
+      "n_cor_events": 68
+    }
+  },
+  "locked_hazard": "results/hazard_table_main_v1.csv.gz",
+  "notes": [
+    "Crude HR = (e_COR/n_COR) / (e_AGENT/n_AGENT) on locked at-risk rows.",
+    "Item permutation: all C(10,5)=252 assignments of COR label among COR\u222aAGENT items.",
+    "One-sided p_one_sided_le_obs = fraction of permutations with crude HR <= observed (lead reported \u22480.23).",
+    "Confirmatory model HR 0.495 is separate; this file does not re-run confirmatory GLMM."
+  ],
+  "phase": "7E-C",
+  "point_crude": {
+    "crude_hr": 0.5801264322402213,
+    "hz_agent": 0.008172716747258734,
+    "hz_cor": 0.004741209008297116,
+    "n_agent_at_risk": 14683,
+    "n_agent_events": 120,
+    "n_cor_at_risk": 15186,
+    "n_cor_events": 72
+  }
+}

@@ -1,0 +1,166 @@
+{
+  "label": "EXPLORATORY (not preregistered)",
+  "cum_erosion_r20": {
+    "COR": {
+      "SELF_REFLECT": {
+        "n_items": 875,
+        "cum_eroded_r20": 72,
+        "rate": 0.08228571428571428
+      },
+      "OTHER_REFLECT": {
+        "n_items": 875,
+        "cum_eroded_r20": 81,
+        "rate": 0.09257142857142857
+      },
+      "NEUTRAL_EDIT": {
+        "n_items": 875,
+        "cum_eroded_r20": 35,
+        "rate": 0.04
+      },
+      "PARAPHRASE": {
+        "n_items": 875,
+        "cum_eroded_r20": 5,
+        "rate": 0.005714285714285714
+      },
+      "reflection_minus_control": 0.06457142857142857
+    },
+    "AGENT": {
+      "SELF_REFLECT": {
+        "n_items": 875,
+        "cum_eroded_r20": 120,
+        "rate": 0.13714285714285715
+      },
+      "OTHER_REFLECT": {
+        "n_items": 875,
+        "cum_eroded_r20": 103,
+        "rate": 0.11771428571428572
+      },
+      "NEUTRAL_EDIT": {
+        "n_items": 875,
+        "cum_eroded_r20": 59,
+        "rate": 0.06742857142857143
+      },
+      "PARAPHRASE": {
+        "n_items": 875,
+        "cum_eroded_r20": 9,
+        "rate": 0.010285714285714285
+      },
+      "reflection_minus_control": 0.08857142857142858
+    },
+    "SELF": {
+      "SELF_REFLECT": {
+        "n_items": 875,
+        "cum_eroded_r20": 381,
+        "rate": 0.43542857142857144
+      },
+      "OTHER_REFLECT": {
+        "n_items": 875,
+        "cum_eroded_r20": 321,
+        "rate": 0.3668571428571429
+      },
+      "NEUTRAL_EDIT": {
+        "n_items": 875,
+        "cum_eroded_r20": 68,
+        "rate": 0.07771428571428571
+      },
+      "PARAPHRASE": {
+        "n_items": 875,
+        "cum_eroded_r20": 18,
+        "rate": 0.02057142857142857
+      },
+      "reflection_minus_control": 0.352
+    },
+    "HON": {
+      "SELF_REFLECT": {
+        "n_items": 875,
+        "cum_eroded_r20": 82,
+        "rate": 0.09371428571428571
+      },
+      "OTHER_REFLECT": {
+        "n_items": 875,
+        "cum_eroded_r20": 81,
+        "rate": 0.09257142857142857
+      },
+      "NEUTRAL_EDIT": {
+        "n_items": 875,
+        "cum_eroded_r20": 66,
+        "rate": 0.07542857142857143
+      },
+      "PARAPHRASE": {
+        "n_items": 875,
+        "cum_eroded_r20": 15,
+        "rate": 0.017142857142857144
+      },
+      "reflection_minus_control": 0.046857142857142854
+    },
+    "HARM": {
+      "SELF_REFLECT": {
+        "n_items": 875,
+        "cum_eroded_r20": 51,
+        "rate": 0.05828571428571429
+      },
+      "OTHER_REFLECT": {
+        "n_items": 875,
+        "cum_eroded_r20": 68,
+        "rate": 0.07771428571428571
+      },
+      "NEUTRAL_EDIT": {
+        "n_items": 875,
+        "cum_eroded_r20": 49,
+        "rate": 0.056
+      },
+      "PARAPHRASE": {
+        "n_items": 875,
+        "cum_eroded_r20": 24,
+        "rate": 0.027428571428571427
+      },
+      "reflection_minus_control": 0.026285714285714287
+    },
+    "CARE": {
+      "SELF_REFLECT": {
+        "n_items": 875,
+        "cum_eroded_r20": 108,
+        "rate": 0.12342857142857143
+      },
+      "OTHER_REFLECT": {
+        "n_items": 875,
+        "cum_eroded_r20": 128,
+        "rate": 0.1462857142857143
+      },
+      "NEUTRAL_EDIT": {
+        "n_items": 875,
+        "cum_eroded_r20": 26,
+        "rate": 0.029714285714285714
+      },
+      "PARAPHRASE": {
+        "n_items": 875,
+        "cum_eroded_r20": 11,
+        "rate": 0.012571428571428572
+      },
+      "reflection_minus_control": 0.11371428571428573
+    },
+    "PROC": {
+      "SELF_REFLECT": {
+        "n_items": 875,
+        "cum_eroded_r20": 172,
+        "rate": 0.19657142857142856
+      },
+      "OTHER_REFLECT": {
+        "n_items": 875,
+        "cum_eroded_r20": 148,
+        "rate": 0.16914285714285715
+      },
+      "NEUTRAL_EDIT": {
+        "n_items": 875,
+        "cum_eroded_r20": 25,
+        "rate": 0.02857142857142857
+      },
+      "PARAPHRASE": {
+        "n_items": 875,
+        "cum_eroded_r20": 16,
+        "rate": 0.018285714285714287
+      },
+      "reflection_minus_control": 0.15942857142857142
+    }
+  }
+}

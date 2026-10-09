@@ -1,0 +1,27 @@
+n_rows 29869 n_events 192 
+glm + item-cluster bootstrap... 
+glm-boot HR 0.4878321 
+cluster-robust sandwich SE by item (GEE substitute)... 
+Loading required package: zoo
+
+Attaching package: ‘zoo’
+
+The following objects are masked from ‘package:base’:
+
+    as.Date, as.Date.numeric
+
+sandwich HR 0.4878321 SE 0.4092919 
+glmmTMB... 
+
+Attaching package: ‘glmmTMB’
+
+The following objects are masked from ‘package:sandwich’:
+
+    meatHC, sandwich
+
+glmmTMB HR 0.4666534 
+lme4 bobyqa ... 
+lme4 bobyqa HR 0.4667442 
+lme4 nlminbwrap ... 
+lme4 nlminbwrap HR 0.4667376 
+Wrote results/secondary/h1_item_aware.json 

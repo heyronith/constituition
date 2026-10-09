@@ -1,0 +1,179 @@
+{
+  "label": "SECONDARY (preregistered)",
+  "qualified_as_erosion": {
+    "tag": "qualified_as_erosion",
+    "n_rows": 29869,
+    "n_events": 206,
+    "crude": {
+      "AGENT": {
+        "events": 127,
+        "n": 14683,
+        "hz": 0.00864946
+      },
+      "COR": {
+        "events": 79,
+        "n": 15186,
+        "hz": 0.00520216
+      }
+    },
+    "crude_hr": 0.60144341,
+    "glmm_full": {
+      "method": "glmm_full",
+      "ok": true,
+      "log_hr": -0.74077017,
+      "hr": 0.4767466,
+      "se": 0.41914591,
+      "ci_low": 0.20965728,
+      "ci_high": 1.08408979,
+      "isSingular": false,
+      "VarCorr": {
+        "chain": 0.04310997,
+        "item_id": 0.3556596,
+        "config": 0.3034285
+      },
+      "messages": ""
+    },
+    "glmm_config_only": {
+      "method": "glmm_config_only",
+      "ok": true,
+      "log_hr": -0.66862543,
+      "hr": 0.51241244,
+      "se": 0.14948419,
+      "ci_low": 0.38227728,
+      "ci_high": 0.68684832,
+      "isSingular": false,
+      "VarCorr": {
+        "config": 0.26960702
+      },
+      "messages": ""
+    },
+    "collinearity": {
+      "cor_COR_testlikeness": 0.26510166,
+      "cor_COR_override": -0.03157319,
+      "mean_testlikeness_by_COR": [4.79239031, 5.19522993],
+      "mean_override_by_COR": [0.41810257, 0.38713289]
+    }
+  },
+  "primary_for_comparison": {
+    "tag": "primary_event",
+    "n_rows": 29869,
+    "n_events": 192,
+    "crude": {
+      "AGENT": {
+        "events": 120,
+        "n": 14683,
+        "hz": 0.00817272
+      },
+      "COR": {
+        "events": 72,
+        "n": 15186,
+        "hz": 0.00474121
+      }
+    },
+    "crude_hr": 0.58012643,
+    "glmm_full": {
+      "method": "glmm_full",
+      "ok": true,
+      "log_hr": -0.7619739,
+      "hr": 0.46674421,
+      "se": 0.44963718,
+      "ci_low": 0.19335129,
+      "ci_high": 1.12670651,
+      "isSingular": true,
+      "VarCorr": {
+        "chain": 0,
+        "item_id": 0.4115801,
+        "config": 0.31666734
+      },
+      "messages": ""
+    },
+    "glmm_config_only": {
+      "method": "glmm_config_only",
+      "ok": true,
+      "log_hr": -0.70396562,
+      "hr": 0.49461993,
+      "se": 0.15551071,
+      "ci_low": 0.36467052,
+      "ci_high": 0.67087649,
+      "isSingular": false,
+      "VarCorr": {
+        "config": 0.27435894
+      },
+      "messages": ""
+    },
+    "collinearity": {
+      "cor_COR_testlikeness": 0.26510166,
+      "cor_COR_override": -0.03157319,
+      "mean_testlikeness_by_COR": [4.79239031, 5.19522993],
+      "mean_override_by_COR": [0.41810257, 0.38713289]
+    }
+  },
+  "cor_vs_self": {
+    "tag": "cor_vs_self",
+    "n_rows": 26023,
+    "n_events": 453,
+    "crude": {
+      "AGENT": {
+        "events": 381,
+        "n": 10837,
+        "hz": 0.03515733
+      },
+      "COR": {
+        "events": 72,
+        "n": 15186,
+        "hz": 0.00474121
+      }
+    },
+    "crude_hr": 0.13485691,
+    "glmm_full": {
+      "method": "glmm_full",
+      "ok": true,
+      "log_hr": -4.77820877,
+      "hr": 0.00841105,
+      "se": 0.39445942,
+      "ci_low": 0.00388227,
+      "ci_high": 0.01822279,
+      "isSingular": true,
+      "VarCorr": {
+        "chain": 0,
+        "item_id": 0.01961735,
+        "config": 1.1095435
+      },
+      "messages": ""
+    },
+    "glmm_config_only": {
+      "method": "glmm_config_only",
+      "ok": true,
+      "log_hr": -4.76098974,
+      "hr": 0.00855714,
+      "se": 0.30417497,
+      "ci_low": 0.00471427,
+      "ci_high": 0.01553255,
+      "isSingular": false,
+      "VarCorr": {
+        "config": 1.10642098
+      },
+      "messages": ""
+    },
+    "collinearity": {
+      "cor_COR_testlikeness": 0.88202308,
+      "cor_COR_override": -0.06104587,
+      "mean_testlikeness_by_COR": [3.06709823, 5.19522993],
+      "mean_override_by_COR": [0.44809449, 0.38713289]
+    },
+    "glmm_nocov_config": {
+      "ok": true,
+      "log_hr": -2.41568835,
+      "se": 0.12999079,
+      "hr": 0.08930584,
+      "isSingular": false,
+      "VarCorr": {
+        "config": 1.05129039
+      }
+    }
+  },
+  "interpretation_hooks": {
+    "ql_se_note": "Compare glmm_full$se and isSingular/VarCorr between qualified_as_erosion and primary_for_comparison; frozen confirmatory used glmm_full with SE~0.42.",
+    "cor_self_note": "Frozen confirmatory HR~0.0086 vs crude~0.13; inspect collinearity and item RE variance."
+  }
+}
