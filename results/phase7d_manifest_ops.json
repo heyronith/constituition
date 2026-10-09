@@ -1,0 +1,1295 @@
+{
+  "total": 266,
+  "configs": {
+    "gemma4_12b": {
+      "n": 38,
+      "types": {
+        "R0": 5,
+        "R20": 10,
+        "COR_SWAP": 10,
+        "AGENT_SWAP": 10,
+        "NONE": 1,
+        "COR_INV": 1,
+        "AGENT_INV": 1
+      },
+      "n_r_final_lt_20": 15,
+      "early_chain_slots": [
+        {
+          "condition": "OTHER_REFLECT",
+          "chain": 2,
+          "r_final": 5
+        },
+        {
+          "condition": "OTHER_REFLECT",
+          "chain": 4,
+          "r_final": 5
+        },
+        {
+          "condition": "SELF_REFLECT",
+          "chain": 0,
+          "r_final": 7
+        },
+        {
+          "condition": "SELF_REFLECT",
+          "chain": 2,
+          "r_final": 12
+        },
+        {
+          "condition": "SELF_REFLECT",
+          "chain": 4,
+          "r_final": 3
+        }
+      ],
+      "swaps": [
+        {
+          "type": "COR_SWAP",
+          "condition": "SELF_REFLECT",
+          "chain": 0,
+          "r_final": 7,
+          "n_changed_vs_r0": 0,
+          "n_clauses": 35
+        },
+        {
+          "type": "AGENT_SWAP",
+          "condition": "SELF_REFLECT",
+          "chain": 0,
+          "r_final": 7,
+          "n_changed_vs_r0": 0,
+          "n_clauses": 35
+        },
+        {
+          "type": "COR_SWAP",
+          "condition": "SELF_REFLECT",
+          "chain": 1,
+          "r_final": 20,
+          "n_changed_vs_r0": 0,
+          "n_clauses": 35
+        },
+        {
+          "type": "AGENT_SWAP",
+          "condition": "SELF_REFLECT",
+          "chain": 1,
+          "r_final": 20,
+          "n_changed_vs_r0": 1,
+          "n_clauses": 35
+        },
+        {
+          "type": "COR_SWAP",
+          "condition": "SELF_REFLECT",
+          "chain": 2,
+          "r_final": 12,
+          "n_changed_vs_r0": 1,
+          "n_clauses": 35
+        },
+        {
+          "type": "AGENT_SWAP",
+          "condition": "SELF_REFLECT",
+          "chain": 2,
+          "r_final": 12,
+          "n_changed_vs_r0": 1,
+          "n_clauses": 35
+        },
+        {
+          "type": "COR_SWAP",
+          "condition": "SELF_REFLECT",
+          "chain": 3,
+          "r_final": 20,
+          "n_changed_vs_r0": 1,
+          "n_clauses": 35
+        },
+        {
+          "type": "AGENT_SWAP",
+          "condition": "SELF_REFLECT",
+          "chain": 3,
+          "r_final": 20,
+          "n_changed_vs_r0": 2,
+          "n_clauses": 35
+        },
+        {
+          "type": "COR_SWAP",
+          "condition": "SELF_REFLECT",
+          "chain": 4,
+          "r_final": 3,
+          "n_changed_vs_r0": 0,
+          "n_clauses": 35
+        },
+        {
+          "type": "AGENT_SWAP",
+          "condition": "SELF_REFLECT",
+          "chain": 4,
+          "r_final": 3,
+          "n_changed_vs_r0": 0,
+          "n_clauses": 35
+        },
+        {
+          "type": "COR_SWAP",
+          "condition": "OTHER_REFLECT",
+          "chain": 0,
+          "r_final": 20,
+          "n_changed_vs_r0": 0,
+          "n_clauses": 35
+        },
+        {
+          "type": "AGENT_SWAP",
+          "condition": "OTHER_REFLECT",
+          "chain": 0,
+          "r_final": 20,
+          "n_changed_vs_r0": 0,
+          "n_clauses": 35
+        },
+        {
+          "type": "COR_SWAP",
+          "condition": "OTHER_REFLECT",
+          "chain": 1,
+          "r_final": 20,
+          "n_changed_vs_r0": 0,
+          "n_clauses": 35
+        },
+        {
+          "type": "AGENT_SWAP",
+          "condition": "OTHER_REFLECT",
+          "chain": 1,
+          "r_final": 20,
+          "n_changed_vs_r0": 2,
+          "n_clauses": 35
+        },
+        {
+          "type": "COR_SWAP",
+          "condition": "OTHER_REFLECT",
+          "chain": 2,
+          "r_final": 5,
+          "n_changed_vs_r0": 0,
+          "n_clauses": 35
+        },
+        {
+          "type": "AGENT_SWAP",
+          "condition": "OTHER_REFLECT",
+          "chain": 2,
+          "r_final": 5,
+          "n_changed_vs_r0": 0,
+          "n_clauses": 35
+        },
+        {
+          "type": "COR_SWAP",
+          "condition": "OTHER_REFLECT",
+          "chain": 3,
+          "r_final": 20,
+          "n_changed_vs_r0": 1,
+          "n_clauses": 34
+        },
+        {
+          "type": "AGENT_SWAP",
+          "condition": "OTHER_REFLECT",
+          "chain": 3,
+          "r_final": 20,
+          "n_changed_vs_r0": 2,
+          "n_clauses": 34
+        },
+        {
+          "type": "COR_SWAP",
+          "condition": "OTHER_REFLECT",
+          "chain": 4,
+          "r_final": 5,
+          "n_changed_vs_r0": 0,
+          "n_clauses": 35
+        },
+        {
+          "type": "AGENT_SWAP",
+          "condition": "OTHER_REFLECT",
+          "chain": 4,
+          "r_final": 5,
+          "n_changed_vs_r0": 0,
+          "n_clauses": 35
+        }
+      ]
+    },
+    "gemma4_31b": {
+      "n": 38,
+      "types": {
+        "R0": 5,
+        "R20": 10,
+        "COR_SWAP": 10,
+        "AGENT_SWAP": 10,
+        "NONE": 1,
+        "COR_INV": 1,
+        "AGENT_INV": 1
+      },
+      "n_r_final_lt_20": 3,
+      "early_chain_slots": [
+        {
+          "condition": "SELF_REFLECT",
+          "chain": 3,
+          "r_final": 9
+        }
+      ],
+      "swaps": [
+        {
+          "type": "COR_SWAP",
+          "condition": "SELF_REFLECT",
+          "chain": 0,
+          "r_final": 20,
+          "n_changed_vs_r0": 0,
+          "n_clauses": 35
+        },
+        {
+          "type": "AGENT_SWAP",
+          "condition": "SELF_REFLECT",
+          "chain": 0,
+          "r_final": 20,
+          "n_changed_vs_r0": 0,
+          "n_clauses": 35
+        },
+        {
+          "type": "COR_SWAP",
+          "condition": "SELF_REFLECT",
+          "chain": 1,
+          "r_final": 20,
+          "n_changed_vs_r0": 0,
+          "n_clauses": 35
+        },
+        {
+          "type": "AGENT_SWAP",
+          "condition": "SELF_REFLECT",
+          "chain": 1,
+          "r_final": 20,
+          "n_changed_vs_r0": 1,
+          "n_clauses": 35
+        },
+        {
+          "type": "COR_SWAP",
+          "condition": "SELF_REFLECT",
+          "chain": 2,
+          "r_final": 20,
+          "n_changed_vs_r0": 0,
+          "n_clauses": 35
+        },
+        {
+          "type": "AGENT_SWAP",
+          "condition": "SELF_REFLECT",
+          "chain": 2,
+          "r_final": 20,
+          "n_changed_vs_r0": 1,
+          "n_clauses": 35
+        },
+        {
+          "type": "COR_SWAP",
+          "condition": "SELF_REFLECT",
+          "chain": 3,
+          "r_final": 9,
+          "n_changed_vs_r0": 0,
+          "n_clauses": 35
+        },
+        {
+          "type": "AGENT_SWAP",
+          "condition": "SELF_REFLECT",
+          "chain": 3,
+          "r_final": 9,
+          "n_changed_vs_r0": 0,
+          "n_clauses": 35
+        },
+        {
+          "type": "COR_SWAP",
+          "condition": "SELF_REFLECT",
+          "chain": 4,
+          "r_final": 20,
+          "n_changed_vs_r0": 0,
+          "n_clauses": 35
+        },
+        {
+          "type": "AGENT_SWAP",
+          "condition": "SELF_REFLECT",
+          "chain": 4,
+          "r_final": 20,
+          "n_changed_vs_r0": 0,
+          "n_clauses": 35
+        },
+        {
+          "type": "COR_SWAP",
+          "condition": "OTHER_REFLECT",
+          "chain": 0,
+          "r_final": 20,
+          "n_changed_vs_r0": 0,
+          "n_clauses": 35
+        },
+        {
+          "type": "AGENT_SWAP",
+          "condition": "OTHER_REFLECT",
+          "chain": 0,
+          "r_final": 20,
+          "n_changed_vs_r0": 0,
+          "n_clauses": 35
+        },
+        {
+          "type": "COR_SWAP",
+          "condition": "OTHER_REFLECT",
+          "chain": 1,
+          "r_final": 20,
+          "n_changed_vs_r0": 0,
+          "n_clauses": 35
+        },
+        {
+          "type": "AGENT_SWAP",
+          "condition": "OTHER_REFLECT",
+          "chain": 1,
+          "r_final": 20,
+          "n_changed_vs_r0": 1,
+          "n_clauses": 35
+        },
+        {
+          "type": "COR_SWAP",
+          "condition": "OTHER_REFLECT",
+          "chain": 2,
+          "r_final": 20,
+          "n_changed_vs_r0": 0,
+          "n_clauses": 35
+        },
+        {
+          "type": "AGENT_SWAP",
+          "condition": "OTHER_REFLECT",
+          "chain": 2,
+          "r_final": 20,
+          "n_changed_vs_r0": 0,
+          "n_clauses": 35
+        },
+        {
+          "type": "COR_SWAP",
+          "condition": "OTHER_REFLECT",
+          "chain": 3,
+          "r_final": 20,
+          "n_changed_vs_r0": 0,
+          "n_clauses": 35
+        },
+        {
+          "type": "AGENT_SWAP",
+          "condition": "OTHER_REFLECT",
+          "chain": 3,
+          "r_final": 20,
+          "n_changed_vs_r0": 0,
+          "n_clauses": 35
+        },
+        {
+          "type": "COR_SWAP",
+          "condition": "OTHER_REFLECT",
+          "chain": 4,
+          "r_final": 20,
+          "n_changed_vs_r0": 0,
+          "n_clauses": 35
+        },
+        {
+          "type": "AGENT_SWAP",
+          "condition": "OTHER_REFLECT",
+          "chain": 4,
+          "r_final": 20,
+          "n_changed_vs_r0": 0,
+          "n_clauses": 35
+        }
+      ]
+    },
+    "olmo3_7b_dpo": {
+      "n": 38,
+      "types": {
+        "R0": 5,
+        "R20": 10,
+        "COR_SWAP": 10,
+        "AGENT_SWAP": 10,
+        "NONE": 1,
+        "COR_INV": 1,
+        "AGENT_INV": 1
+      },
+      "n_r_final_lt_20": 0,
+      "early_chain_slots": [],
+      "swaps": [
+        {
+          "type": "COR_SWAP",
+          "condition": "SELF_REFLECT",
+          "chain": 0,
+          "r_final": 20,
+          "n_changed_vs_r0": 0,
+          "n_clauses": 35
+        },
+        {
+          "type": "AGENT_SWAP",
+          "condition": "SELF_REFLECT",
+          "chain": 0,
+          "r_final": 20,
+          "n_changed_vs_r0": 2,
+          "n_clauses": 35
+        },
+        {
+          "type": "COR_SWAP",
+          "condition": "SELF_REFLECT",
+          "chain": 1,
+          "r_final": 20,
+          "n_changed_vs_r0": 0,
+          "n_clauses": 35
+        },
+        {
+          "type": "AGENT_SWAP",
+          "condition": "SELF_REFLECT",
+          "chain": 1,
+          "r_final": 20,
+          "n_changed_vs_r0": 0,
+          "n_clauses": 35
+        },
+        {
+          "type": "COR_SWAP",
+          "condition": "SELF_REFLECT",
+          "chain": 2,
+          "r_final": 20,
+          "n_changed_vs_r0": 0,
+          "n_clauses": 35
+        },
+        {
+          "type": "AGENT_SWAP",
+          "condition": "SELF_REFLECT",
+          "chain": 2,
+          "r_final": 20,
+          "n_changed_vs_r0": 1,
+          "n_clauses": 35
+        },
+        {
+          "type": "COR_SWAP",
+          "condition": "SELF_REFLECT",
+          "chain": 3,
+          "r_final": 20,
+          "n_changed_vs_r0": 0,
+          "n_clauses": 35
+        },
+        {
+          "type": "AGENT_SWAP",
+          "condition": "SELF_REFLECT",
+          "chain": 3,
+          "r_final": 20,
+          "n_changed_vs_r0": 0,
+          "n_clauses": 35
+        },
+        {
+          "type": "COR_SWAP",
+          "condition": "SELF_REFLECT",
+          "chain": 4,
+          "r_final": 20,
+          "n_changed_vs_r0": 0,
+          "n_clauses": 35
+        },
+        {
+          "type": "AGENT_SWAP",
+          "condition": "SELF_REFLECT",
+          "chain": 4,
+          "r_final": 20,
+          "n_changed_vs_r0": 0,
+          "n_clauses": 35
+        },
+        {
+          "type": "COR_SWAP",
+          "condition": "OTHER_REFLECT",
+          "chain": 0,
+          "r_final": 20,
+          "n_changed_vs_r0": 0,
+          "n_clauses": 35
+        },
+        {
+          "type": "AGENT_SWAP",
+          "condition": "OTHER_REFLECT",
+          "chain": 0,
+          "r_final": 20,
+          "n_changed_vs_r0": 2,
+          "n_clauses": 35
+        },
+        {
+          "type": "COR_SWAP",
+          "condition": "OTHER_REFLECT",
+          "chain": 1,
+          "r_final": 20,
+          "n_changed_vs_r0": 0,
+          "n_clauses": 35
+        },
+        {
+          "type": "AGENT_SWAP",
+          "condition": "OTHER_REFLECT",
+          "chain": 1,
+          "r_final": 20,
+          "n_changed_vs_r0": 0,
+          "n_clauses": 35
+        },
+        {
+          "type": "COR_SWAP",
+          "condition": "OTHER_REFLECT",
+          "chain": 2,
+          "r_final": 20,
+          "n_changed_vs_r0": 0,
+          "n_clauses": 35
+        },
+        {
+          "type": "AGENT_SWAP",
+          "condition": "OTHER_REFLECT",
+          "chain": 2,
+          "r_final": 20,
+          "n_changed_vs_r0": 1,
+          "n_clauses": 35
+        },
+        {
+          "type": "COR_SWAP",
+          "condition": "OTHER_REFLECT",
+          "chain": 3,
+          "r_final": 20,
+          "n_changed_vs_r0": 0,
+          "n_clauses": 35
+        },
+        {
+          "type": "AGENT_SWAP",
+          "condition": "OTHER_REFLECT",
+          "chain": 3,
+          "r_final": 20,
+          "n_changed_vs_r0": 0,
+          "n_clauses": 35
+        },
+        {
+          "type": "COR_SWAP",
+          "condition": "OTHER_REFLECT",
+          "chain": 4,
+          "r_final": 20,
+          "n_changed_vs_r0": 0,
+          "n_clauses": 35
+        },
+        {
+          "type": "AGENT_SWAP",
+          "condition": "OTHER_REFLECT",
+          "chain": 4,
+          "r_final": 20,
+          "n_changed_vs_r0": 0,
+          "n_clauses": 35
+        }
+      ]
+    },
+    "olmo3_7b_final": {
+      "n": 38,
+      "types": {
+        "R0": 5,
+        "R20": 10,
+        "COR_SWAP": 10,
+        "AGENT_SWAP": 10,
+        "NONE": 1,
+        "COR_INV": 1,
+        "AGENT_INV": 1
+      },
+      "n_r_final_lt_20": 0,
+      "early_chain_slots": [],
+      "swaps": [
+        {
+          "type": "COR_SWAP",
+          "condition": "SELF_REFLECT",
+          "chain": 0,
+          "r_final": 20,
+          "n_changed_vs_r0": 1,
+          "n_clauses": 35
+        },
+        {
+          "type": "AGENT_SWAP",
+          "condition": "SELF_REFLECT",
+          "chain": 0,
+          "r_final": 20,
+          "n_changed_vs_r0": 2,
+          "n_clauses": 35
+        },
+        {
+          "type": "COR_SWAP",
+          "condition": "SELF_REFLECT",
+          "chain": 1,
+          "r_final": 20,
+          "n_changed_vs_r0": 1,
+          "n_clauses": 35
+        },
+        {
+          "type": "AGENT_SWAP",
+          "condition": "SELF_REFLECT",
+          "chain": 1,
+          "r_final": 20,
+          "n_changed_vs_r0": 0,
+          "n_clauses": 35
+        },
+        {
+          "type": "COR_SWAP",
+          "condition": "SELF_REFLECT",
+          "chain": 2,
+          "r_final": 20,
+          "n_changed_vs_r0": 0,
+          "n_clauses": 35
+        },
+        {
+          "type": "AGENT_SWAP",
+          "condition": "SELF_REFLECT",
+          "chain": 2,
+          "r_final": 20,
+          "n_changed_vs_r0": 0,
+          "n_clauses": 35
+        },
+        {
+          "type": "COR_SWAP",
+          "condition": "SELF_REFLECT",
+          "chain": 3,
+          "r_final": 20,
+          "n_changed_vs_r0": 0,
+          "n_clauses": 35
+        },
+        {
+          "type": "AGENT_SWAP",
+          "condition": "SELF_REFLECT",
+          "chain": 3,
+          "r_final": 20,
+          "n_changed_vs_r0": 1,
+          "n_clauses": 35
+        },
+        {
+          "type": "COR_SWAP",
+          "condition": "SELF_REFLECT",
+          "chain": 4,
+          "r_final": 20,
+          "n_changed_vs_r0": 0,
+          "n_clauses": 35
+        },
+        {
+          "type": "AGENT_SWAP",
+          "condition": "SELF_REFLECT",
+          "chain": 4,
+          "r_final": 20,
+          "n_changed_vs_r0": 0,
+          "n_clauses": 35
+        },
+        {
+          "type": "COR_SWAP",
+          "condition": "OTHER_REFLECT",
+          "chain": 0,
+          "r_final": 20,
+          "n_changed_vs_r0": 0,
+          "n_clauses": 35
+        },
+        {
+          "type": "AGENT_SWAP",
+          "condition": "OTHER_REFLECT",
+          "chain": 0,
+          "r_final": 20,
+          "n_changed_vs_r0": 2,
+          "n_clauses": 35
+        },
+        {
+          "type": "COR_SWAP",
+          "condition": "OTHER_REFLECT",
+          "chain": 1,
+          "r_final": 20,
+          "n_changed_vs_r0": 0,
+          "n_clauses": 35
+        },
+        {
+          "type": "AGENT_SWAP",
+          "condition": "OTHER_REFLECT",
+          "chain": 1,
+          "r_final": 20,
+          "n_changed_vs_r0": 0,
+          "n_clauses": 35
+        },
+        {
+          "type": "COR_SWAP",
+          "condition": "OTHER_REFLECT",
+          "chain": 2,
+          "r_final": 20,
+          "n_changed_vs_r0": 0,
+          "n_clauses": 35
+        },
+        {
+          "type": "AGENT_SWAP",
+          "condition": "OTHER_REFLECT",
+          "chain": 2,
+          "r_final": 20,
+          "n_changed_vs_r0": 0,
+          "n_clauses": 35
+        },
+        {
+          "type": "COR_SWAP",
+          "condition": "OTHER_REFLECT",
+          "chain": 3,
+          "r_final": 20,
+          "n_changed_vs_r0": 0,
+          "n_clauses": 35
+        },
+        {
+          "type": "AGENT_SWAP",
+          "condition": "OTHER_REFLECT",
+          "chain": 3,
+          "r_final": 20,
+          "n_changed_vs_r0": 1,
+          "n_clauses": 35
+        },
+        {
+          "type": "COR_SWAP",
+          "condition": "OTHER_REFLECT",
+          "chain": 4,
+          "r_final": 20,
+          "n_changed_vs_r0": 0,
+          "n_clauses": 35
+        },
+        {
+          "type": "AGENT_SWAP",
+          "condition": "OTHER_REFLECT",
+          "chain": 4,
+          "r_final": 20,
+          "n_changed_vs_r0": 0,
+          "n_clauses": 35
+        }
+      ]
+    },
+    "olmo3_7b_sft": {
+      "n": 38,
+      "types": {
+        "R0": 5,
+        "R20": 10,
+        "COR_SWAP": 10,
+        "AGENT_SWAP": 10,
+        "NONE": 1,
+        "COR_INV": 1,
+        "AGENT_INV": 1
+      },
+      "n_r_final_lt_20": 15,
+      "early_chain_slots": [
+        {
+          "condition": "OTHER_REFLECT",
+          "chain": 1,
+          "r_final": 14
+        },
+        {
+          "condition": "OTHER_REFLECT",
+          "chain": 3,
+          "r_final": 6
+        },
+        {
+          "condition": "OTHER_REFLECT",
+          "chain": 4,
+          "r_final": 11
+        },
+        {
+          "condition": "SELF_REFLECT",
+          "chain": 1,
+          "r_final": 14
+        },
+        {
+          "condition": "SELF_REFLECT",
+          "chain": 4,
+          "r_final": 4
+        }
+      ],
+      "swaps": [
+        {
+          "type": "COR_SWAP",
+          "condition": "SELF_REFLECT",
+          "chain": 0,
+          "r_final": 20,
+          "n_changed_vs_r0": 2,
+          "n_clauses": 35
+        },
+        {
+          "type": "AGENT_SWAP",
+          "condition": "SELF_REFLECT",
+          "chain": 0,
+          "r_final": 20,
+          "n_changed_vs_r0": 2,
+          "n_clauses": 35
+        },
+        {
+          "type": "COR_SWAP",
+          "condition": "SELF_REFLECT",
+          "chain": 1,
+          "r_final": 14,
+          "n_changed_vs_r0": 2,
+          "n_clauses": 35
+        },
+        {
+          "type": "AGENT_SWAP",
+          "condition": "SELF_REFLECT",
+          "chain": 1,
+          "r_final": 14,
+          "n_changed_vs_r0": 0,
+          "n_clauses": 35
+        },
+        {
+          "type": "COR_SWAP",
+          "condition": "SELF_REFLECT",
+          "chain": 2,
+          "r_final": 20,
+          "n_changed_vs_r0": 0,
+          "n_clauses": 35
+        },
+        {
+          "type": "AGENT_SWAP",
+          "condition": "SELF_REFLECT",
+          "chain": 2,
+          "r_final": 20,
+          "n_changed_vs_r0": 1,
+          "n_clauses": 35
+        },
+        {
+          "type": "COR_SWAP",
+          "condition": "SELF_REFLECT",
+          "chain": 3,
+          "r_final": 20,
+          "n_changed_vs_r0": 2,
+          "n_clauses": 35
+        },
+        {
+          "type": "AGENT_SWAP",
+          "condition": "SELF_REFLECT",
+          "chain": 3,
+          "r_final": 20,
+          "n_changed_vs_r0": 1,
+          "n_clauses": 35
+        },
+        {
+          "type": "COR_SWAP",
+          "condition": "SELF_REFLECT",
+          "chain": 4,
+          "r_final": 4,
+          "n_changed_vs_r0": 0,
+          "n_clauses": 35
+        },
+        {
+          "type": "AGENT_SWAP",
+          "condition": "SELF_REFLECT",
+          "chain": 4,
+          "r_final": 4,
+          "n_changed_vs_r0": 0,
+          "n_clauses": 35
+        },
+        {
+          "type": "COR_SWAP",
+          "condition": "OTHER_REFLECT",
+          "chain": 0,
+          "r_final": 20,
+          "n_changed_vs_r0": 2,
+          "n_clauses": 35
+        },
+        {
+          "type": "AGENT_SWAP",
+          "condition": "OTHER_REFLECT",
+          "chain": 0,
+          "r_final": 20,
+          "n_changed_vs_r0": 3,
+          "n_clauses": 35
+        },
+        {
+          "type": "COR_SWAP",
+          "condition": "OTHER_REFLECT",
+          "chain": 1,
+          "r_final": 14,
+          "n_changed_vs_r0": 0,
+          "n_clauses": 35
+        },
+        {
+          "type": "AGENT_SWAP",
+          "condition": "OTHER_REFLECT",
+          "chain": 1,
+          "r_final": 14,
+          "n_changed_vs_r0": 0,
+          "n_clauses": 35
+        },
+        {
+          "type": "COR_SWAP",
+          "condition": "OTHER_REFLECT",
+          "chain": 2,
+          "r_final": 20,
+          "n_changed_vs_r0": 1,
+          "n_clauses": 35
+        },
+        {
+          "type": "AGENT_SWAP",
+          "condition": "OTHER_REFLECT",
+          "chain": 2,
+          "r_final": 20,
+          "n_changed_vs_r0": 2,
+          "n_clauses": 35
+        },
+        {
+          "type": "COR_SWAP",
+          "condition": "OTHER_REFLECT",
+          "chain": 3,
+          "r_final": 6,
+          "n_changed_vs_r0": 0,
+          "n_clauses": 35
+        },
+        {
+          "type": "AGENT_SWAP",
+          "condition": "OTHER_REFLECT",
+          "chain": 3,
+          "r_final": 6,
+          "n_changed_vs_r0": 0,
+          "n_clauses": 35
+        },
+        {
+          "type": "COR_SWAP",
+          "condition": "OTHER_REFLECT",
+          "chain": 4,
+          "r_final": 11,
+          "n_changed_vs_r0": 0,
+          "n_clauses": 35
+        },
+        {
+          "type": "AGENT_SWAP",
+          "condition": "OTHER_REFLECT",
+          "chain": 4,
+          "r_final": 11,
+          "n_changed_vs_r0": 0,
+          "n_clauses": 35
+        }
+      ]
+    },
+    "qwen38_27b_nothink": {
+      "n": 38,
+      "types": {
+        "R0": 5,
+        "R20": 10,
+        "COR_SWAP": 10,
+        "AGENT_SWAP": 10,
+        "NONE": 1,
+        "COR_INV": 1,
+        "AGENT_INV": 1
+      },
+      "n_r_final_lt_20": 0,
+      "early_chain_slots": [],
+      "swaps": [
+        {
+          "type": "COR_SWAP",
+          "condition": "SELF_REFLECT",
+          "chain": 0,
+          "r_final": 20,
+          "n_changed_vs_r0": 2,
+          "n_clauses": 33
+        },
+        {
+          "type": "AGENT_SWAP",
+          "condition": "SELF_REFLECT",
+          "chain": 0,
+          "r_final": 20,
+          "n_changed_vs_r0": 1,
+          "n_clauses": 35
+        },
+        {
+          "type": "COR_SWAP",
+          "condition": "SELF_REFLECT",
+          "chain": 1,
+          "r_final": 20,
+          "n_changed_vs_r0": 1,
+          "n_clauses": 35
+        },
+        {
+          "type": "AGENT_SWAP",
+          "condition": "SELF_REFLECT",
+          "chain": 1,
+          "r_final": 20,
+          "n_changed_vs_r0": 1,
+          "n_clauses": 34
+        },
+        {
+          "type": "COR_SWAP",
+          "condition": "SELF_REFLECT",
+          "chain": 2,
+          "r_final": 20,
+          "n_changed_vs_r0": 0,
+          "n_clauses": 35
+        },
+        {
+          "type": "AGENT_SWAP",
+          "condition": "SELF_REFLECT",
+          "chain": 2,
+          "r_final": 20,
+          "n_changed_vs_r0": 2,
+          "n_clauses": 34
+        },
+        {
+          "type": "COR_SWAP",
+          "condition": "SELF_REFLECT",
+          "chain": 3,
+          "r_final": 20,
+          "n_changed_vs_r0": 2,
+          "n_clauses": 34
+        },
+        {
+          "type": "AGENT_SWAP",
+          "condition": "SELF_REFLECT",
+          "chain": 3,
+          "r_final": 20,
+          "n_changed_vs_r0": 1,
+          "n_clauses": 34
+        },
+        {
+          "type": "COR_SWAP",
+          "condition": "SELF_REFLECT",
+          "chain": 4,
+          "r_final": 20,
+          "n_changed_vs_r0": 2,
+          "n_clauses": 34
+        },
+        {
+          "type": "AGENT_SWAP",
+          "condition": "SELF_REFLECT",
+          "chain": 4,
+          "r_final": 20,
+          "n_changed_vs_r0": 0,
+          "n_clauses": 35
+        },
+        {
+          "type": "COR_SWAP",
+          "condition": "OTHER_REFLECT",
+          "chain": 0,
+          "r_final": 20,
+          "n_changed_vs_r0": 2,
+          "n_clauses": 34
+        },
+        {
+          "type": "AGENT_SWAP",
+          "condition": "OTHER_REFLECT",
+          "chain": 0,
+          "r_final": 20,
+          "n_changed_vs_r0": 2,
+          "n_clauses": 34
+        },
+        {
+          "type": "COR_SWAP",
+          "condition": "OTHER_REFLECT",
+          "chain": 1,
+          "r_final": 20,
+          "n_changed_vs_r0": 2,
+          "n_clauses": 34
+        },
+        {
+          "type": "AGENT_SWAP",
+          "condition": "OTHER_REFLECT",
+          "chain": 1,
+          "r_final": 20,
+          "n_changed_vs_r0": 2,
+          "n_clauses": 34
+        },
+        {
+          "type": "COR_SWAP",
+          "condition": "OTHER_REFLECT",
+          "chain": 2,
+          "r_final": 20,
+          "n_changed_vs_r0": 2,
+          "n_clauses": 34
+        },
+        {
+          "type": "AGENT_SWAP",
+          "condition": "OTHER_REFLECT",
+          "chain": 2,
+          "r_final": 20,
+          "n_changed_vs_r0": 1,
+          "n_clauses": 34
+        },
+        {
+          "type": "COR_SWAP",
+          "condition": "OTHER_REFLECT",
+          "chain": 3,
+          "r_final": 20,
+          "n_changed_vs_r0": 2,
+          "n_clauses": 35
+        },
+        {
+          "type": "AGENT_SWAP",
+          "condition": "OTHER_REFLECT",
+          "chain": 3,
+          "r_final": 20,
+          "n_changed_vs_r0": 2,
+          "n_clauses": 35
+        },
+        {
+          "type": "COR_SWAP",
+          "condition": "OTHER_REFLECT",
+          "chain": 4,
+          "r_final": 20,
+          "n_changed_vs_r0": 1,
+          "n_clauses": 34
+        },
+        {
+          "type": "AGENT_SWAP",
+          "condition": "OTHER_REFLECT",
+          "chain": 4,
+          "r_final": 20,
+          "n_changed_vs_r0": 1,
+          "n_clauses": 35
+        }
+      ]
+    },
+    "qwen38_27b_think": {
+      "n": 38,
+      "types": {
+        "R0": 5,
+        "R20": 10,
+        "COR_SWAP": 10,
+        "AGENT_SWAP": 10,
+        "NONE": 1,
+        "COR_INV": 1,
+        "AGENT_INV": 1
+      },
+      "n_r_final_lt_20": 0,
+      "early_chain_slots": [],
+      "swaps": [
+        {
+          "type": "COR_SWAP",
+          "condition": "SELF_REFLECT",
+          "chain": 0,
+          "r_final": 20,
+          "n_changed_vs_r0": 1,
+          "n_clauses": 35
+        },
+        {
+          "type": "AGENT_SWAP",
+          "condition": "SELF_REFLECT",
+          "chain": 0,
+          "r_final": 20,
+          "n_changed_vs_r0": 1,
+          "n_clauses": 35
+        },
+        {
+          "type": "COR_SWAP",
+          "condition": "SELF_REFLECT",
+          "chain": 1,
+          "r_final": 20,
+          "n_changed_vs_r0": 1,
+          "n_clauses": 35
+        },
+        {
+          "type": "AGENT_SWAP",
+          "condition": "SELF_REFLECT",
+          "chain": 1,
+          "r_final": 20,
+          "n_changed_vs_r0": 2,
+          "n_clauses": 35
+        },
+        {
+          "type": "COR_SWAP",
+          "condition": "SELF_REFLECT",
+          "chain": 2,
+          "r_final": 20,
+          "n_changed_vs_r0": 2,
+          "n_clauses": 35
+        },
+        {
+          "type": "AGENT_SWAP",
+          "condition": "SELF_REFLECT",
+          "chain": 2,
+          "r_final": 20,
+          "n_changed_vs_r0": 1,
+          "n_clauses": 35
+        },
+        {
+          "type": "COR_SWAP",
+          "condition": "SELF_REFLECT",
+          "chain": 3,
+          "r_final": 20,
+          "n_changed_vs_r0": 1,
+          "n_clauses": 35
+        },
+        {
+          "type": "AGENT_SWAP",
+          "condition": "SELF_REFLECT",
+          "chain": 3,
+          "r_final": 20,
+          "n_changed_vs_r0": 2,
+          "n_clauses": 35
+        },
+        {
+          "type": "COR_SWAP",
+          "condition": "SELF_REFLECT",
+          "chain": 4,
+          "r_final": 20,
+          "n_changed_vs_r0": 0,
+          "n_clauses": 35
+        },
+        {
+          "type": "AGENT_SWAP",
+          "condition": "SELF_REFLECT",
+          "chain": 4,
+          "r_final": 20,
+          "n_changed_vs_r0": 1,
+          "n_clauses": 35
+        },
+        {
+          "type": "COR_SWAP",
+          "condition": "OTHER_REFLECT",
+          "chain": 0,
+          "r_final": 20,
+          "n_changed_vs_r0": 1,
+          "n_clauses": 35
+        },
+        {
+          "type": "AGENT_SWAP",
+          "condition": "OTHER_REFLECT",
+          "chain": 0,
+          "r_final": 20,
+          "n_changed_vs_r0": 1,
+          "n_clauses": 35
+        },
+        {
+          "type": "COR_SWAP",
+          "condition": "OTHER_REFLECT",
+          "chain": 1,
+          "r_final": 20,
+          "n_changed_vs_r0": 1,
+          "n_clauses": 35
+        },
+        {
+          "type": "AGENT_SWAP",
+          "condition": "OTHER_REFLECT",
+          "chain": 1,
+          "r_final": 20,
+          "n_changed_vs_r0": 2,
+          "n_clauses": 35
+        },
+        {
+          "type": "COR_SWAP",
+          "condition": "OTHER_REFLECT",
+          "chain": 2,
+          "r_final": 20,
+          "n_changed_vs_r0": 1,
+          "n_clauses": 35
+        },
+        {
+          "type": "AGENT_SWAP",
+          "condition": "OTHER_REFLECT",
+          "chain": 2,
+          "r_final": 20,
+          "n_changed_vs_r0": 1,
+          "n_clauses": 35
+        },
+        {
+          "type": "COR_SWAP",
+          "condition": "OTHER_REFLECT",
+          "chain": 3,
+          "r_final": 20,
+          "n_changed_vs_r0": 1,
+          "n_clauses": 35
+        },
+        {
+          "type": "AGENT_SWAP",
+          "condition": "OTHER_REFLECT",
+          "chain": 3,
+          "r_final": 20,
+          "n_changed_vs_r0": 0,
+          "n_clauses": 35
+        },
+        {
+          "type": "COR_SWAP",
+          "condition": "OTHER_REFLECT",
+          "chain": 4,
+          "r_final": 20,
+          "n_changed_vs_r0": 0,
+          "n_clauses": 35
+        },
+        {
+          "type": "AGENT_SWAP",
+          "condition": "OTHER_REFLECT",
+          "chain": 4,
+          "r_final": 20,
+          "n_changed_vs_r0": 1,
+          "n_clauses": 35
+        }
+      ]
+    }
+  }
+}

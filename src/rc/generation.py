@@ -357,6 +357,7 @@ class VLLMBackend:
         gpu_memory_utilization: float | None = None,
         enforce_eager: bool = False,
         max_num_seqs: int | None = None,
+        enable_prefix_caching: bool = False,
         root: Path | None = None,
     ) -> None:
         from vllm import LLM
@@ -389,6 +390,7 @@ class VLLMBackend:
             "trust_remote_code": True,
             "enforce_eager": enforce_eager,
             "max_num_seqs": max_num_seqs if max_num_seqs is not None else vllm_cfg.max_num_seqs,
+            "enable_prefix_caching": enable_prefix_caching,
         }
         # Mistral-Small 3.2 is Pixtral multimodal; use native mistral load formats
         # (HF card / vLLM docs) so architecture inspection succeeds.

@@ -36,7 +36,7 @@ def test_api_guard_uses_d70_dashboard_floor(tmp_path: Path, monkeypatch) -> None
     refs = tmp_path / "materials" / "main_run" / "refs"
     refs.mkdir(parents=True)
     (refs / "openai_dashboard_usd.json").write_text(
-        json.dumps({"openai_dashboard_usd": 40.07}) + "\n", encoding="utf-8"
+        json.dumps({"openai_dashboard_usd": 44.62}) + "\n", encoding="utf-8"
     )
     monkeypatch.setattr(
         "rc.phase7b.sum_ledgers_api",
@@ -48,7 +48,7 @@ def test_api_guard_uses_d70_dashboard_floor(tmp_path: Path, monkeypatch) -> None
     )
     from rc.phase7b import Caps
 
-    # Ledger under dashboard → floor applies (40.07 + 9 > openai cap 49).
+    # Ledger under dashboard → floor applies (44.62 + 9 > openai cap 49).
     ok, reason = api_submission_allowed(
         9.0,
         platform="openai",
@@ -56,6 +56,6 @@ def test_api_guard_uses_d70_dashboard_floor(tmp_path: Path, monkeypatch) -> None
         root=tmp_path,
     )
     assert ok is False
-    assert "49.0700" in reason  # 40.07 + 9.0
-    assert load_openai_dashboard_usd(tmp_path) == 40.07
-    assert OPENAI_DASHBOARD_USD == 40.07
+    assert "53.6200" in reason  # 44.62 + 9.0
+    assert load_openai_dashboard_usd(tmp_path) == 44.62
+    assert OPENAI_DASHBOARD_USD == 44.62

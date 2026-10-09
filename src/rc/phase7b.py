@@ -26,17 +26,15 @@ REMAINING_CONFIGS = (
     "olmo3_7b_dpo",
 )
 
-# D62 caps (human-approved 2026-10-07).
-API_CAP_USD = 52.0
-OPENAI_CAP_USD = 49.0
+# D71 caps (human-approved 2026-10-08 for Phase 7D).
+API_CAP_USD = 58.0
+OPENAI_CAP_USD = 55.0
 OPENROUTER_CAP_USD = 3.0
 MODAL_CAP_USD = 130.0
 
-# D70: OpenAI spend floor for the project-cap guard.
-# Session-1 dashboard GT ($12.77) + unique 7B Volume OpenAI jobs ($27.30007125).
-# Prompt Session 4 left dashboard blank; reconstructed GT used until human overrides
-# via materials/main_run/refs/openai_dashboard_usd.json.
-OPENAI_DASHBOARD_USD = 40.07
+# D71: OpenAI spend floor = human-confirmed Usage dashboard GT.
+# Override via materials/main_run/refs/openai_dashboard_usd.json.
+OPENAI_DASHBOARD_USD = 44.62
 
 COMPUTE_GPU = {
     "modal_a100_80gb": "A100-80GB",

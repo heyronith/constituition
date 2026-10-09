@@ -1,0 +1,120 @@
+{
+  "method": "one_load_plus_generate_at_measured_pps",
+  "modal_spent_metered": 76.92,
+  "n_prompts_per_config": 21660,
+  "per_config": {
+    "olmo3_7b_final": {
+      "gpu": "L4",
+      "parse_rate": 1.0,
+      "n_finish_length": 0,
+      "prompts_per_s": 2.229267889521579,
+      "model_load_s": 239.48666501900001,
+      "proj_generate_s": 9716.19431734085,
+      "proj_total_s": 9955.68098235985,
+      "proj_modal_usd": 3.08556352,
+      "stage_cap_1_5x": 4.62834528,
+      "precheck_est_usd": 0.091,
+      "precheck_usd_per_prompt_wall": 0.00228
+    },
+    "qwen38_27b_nothink": {
+      "gpu": "A100-80GB",
+      "parse_rate": 1.0,
+      "n_finish_length": 0,
+      "prompts_per_s": 2.1500964038681296,
+      "model_load_s": 398.497569818,
+      "proj_generate_s": 10073.966897964478,
+      "proj_total_s": 10472.464467782478,
+      "proj_modal_usd": 9.853836239999998,
+      "stage_cap_1_5x": 14.780754359999996,
+      "precheck_est_usd": 0.5108978399999999,
+      "precheck_usd_per_prompt_wall": 0.012772445999999998
+    },
+    "qwen38_27b_think": {
+      "gpu": "A100-80GB",
+      "parse_rate": 1.0,
+      "n_finish_length": 0,
+      "prompts_per_s": 0.7543948283885376,
+      "model_load_s": 226.77719497200002,
+      "proj_generate_s": 28711.75568139553,
+      "proj_total_s": 28938.53287636753,
+      "proj_modal_usd": 27.228126319999998,
+      "stage_cap_1_5x": 40.842189479999995,
+      "precheck_est_usd": 0.27661872,
+      "precheck_usd_per_prompt_wall": 0.006915467999999999
+    },
+    "gemma4_31b": {
+      "gpu": "A100-80GB",
+      "parse_rate": 1.0,
+      "n_finish_length": 0,
+      "prompts_per_s": 2.882545324336123,
+      "model_load_s": 237.24144042400007,
+      "proj_generate_s": 7514.1923414468765,
+      "proj_total_s": 7751.433781870876,
+      "proj_modal_usd": 7.293701759999999,
+      "stage_cap_1_5x": 10.94055264,
+      "precheck_est_usd": 0.24933319999999998,
+      "precheck_usd_per_prompt_wall": 0.00623333
+    },
+    "gemma4_12b": {
+      "gpu": "L40S",
+      "parse_rate": 1.0,
+      "n_finish_length": 0,
+      "prompts_per_s": 3.6621669690893253,
+      "model_load_s": 264.553492818,
+      "proj_generate_s": 5914.530982017517,
+      "proj_total_s": 6179.0844748355175,
+      "proj_modal_usd": 4.1124192,
+      "stage_cap_1_5x": 6.1686288,
+      "precheck_est_usd": 0.19830112,
+      "precheck_usd_per_prompt_wall": 0.004957528
+    },
+    "olmo3_7b_sft": {
+      "gpu": "L4",
+      "parse_rate": 1.0,
+      "n_finish_length": 0,
+      "prompts_per_s": 1.8453800218477334,
+      "model_load_s": 236.53561540799998,
+      "proj_generate_s": 11737.419796228409,
+      "proj_total_s": 11973.955411636409,
+      "proj_modal_usd": 3.71098208,
+      "stage_cap_1_5x": 5.5664731199999995,
+      "precheck_est_usd": 0.09235616,
+      "precheck_usd_per_prompt_wall": 0.002308904
+    },
+    "olmo3_7b_dpo": {
+      "gpu": "L4",
+      "parse_rate": 1.0,
+      "n_finish_length": 0,
+      "prompts_per_s": 1.8404042435311945,
+      "model_load_s": 105.98020559399998,
+      "proj_generate_s": 11769.153475999832,
+      "proj_total_s": 11875.133681593832,
+      "proj_modal_usd": 3.68060992,
+      "stage_cap_1_5x": 5.52091488,
+      "precheck_est_usd": 0.04090944,
+      "precheck_usd_per_prompt_wall": 0.001022736
+    }
+  },
+  "modal_7d_total": 58.96523903999999,
+  "gate": {
+    "ok": false,
+    "openai_dashboard": 44.62,
+    "proj_openai": 48.6237571875,
+    "proj_api": 49.2937571875,
+    "proj_modal": 135.88523904,
+    "caps": {
+      "api": 58.0,
+      "openai": 55.0,
+      "openrouter": 3.0,
+      "modal": 130.0
+    },
+    "headroom": {
+      "openai": 6.376242812500003,
+      "api": 8.706242812500001,
+      "modal": -5.885239039999988
+    },
+    "modal_spent": 76.92,
+    "modal_proj_7d": 58.96523903999999
+  },
+  "max_proj_modal_for_10pct_headroom": 117.0
+}

@@ -1,6 +1,8 @@
 {
-  "openai_dashboard_usd": 40.07,
-  "as_of_utc": "2026-10-08T22:30:00Z",
-  "source": "reconstructed_d70",
-  "note": "Session-4 prompt left dashboard blank ($____). Reconstructed as session-1 human GT $12.77 + unique 7B Volume OpenAI job totals $27.30007125. Override this file with the Usage dashboard figure when available."
+  "openai_dashboard_usd": 44.62,
+  "as_of_utc": "2026-10-08T23:41:00Z",
+  "source": "human_confirmed_d71",
+  "prior_reconstructed_d70_usd": 40.07,
+  "gap_vs_prior_usd": 4.55,
+  "note": "D71: human-confirmed OpenAI Usage dashboard total. Replaces D70 reconstructed $40.07 (gap +$4.55)."
 }
