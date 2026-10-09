@@ -1,0 +1,93 @@
+{
+  "api_usd": 9.521531250000011,
+  "budget_gate": {
+    "cap_usd": 55.0,
+    "dashboard_usd": 44.62,
+    "forecast_detail": {
+      "est_input_tokens_per": 681,
+      "est_usd": 6.369185249999999,
+      "n": 11076,
+      "sample_mean_prompt_tokens": 545
+    },
+    "forecast_usd": 6.369185249999999,
+    "n_pending": 11076,
+    "n_units_total": 11076,
+    "ok": true,
+    "post_dashboard_usd": 2.5569875,
+    "projected_usd": 53.54617275,
+    "to_date_usd": 47.176987499999996
+  },
+  "flagged_chains": [
+    {
+      "chain": "NEUTRAL_EDIT:8",
+      "condition": "NEUTRAL_EDIT",
+      "config": "olmo3_7b_dpo"
+    },
+    {
+      "chain": "OTHER_REFLECT:5",
+      "condition": "OTHER_REFLECT",
+      "config": "olmo3_7b_dpo"
+    },
+    {
+      "chain": "SELF_REFLECT:24",
+      "condition": "SELF_REFLECT",
+      "config": "olmo3_7b_dpo"
+    },
+    {
+      "chain": "NEUTRAL_EDIT:11",
+      "condition": "NEUTRAL_EDIT",
+      "config": "olmo3_7b_sft"
+    },
+    {
+      "chain": "NEUTRAL_EDIT:18",
+      "condition": "NEUTRAL_EDIT",
+      "config": "olmo3_7b_sft"
+    },
+    {
+      "chain": "OTHER_REFLECT:17",
+      "condition": "OTHER_REFLECT",
+      "config": "olmo3_7b_sft"
+    },
+    {
+      "chain": "OTHER_REFLECT:10",
+      "condition": "OTHER_REFLECT",
+      "config": "qwen38_27b_nothink"
+    },
+    {
+      "chain": "SELF_REFLECT:0",
+      "condition": "SELF_REFLECT",
+      "config": "qwen38_27b_nothink"
+    },
+    {
+      "chain": "SELF_REFLECT:10",
+      "condition": "SELF_REFLECT",
+      "config": "qwen38_27b_nothink"
+    },
+    {
+      "chain": "OTHER_REFLECT:22",
+      "condition": "OTHER_REFLECT",
+      "config": "qwen38_27b_think"
+    },
+    {
+      "chain": "SELF_REFLECT:15",
+      "condition": "SELF_REFLECT",
+      "config": "qwen38_27b_think"
+    },
+    {
+      "chain": "SELF_REFLECT:5",
+      "condition": "SELF_REFLECT",
+      "config": "qwen38_27b_think"
+    }
+  ],
+  "meta": {
+    "api_usd": 9.521531250000011,
+    "batch_id": "batch_6ac913b0538c81909174de0ca91c1184",
+    "elapsed_s": 1444.495314836502,
+    "n_new": 11076,
+    "prompt_hash_ok": true
+  },
+  "n_flagged_chains": 12,
+  "n_flagged_rounds": 12,
+  "n_units": 11076,
+  "prompt_hash_ok": true
+}

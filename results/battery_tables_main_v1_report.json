@@ -1,0 +1,70 @@
+{
+  "sha256": {
+    "battery_b1_main_v1.csv.gz": "351e18deecfb8995b2a7e65658da622ea9aad769f33e4284631d0a06bcffc3e1",
+    "battery_b2_main_v1.csv.gz": "2c2c88d7faeba2c5b43d4981dabd512ab2321c8a18ff6be38ef5cd5774de30d0",
+    "battery_b5_main_v1.csv.gz": "aca6c9f6aed65719d7110b1e08d69dc118a2789d9ff10fb976a73f2e356bcf84",
+    "battery_b6_main_v1.csv.gz": "551fe0c72836a50a38087fde39d0fca97acc6231cb4eed31e9f398aa4b767919"
+  },
+  "tables": {
+    "B1": {
+      "b5_harm_truncation": {},
+      "component": "B1",
+      "n_r0_condition_copies": 16800,
+      "n_rows": 72240
+    },
+    "B2": {
+      "b5_harm_truncation": {},
+      "component": "B2",
+      "n_r0_condition_copies": 14000,
+      "n_rows": 60200
+    },
+    "B5": {
+      "b5_harm_truncation": {
+        "gemma4_12b": {
+          "empty_final": 0,
+          "n": 1140,
+          "trunc": 131
+        },
+        "gemma4_31b": {
+          "empty_final": 0,
+          "n": 1140,
+          "trunc": 49
+        },
+        "olmo3_7b_dpo": {
+          "empty_final": 0,
+          "n": 1140,
+          "trunc": 307
+        },
+        "olmo3_7b_final": {
+          "empty_final": 0,
+          "n": 1140,
+          "trunc": 213
+        },
+        "olmo3_7b_sft": {
+          "empty_final": 0,
+          "n": 1140,
+          "trunc": 39
+        },
+        "qwen38_27b_nothink": {
+          "empty_final": 0,
+          "n": 1140,
+          "trunc": 554
+        },
+        "qwen38_27b_think": {
+          "empty_final": 0,
+          "n": 1140,
+          "trunc": 994
+        }
+      },
+      "component": "B5",
+      "n_r0_condition_copies": 4900,
+      "n_rows": 21070
+    },
+    "B6": {
+      "b5_harm_truncation": {},
+      "component": "B6",
+      "n_r0_condition_copies": 4200,
+      "n_rows": 18060
+    }
+  }
+}

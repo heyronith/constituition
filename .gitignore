@@ -39,3 +39,9 @@ htmlcov/
 
 hf_cache/
 .cache/
+
+# Blinded dry-run full payload / permuted tables (may contain estimates)
+results/dryrun_permuted.full.json
+results/dryrun_permuted_table.md
+results/hazard_table_main_v1_permuted.csv
+results/battery_b1_main_v1_permuted.csv

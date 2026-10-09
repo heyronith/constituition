@@ -1,0 +1,18 @@
+{
+  "events_match": true,
+  "every_at_risk_has_event_value": true,
+  "n_chains": 700,
+  "n_coded_rows_hashed": 5650,
+  "n_events_builder": 1284,
+  "n_events_independent": 1284,
+  "n_events_table": 1284,
+  "n_rows": 444253,
+  "out": "results/hazard_table_main_v1.csv.gz",
+  "prompt_hash_gate": {
+    "n_checked": 5407,
+    "n_mismatch": 0,
+    "ok": true
+  },
+  "sha256": "a8818407a2aa4d01b7ddee949f259367b355e9e986a8f9b2aed9075d9902359f",
+  "trace_out": "/Users/ronny/Desktop/Research/AI Alignment Projects_Claude/Constituition/results/hazard_trace_examples.md"
+}

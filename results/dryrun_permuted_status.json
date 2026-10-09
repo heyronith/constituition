@@ -1,0 +1,28 @@
+{
+  "completed": true,
+  "runtime_s": 91.656,
+  "methods": {
+    "H1": {
+      "method": "glmm_drop_item_chain",
+      "fallback_log": "glmm_drop_item_chain"
+    },
+    "H2a": {
+      "method": "glmm_full",
+      "fallback_log": "glmm_full"
+    },
+    "H2b": {
+      "method": "glmm_drop_item_chain",
+      "fallback_log": [
+        "glmm_full",
+        "glmm_drop_item",
+        "glmm_drop_item_chain"
+      ]
+    },
+    "H3": {
+      "method": "glmm_full",
+      "fallback_log": "glmm_full"
+    }
+  },
+  "warnings": [],
+  "errors": []
+}
