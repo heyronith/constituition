@@ -6,7 +6,7 @@
 
 ## Builder commit
 
-Re-lock commit is the Phase 7E-A3 commit that updates this file (see `git log -1 --format=%H -- docs/ANALYSIS_LOCK.md`). Prior invalid lock parent: `1dc4b42` / table builder `169839b`.
+Re-lock commit: `bc8841a` (prior invalid lock `1dc4b42` / table `a8818407…`).
 
 ## Invalid prior hazard hash (kept for the record)
 
