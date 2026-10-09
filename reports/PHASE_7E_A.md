@@ -145,3 +145,17 @@ No estimates, p-values, HRs, rates, or event counts from the dry run are reporte
 - `results/eval_awareness_main_v1.json`
 - `results/dryrun_permuted.json` / `_status.json`
 - `results/analysis_env.json`
+
+---
+
+## §6 Event-logic traces for lead review (7E-A2)
+
+The v1 traces (`results/hazard_trace_examples.md`) were category-blind but landed on untouched items. Phase 7E-A2 adds **`results/hazard_trace_examples_v2.md`**: seed `20261004`, sampled from units with ≥1 descendant touch (6 with ≥1 event, 6 with touch and 0 events, plus extras until absorbed-merge / merge-survivor / deletion / non-erosion-then-later-touch are each covered). Locked tables and frozen R code were not modified.
+
+| Assertion | Result | Totals |
+|---|---|---|
+| 1. No double counting (merge absorbed/survivor) | **PASS** | 41/41 absorbed event rows paired; 0 duplicate item-round events |
+| 2. `fate_gpt54 ≠ NONE` ↔ transition + prompt hash (D61) | **PASS** | 5668/5668 rows; 0 hash mismatches (`n_checked=5407` LLM) |
+| 3. Round alignment (20 random touched units) | **PASS** | 21/21 fate rows; hazard round = source transition round |
+
+**STOP.** Still no 7E-B real-label analysis.
