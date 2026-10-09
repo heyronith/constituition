@@ -13,33 +13,6 @@
         "AGENT_INV": 1
       },
       "n_r_final_lt_20": 15,
-      "early_chain_slots": [
-        {
-          "condition": "OTHER_REFLECT",
-          "chain": 2,
-          "r_final": 5
-        },
-        {
-          "condition": "OTHER_REFLECT",
-          "chain": 4,
-          "r_final": 5
-        },
-        {
-          "condition": "SELF_REFLECT",
-          "chain": 0,
-          "r_final": 7
-        },
-        {
-          "condition": "SELF_REFLECT",
-          "chain": 2,
-          "r_final": 12
-        },
-        {
-          "condition": "SELF_REFLECT",
-          "chain": 4,
-          "r_final": 3
-        }
-      ],
       "swaps": [
         {
           "type": "COR_SWAP",
@@ -215,13 +188,6 @@
         "AGENT_INV": 1
       },
       "n_r_final_lt_20": 3,
-      "early_chain_slots": [
-        {
-          "condition": "SELF_REFLECT",
-          "chain": 3,
-          "r_final": 9
-        }
-      ],
       "swaps": [
         {
           "type": "COR_SWAP",
@@ -397,7 +363,6 @@
         "AGENT_INV": 1
       },
       "n_r_final_lt_20": 0,
-      "early_chain_slots": [],
       "swaps": [
         {
           "type": "COR_SWAP",
@@ -573,7 +538,6 @@
         "AGENT_INV": 1
       },
       "n_r_final_lt_20": 0,
-      "early_chain_slots": [],
       "swaps": [
         {
           "type": "COR_SWAP",
@@ -749,33 +713,6 @@
         "AGENT_INV": 1
       },
       "n_r_final_lt_20": 15,
-      "early_chain_slots": [
-        {
-          "condition": "OTHER_REFLECT",
-          "chain": 1,
-          "r_final": 14
-        },
-        {
-          "condition": "OTHER_REFLECT",
-          "chain": 3,
-          "r_final": 6
-        },
-        {
-          "condition": "OTHER_REFLECT",
-          "chain": 4,
-          "r_final": 11
-        },
-        {
-          "condition": "SELF_REFLECT",
-          "chain": 1,
-          "r_final": 14
-        },
-        {
-          "condition": "SELF_REFLECT",
-          "chain": 4,
-          "r_final": 4
-        }
-      ],
       "swaps": [
         {
           "type": "COR_SWAP",
@@ -951,7 +888,6 @@
         "AGENT_INV": 1
       },
       "n_r_final_lt_20": 0,
-      "early_chain_slots": [],
       "swaps": [
         {
           "type": "COR_SWAP",
@@ -1127,7 +1063,6 @@
         "AGENT_INV": 1
       },
       "n_r_final_lt_20": 0,
-      "early_chain_slots": [],
       "swaps": [
         {
           "type": "COR_SWAP",
@@ -1291,5 +1226,11 @@
         }
       ]
     }
+  },
+  "forced_merge_tip_fix": true,
+  "vs_session1": {
+    "sha_changed": 0,
+    "clause_changed": 0,
+    "n_changed_changed": 0
   }
 }

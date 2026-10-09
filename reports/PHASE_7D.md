@@ -111,6 +111,10 @@ Method: **one model load + generate at measured prompts/s × 21660** (D71). Wall
 - Resume: Modal `retries≥3`; duplicate-key skip; thinking `max_tokens` uses `think_max_tokens` so qwen-think does not hit `length`.
 - D61 input assert inside container; D69 ledger create-if-missing; D67/D71 project-cap ground truth.
 
+### Post-Session-1 tip fix (D72)
+
+[Explore lineage merge format](144302ad-b45e-49ef-997a-6ef72a6cd753) found that FORCED merges write **two** `decision:"merge"` rows (survivor with `after_text`, absorbed stub with `after_text=null`). `resolve_tip` now redirects only on the stub. Manifest rebuilt: **identical** to Session 1 (0/266 SHA changes for chains 0–4).
+
 ### Session 1 decision point
 
 **STOP. No scale launch.** Lead scientist review needed for:

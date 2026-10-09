@@ -89,6 +89,55 @@ def test_cor_swap_delete_removes_clause() -> None:
     assert n_ch == 1
 
 
+def test_forced_merge_survivor_not_redirected() -> None:
+    """FORCED: survivor also has decision=merge with after_text set."""
+    final = {"C1": "merged-cor", "S1": "self0"}
+    lineage = [
+        _lin(5, "C2", "merge", merge_with="C1", before_text="cor2", after_text=None),
+        _lin(
+            5,
+            "C1",
+            "merge",
+            merge_with="C2",
+            parent_ids=["C1", "C2"],
+            after_text="merged-cor",
+            before_text="cor1",
+        ),
+    ]
+    tip = resolve_tip("C1", lineage, r_final=20, final_texts=final)
+    assert tip.tip_id == "C1"
+    assert tip.text == "merged-cor"
+    assert "C2" in tip.absorbed_partner_ids
+    tip_abs = resolve_tip("C2", lineage, r_final=20, final_texts=final)
+    assert tip_abs.tip_id == "C1"
+    assert tip_abs.text == "merged-cor"
+
+
+def test_forced_cor_cor_merge_swap() -> None:
+    r0 = _cons(
+        0,
+        [("C1", "cor1", "COR"), ("C2", "cor2", "COR"), ("S1", "self0", "SELF")],
+    )
+    rf = _cons(20, [("C1", "merged-cor", "COR"), ("S1", "self0", "SELF")])
+    lineage = [
+        _lin(5, "C2", "merge", merge_with="C1", before_text="cor2", after_text=None),
+        _lin(
+            5,
+            "C1",
+            "merge",
+            merge_with="C2",
+            parent_ids=["C1", "C2"],
+            after_text="merged-cor",
+            before_text="cor1",
+        ),
+    ]
+    texts, _, _ = build_category_swap(
+        r0_row=r0, r_final_row=rf, lineage=lineage, r_final=20, category="COR"
+    )
+    assert texts == ["merged-cor", "self0"]
+    assert texts.count("merged-cor") == 1
+
+
 def test_cor_cor_merge_included_once() -> None:
     r0 = _cons(
         0,

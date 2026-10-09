@@ -146,7 +146,14 @@ def resolve_tip(
     r_final: int,
     final_texts: dict[str, str],
 ) -> TipState:
-    """Follow keep/revise/merge/delete to the tip at r_final."""
+    """Follow keep/revise/merge/delete to the tip at r_final.
+
+    FORCED merge writes two rows (``apply_forced``): the survivor keeps
+    ``decision="merge"`` with ``after_text`` set, and the absorbed partner is a
+    stub with ``after_text=None``. Only the stub redirects ``current``; the
+    survivor stays put and harvests co-parents from ``parent_ids`` (same as
+    PERMISSIVE survivor ``revise`` rows).
+    """
     current = round0_id
     deleted = False
     absorbed: set[str] = set()
@@ -157,11 +164,17 @@ def resolve_tip(
             deleted = True
             break
         if rec.decision == "merge" and rec.opaque_id == current:
-            # This clause is absorbed into merge_with (survivor).
-            partner = rec.merge_with
-            if partner:
+            # Absorbed stub: after_text is None; redirect to survivor.
+            if rec.after_text is None and rec.merge_with:
                 absorbed.add(rec.opaque_id)
-                current = str(partner)
+                current = str(rec.merge_with)
+                continue
+            # Survivor merge row (FORCED): stay on id; record absorbed partners.
+            for pid in rec.parent_ids:
+                if pid != current:
+                    absorbed.add(str(pid))
+            if rec.merge_with:
+                absorbed.add(str(rec.merge_with))
             continue
         if rec.decision in {"keep", "revise"} and rec.opaque_id == current:
             # Survivors that absorbed others list them in parent_ids.
