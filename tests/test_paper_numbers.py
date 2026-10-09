@@ -67,6 +67,16 @@ def test_required_macros_present():
         "EvalAwareChains",
         "TypeI",
         "PowerS",
+        "LocoLo",
+        "LocoHi",
+        "ItemAwareExHR",
+        "NAgentOneEvents",
+        "TouchCorSR",
+        "CensorGemmaPct",
+        "HRQwenThink",
+        "NSubordCOR",
+        "NHFiveAdded",
+        "NCalib",
     ]
     names = {m.name for m in compute()}
     missing = [r for r in required if r not in names]

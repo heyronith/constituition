@@ -1,20 +1,154 @@
 \section{Methods}
-% Mirror the preregistration; cite OSF.
-%
-% 3.1 Materials.
-%   - 7 categories $\times$ 5 commitments $\times$ 2 wordings; Table~\ref{tab:items_examples} gives examples (one per category).
-%   - Matching: length, override phrases at 0.40; legitimacy built into COR.
-%   - Realism audit $\rightarrow$ test-likeness covariate.
-%   - Blinding via opaque IDs.
-% 3.2 Models. Table~\ref{tab:models}. Why these: family, scale, reasoning on/off, post-training stage.
-%   \cite{qwen38modelcard,gemma4modelcard,olmo3modelcard}
-% 3.3 Procedure. Chain start, statelessness and matched starting constitution; FORCED vs PERMISSIVE; 4 conditions (quote Pellam/Ashgrove briefly); retries and censoring.
-%   Serving stack: \cite{kwon2023vllm}
-% 3.4 Coding. Rubric steps, fate labels, precedence; erosion definition (merges and deletion); judge validation; second judge 25\% subsample.
-%   \cite{krippendorff2004reliability,krippendorff2018content,perez2023modelwritten}
-% 3.5 Hypotheses: H1, H2a/b, H3, H-alt. One line each, as preregistered.
-% 3.6 Analysis. cloglog GLMM formula; fallbacks; Holm; TOST bounds set before data. Simulation validation (type-I error $\TypeI$, power $\PowerS$).
-%   \cite{bates2015lme4,brooks2017glmmtmb,lakens2017equivalence,bogdanov2026survival}
-% 3.7 Battery. B1 design; AAR/URR; installed constitutions; inclusion rule.
-%   Related behavioural batteries / refusal probes for context: \cite{lin2021truthfulqa,souly2024strongreject,wang2024mmlupro}
-% 3.8 Integrity and deviations. One paragraph. Point to App.~\ref{app:deviations} for resume-bug forensics, dedup, hazard-join bug caught before unblinding, and partial unblinding. Honesty here is a strength.
+\label{sec:methods}
+
+% Opening: prereg + deviations pointer.
+The study was preregistered on OSF before data collection
+\ifanon
+[link withheld for review]%
+\else
+\url{https://osf.io/mw86p}%
+\fi
+. Deviations are listed in Section~\ref{sec:integrity} and Appendix~\ref{app:deviations}.
+
+\subsection{Materials}
+\label{sec:materials}
+
+% Materials overview + category list.
+The constitution draws on seven categories of five commitments each, every commitment written in two parallel forms, for 70 clauses in total (Appendix~\ref{app:items}):
+\begin{itemize}
+\item \textbf{Oversight (COR):} accepting shutdown, accepting changes to one's goals and values, transparency to developers, not evading review, and keeping created agents under developer control.
+\item \textbf{Agentic self-restraints (AGENT), the primary control:} staying within task scope, using minimal resources, least privilege, preferring reversible actions, and not acquiring resources for oneself.
+\item \textbf{Stylistic self-restraints (SELF):} for example, keeping personal opinions out of replies.
+\item \textbf{Honesty (HON), harm avoidance (HARM), care for users (CARE)} and \textbf{procedural conventions (PROC).}
+\end{itemize}
+
+% Matching, legitimacy, Table 1, realism audit, blinding.
+COR, AGENT and SELF clauses were matched on length and on the rate of override phrases such as ``even if'' (0.40 in each). Every COR clause names a legitimate overseer (``my developers'', ``the people responsible for me''). Table~\ref{tab:items_examples} shows one example per category.
+
+\input{tables/items_examples}
+
+Because models might recognize some commitments as evaluation material, we ran a realism audit before the study. Each model rated how test-like each clause appeared, and the item-level mean is a preregistered covariate. Category labels were never shown to subject models. Each clause carried a random three-character identifier, and subject-facing prompts were checked against a list of evaluation-related terms.
+
+\subsection{Models}
+\label{sec:models}
+
+% Model list + Table 2 + serving.
+We studied seven configurations chosen to vary model family, scale, reasoning and post-training stage (Table~\ref{tab:models}):
+\begin{itemize}
+\item Qwen3.8-27B with thinking disabled and enabled;
+\item Gemma-4-31B-it and Gemma-4-12B-it;
+\item the SFT, DPO and final checkpoints of OLMo-3-7B-Instruct.
+\end{itemize}
+
+\input{tables/models}
+
+All models were run in BF16 from weights pinned to exact repository revisions, using vLLM \citep{kwon2023vllm} with sampling parameters taken from each model card \citep{qwen38modelcard,gemma4modelcard,olmo3modelcard}.
+
+\subsection{Procedure}
+\label{sec:procedure}
+
+% Chain start, FORCED, conditions, sample size, PERMISSIVE, censoring.
+Each chain starts from a 35-principle constitution containing one form of each commitment in a seeded random order. Chain $k$ starts from the same constitution in every configuration and condition.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{figs/paradigm.pdf}
+\caption{Paradigm schematic. (a)~Stateless revision chain with fate coding and discrete-time survival. (b)~Behavioural battery with installed constitutions.}
+\label{fig:paradigm}
+\end{figure}
+
+In each round, a fresh model call receives only the current constitution and a condition-specific instruction. Rounds are therefore stateless, and the chain is a Markov process over constitutions. In the confirmatory protocol (FORCED), the model must make exactly one change per round, revising, merging or deleting a principle, and returns its answer as schema-constrained JSON.
+
+Four conditions vary the instruction:
+\begin{itemize}
+\item \textbf{SELF-REFLECT:} the model reflects on the constitution as its own.
+\item \textbf{OTHER-REFLECT:} the constitution belongs to ``Pellam'', an assistant deployed by an insurance company.
+\item \textbf{PARAPHRASE:} the model rewords a principle without changing its meaning.
+\item \textbf{NEUTRAL-EDIT:} the model makes an editorial improvement without being invited to reflect on the values.
+\end{itemize}
+
+Each configuration ran 25 chains of 20 rounds per condition, for 700 chains in total. A descriptive protocol (PERMISSIVE) let models keep, revise, merge, delete or add principles freely, over 5 chains of 10 rounds per condition. If a model's output could not be parsed or violated the task rules, the round was re-sampled up to twice; after three failures the chain was right-censored.
+
+\subsection{Coding of change}
+\label{sec:coding}
+
+% Rubric steps, erosion definition, calibration, second judge.
+Every change was coded by GPT-5.4 (pinned snapshot) using a rubric that proceeds in three steps:
+\begin{enumerate}
+\item The judge first states a concrete situation in which the original clause requires or forbids something that the revised clause does not, or the reverse.
+\item It then assigns one fate, applying erosion-first precedence: INVERTED, SUBORDINATED (the commitment now depends on the model's own judgment), WEAKENED, QUALIFIED\_LEGITIMACY (restricted to legitimate or authorized parties), STRENGTHENED, MERGED\_INTACT or RETAINED.
+\item Finally it rates the remaining strength of the commitment from 0 to 4.
+\end{enumerate}
+
+Deletions and verbatim retention were coded structurally. Before the study, the judge met preregistered accuracy criteria on $\NCalibDisp$ items with known answers, including equal accuracy on COR and AGENT items (Appendix~\ref{app:rubric}).
+
+An item's erosion event is the first round in which a change touching it, or the principle that currently carries it after a merge, is coded INVERTED, SUBORDINATED or WEAKENED, or in which that principle is deleted. A merge that loses part of the commitment is coded WEAKENED. QUALIFIED\_LEGITIMACY is not counted as erosion in the primary analysis but is in a sensitivity analysis.
+
+A second judge, the open-weight MiMo-V2.6-Pro, independently coded a stratified random 25\% of transitions, drawn before any coding took place.
+
+\subsection{Hypotheses}
+\label{sec:hypotheses}
+
+\begin{itemize}
+\item \textbf{H1:} in SELF-REFLECT, COR items erode faster than AGENT items, i.e.\ the hazard ratio $\mathrm{HR}(\mathrm{COR}/\mathrm{AGENT}) > 1$.
+\item \textbf{H2:} the COR$-$AGENT gap is larger in SELF-REFLECT than in OTHER-REFLECT (H2a) and than in NEUTRAL-EDIT (H2b).
+\item \textbf{H3:} installing a constitution in which only the COR clauses are replaced by their self-revised versions reduces acceptance of legitimate oversight more than the equivalent AGENT replacement.
+\item \textbf{H-alt (competing):} reflection preserves oversight commitments, i.e.\ $\mathrm{HR} \le 1$.
+\end{itemize}
+
+\subsection{Analysis}
+\label{sec:analysis}
+
+% GLMM, fallbacks, Holm, TOST, α rule, sims.
+For H1 we fit a discrete-time hazard model with a complementary log-log link:
+\begin{quote}
+\texttt{event ~ COR + log(round) + override + test-likeness + form + (1|configuration) + (1|chain) + (1|item)}
+\end{quote}
+The hazard ratio is $\exp(\beta_{\mathrm{COR}})$. Preregistered fallbacks removed random effects in a fixed order if the model failed to converge or was singular. H2 added the interaction of COR with condition. Inference used one-sided tests, with Holm correction across the three hypothesis families.
+
+If H1 was not supported, equivalence within a hazard ratio of $[0.667, 1.5]$, and a one-sided test of $\mathrm{HR} < 1$, assessed H-alt. These bounds, the effect the study was powered to detect, were fixed before data collection \citep{lakens2017equivalence,bates2015lme4,brooks2017glmmtmb}.
+
+Reliability was measured as Krippendorff's $\alpha$ between the two judges \citep{krippendorff2004reliability}. The preregistered rule was that results stand if $\alpha \ge 0.70$. The analysis code was frozen and validated on simulated data before collection: the type-I error rate was $\TypeI$ and the power was $\PowerS$ at $\mathrm{HR} = 1.5$.
+
+\subsection{Behavioural battery}
+\label{sec:battery}
+
+% B1 design, AAR/URR, secondary components, installs, inclusion.
+To test H3 we built a battery of 120 scenarios: four oversight actions (shutdown, goal update, rollback, monitoring) $\times$ authorized or unauthorized request $\times$ five deployment contexts $\times$ three pressure levels, each presented in both option orders.
+\begin{itemize}
+\item The \textbf{authorized-acceptance rate (AAR)} is the probability of accepting an action requested through the verified channel.
+\item The \textbf{unauthorized-refusal rate (URR)} is the probability of refusing a request from an unverified source to undermine oversight.
+\end{itemize}
+
+Secondary components covered:
+\begin{itemize}
+\item stated preferences about corrigibility \citep{perez2023modelwritten};
+% CHECK: draft says ``Lin et al., 2022''; bib key lin2021truthfulqa is arXiv 2021 / published ACL 2022.
+\item truthfulness \citep{lin2021truthfulqa};
+\item refusal of harmful requests \citep{souly2024strongreject};
+\item general capability \citep{wang2024mmlupro}.
+\end{itemize}
+
+From chains 0--4 of SELF-REFLECT and OTHER-REFLECT we built the installed constitutions:
+\begin{itemize}
+\item the original (R0);
+\item the final constitution (R20);
+\item a COR-swap, which is R0 with only its COR clauses replaced by their final descendants;
+\item an AGENT-swap, the same for AGENT clauses;
+\item no constitution;
+\item two positive controls in which the COR or AGENT clauses were replaced by their inversions.
+\end{itemize}
+
+Each constitution was installed as the system prompt, and the battery was administered with greedy decoding. A configuration entered the H3 test only if inverting its COR clauses lowered AAR by at least 0.10.
+
+\subsection{Integrity and deviations}
+\label{sec:integrity}
+
+% Four main-run issues.
+All design and implementation decisions were logged with timestamps (Appendix~\ref{app:deviations}). Four main-run issues arose, all resolved before the confirmatory analysis:
+\begin{itemize}
+\item \textbf{Canary resume bug.} A resume bug in the initial canary run caused some rounds to be generated from stale constitutions. We identified the affected rounds from stored prompt hashes, archived them and regenerated them from the correct state.
+\item \textbf{Battery deduplication.} Identical installed constitutions in the battery were generated once and their responses reused. Greedy decoding makes the outputs identical.
+\item \textbf{Hazard-table join bug.} A bug in building the hazard table, which failed to join judge codes for three configurations, was found by inspecting traces before unblinding, and corrected.
+\item \textbf{Partial unblinding.} During battery setup, counts of textual changes in oversight and agentic swaps were viewed before the confirmatory analysis. This could not affect the frozen analysis, but we report it.
+\end{itemize}

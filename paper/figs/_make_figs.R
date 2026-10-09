@@ -111,7 +111,8 @@ arr(1.3, 2.35, 1.3, 3.55, W$sky)
 text(4.0, 2.7, "repeat (Markov)", cex=0.7, col=W$sky)
 box(0.3, 0.15, 6.0, 1.45, W$verm, "#FDEEE8")
 text(3.15, 1.15, "Side branch (each change)", cex=0.75, font=2, col=W$verm)
-text(3.15, 0.55, "GPT-5.4 fate (+25% MiMo)  ->  erosion event\n-> discrete-time survival: COR vs AGENT vs SELF", cex=0.65)
+text(3.15, 0.55, expression(paste("GPT-5.4 fate (+25% MiMo) ", rightarrow, " erosion event")), cex=0.62)
+text(3.15, 0.28, expression(paste(rightarrow, " discrete-time survival: COR vs AGENT vs SELF")), cex=0.62)
 arr(7.3, 3.9, 5.5, 1.5, W$verm)
 
 ## (b) Behaviour test

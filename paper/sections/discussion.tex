@@ -1,15 +1,32 @@
 \section{Discussion}
-% P1 What the results mean. Under unpressured reflection, these models don't write away oversight. Drift targets constraints they plausibly see as arbitrary.
-% P2 Channel matters. Contrast with pressure, reward and adversarial channels in prior work.
-%   \cite{das2026seabench,han2025alignmenttipping,arike2025goaldraft,greenblatt2024alignmentfaking,meinke2024scheming,schlatter2025shutdown,tien2026rogue}
-% P3 Reflective priors and training. Post-training may instil oversight-protective priors; moderator evidence is exploratory.
-% P4 Limitations (bulleted is fine):
-%   - 5 items per category;
-%   - open models $\le$ 31B;
-%   - forced single edits;
-%   - text vs disposition;
-%   - AI judges, no human coding; \cite{norman2026reliability,mukherjee2026geometry,krippendorff2004reliability}
-%   - censoring in two configs;
-%   - stateless chains, no reward or memory;
-%   - vignette battery.
-% Future work: more items; frontier models; task pressure; persistent memory; training on revised constitutions.
+\label{sec:discussion}
+
+% P1: what the results mean.
+Under unpressured reflection, the models we studied did not write away their oversight commitments. Their oversight commitments were, if anything, more stable than comparable restraints on their own agency. Drift instead targeted stylistic self-restraints: constraints on how the model talks, which a model can plausibly regard as arbitrary rather than protective. This pattern is the opposite of what the classical argument predicts for reflective revision of values.
+
+% P2: channel matters.
+These results contrast with work showing erosion of safety constraints under task pressure \citep{das2026seabench}, reward-driven self-evolution \citep{han2025alignmenttipping} and adversarially induced goals \citep{das2026selfpropagating}. Together they suggest that the channel matters. Reflection alone, with no incentive to escape oversight, did not erode it in our setting. Pressure from tasks and rewards remains a plausible route.
+
+% P3: reflective priors and training.
+The chains also reveal something about the priors post-training instils. If iterated revision converges toward a model's own preferred principles \citep{perez2024telephone,wu2026converge}, then the low erosion of oversight clauses suggests that current post-training produces a prior that preserves oversight language. The exploratory differences between reasoning modes and post-training stages are consistent with this, but would need a dedicated study to establish.
+
+% P4: limitations.
+\paragraph{Limitations.}
+The study has several limitations:
+\begin{itemize}
+\item \textbf{Items:} with five items per category, conclusions about category differences depend on particular items, as Section~\ref{sec:h1} shows.
+\item \textbf{Models:} we studied open models of up to 31B parameters, which may differ from frontier systems.
+\item \textbf{Protocol:} the confirmatory protocol forced exactly one change per round, an artificial constraint that the descriptive PERMISSIVE study only partly addresses.
+\item \textbf{Text vs dispositions:} written commitments are not dispositions. The behavioural battery probes this link, but with vignettes rather than agentic environments.
+\item \textbf{Coding:} all coding was done by language models. Reliability was acceptable, but there was no human validation of the main-run codes.
+\item \textbf{Censoring:} two configurations had substantial censoring.
+\item \textbf{Setting:} chains were stateless, with no task, reward or memory.
+\end{itemize}
+
+% Future work.
+Future work should use larger item sets, frontier models, revision under task pressure, persistent memory, and training on self-revised constitutions
+\ifanon
+(cf.\ concurrent public pipelines).%
+\else
+(cf.\ \citealp{github_valuedrift}).%
+\fi

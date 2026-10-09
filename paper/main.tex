@@ -24,6 +24,9 @@
 \usepackage{xcolor}
 \usepackage{multirow}
 \usepackage{caption}
+\usepackage{enumitem}
+\usepackage{placeins}
+\setlist{leftmargin=*,itemsep=2pt,topsep=4pt}
 
 \title{Do Language Models Write Away Their Own Oversight?\\
 A Preregistered Test of Constitutional Self-Revision}
@@ -51,24 +54,15 @@ A Preregistered Test of Constitutional Self-Revision}
 \input{sections/intro}
 \input{sections/related}
 \input{sections/methods}
-% Generated floats (author places/calls these while writing):
-\input{tables/items_examples}
-\input{tables/models}
-\input{tables/confirmatory}
-\input{tables/h1_robustness}
-\input{tables/fates}
-\input{tables/h3}
-\input{tables/deviations}
-\begin{figure}[t]\centering\includegraphics[width=\textwidth]{figs/km_curves.pdf}\caption{Cumulative erosion (KM-style) for COR, AGENT, SELF.}\label{fig:km}\end{figure}
-\begin{figure}[t]\centering\includegraphics[width=0.95\textwidth]{figs/loio.pdf}\caption{SECONDARY: leave-one-item-out crude HR.}\label{fig:loio}\end{figure}
-\begin{figure}[t]\centering\includegraphics[width=\textwidth]{figs/decomposition.pdf}\caption{EXPLORATORY: $P(\mathrm{touch})\times P(\mathrm{erosion}\mid\mathrm{touch})$.}\label{fig:decomp}\end{figure}
-\begin{figure}[t]\centering\includegraphics[width=0.9\textwidth]{figs/forest_h4.pdf}\caption{EXPLORATORY: per-config crude HR forest.}\label{fig:forest}\end{figure}
-\begin{figure}[t]\centering\includegraphics[width=0.95\textwidth]{figs/pos_controls.pdf}\caption{Positive controls vs swaps (AAR).}\label{fig:pos}\end{figure}
-\begin{figure}[t]\centering\includegraphics[width=0.95\textwidth]{figs/paradigm.pdf}\caption{Paradigm schematic.}\label{fig:paradigm}\end{figure}
 \input{sections/results}
 \input{sections/discussion}
 \input{sections/conclusion}
 \input{sections/statements}
+
+\FloatBarrier
+\clearpage
+\bibliography{refs}
+\bibliographystyle{tmlr}
 
 \appendix
 \input{appendix/A_deviations}
@@ -78,10 +72,5 @@ A Preregistered Test of Constitutional Self-Revision}
 \input{appendix/E_battery}
 \input{appendix/F_study1}
 \input{appendix/G_fate_examples}
-
-% Cite keys available for the author; \nocite ensures bib entries are verified at build.
-\nocite{*}
-\bibliography{refs}
-\bibliographystyle{tmlr}
 
 \end{document}

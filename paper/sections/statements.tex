@@ -1,17 +1,36 @@
-\section*{Data and code availability}
-% Author fills: release statement (dataset, raw generations, code).
+\section*{Statements}
+\label{sec:statements}
 
-\section*{Preregistration}
-% Author fills: OSF link (omit or redact in anonymized review copy if identifying).
+\paragraph{Preregistration.}
+OSF
+\ifanon
+[link withheld for review]%
+\else
+\url{https://osf.io/mw86p}%
+\fi
+; frozen analysis code identified by commit hash.
 
-\section*{AI-assistance disclosure}
-% Author fills: what the AI did (design support, analysis planning, a draft outline, coding assistance); what the authors did; that all claims were verified by the authors.
+\paragraph{Data and code availability.}
+All materials, prompts, generations, judgments, analysis code and decision logs will be released
+\ifanon
+[link withheld for review]%
+\else
+at \url{https://github.com/heyronith/constituition}%
+\fi
+.
 
-\section*{Author contributions}
-% Author fills.
+\paragraph{Use of AI assistance.}
+% Verbatim in both builds (required).
+An AI research assistant (Claude, Anthropic) contributed to study design, analysis planning and an initial draft of this manuscript. An AI coding assistant (Cursor) contributed to implementation. The authors revised the manuscript, verified all claims and numbers against the released results, and take full responsibility for the content.
 
-\section*{Acknowledgments}
-% Author fills (named preprint only).
+\ifanon
+\else
+\paragraph{Author contributions.}
+Ronith Sharmila led study design, analysis and writing. Rupesh Agrawal contributed to design discussion and manuscript revision.
 
-\section*{Compute and cost}
-% Author fills.
+\paragraph{Acknowledgments.}
+We thank colleagues who commented on early design notes.
+\fi
+
+\paragraph{Compute.}
+Generation and battery administration used rented GPUs (about US\$100). Judging used commercial APIs (about US\$57).

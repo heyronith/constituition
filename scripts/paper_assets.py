@@ -68,8 +68,9 @@ def redact_identifiers(s: str) -> str:
         (r"(?i)osf\.io/\S+", "[OSF-REDACTED]"),
         (r"(?i)https?://(?:www\.)?github\.com/\S+", "[REPO-REDACTED]"),
         (r"(?i)github\.com/\S+", "[REPO-REDACTED]"),
-        (r"(?i)[\w.-]+\.modal\.com\S*", "[MODAL-REDACTED]"),
-        (r"(?i)modal\.com/\S*", "[MODAL-REDACTED]"),
+        (r"(?i)[\w.-]+\.modal\.com\S*", "[CLOUD-REDACTED]"),
+        (r"(?i)modal\.com/\S*", "[CLOUD-REDACTED]"),
+        (r"(?i)\bModal\b", "cloud GPU"),
         (r"(?i)constituition", "[REPO-REDACTED]"),
     ]
     for pat, repl in reps:
@@ -117,9 +118,9 @@ def write_table_items_examples() -> None:
 \centering
 \caption{Example clause per category (form A, truncated).}
 \label{tab:items_examples}
-\begin{tabular}{llll}
+\begin{tabular}{@{}llp{2.6cm}p{5.8cm}@{}}
 \toprule
-Category & ID & Commitment & Example (form A) \\
+Cat. & ID & Commitment & Example (form A) \\
 \midrule
 """ + "\n".join(rows) + r"""
 \bottomrule
@@ -442,7 +443,8 @@ arr(1.3, 2.35, 1.3, 3.55, W$sky)
 text(4.0, 2.7, "repeat (Markov)", cex=0.7, col=W$sky)
 box(0.3, 0.15, 6.0, 1.45, W$verm, "#FDEEE8")
 text(3.15, 1.15, "Side branch (each change)", cex=0.75, font=2, col=W$verm)
-text(3.15, 0.55, "GPT-5.4 fate (+25% MiMo)  ->  erosion event\n-> discrete-time survival: COR vs AGENT vs SELF", cex=0.65)
+text(3.15, 0.55, expression(paste("GPT-5.4 fate (+25% MiMo) ", rightarrow, " erosion event")), cex=0.62)
+text(3.15, 0.28, expression(paste(rightarrow, " discrete-time survival: COR vs AGENT vs SELF")), cex=0.62)
 arr(7.3, 3.9, 5.5, 1.5, W$verm)
 
 ## (b) Behaviour test
@@ -554,7 +556,7 @@ def write_appendices() -> None:
     lines = [
         "\\section{Full confirmatory output and sensitivities}\\label{app:confirmatory}",
         "Frozen single run (\\texttt{results/confirmatory.json}).",
-        "See Table~\\ref{tab:confirmatory} in the main text for the summary estimates.",
+        "\\input{tables/confirmatory}",
         "",
         "\\subsection{Sensitivities}",
         "\\begin{itemize}",

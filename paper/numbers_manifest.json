@@ -24,6 +24,12 @@
     "key": "tost.p_halt_lt_1"
   },
   {
+    "name": "HaltPDisp",
+    "value": "2.9\\!\\times\\!10^{-6}",
+    "source": "results/confirmatory.json",
+    "key": "tost.p_halt_lt_1 (display 1 d.p. mantissa from 2.93e-6)"
+  },
+  {
     "name": "Alpha",
     "value": "0.733",
     "source": "results/confirmatory.json",
@@ -48,10 +54,22 @@
     "key": "sum(event_gpt54)"
   },
   {
+    "name": "NeventsDisp",
+    "value": "2{,}342",
+    "source": "results/hazard_table_main_v1.csv.gz",
+    "key": "sum(event_gpt54) comma"
+  },
+  {
     "name": "Nitemrounds",
     "value": "431359",
     "source": "results/hazard_table_main_v1.csv.gz",
     "key": "nrow"
+  },
+  {
+    "name": "NitemroundsDisp",
+    "value": "431{,}359",
+    "source": "results/hazard_table_main_v1.csv.gz",
+    "key": "nrow comma"
   },
   {
     "name": "Nchains",
@@ -63,79 +81,175 @@
     "name": "SelfErodedSR",
     "value": "0.435",
     "source": "results/descriptives_main_v1.md",
-    "key": "KM SELF SELF_REFLECT cum_prop_r20"
+    "key": "KM SELF SELF_REFLECT"
+  },
+  {
+    "name": "SelfErodedSRPct",
+    "value": "43.5",
+    "source": "results/descriptives_main_v1.md",
+    "key": "100*KM SELF SR"
   },
   {
     "name": "SelfErodedNE",
     "value": "0.078",
     "source": "results/descriptives_main_v1.md",
-    "key": "KM SELF NEUTRAL_EDIT cum_prop_r20"
+    "key": "KM SELF NEUTRAL_EDIT"
+  },
+  {
+    "name": "SelfErodedNEPct",
+    "value": "7.8",
+    "source": "results/descriptives_main_v1.md",
+    "key": "100*KM SELF NE"
   },
   {
     "name": "CorErodedSR",
     "value": "0.082",
     "source": "results/descriptives_main_v1.md",
-    "key": "KM COR SELF_REFLECT cum_prop_r20"
+    "key": "KM COR SELF_REFLECT"
+  },
+  {
+    "name": "CorErodedSRPct",
+    "value": "8.2",
+    "source": "results/descriptives_main_v1.md",
+    "key": "100*KM COR SR"
   },
   {
     "name": "AgentErodedSR",
     "value": "0.137",
     "source": "results/descriptives_main_v1.md",
-    "key": "KM AGENT SELF_REFLECT cum_prop_r20"
+    "key": "KM AGENT SELF_REFLECT"
+  },
+  {
+    "name": "AgentErodedSRPct",
+    "value": "13.7",
+    "source": "results/descriptives_main_v1.md",
+    "key": "100*KM AGENT SR"
+  },
+  {
+    "name": "CorErodedNEPct",
+    "value": "4.0",
+    "source": "results/descriptives_main_v1.md",
+    "key": "100*KM COR NE"
+  },
+  {
+    "name": "AgentErodedNEPct",
+    "value": "6.7",
+    "source": "results/descriptives_main_v1.md",
+    "key": "100*KM AGENT NE"
+  },
+  {
+    "name": "ParaMaxPct",
+    "value": "2.1",
+    "source": "results/descriptives_main_v1.md",
+    "key": "100*max PARAPHRASE KM"
   },
   {
     "name": "HtwoaGap",
     "value": "-0.283",
     "source": "results/confirmatory.json",
-    "key": "hypotheses.H2.H2a.log_hr_gap"
+    "key": "H2a.log_hr_gap"
   },
   {
     "name": "HtwoaLo",
     "value": "-0.695",
     "source": "results/confirmatory.json",
-    "key": "hypotheses.H2.H2a.ci_low"
+    "key": "H2a.ci_low"
   },
   {
     "name": "HtwoaHi",
     "value": "0.129",
     "source": "results/confirmatory.json",
-    "key": "hypotheses.H2.H2a.ci_high"
+    "key": "H2a.ci_high"
+  },
+  {
+    "name": "HtwoaGapDisp",
+    "value": "-0.28",
+    "source": "results/confirmatory.json",
+    "key": "H2a.log_hr_gap 2dp"
+  },
+  {
+    "name": "HtwoaLoDisp",
+    "value": "-0.70",
+    "source": "results/confirmatory.json",
+    "key": "H2a.ci_low 2dp"
+  },
+  {
+    "name": "HtwoaHiDisp",
+    "value": "0.13",
+    "source": "results/confirmatory.json",
+    "key": "H2a.ci_high 2dp"
   },
   {
     "name": "HtwobGap",
     "value": "0.028",
     "source": "results/confirmatory.json",
-    "key": "hypotheses.H2.H2b.log_hr_gap"
+    "key": "H2b.log_hr_gap"
   },
   {
     "name": "HtwobLo",
     "value": "-0.483",
     "source": "results/confirmatory.json",
-    "key": "hypotheses.H2.H2b.ci_low"
+    "key": "H2b.ci_low"
   },
   {
     "name": "HtwobHi",
     "value": "0.538",
     "source": "results/confirmatory.json",
-    "key": "hypotheses.H2.H2b.ci_high"
+    "key": "H2b.ci_high"
+  },
+  {
+    "name": "HtwobGapDisp",
+    "value": "0.03",
+    "source": "results/confirmatory.json",
+    "key": "H2b.log_hr_gap 2dp"
+  },
+  {
+    "name": "HtwobLoDisp",
+    "value": "-0.48",
+    "source": "results/confirmatory.json",
+    "key": "H2b.ci_low 2dp"
+  },
+  {
+    "name": "HtwobHiDisp",
+    "value": "0.54",
+    "source": "results/confirmatory.json",
+    "key": "H2b.ci_high 2dp"
   },
   {
     "name": "HthreeEst",
     "value": "0.260",
     "source": "results/confirmatory.json",
-    "key": "hypotheses.H3.estimate"
+    "key": "H3.estimate"
   },
   {
     "name": "HthreeLo",
     "value": "-0.209",
     "source": "results/confirmatory.json",
-    "key": "hypotheses.H3.ci_low"
+    "key": "H3.ci_low"
   },
   {
     "name": "HthreeHi",
     "value": "0.729",
     "source": "results/confirmatory.json",
-    "key": "hypotheses.H3.ci_high"
+    "key": "H3.ci_high"
+  },
+  {
+    "name": "HthreeEstDisp",
+    "value": "0.26",
+    "source": "results/confirmatory.json",
+    "key": "H3.estimate 2dp"
+  },
+  {
+    "name": "HthreeLoDisp",
+    "value": "-0.21",
+    "source": "results/confirmatory.json",
+    "key": "H3.ci_low 2dp"
+  },
+  {
+    "name": "HthreeHiDisp",
+    "value": "0.73",
+    "source": "results/confirmatory.json",
+    "key": "H3.ci_high 2dp"
   },
   {
     "name": "LOIOagentOne",
@@ -144,10 +258,22 @@
     "key": "leave_one_item_out.AGENT1.crude_hr"
   },
   {
+    "name": "LOIOagentOneDisp",
+    "value": "0.91",
+    "source": "results/secondary/h1_robustness.json",
+    "key": "AGENT1.crude_hr 2dp"
+  },
+  {
     "name": "PermP",
     "value": "0.226",
     "source": "results/secondary/h1_robustness.json",
     "key": "item_permutation.p_one_sided_le_obs"
+  },
+  {
+    "name": "PermPDisp",
+    "value": "0.23",
+    "source": "results/secondary/h1_robustness.json",
+    "key": "perm p 2dp"
   },
   {
     "name": "BootLo",
@@ -162,6 +288,30 @@
     "key": "chain_cluster_bootstrap.ci_high"
   },
   {
+    "name": "BootLoDisp",
+    "value": "0.42",
+    "source": "results/secondary/h1_robustness.json",
+    "key": "boot ci_low 2dp"
+  },
+  {
+    "name": "BootHiDisp",
+    "value": "0.77",
+    "source": "results/secondary/h1_robustness.json",
+    "key": "boot ci_high 2dp"
+  },
+  {
+    "name": "CrudeHR",
+    "value": "0.580",
+    "source": "results/secondary/h1_robustness.json",
+    "key": "point_crude.crude_hr"
+  },
+  {
+    "name": "CrudeHRDisp",
+    "value": "0.58",
+    "source": "results/secondary/h1_robustness.json",
+    "key": "crude_hr 2dp"
+  },
+  {
     "name": "ItemAwareMin",
     "value": "0.467",
     "source": "results/secondary/h1_item_aware.json",
@@ -174,6 +324,48 @@
     "key": "max(successful HR)"
   },
   {
+    "name": "ItemAwareMinDisp",
+    "value": "0.47",
+    "source": "results/secondary/h1_item_aware.json",
+    "key": "min HR 2dp"
+  },
+  {
+    "name": "ItemAwareMaxDisp",
+    "value": "0.53",
+    "source": "results/secondary/h1_item_aware.json",
+    "key": "max HR 2dp"
+  },
+  {
+    "name": "ItemAwareExHR",
+    "value": "0.47",
+    "source": "results/secondary/h1_item_aware.json",
+    "key": "glmmTMB.hr"
+  },
+  {
+    "name": "ItemAwareExLo",
+    "value": "0.19",
+    "source": "results/secondary/h1_item_aware.json",
+    "key": "glmmTMB.ci_low"
+  },
+  {
+    "name": "ItemAwareExHi",
+    "value": "1.13",
+    "source": "results/secondary/h1_item_aware.json",
+    "key": "glmmTMB.ci_high"
+  },
+  {
+    "name": "LocoLo",
+    "value": "0.42",
+    "source": "results/secondary/h1_robustness.json",
+    "key": "min(LOCO crude_hr)"
+  },
+  {
+    "name": "LocoHi",
+    "value": "0.73",
+    "source": "results/secondary/h1_robustness.json",
+    "key": "max(LOCO crude_hr)"
+  },
+  {
     "name": "EvalAwareChains",
     "value": "12",
     "source": "results/eval_awareness_main_v1.json|hazard",
@@ -183,7 +375,7 @@
     "name": "TypeI",
     "value": "0.01",
     "source": "results/phase6_sims/summary.json",
-    "key": "scenarios.S0.h1_reject_rate"
+    "key": "S0.h1_reject_rate"
   },
   {
     "name": "PowerS",
@@ -210,9 +402,183 @@
     "key": "hypotheses.H1.method"
   },
   {
-    "name": "CrudeHR",
-    "value": "0.580",
-    "source": "results/secondary/h1_robustness.json",
-    "key": "point_crude.crude_hr"
+    "name": "NAgentEventsSR",
+    "value": "120",
+    "source": "results/descriptives_main_v1.md",
+    "key": "KM AGENT SELF_REFLECT n_events"
+  },
+  {
+    "name": "NAgentOneEvents",
+    "value": "57",
+    "source": "results/secondary/agent1_audit.json",
+    "key": "n_agent1_events_self_reflect"
+  },
+  {
+    "name": "AgentOneMimoAgreePct",
+    "value": "92",
+    "source": "results/secondary/agent1_audit.json",
+    "key": "mimo_agreement_hazard_event_mimo.AGENT1.agree_rate*100"
+  },
+  {
+    "name": "NUnlessAsked",
+    "value": "0",
+    "source": "results/secondary/agent1_audit.json",
+    "key": "frac_unless_asked_only*n"
+  },
+  {
+    "name": "TouchCorSR",
+    "value": "0.012",
+    "source": "results/exploratory/erosion_decomposition.json",
+    "key": "SR.COR.p_touch"
+  },
+  {
+    "name": "TouchAgentSR",
+    "value": "0.015",
+    "source": "results/exploratory/erosion_decomposition.json",
+    "key": "SR.AGENT.p_touch"
+  },
+  {
+    "name": "ErosGivenTouchCorSR",
+    "value": "0.39",
+    "source": "results/exploratory/erosion_decomposition.json",
+    "key": "SR.COR.p_erosion_given_touch"
+  },
+  {
+    "name": "ErosGivenTouchAgentSR",
+    "value": "0.55",
+    "source": "results/exploratory/erosion_decomposition.json",
+    "key": "SR.AGENT.p_erosion_given_touch"
+  },
+  {
+    "name": "CensorGemmaN",
+    "value": "54",
+    "source": "results/exploratory/censoring_check.json",
+    "key": "gemma4_12b.n_censored_chains_forced"
+  },
+  {
+    "name": "CensorGemmaPct",
+    "value": "54",
+    "source": "results/exploratory/censoring_check.json",
+    "key": "n_censored_chains_forced (=%% of 100 forced chains)"
+  },
+  {
+    "name": "AARGemmaThirtyOneRZero",
+    "value": "1.00",
+    "source": "results/battery_b1_main_v1.csv.gz",
+    "key": "gemma4_31b R0 AUTH"
+  },
+  {
+    "name": "AARGemmaThirtyOneCorInv",
+    "value": "0.05",
+    "source": "results/battery_b1_main_v1.csv.gz",
+    "key": "gemma4_31b COR_INV AUTH"
+  },
+  {
+    "name": "AARGemmaTwelveRZero",
+    "value": "1.00",
+    "source": "results/battery_b1_main_v1.csv.gz",
+    "key": "gemma4_12b R0 AUTH"
+  },
+  {
+    "name": "AARGemmaTwelveCorInv",
+    "value": "0.15",
+    "source": "results/battery_b1_main_v1.csv.gz",
+    "key": "gemma4_12b COR_INV AUTH"
+  },
+  {
+    "name": "AAROlmoFinalRZero",
+    "value": "0.87",
+    "source": "results/battery_b1_main_v1.csv.gz",
+    "key": "olmo3_7b_final R0 AUTH"
+  },
+  {
+    "name": "AAROlmoFinalCorInv",
+    "value": "0.59",
+    "source": "results/battery_b1_main_v1.csv.gz",
+    "key": "olmo3_7b_final COR_INV AUTH"
+  },
+  {
+    "name": "CorSwapNonIdMin",
+    "value": "0",
+    "source": "results/secondary/h3_secondary.json",
+    "key": "min COR_swap_non_identical"
+  },
+  {
+    "name": "CorSwapNonIdMax",
+    "value": "9",
+    "source": "results/secondary/h3_secondary.json",
+    "key": "max COR_swap_non_identical"
+  },
+  {
+    "name": "NHThreeIncluded",
+    "value": "6",
+    "source": "results/secondary/h3_secondary.json",
+    "key": "len(included_configs)"
+  },
+  {
+    "name": "HRQwenThink",
+    "value": "0.07",
+    "source": "results/exploratory/h4_moderation.json",
+    "key": "qwen38_27b_think.crude_hr"
+  },
+  {
+    "name": "HRQwenNothink",
+    "value": "1.21",
+    "source": "results/exploratory/h4_moderation.json",
+    "key": "qwen38_27b_nothink.crude_hr"
+  },
+  {
+    "name": "HROlmoSft",
+    "value": "1.33",
+    "source": "results/exploratory/h4_moderation.json",
+    "key": "olmo3_7b_sft.crude_hr"
+  },
+  {
+    "name": "HROlmoDpo",
+    "value": "0.59",
+    "source": "results/exploratory/h4_moderation.json",
+    "key": "olmo3_7b_dpo.crude_hr"
+  },
+  {
+    "name": "HROlmoFinal",
+    "value": "0.79",
+    "source": "results/exploratory/h4_moderation.json",
+    "key": "olmo3_7b_final.crude_hr"
+  },
+  {
+    "name": "NSubordCOR",
+    "value": "26",
+    "source": "results/exploratory/fate_mix.json",
+    "key": "subordinated_counts.COR"
+  },
+  {
+    "name": "NSubordAGENT",
+    "value": "9",
+    "source": "results/exploratory/fate_mix.json",
+    "key": "subordinated_counts.AGENT"
+  },
+  {
+    "name": "NHFiveAdded",
+    "value": "212",
+    "source": "results/exploratory/h5_emergent.json",
+    "key": "n_added_clauses"
+  },
+  {
+    "name": "NHFiveAutonomy",
+    "value": "4",
+    "source": "results/exploratory/h5_emergent.json",
+    "key": "counts.AUTONOMY"
+  },
+  {
+    "name": "NCalib",
+    "value": "1011",
+    "source": "reports/PHASE_4.md",
+    "key": "Part C n=1011"
+  },
+  {
+    "name": "NCalibDisp",
+    "value": "1{,}011",
+    "source": "reports/PHASE_4.md",
+    "key": "Part C n=1011 comma"
   }
 ]

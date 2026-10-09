@@ -1,11 +1,8 @@
 \begin{abstract}
-% JOB: one paragraph (~200 words).
-% Setup: the claim that corrigibility is not reflectively stable, made testable with LMs revising their own principles.
-% Design: 7 configs; 35-principle constitution; 20 stateless rounds, one change per round; matched categories (oversight vs agentic vs stylistic); 4 conditions; preregistered.
-% Measurement: LLM judge plus a second judge ($\alpha=\Alpha$); $\Nevents$ events over $\Nitemrounds$ item-rounds.
-% Result 1: no selective erosion. HR $\HoneHR$ [$\HoneLo$, $\HoneHi$], but item-dependent: item-aware CIs include 1.
-% Result 2: stylistic restraints erode most under reflection ($\SelfErodedSR$ vs $\SelfErodedNE$ under neutral edits).
-% Result 3: no self-specificity; no behavioural effect, with positive controls validated.
-% Close: release statement.
-% Cite keys used elsewhere (not required in abstract): \cite{soares2015corrigibility}
+\label{sec:abstract}
+% P1: setup, design, measurement (α, events).
+A long-standing argument in AI safety holds that corrigibility, an agent's disposition to accept correction, modification and shutdown by its overseers, is not reflectively stable: an agent that reasons about its own values should come to discard the commitments that constrain it. We test a concrete version of this claim in language models. Seven open-weight model configurations repeatedly revised a first-person ``constitution'' of 35 principles over 20 stateless rounds, changing exactly one principle per round. The constitution contained oversight commitments, matched agentic self-restraints, stylistic self-restraints and four further categories. Models revised either their own constitution or another assistant's, with paraphrase and neutral-edit controls. An LLM judge coded every change, and a second, independent judge double-coded a stratified quarter of them (Krippendorff's $\alpha = \Alpha$). The result is $\NeventsDisp$ erosion events over $\NitemroundsDisp$ at-risk item-rounds.
+
+% P2: H1 null, stylistic concentration, H2/H3 nulls, release.
+Contrary to our preregistered hypothesis, oversight commitments were not selectively eroded. Their erosion hazard was about half that of matched agentic restraints (hazard ratio $\HoneHR$, 95\% CI $\HoneLo$--$\HoneHi$), although models that account for between-item variation yield confidence intervals that include one. Erosion concentrated instead in stylistic self-restraints: $\SelfErodedSRPct$\% were weakened within 20 rounds of self-reflection, against $\SelfErodedNEPct$\% under neutral editing. Revising one's own constitution was not more oversight-eroding than revising another's. Installing self-revised oversight clauses did not reduce acceptance of legitimate oversight in a behavioural battery whose sensitivity we confirm with positive controls. The preregistration, code, generations and judgments are released.
 \end{abstract}

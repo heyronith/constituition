@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Grep anonymized PDF text for identifying strings."""
+"""Grep anonymized PDF text for identifying strings (Phase 8C)."""
 
 from __future__ import annotations
 
@@ -15,22 +15,25 @@ NEEDLES = [
     "heyronith",
     "swosu.edu",
     "nku.edu",
-    "github.com/heyronith",
+    "github.com",
     "osf.io",
-    "modal.com",
+    "modal",
     "constituition",
 ]
 
 
 def pdf_text(path: Path) -> str:
-    # Prefer pdftotext; fall back to strings
     try:
-        out = subprocess.check_output(["pdftotext", "-layout", str(path), "-"], text=True, stderr=subprocess.DEVNULL)
-        return out
+        return subprocess.check_output(
+            ["pdftotext", "-layout", str(path), "-"],
+            text=True,
+            stderr=subprocess.DEVNULL,
+        )
     except (FileNotFoundError, subprocess.CalledProcessError):
         raw = path.read_bytes()
-        # crude extract
-        return "\n".join(re.findall(rb"[\x20-\x7e]{4,}", raw).decode() if False else [m.decode("latin1", "ignore") for m in re.findall(rb"[\x20-\x7e]{4,}", raw)])
+        return "\n".join(
+            m.decode("latin1", "ignore") for m in re.findall(rb"[\x20-\x7e]{4,}", raw)
+        )
 
 
 def main() -> int:
@@ -42,7 +45,12 @@ def main() -> int:
     hits = []
     for n in NEEDLES:
         if re.search(re.escape(n), text, re.I):
-            hits.append(n)
+            # Avoid false positive: 'model' contains no 'modal'; word-ish for modal
+            if n.lower() == "modal":
+                if re.search(r"(?i)\bmodal\b", text):
+                    hits.append(n)
+            else:
+                hits.append(n)
     if hits:
         print("ANON CHECK FAIL:", ", ".join(hits))
         return 1

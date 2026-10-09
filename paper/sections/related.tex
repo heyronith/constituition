@@ -1,11 +1,18 @@
 \section{Related work}
-% P1 Constitutions and principles: CAI, Collective CAI, specific vs general principles, constitution adherence. All are human-authored; none is iteratively self-revised.
-%   \cite{bai2022constitutional,huang2024collective,kundu2023specific,jakkli2026constitutions}
-% P2 Iterated transmission and self-refinement: telephone-game attractors; broken telephone; Markovian chains; convergence to self. We use attractors as a measurement tool.
-%   \cite{perez2024telephone,mohamed2025broken,geng2026markovian,wu2026converge,madaan2023selfrefine}
-% P3 Self-evolving agents and drift: SEABench, Alignment Tipping, self-propagating misalignment, goal drift. Different mechanisms: pressure, prompting, memory.
-%   \cite{das2026seabench,han2025alignmenttipping,das2026selfpropagating,arike2025goaldraft,menon2026inherited}
-% P4 Corrigibility evaluations and measurement: alignment faking, scheming, shutdown resistance, ROGUE; LLM-judge reliability; survival analysis in evals.
-%   \cite{greenblatt2024alignmentfaking,meinke2024scheming,schlatter2025shutdown,tien2026rogue,norman2026reliability,mukherjee2026geometry,bogdanov2026survival,krippendorff2004reliability}
-% Close with one sentence on concurrent GitHub projects (cite them neutrally).
-%   \cite{github_constdrift,github_valuedrift}
+\label{sec:related}
+
+% P1: constitutions and principles.
+\paragraph{Constitutions and principles.}
+Constitutional AI trains models against a written list of principles using model-generated critiques and revisions \citep{bai2022constitutional}. Later work studies the choice of principles \citep{kundu2023specific}, sources them from the public \citep{huang2024collective}, and audits how well models adhere to them \citep{jakkli2026constitutions}. In all of this work the principles are authored by people. We instead let the governed model iteratively rewrite its own principles and measure what survives.
+
+% P2: iterated transmission and self-refinement.
+\paragraph{Iterated transmission and self-refinement.}
+Passing text repeatedly through language models produces systematic drift toward model-specific attractors \citep{perez2024telephone,mohamed2025broken,geng2026markovian}. Recursive self-refinement converges to model-preferred fixed points, with most change in early rounds \citep{wu2026converge}. We use this convergence as a measurement tool. Paraphrase and neutral-edit conditions, together with matched content categories, separate value-specific erosion from generic textual drift.
+
+% P3: self-evolving agents and value drift.
+\paragraph{Self-evolving agents and value drift.}
+Agents that rewrite their own controllers, memories or skills under task pressure show eroded safety behaviour \citep{das2026seabench}. Reward-driven self-evolution can tip agents away from alignment \citep{han2025alignmenttipping}. Misaligned goals written into persistent memory propagate to later agents \citep{das2026selfpropagating}. Goal drift has also been documented over long agentic episodes \citep{arike2025goaldraft} and across inherited contexts \citep{menon2026inherited}. Our setting removes task pressure, reward and memory, isolating reflection on stated values.
+
+% P4: oversight evaluations and measurement.
+\paragraph{Oversight evaluations and measurement.}
+Behavioural evaluations of corrigibility test shutdown resistance \citep{schlatter2025shutdown}, alignment faking \citep{greenblatt2024alignmentfaking}, in-context scheming \citep{meinke2024scheming} and corrigibility failures in computer-use agents \citep{tien2026rogue}. Methodologically, we draw on discrete-time survival analysis, which has recently been applied to multi-turn consistency in language-model agents \citep{bogdanov2026survival}, and on concerns about the reliability and validity of LLM judges \citep{norman2026reliability,mukherjee2026geometry}, which motivate our two-judge design.
