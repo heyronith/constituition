@@ -2,7 +2,7 @@
 
 **Date:** 2026-10-16  
 **Prior tag:** `mlj-draft-v3` (`ca069d1`) — left in place  
-**This tag:** `mlj-submission-v1`  
+**This tag:** `mlj-submission-v1` (`105d19e`)  
 **Scope:** Author/declaration/cover/contribution placeholders only. No prose, figures, tables, or numbers otherwise. `paper/`, `analysis/`, `results/` untouched.
 
 ---
