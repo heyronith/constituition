@@ -1,0 +1,34 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{lmodern}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\setlength{\parskip}{0.6em}
+\setlength{\parindent}{0pt}
+\title{Machine Learning --- Contribution Information Sheet}
+\author{}
+\date{}
+\begin{document}
+\maketitle
+
+\textbf{1. What is the main claim of the paper? Why is this an important contribution to the machine learning literature?}
+
+A classical argument in AI safety holds that corrigibility is not reflectively stable: an agent that reflects on its values should come to discard commitments that let others correct, modify or shut it down. We provide the first preregistered, controlled test of this claim in language models. When seven open-weight model configurations iteratively revised a first-person constitution, oversight commitments were not selectively eroded relative to matched agentic self-restraints; erosion instead concentrated in stylistic self-restraints and was driven by reflection rather than by repeated editing. Self-revised oversight clauses did not change oversight-related behaviour in a battery validated with positive controls. The paradigm, dataset and frozen analysis pipeline give the field a reusable instrument for measuring value drift under self-revision.
+
+\textbf{2. What is the evidence you provide to support your claim?}
+
+A preregistered experiment: 7 configurations $\times$ 4 conditions $\times$ 25 chains $\times$ 20 rounds (700 chains; 431,359 at-risk item-rounds; 2,342 erosion events). It includes matched control categories, paraphrase and neutral-edit control conditions, a discrete-time survival analysis with preregistered fallbacks, a second independent LLM judge on a stratified 25\% sample (Krippendorff's $\alpha = 0.733$), item-level robustness analyses (bootstrap, leave-one-item-out, permutation, random-effects models), and a behavioural battery whose sensitivity is confirmed by positive controls. Analysis code was frozen and validated on simulated data before data collection.
+
+\textbf{3. What papers by other authors make the most closely related contributions, and how is your paper related to them?}
+\begin{itemize}[leftmargin=*]
+\item Soares et al.\ (2015) state the theoretical argument; we test it empirically.
+\item Das et al.\ (2026b) and Han et al.\ (2025) show safety erosion in self-evolving agents under task or reward pressure; we remove pressure, reward and memory to isolate unpressured reflection, and test selectivity against matched categories.
+\item Perez et al.\ (2024) and Wu et al.\ (2026) use iterated transmission and self-refinement to reveal model attractors; we use this as a measurement instrument for values.
+\item Two concurrent exploratory projects (heyuday, 2026; Wu, 2026) iterate constitution editing but lack control categories, category-level analysis and behavioural follow-up.
+\end{itemize}
+
+\textbf{4. Have you published parts of this work elsewhere? If so, how does this paper differ?}
+
+TODO(author): state any preprint (e.g.\ arXiv), workshop or prior submission. If none: ``No part of this work has been published or is under review elsewhere.''
+
+\end{document}

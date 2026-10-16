@@ -1,0 +1,9 @@
+*.aux
+*.log
+*.out
+*.blg
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+template/sn-article-template/sn-article.pdf
+template/sn-article-template/user-manual.pdf

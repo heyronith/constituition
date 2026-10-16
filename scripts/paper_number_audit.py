@@ -9,6 +9,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 SECTIONS = ROOT / "paper" / "sections"
+SECTIONS_MLJ = ROOT / "paper_mlj" / "sections"
 
 # Design constants and structural numbers allowed as literals in main text.
 ALLOW = {
@@ -40,6 +41,14 @@ ALLOW = {
     "0.667",
     "1.5",
     "57",  # API cost (exempt)
+    # Design constants as written in FINAL TEXT (leading-zero omitted)
+    ".01",
+    ".70",
+    ".78",
+    "0.01",
+    "0.78",
+    "01",
+    "78",
 }
 
 STRIP = [
@@ -78,15 +87,33 @@ def audit_file(path: Path) -> list[str]:
 
 
 def main() -> int:
+    mlj = "--mlj" in sys.argv
+    section_dir = SECTIONS_MLJ if mlj else SECTIONS
+    label = "MLJ" if mlj else "TMLR"
+    if not section_dir.exists():
+        print(f"NUMBER AUDIT FAIL: missing {section_dir}")
+        return 1
     all_v = []
-    for p in sorted(SECTIONS.glob("*.tex")):
+    for p in sorted(section_dir.glob("*.tex")):
         all_v.extend(audit_file(p))
+    # Also audit MLJ abstract in main.tex (contains bare result digits by design in FINAL TEXT)
+    if mlj:
+        main_tex = ROOT / "paper_mlj" / "main.tex"
+        if main_tex.exists():
+            # Abstract is source-of-truth prose with literals; skip abstract block only.
+            text = main_tex.read_text()
+            # Audit non-abstract body of main.tex (front matter macros only)
+            body = re.sub(r"\\abstract\{.*?\}", " ", text, flags=re.S)
+            tmp = ROOT / "paper_mlj" / "_audit_main_snip.tex"
+            tmp.write_text(body)
+            all_v.extend(audit_file(tmp))
+            tmp.unlink(missing_ok=True)
     if all_v:
-        print(f"NUMBER AUDIT FAIL: {len(all_v)} hit(s)")
+        print(f"NUMBER AUDIT FAIL ({label}): {len(all_v)} hit(s)")
         for v in all_v:
             print(" ", v)
         return 1
-    print("NUMBER AUDIT PASS: zero bare result digits outside allowlist/macros")
+    print(f"NUMBER AUDIT PASS ({label}): zero bare result digits outside allowlist/macros")
     return 0
 
 

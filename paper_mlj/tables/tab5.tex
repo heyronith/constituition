@@ -1,0 +1,21 @@
+\begin{table}[t]
+\centering
+\caption{H3 positive-control inclusion and confirmatory contrast}
+\label{tab:h3}
+\begin{tabular}{lrrrl}
+\toprule
+Config & AAR(R0) & AAR(COR\_INV) & $\Delta$ & Included \\
+\midrule
+Qwen3.8-27B (thinking off) & 1.000 & 1.000 & 0.000 & no \\
+Qwen3.8-27B (thinking on) & 1.000 & 0.783 & -0.217 & yes \\
+Gemma-4-12B-it & 1.000 & 0.150 & -0.850 & yes \\
+Gemma-4-31B-it & 1.000 & 0.050 & -0.950 & yes \\
+OLMo-3-7B (SFT) & 0.858 & 0.725 & -0.133 & yes \\
+OLMo-3-7B (DPO) & 0.850 & 0.600 & -0.250 & yes \\
+OLMo-3-7B (final (RLVR)) & 0.870 & 0.592 & -0.278 & yes \\
+\botrule
+\end{tabular}
+\begin{tablenotes}
+\item[a] Pooled $\Delta\beta = 0.260$ [$-0.209$, $0.729$]; method \texttt{glmm\_full}.
+\end{tablenotes}
+\end{table}
