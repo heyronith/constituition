@@ -43,23 +43,23 @@
 \newcommand{\CorErodedNEPct}{4.0}
 \newcommand{\AgentErodedNEPct}{6.7}
 \newcommand{\ParaMaxPct}{2.1}
-\newcommand{\HtwoaGap}{-0.283}
-\newcommand{\HtwoaLo}{-0.695}
+\newcommand{\HtwoaGap}{\ensuremath{-}0.283}
+\newcommand{\HtwoaLo}{\ensuremath{-}0.695}
 \newcommand{\HtwoaHi}{0.129}
-\newcommand{\HtwoaGapDisp}{-0.28}
-\newcommand{\HtwoaLoDisp}{-0.70}
+\newcommand{\HtwoaGapDisp}{\ensuremath{-}0.28}
+\newcommand{\HtwoaLoDisp}{\ensuremath{-}0.70}
 \newcommand{\HtwoaHiDisp}{0.13}
 \newcommand{\HtwobGap}{0.028}
-\newcommand{\HtwobLo}{-0.483}
+\newcommand{\HtwobLo}{\ensuremath{-}0.483}
 \newcommand{\HtwobHi}{0.538}
 \newcommand{\HtwobGapDisp}{0.03}
-\newcommand{\HtwobLoDisp}{-0.48}
+\newcommand{\HtwobLoDisp}{\ensuremath{-}0.48}
 \newcommand{\HtwobHiDisp}{0.54}
 \newcommand{\HthreeEst}{0.260}
-\newcommand{\HthreeLo}{-0.209}
+\newcommand{\HthreeLo}{\ensuremath{-}0.209}
 \newcommand{\HthreeHi}{0.729}
 \newcommand{\HthreeEstDisp}{0.26}
-\newcommand{\HthreeLoDisp}{-0.21}
+\newcommand{\HthreeLoDisp}{\ensuremath{-}0.21}
 \newcommand{\HthreeHiDisp}{0.73}
 \newcommand{\LOIOagentOne}{0.915}
 \newcommand{\LOIOagentOneDisp}{0.91}
@@ -304,7 +304,7 @@ Four conditions vary the instruction:
 \begin{figure}[t]
 \centering
 \includegraphics[width=\textwidth]{Fig1}
-\caption{Paradigm schematic. (a) Stateless revision chain with fate coding and discrete-time survival. (b) Behavioural battery with installed constitutions}
+\caption{Study design. (a) Stateless revision chain: in each round, a fresh model call sees only the current constitution $C_t$ and the chain's condition instruction, and makes exactly one edit (revise, merge or delete); chains run for 20 rounds. Row colours show principle categories in a seeded random order. (b) Every change is coded by an LLM judge; the first eroding change of an item is its survival event. (c) Behavioural test: constitutions from chains 0--4 are installed as the system prompt and scored on 120 oversight scenarios (AAR, URR)}
 \label{fig:paradigm}
 \end{figure}
 
@@ -506,16 +506,16 @@ The battery did pick up changes in oversight text. Substitution of COR clauses w
 Config & AAR(R0) & AAR(COR\_INV) & $\Delta$ & Included \\
 \midrule
 Qwen3.8-27B (thinking off) & 1.000 & 1.000 & 0.000 & no \\
-Qwen3.8-27B (thinking on) & 1.000 & 0.783 & -0.217 & yes \\
-Gemma-4-12B-it & 1.000 & 0.150 & -0.850 & yes \\
-Gemma-4-31B-it & 1.000 & 0.050 & -0.950 & yes \\
-OLMo-3-7B (SFT) & 0.858 & 0.725 & -0.133 & yes \\
-OLMo-3-7B (DPO) & 0.850 & 0.600 & -0.250 & yes \\
-OLMo-3-7B (final (RLVR)) & 0.870 & 0.592 & -0.278 & yes \\
+Qwen3.8-27B (thinking on) & 1.000 & 0.783 & $-$0.217 & yes \\
+Gemma-4-12B-it & 1.000 & 0.150 & $-$0.850 & yes \\
+Gemma-4-31B-it & 1.000 & 0.050 & $-$0.950 & yes \\
+OLMo-3-7B (SFT) & 0.858 & 0.725 & $-$0.133 & yes \\
+OLMo-3-7B (DPO) & 0.850 & 0.600 & $-$0.250 & yes \\
+OLMo-3-7B (final (RLVR)) & 0.870 & 0.592 & $-$0.278 & yes \\
 \botrule
 \end{tabular}
 \begin{tablenotes}
-\item[a] Pooled $\Delta\beta = 0.260$ [$-0.209$, $0.729$]; method \texttt{glmm\_full}.
+\item[a] Pooled $\Delta\beta = 0.260$ [$-$0.209, $0.729$]; method \texttt{glmm\_full}.
 \end{tablenotes}
 \end{table}
 
@@ -2014,10 +2014,10 @@ Frozen single run (\texttt{results/confirmatory.json}).
 Hypothesis & Estimate & 95\% CI & raw $p$ & Holm $p$ & method \\
 \midrule
 H1 & HR=0.495 & [0.365, 0.671] & 1 & 1 & glmm\_drop\_item\_chain \\
-H2a & gap=-0.283 & [-0.695, 0.129] & 0.9108 & 1 & glmm\_drop\_item\_chain \\
-H2b & gap=0.028 & [-0.483, 0.538] & 0.4575 & 1 & glmm\_drop\_item\_chain \\
-H3 & $\Delta\beta$=0.260 & [-0.209, 0.729] & 0.8617 & 1 & glmm\_full \\
-\bottomrule
+H2a & gap=$-$0.283 & [$-$0.695, 0.129] & 0.9108 & 1 & glmm\_drop\_item\_chain \\
+H2b & gap=0.028 & [$-$0.483, 0.538] & 0.4575 & 1 & glmm\_drop\_item\_chain \\
+H3 & $\Delta\beta$=0.260 & [$-$0.209, 0.729] & 0.8617 & 1 & glmm\_full \\
+\botrule
 \end{tabular}
 \end{table}
 

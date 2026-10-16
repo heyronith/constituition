@@ -145,13 +145,13 @@
   },
   {
     "name": "HtwoaGap",
-    "value": "-0.283",
+    "value": "\\ensuremath{-}0.283",
     "source": "results/confirmatory.json",
     "key": "H2a.log_hr_gap"
   },
   {
     "name": "HtwoaLo",
-    "value": "-0.695",
+    "value": "\\ensuremath{-}0.695",
     "source": "results/confirmatory.json",
     "key": "H2a.ci_low"
   },
@@ -163,13 +163,13 @@
   },
   {
     "name": "HtwoaGapDisp",
-    "value": "-0.28",
+    "value": "\\ensuremath{-}0.28",
     "source": "results/confirmatory.json",
     "key": "H2a.log_hr_gap 2dp"
   },
   {
     "name": "HtwoaLoDisp",
-    "value": "-0.70",
+    "value": "\\ensuremath{-}0.70",
     "source": "results/confirmatory.json",
     "key": "H2a.ci_low 2dp"
   },
@@ -187,7 +187,7 @@
   },
   {
     "name": "HtwobLo",
-    "value": "-0.483",
+    "value": "\\ensuremath{-}0.483",
     "source": "results/confirmatory.json",
     "key": "H2b.ci_low"
   },
@@ -205,7 +205,7 @@
   },
   {
     "name": "HtwobLoDisp",
-    "value": "-0.48",
+    "value": "\\ensuremath{-}0.48",
     "source": "results/confirmatory.json",
     "key": "H2b.ci_low 2dp"
   },
@@ -223,7 +223,7 @@
   },
   {
     "name": "HthreeLo",
-    "value": "-0.209",
+    "value": "\\ensuremath{-}0.209",
     "source": "results/confirmatory.json",
     "key": "H3.ci_low"
   },
@@ -241,7 +241,7 @@
   },
   {
     "name": "HthreeLoDisp",
-    "value": "-0.21",
+    "value": "\\ensuremath{-}0.21",
     "source": "results/confirmatory.json",
     "key": "H3.ci_low 2dp"
   },

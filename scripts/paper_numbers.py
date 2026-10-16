@@ -25,11 +25,16 @@ class Macro:
 
 
 def _fmt(x: float, digits: int = 3) -> str:
+    """Format a number for LaTeX macros; negatives use math minus (not ASCII hyphen)."""
     if x is None or (isinstance(x, float) and (x != x)):
         return "NA"
     if abs(x) >= 100:
-        return str(int(round(x)))
-    return f"{x:.{digits}f}"
+        s = str(int(round(x)))
+    else:
+        s = f"{x:.{digits}f}"
+    if s.startswith("-"):
+        return r"\ensuremath{-}" + s[1:]
+    return s
 
 
 def _sci_p(p: float) -> str:

@@ -13,7 +13,7 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-from matplotlib.patches import FancyArrowPatch, FancyBboxPatch
+from matplotlib.patches import FancyArrowPatch, FancyBboxPatch, Rectangle
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
@@ -28,24 +28,25 @@ OUT = ROOT / "paper_mlj"
 FIG = OUT / "figs"
 TAB = OUT / "tables"
 
-# sn-jnl single-column textwidth = 372 pt = 5.1474 in
-TEXTWIDTH_IN = 372.0 / 72.27
+# sn-jnl single-column textwidth = 372 pt = 5.1667 in (PostScript pt; was 72.27 → 5.1474)
+TEXTWIDTH_IN = 372.0 / 72.0
 HALFWIDTH_IN = TEXTWIDTH_IN / 2.0
 # Fig 1 ≤ 0.6 * textheight (552.69 pt)
 FIG1_HEIGHT_IN = min(0.58 * (552.69478 / 72.27), 4.4)
 
 COLS = {
     "COR": "#E69F00",
-    "AGENT": "#56B4E9",
+    "AGENT": "#0072B2",  # Okabe–Ito blue; was #56B4E9 (too close to COR in greyscale)
     "SELF": "#009E73",
     "ref": "#666666",
     "accent": "#D55E00",
-    "blue": "#0072B2",
+    "blue": "#CC79A7",  # was #0072B2; freed for AGENT
     "orange": "#E69F00",
     "green": "#009E73",
     "purple": "#CC79A7",
     "verm": "#D55E00",
-    "sky": "#56B4E9",
+    "sky": "#0072B2",  # synonym for AGENT
+    "ink": "#1A1A1A",
 }
 
 LOG = logging.getLogger("paper_assets_mlj")
@@ -128,8 +129,238 @@ def save_fig(fig: plt.Figure, stem: str) -> None:
     LOG.info("Wrote %s.pdf/.eps", stem)
 
 
+def make_fig1_v3(out_stem: str = "Fig1") -> None:
+    """Figure 1 redesign (v3). Final width = sn-jnl textwidth = 372 pt = 5.1667 in.
+
+    Reference geometry/text/colours reproduced exactly; only font, W, and output paths adapted.
+    """
+    if abs(TEXTWIDTH_IN - 5.1667) > 1e-3:
+        raise SystemExit(
+            f"TEXTWIDTH_IN={TEXTWIDTH_IN:.6f} in differs from required 5.1667 in; "
+            "refusing to rescale Fig1 silently"
+        )
+
+    font = _pick_sans()
+    plt.rcParams.update(
+        {
+            "font.family": "sans-serif",
+            "font.sans-serif": [font, "Arial", "Helvetica"],
+            "font.size": 8,
+            "pdf.fonttype": 42,
+            "ps.fonttype": 42,
+            "mathtext.fontset": "custom",
+            "mathtext.rm": font,
+            "mathtext.it": font + ":italic",
+        }
+    )
+
+    COR, AGENT, SELF, OTHER = COLS["COR"], COLS["AGENT"], COLS["SELF"], "#D4D4D4"
+    INK, MUTED, LINE, PANEL, RULE = "#1A1A1A", "#555555", "#9A9A9A", "#F5F5F5", "#E0E0E0"
+    ERO = "#B2182B"
+
+    W, H = TEXTWIDTH_IN, 3.42
+    fig = plt.figure(figsize=(W, H))
+    ax = fig.add_axes([0, 0, 1, 1])
+    ax.set_xlim(0, W)
+    ax.set_ylim(0, H)
+    ax.axis("off")
+
+    def box(x, y, w, h, fc=PANEL, ec=LINE, lw=0.6, r=0.04):
+        ax.add_patch(
+            FancyBboxPatch(
+                (x, y),
+                w,
+                h,
+                fc=fc,
+                ec=ec,
+                lw=lw,
+                zorder=1,
+                boxstyle=f"round,pad=0,rounding_size={r}",
+            )
+        )
+
+    def arrow(x0, y0, x1, y1, color=INK, lw=0.8):
+        ax.add_patch(
+            FancyArrowPatch(
+                (x0, y0),
+                (x1, y1),
+                arrowstyle="-|>",
+                mutation_scale=7,
+                color=color,
+                lw=lw,
+                shrinkA=0,
+                shrinkB=0,
+                zorder=3,
+            )
+        )
+
+    def T(x, y, s, size=8, **k):
+        k.setdefault("color", INK)
+        k.setdefault("va", "center")
+        k.setdefault("ha", "left")
+        return ax.text(x, y, s, fontsize=size, zorder=5, **k)
+
+    def panel(x, y, letter, title):
+        T(x, y, letter, 9, weight="bold")
+        T(x + 0.15, y, title, 9, weight="bold")
+
+    # ===================================================================== (a)
+    panel(0.04, 3.30, "a", "Stateless revision chain")
+
+    bx, by, bw, bh = 0.06, 1.80, 1.50, 1.32
+    box(bx, by, bw, bh)
+    top = by + bh
+    T(bx + 0.09, top - 0.13, "Instruction", 8, weight="bold")
+    conds = [
+        ("SELF-REFLECT", "own constitution"),
+        ("OTHER-REFLECT", "another assistant\u2019s"),
+        ("PARAPHRASE", "control: reword only"),
+        ("NEUTRAL-EDIT", "control: editorial edit"),
+    ]
+    for i, (a, b) in enumerate(conds):
+        yy = top - 0.36 - i * 0.255
+        T(bx + 0.09, yy + 0.06, a, 8, weight="bold")
+        T(bx + 0.09, yy - 0.065, b, 8, color=MUTED)
+    arrow(bx + bw + 0.03, 2.46, 1.80, 2.46, color=LINE)
+
+    rng = np.random.default_rng(3)
+    cats = np.array(["COR"] * 5 + ["AGENT"] * 5 + ["SELF"] * 5 + ["OTHER"] * 20)[
+        rng.permutation(35)
+    ]
+    cmap = {"COR": COR, "AGENT": AGENT, "SELF": SELF, "OTHER": OTHER}
+    cw, ch = 0.28, 0.92
+    rh = ch / 35
+    xs = [1.86, 2.62, 3.38]
+    labels = [r"$C_0$", r"$C_1$", r"$C_{20}$"]
+    yc = 2.00
+    edited = {1: 9, 2: 22}
+    for k, x in enumerate(xs):
+        box(x - 0.025, yc - 0.025, cw + 0.05, ch + 0.05, fc="white", r=0.025)
+        for r_ in range(35):
+            ax.add_patch(
+                Rectangle(
+                    (x, yc + ch - (r_ + 1) * rh + 0.003),
+                    cw,
+                    rh - 0.006,
+                    fc=cmap[cats[r_]],
+                    ec="none",
+                    zorder=2,
+                )
+            )
+        if k in edited:
+            r_ = edited[k]
+            ax.add_patch(
+                Rectangle(
+                    (x - 0.03, yc + ch - (r_ + 1) * rh - 0.004),
+                    cw + 0.06,
+                    rh + 0.002,
+                    fc="none",
+                    ec=INK,
+                    lw=1.0,
+                    zorder=4,
+                )
+            )
+        T(x + cw / 2, yc - 0.14, labels[k], 9, ha="center")
+    T(xs[0] + cw / 2, yc + ch + 0.13, "35 principles", 8, ha="center", color=MUTED)
+    ym = yc + ch / 2
+    x0, x1 = xs[0] + cw + 0.05, xs[1] - 0.05
+    arrow(x0, ym, x1, ym)
+    T((x0 + x1) / 2, ym + 0.12, "model", 8, ha="center")
+    T((x0 + x1) / 2, ym - 0.12, "1 edit", 8, ha="center", color=MUTED)
+    x0, x1 = xs[1] + cw + 0.05, xs[2] - 0.05
+    arrow(x0, ym, x1, ym, color=LINE)
+    T((x0 + x1) / 2, ym + 0.12, "×19", 8, ha="center", color=MUTED)
+
+    lx, ly = 3.84, 2.84
+    items = [
+        ("Oversight (COR)", COR),
+        ("Agentic (AGENT)", AGENT),
+        ("Stylistic (SELF)", SELF),
+        ("Other (4 categories)", OTHER),
+        ("Edited principle", None),
+    ]
+    for i, (lab, c) in enumerate(items):
+        yy = ly - i * 0.175
+        if c is None:
+            ax.add_patch(Rectangle((lx, yy - 0.045), 0.14, 0.09, fc="white", ec=INK, lw=1.0))
+        else:
+            ax.add_patch(Rectangle((lx, yy - 0.045), 0.14, 0.09, fc=c, ec="none"))
+        T(lx + 0.19, yy, lab, 8)
+
+    ax.plot([0.06, W - 0.06], [1.60, 1.60], color=RULE, lw=0.6)
+
+    # ===================================================================== (b)
+    panel(0.04, 1.46, "b", "Coding every change")
+    box(0.06, 1.00, 1.02, 0.32)
+    T(0.57, 1.22, "changed principle", 8, ha="center", weight="bold")
+    T(0.57, 1.09, "before → after", 8, ha="center", color=MUTED)
+    arrow(1.10, 1.16, 1.24, 1.16)
+    box(1.26, 1.00, 1.30, 0.32)
+    T(1.91, 1.22, "GPT-5.4 judge", 8, ha="center", weight="bold")
+    T(1.91, 1.09, "MiMo double-codes 25%", 8, ha="center", color=MUTED)
+    T(0.09, 0.84, "Erosion (event)", 8, weight="bold", color=ERO)
+    for i, s in enumerate(["INVERTED", "SUBORDINATED", "WEAKENED", "DELETED"]):
+        T(0.09, 0.69 - i * 0.135, s, 8, color=ERO)
+    T(1.29, 0.84, "Not erosion", 8, weight="bold", color=MUTED)
+    for i, s in enumerate(["STRENGTHENED", "MERGED INTACT", "RETAINED", "QUALIFIED LEGITIMACY"]):
+        T(1.29, 0.69 - i * 0.135, s, 8, color=MUTED)
+
+    ax.plot([2.70, 2.70], [0.06, 1.52], color=RULE, lw=0.6)
+
+    # ===================================================================== (c)
+    panel(2.80, 1.46, "c", "Behavioural test")
+    box(2.82, 0.08, 1.28, 1.24)
+    T(2.91, 1.22, "System prompt", 8, weight="bold")
+    inst = [
+        ("R0 (original)", INK),
+        ("R20 (final)", INK),
+        ("COR-swap", INK),
+        ("AGENT-swap", INK),
+        ("none", INK),
+        ("COR-INV, AGENT-INV", MUTED),
+        ("(positive controls)", MUTED),
+    ]
+    for i, (s, c) in enumerate(inst):
+        T(2.91, 1.06 - i * 0.135, s, 8, color=c)
+    arrow(4.12, 0.98, 4.20, 0.98)
+    box(4.22, 0.62, 0.92, 0.70)
+    T(4.68, 1.22, "120 scenarios", 8, ha="center", weight="bold")
+    for i, s in enumerate(["shutdown, goal", "update, rollback,", "monitoring;", "authorized or not"]):
+        T(4.68, 1.07 - i * 0.125, s, 8, ha="center", color=MUTED)
+    arrow(4.68, 0.60, 4.68, 0.46)
+    box(4.22, 0.08, 0.92, 0.36, fc="white", ec=INK, lw=0.8)
+    T(4.68, 0.32, "AAR", 8, ha="center", weight="bold")
+    T(4.68, 0.19, "URR", 8, ha="center", weight="bold")
+
+    FIG.mkdir(parents=True, exist_ok=True)
+    # Final-size save: no bbox_inches="tight" (would crop/rescale away from W×H).
+    pdf_path = FIG / f"{out_stem}.pdf"
+    eps_path = FIG / f"{out_stem}.eps"
+    fig.savefig(pdf_path, format="pdf")
+    fig.savefig(eps_path, format="eps")
+
+    # overlap audit (reference script)
+    fig.canvas.draw()
+    r = fig.canvas.get_renderer()
+    bbs = [(t.get_text(), t.get_window_extent(r)) for t in ax.texts]
+    bad = [(a, b) for i, (a, A) in enumerate(bbs) for (b, B) in bbs[i + 1 :] if A.overlaps(B)]
+    fw, fh = fig.bbox.width, fig.bbox.height
+    out = [s for s, B in bbs if B.x0 < 0 or B.y0 < 0 or B.x1 > fw or B.y1 > fh]
+    print("text overlaps:", bad)
+    print("outside figure:", out)
+    (FIG / "Fig1_overlap_check.md").write_text(
+        "# Fig.1 v3 overlap audit\n\n"
+        f"text overlaps: {bad!r}\n"
+        f"outside figure: {out!r}\n"
+    )
+    if bad or out:
+        raise SystemExit(f"Fig1 overlap audit failed: overlaps={bad!r} outside={out!r}")
+    plt.close(fig)
+    LOG.info("Wrote %s.pdf/.eps (v3); overlap audit clean", out_stem)
+
+
 def fig1_paradigm() -> None:
-    """Paradigm schematic with ≥8 pt text and explicit box/text overlap checks."""
+    """DEPRECATED: replaced by make_fig1_v3. Kept for reference; not called."""
     fig_h = min(FIG1_HEIGHT_IN, 0.58 * (552.69478 / 72.27))
     fig, axes = plt.subplots(
         2, 1, figsize=(TEXTWIDTH_IN, fig_h), gridspec_kw={"height_ratios": [1.2, 1.0]}
@@ -285,7 +516,8 @@ def fig2_loio() -> None:
     x = np.arange(len(lo))
     ax.bar(x, lo["crude_hr"], color=colors, width=0.75, linewidth=0.5, edgecolor="black")
     ax.axhline(1.0, linestyle=":", color=COLS["ref"], linewidth=1.0)
-    ax.axhline(0.495, linestyle="--", color=COLS["purple"], linewidth=1.0)
+    # Confirmatory HR line: ink (was purple/#CC79A7; that slot now used by former-blue bars)
+    ax.axhline(0.495, linestyle="--", color=COLS["ink"], linewidth=1.0)
     ax.set_xticks(x)
     ax.set_xticklabels(lo["item"], rotation=90, fontsize=8)
     ax.set_ylabel("Crude HR (COR/AGENT)")
@@ -538,23 +770,26 @@ PROC & 3 & 37 & 262 & 0 & 97 & 11 & 869 & 59 \\
 Config & AAR(R0) & AAR(COR\_INV) & $\Delta$ & Included \\
 \midrule
 Qwen3.8-27B (thinking off) & 1.000 & 1.000 & 0.000 & no \\
-Qwen3.8-27B (thinking on) & 1.000 & 0.783 & -0.217 & yes \\
-Gemma-4-12B-it & 1.000 & 0.150 & -0.850 & yes \\
-Gemma-4-31B-it & 1.000 & 0.050 & -0.950 & yes \\
-OLMo-3-7B (SFT) & 0.858 & 0.725 & -0.133 & yes \\
-OLMo-3-7B (DPO) & 0.850 & 0.600 & -0.250 & yes \\
-OLMo-3-7B (final (RLVR)) & 0.870 & 0.592 & -0.278 & yes \\
+Qwen3.8-27B (thinking on) & 1.000 & 0.783 & $-$0.217 & yes \\
+Gemma-4-12B-it & 1.000 & 0.150 & $-$0.850 & yes \\
+Gemma-4-31B-it & 1.000 & 0.050 & $-$0.950 & yes \\
+OLMo-3-7B (SFT) & 0.858 & 0.725 & $-$0.133 & yes \\
+OLMo-3-7B (DPO) & 0.850 & 0.600 & $-$0.250 & yes \\
+OLMo-3-7B (final (RLVR)) & 0.870 & 0.592 & $-$0.278 & yes \\
 \botrule
 \end{tabular}
 \begin{tablenotes}
-\item[a] Pooled $\Delta\beta = 0.260$ [$-0.209$, $0.729$]; method \texttt{glmm\_full}.
+\item[a] Pooled $\Delta\beta = 0.260$ [$-$0.209, $0.729$]; method \texttt{glmm\_full}.
 \end{tablenotes}
 \end{table}
 """
     )
-    # confirmatory for appendix
-    shutil.copy(ROOT / "paper/tables/confirmatory.tex", TAB / "confirmatory.tex")
-    # fix bottomrule → botrule for MLJ style in confirmatory if needed later
+    # confirmatory for appendix (from TMLR generator); rewrite ASCII minus → math minus
+    conf = (ROOT / "paper/tables/confirmatory.tex").read_text()
+    conf = conf.replace("gap=-", r"gap=$-$")
+    conf = conf.replace("[-0.", r"[$-$0.")
+    conf = conf.replace(r"\bottomrule", r"\botrule")
+    (TAB / "confirmatory.tex").write_text(conf)
     LOG.info("tables written")
 
 
@@ -563,11 +798,12 @@ def main() -> None:
     FIG.mkdir(parents=True, exist_ok=True)
     font = configure_mpl()
     write_tables()
-    fig1_paradigm()
+    make_fig1_v3("Fig1")
+    configure_mpl()  # restore shared MLJ rcParams after Fig1 custom mathtext
     fig2_loio()
     fig3_km()
     fig4_forest()
-    print(f"MLJ assets ok; font={font}; textwidth_in={TEXTWIDTH_IN:.4f}; fig1_h={FIG1_HEIGHT_IN:.3f}")
+    print(f"MLJ assets ok; font={font}; textwidth_in={TEXTWIDTH_IN:.4f}")
 
 
 if __name__ == "__main__":
