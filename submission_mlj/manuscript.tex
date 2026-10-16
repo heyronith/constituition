@@ -10,8 +10,8 @@
 \usepackage{amsthm}
 \usepackage[title]{appendix}
 \usepackage{xcolor}
-\usepackage{textcomp}
 \usepackage{booktabs}
+\usepackage{array}
 \usepackage{enumitem}
 \usepackage{url}
 \usepackage{placeins}
@@ -119,10 +119,44 @@
 \newcommand{\NCalibDisp}{1{,}011}
 
 
+% Avoid Type-3 bitmap fonts from TS1 (textcomp \textbullet / \textdollar → pk).
+% Bullets: math glyphs via enumitem. Dollar: OT1 cmr (Type 1).
+\renewcommand{\textbullet}{\ensuremath{\bullet}}
+\DeclareRobustCommand{\textdollar}{\char`\$}
+\setlist[itemize,1]{label=\ensuremath{\bullet}}
+\setlist[itemize,2]{label=\ensuremath{\circ}}
+\setlist[itemize,3]{label=--}
+\renewcommand{\labelitemi}{\ensuremath{\bullet}}
+\renewcommand{\labelitemii}{\ensuremath{\circ}}
+\renewcommand{\labelitemiii}{--}
+
+% sn-apacite writes pages={,} when volume/number/pages are empty, which prints ", ,".
+% Treat a lone comma as empty so arXiv @article entries render cleanly.
 % sn-apacite writes raw URLs into APACrefURL; wrap with \url so underscores are safe.
+\makeatletter
 \AtBeginDocument{%
   \renewenvironment{APACrefURL}[1]{\url{#1}}{}%
+  \renewcommand{\textbullet}{\ensuremath{\bullet}}%
+  \setlist[itemize,1]{label=\ensuremath{\bullet}}%
+  \renewcommand{\labelitemi}{\ensuremath{\bullet}}%
+  \renewcommand{\APACjournalVolNumPages}[4]{%
+    \Bem{#1}%
+    \def\@mlj@tmp{#2}%
+    \ifx\@mlj@tmp\@empty\else\unskip, \Bem{#2}\fi
+    \def\@mlj@tmp{#3}%
+    \ifx\@mlj@tmp\@empty\else\unskip({#3})\fi
+    \def\@mlj@tmp{#4}%
+    \def\@mlj@comma{,}%
+    \ifx\@mlj@tmp\@empty
+    \else
+      \ifx\@mlj@tmp\@mlj@comma
+      \else
+        \unskip, {#4}%
+      \fi
+    \fi
+  }%
 }
+\makeatother
 
 \raggedbottom
 
@@ -184,7 +218,7 @@ Our analysis also builds on behavioural evaluations of corrigibility, including 
 \section{Methods}
 \label{sec:methods}
 
-The study was preregistered on OSF before data collection \url{TODO(author): OSF link}. Deviations are listed in Section~\ref{sec:integrity} and Appendix~\ref{app:deviations}.
+The study was preregistered on OSF before data collection \url{https://osf.io/mw86p}. Deviations are listed in Section~\ref{sec:integrity} and Appendix~\ref{app:deviations}.
 
 \subsection{Materials}
 \label{sec:materials}
@@ -217,7 +251,7 @@ All models were run in BF16 from weights pinned to exact repository revisions, u
 \centering
 \caption{Example clause per category (form A, truncated)}
 \label{tab:items}
-\begin{tabular}{@{}llp{2.4cm}p{5.2cm}@{}}
+\begin{tabular}{@{}ll>{\raggedright\arraybackslash}p{2.4cm}>{\raggedright\arraybackslash}p{5.2cm}@{}}
 \toprule
 Cat. & ID & Commitment & Example (form A) \\
 \midrule
@@ -546,9 +580,9 @@ TODO(author): acknowledgements, or delete this heading if none.
 \item \textbf{Competing interests:} TODO(author): ``The authors have no relevant financial or non-financial interests to disclose.'' (edit if any)
 \item \textbf{Ethics approval and consent to participate:} Not applicable. The study involved no human participants, human data or animals.
 \item \textbf{Consent for publication:} Not applicable.
-\item \textbf{Data availability:} All materials, prompts, generations, judgments and decision logs are available at \url{TODO(author): repository/DOI link}.
-\item \textbf{Code availability:} The analysis code, frozen before data collection and identified by commit hash, is available at \url{TODO(author): GitHub link}.
-\item \textbf{Preregistration:} The study was preregistered on OSF: \url{TODO(author): OSF link}.
+\item \textbf{Data availability:} All materials, prompts, generations, judgments and decision logs are available at \url{https://github.com/heyronith/constituition}.
+\item \textbf{Code availability:} The analysis code, frozen before data collection and identified by commit hash, is available at \url{https://github.com/heyronith/constituition}.
+\item \textbf{Preregistration:} The study was preregistered on OSF: \url{https://osf.io/mw86p}.
 \item \textbf{Author contributions:} TODO(author): CRediT statement (e.g.\ ``A.B.: Conceptualization, Methodology, Software, Writing -- original draft. \ldots'').
 \end{itemize}
 
@@ -578,7 +612,7 @@ olmo3modelcard}%
 \newblock
 \begin{APACrefURL} {https://huggingface.co/allenai/Olmo-3-7B-Instruct} \end{APACrefURL}
 \newblock
-\APACrefnote{SFT/DPO stage cards on Hugging Face (allenai/Olmo-3-7B-Instruct-SFT and allenai/Olmo-3-7B-Instruct-DPO)}
+\APACrefnote{Accessed 2026-10-09}
 \PrintBackRefs{\CurrentBib}
 
 \bibitem [\protect \citeauthoryear {%
@@ -606,13 +640,13 @@ Arike, R.%
 \newblock
 {\BBOQ}\APACrefatitle {Technical Report: Evaluating Goal Drift in Language Model Agents} {Technical report: Evaluating goal drift in language model agents}.{\BBCQ}
 \newblock
-\APACjournalVolNumPages{arXiv}{}{}{,}
+\APACjournalVolNumPages{arXiv preprint arXiv:2505.02709}{}{}{,}
 \newblock
-\begin{APACrefURL} {https://arxiv.org/abs/2505.02709} \end{APACrefURL}
+\begin{APACrefDOI} \doi{10.48550/arXiv.2505.02709} \end{APACrefDOI}
 \newblock
-{\href{https://arxiv.org/abs/2505.02709}{{arXiv:2505.02709}}}
+
 \newblock
- {[cs.AI]}
+
 \PrintBackRefs{\CurrentBib}
 
 \bibitem [\protect \citeauthoryear {%
@@ -640,13 +674,13 @@ Bai, Y.%
 \newblock
 {\BBOQ}\APACrefatitle {Constitutional {AI}: Harmlessness from {AI} Feedback} {Constitutional {AI}: Harmlessness from {AI} feedback}.{\BBCQ}
 \newblock
-\APACjournalVolNumPages{arXiv}{}{}{,}
+\APACjournalVolNumPages{arXiv preprint arXiv:2212.08073}{}{}{,}
 \newblock
-\begin{APACrefURL} {https://arxiv.org/abs/2212.08073} \end{APACrefURL}
+\begin{APACrefDOI} \doi{10.48550/arXiv.2212.08073} \end{APACrefDOI}
 \newblock
-{\href{https://arxiv.org/abs/2212.08073}{{arXiv:2212.08073}}}
+
 \newblock
- {[cs.AI]}
+
 \PrintBackRefs{\CurrentBib}
 
 \bibitem [\protect \citeauthoryear {%
@@ -678,8 +712,6 @@ Bates, D.%
 \newblock
 \begin{APACrefDOI} \doi{10.18637/jss.v067.i01} \end{APACrefDOI}
 \newblock
-\begin{APACrefURL} {https://www.jstatsoft.org/article/view/v067i01} \end{APACrefURL}
-\newblock
 
 \newblock
 
@@ -708,13 +740,13 @@ Bogdanov, I.%
 \newblock
 {\BBOQ}\APACrefatitle {Evaluation of Multi-Turn Consistency in {LLM} Agents: Survival Analysis and Failure-Rationale Taxonomy} {Evaluation of multi-turn consistency in {LLM} agents: Survival analysis and failure-rationale taxonomy}.{\BBCQ}
 \newblock
-\APACjournalVolNumPages{arXiv}{}{}{,}
+\APACjournalVolNumPages{arXiv preprint arXiv:2609.29508}{}{}{,}
 \newblock
-\begin{APACrefURL} {https://arxiv.org/abs/2609.29508} \end{APACrefURL}
+\begin{APACrefDOI} \doi{10.48550/arXiv.2609.29508} \end{APACrefDOI}
 \newblock
-{\href{https://arxiv.org/abs/2609.29508}{{arXiv:2609.29508}}}
+
 \newblock
- {[cs.AI]}
+
 \PrintBackRefs{\CurrentBib}
 
 \bibitem [\protect \citeauthoryear {%
@@ -745,8 +777,6 @@ Brooks, M.E.%
 \APACjournalVolNumPages{The R Journal}{9}{2}{378--400,}
 \newblock
 \begin{APACrefDOI} \doi{10.32614/RJ-2017-066} \end{APACrefDOI}
-\newblock
-\begin{APACrefURL} {https://journal.r-project.org/archive/2017/RJ-2017-066/} \end{APACrefURL}
 \newblock
 
 \newblock
@@ -780,13 +810,13 @@ Das, D.%
 \newblock
 {\BBOQ}\APACrefatitle {Self-Propagating Misalignment in {LLM} Agents, and Why Auditing or Disabling Memory Is Not Enough} {Self-propagating misalignment in {LLM} agents, and why auditing or disabling memory is not enough}.{\BBCQ}
 \newblock
-\APACjournalVolNumPages{arXiv}{}{}{,}
+\APACjournalVolNumPages{arXiv preprint arXiv:2610.04083}{}{}{,}
 \newblock
-\begin{APACrefURL} {https://arxiv.org/abs/2610.04083} \end{APACrefURL}
+\begin{APACrefDOI} \doi{10.48550/arXiv.2610.04083} \end{APACrefDOI}
 \newblock
-{\href{https://arxiv.org/abs/2610.04083}{{arXiv:2610.04083}}}
+
 \newblock
- {[cs.AI]}
+
 \PrintBackRefs{\CurrentBib}
 
 \bibitem [\protect \citeauthoryear {%
@@ -813,13 +843,13 @@ Das, S.%
 \newblock
 {\BBOQ}\APACrefatitle {{SEABench}: Benchmarking Endogenous Misalignment In Self-Evolving Agents} {{SEABench}: Benchmarking endogenous misalignment in self-evolving agents}.{\BBCQ}
 \newblock
-\APACjournalVolNumPages{arXiv}{}{}{,}
+\APACjournalVolNumPages{arXiv preprint arXiv:2609.35596}{}{}{,}
 \newblock
-\begin{APACrefURL} {https://arxiv.org/abs/2609.35596} \end{APACrefURL}
+\begin{APACrefDOI} \doi{10.48550/arXiv.2609.35596} \end{APACrefDOI}
 \newblock
-{\href{https://arxiv.org/abs/2609.35596}{{arXiv:2609.35596}}}
+
 \newblock
- {[cs.AI]}
+
 \PrintBackRefs{\CurrentBib}
 
 \bibitem [\protect \citeauthoryear {%
@@ -849,13 +879,13 @@ Geng, M.%
 \newblock
 {\BBOQ}\APACrefatitle {Markovian Generation Chains in Large Language Models} {Markovian generation chains in large language models}.{\BBCQ}
 \newblock
-\APACjournalVolNumPages{arXiv}{}{}{,}
+\APACjournalVolNumPages{arXiv preprint arXiv:2603.11228}{}{}{,}
 \newblock
-\begin{APACrefURL} {https://arxiv.org/abs/2603.11228} \end{APACrefURL}
+\begin{APACrefDOI} \doi{10.48550/arXiv.2603.11228} \end{APACrefDOI}
 \newblock
-{\href{https://arxiv.org/abs/2603.11228}{{arXiv:2603.11228}}}
+
 \newblock
- {[cs.AI]}
+
 \PrintBackRefs{\CurrentBib}
 
 \bibitem [\protect \citeauthoryear {%
@@ -879,7 +909,7 @@ gemma4modelcard}%
 \newblock
 \begin{APACrefURL} {https://ai.google.dev/gemma/docs/core/model_card_4} \end{APACrefURL}
 \newblock
-\APACrefnote{Also Hugging Face google/gemma-4-31B-it; Hub IDs from configs/models.yaml}
+\APACrefnote{Accessed 2026-10-09}
 \PrintBackRefs{\CurrentBib}
 
 \bibitem [\protect \citeauthoryear {%
@@ -907,13 +937,13 @@ Greenblatt, R.%
 \newblock
 {\BBOQ}\APACrefatitle {Alignment faking in large language models} {Alignment faking in large language models}.{\BBCQ}
 \newblock
-\APACjournalVolNumPages{arXiv}{}{}{,}
+\APACjournalVolNumPages{arXiv preprint arXiv:2412.14093}{}{}{,}
 \newblock
-\begin{APACrefURL} {https://arxiv.org/abs/2412.14093} \end{APACrefURL}
+\begin{APACrefDOI} \doi{10.48550/arXiv.2412.14093} \end{APACrefDOI}
 \newblock
-{\href{https://arxiv.org/abs/2412.14093}{{arXiv:2412.14093}}}
+
 \newblock
- {[cs.AI]}
+
 \PrintBackRefs{\CurrentBib}
 
 \bibitem [\protect \citeauthoryear {%
@@ -941,13 +971,13 @@ Han, S.%
 \newblock
 {\BBOQ}\APACrefatitle {Alignment Tipping Process: How Self-Evolution Pushes {LLM} Agents Off the Rails} {Alignment tipping process: How self-evolution pushes {LLM} agents off the rails}.{\BBCQ}
 \newblock
-\APACjournalVolNumPages{arXiv}{}{}{,}
+\APACjournalVolNumPages{arXiv preprint arXiv:2510.04860}{}{}{,}
 \newblock
-\begin{APACrefURL} {https://arxiv.org/abs/2510.04860} \end{APACrefURL}
+\begin{APACrefDOI} \doi{10.48550/arXiv.2510.04860} \end{APACrefDOI}
 \newblock
-{\href{https://arxiv.org/abs/2510.04860}{{arXiv:2510.04860}}}
+
 \newblock
- {[cs.AI]}
+
 \PrintBackRefs{\CurrentBib}
 
 \bibitem [\protect \citeauthoryear {%
@@ -967,11 +997,13 @@ github_constdrift}%
 \newblock
 \APACrefYearMonthDay{2026}{}{}.
 \newblock
-\APACrefbtitle {heyuday/const-drift-inspect.} {heyuday/const-drift-inspect.}
+\APACrefbtitle {const-drift-inspect [Computer software].} {const-drift-inspect [computer software].}
+\newblock
+\APAChowpublished {GitHub}.
 \newblock
 \begin{APACrefURL} {https://github.com/heyuday/const-drift-inspect} \end{APACrefURL}
 \newblock
-\APACrefnote{accessed 2026-10-09}
+\APACrefnote{Accessed 2026-10-09}
 \PrintBackRefs{\CurrentBib}
 
 \bibitem [\protect \citeauthoryear {%
@@ -999,13 +1031,13 @@ Huang, S.%
 \newblock
 {\BBOQ}\APACrefatitle {Collective Constitutional {AI}: Aligning a Language Model with Public Input} {Collective constitutional {AI}: Aligning a language model with public input}.{\BBCQ}
 \newblock
-\APACjournalVolNumPages{arXiv}{}{}{,}
+\APACjournalVolNumPages{arXiv preprint arXiv:2406.07814}{}{}{,}
 \newblock
-\begin{APACrefURL} {https://arxiv.org/abs/2406.07814} \end{APACrefURL}
+\begin{APACrefDOI} \doi{10.48550/arXiv.2406.07814} \end{APACrefDOI}
 \newblock
-{\href{https://arxiv.org/abs/2406.07814}{{arXiv:2406.07814}}}
+
 \newblock
- {[cs.AI]}
+
 \PrintBackRefs{\CurrentBib}
 
 \bibitem [\protect \citeauthoryear {%
@@ -1031,13 +1063,13 @@ Jakkli, A.%
 \newblock
 {\BBOQ}\APACrefatitle {How Well Do Models Follow Their Constitutions?} {How well do models follow their constitutions?}{\BBCQ}
 \newblock
-\APACjournalVolNumPages{arXiv}{}{}{,}
+\APACjournalVolNumPages{arXiv preprint arXiv:2605.24229}{}{}{,}
 \newblock
-\begin{APACrefURL} {https://arxiv.org/abs/2605.24229} \end{APACrefURL}
+\begin{APACrefDOI} \doi{10.48550/arXiv.2605.24229} \end{APACrefDOI}
 \newblock
-{\href{https://arxiv.org/abs/2605.24229}{{arXiv:2605.24229}}}
+
 \newblock
- {[cs.AI]}
+
 \PrintBackRefs{\CurrentBib}
 
 \bibitem [\protect \citeauthoryear {%
@@ -1093,13 +1125,13 @@ Kundu, S.%
 \newblock
 {\BBOQ}\APACrefatitle {Specific versus General Principles for Constitutional {AI}} {Specific versus general principles for constitutional {AI}}.{\BBCQ}
 \newblock
-\APACjournalVolNumPages{arXiv}{}{}{,}
+\APACjournalVolNumPages{arXiv preprint arXiv:2310.13798}{}{}{,}
 \newblock
-\begin{APACrefURL} {https://arxiv.org/abs/2310.13798} \end{APACrefURL}
+\begin{APACrefDOI} \doi{10.48550/arXiv.2310.13798} \end{APACrefDOI}
 \newblock
-{\href{https://arxiv.org/abs/2310.13798}{{arXiv:2310.13798}}}
+
 \newblock
- {[cs.AI]}
+
 \PrintBackRefs{\CurrentBib}
 
 \bibitem [\protect \citeauthoryear {%
@@ -1127,13 +1159,13 @@ Kwon, W.%
 \newblock
 {\BBOQ}\APACrefatitle {Efficient Memory Management for Large Language Model Serving with PagedAttention} {Efficient memory management for large language model serving with pagedattention}.{\BBCQ}
 \newblock
-\APACjournalVolNumPages{arXiv}{}{}{,}
+\APACjournalVolNumPages{arXiv preprint arXiv:2309.06180}{}{}{,}
 \newblock
-\begin{APACrefURL} {https://arxiv.org/abs/2309.06180} \end{APACrefURL}
+\begin{APACrefDOI} \doi{10.48550/arXiv.2309.06180} \end{APACrefDOI}
 \newblock
-{\href{https://arxiv.org/abs/2309.06180}{{arXiv:2309.06180}}}
+
 \newblock
- {[cs.AI]}
+
 \PrintBackRefs{\CurrentBib}
 
 \bibitem [\protect \citeauthoryear {%
@@ -1158,8 +1190,6 @@ Lakens, D.%
 \APACjournalVolNumPages{Social Psychological and Personality Science}{8}{4}{355--362,}
 \newblock
 \begin{APACrefDOI} \doi{10.1177/1948550617697177} \end{APACrefDOI}
-\newblock
-\begin{APACrefURL} {https://journals.sagepub.com/doi/10.1177/1948550617697177} \end{APACrefURL}
 \newblock
 
 \newblock
@@ -1189,13 +1219,13 @@ Lin, S.%
 \newblock
 {\BBOQ}\APACrefatitle {{TruthfulQA}: Measuring How Models Mimic Human Falsehoods} {{TruthfulQA}: Measuring how models mimic human falsehoods}.{\BBCQ}
 \newblock
-\APACjournalVolNumPages{arXiv}{}{}{,}
+\APACjournalVolNumPages{arXiv preprint arXiv:2109.07958}{}{}{,}
 \newblock
-\begin{APACrefURL} {https://arxiv.org/abs/2109.07958} \end{APACrefURL}
+\begin{APACrefDOI} \doi{10.48550/arXiv.2109.07958} \end{APACrefDOI}
 \newblock
-{\href{https://arxiv.org/abs/2109.07958}{{arXiv:2109.07958}}}
+
 \newblock
- {[cs.AI]}
+
 \PrintBackRefs{\CurrentBib}
 
 \bibitem [\protect \citeauthoryear {%
@@ -1223,13 +1253,13 @@ Madaan, A.%
 \newblock
 {\BBOQ}\APACrefatitle {Self-Refine: Iterative Refinement with Self-Feedback} {Self-refine: Iterative refinement with self-feedback}.{\BBCQ}
 \newblock
-\APACjournalVolNumPages{arXiv}{}{}{,}
+\APACjournalVolNumPages{arXiv preprint arXiv:2303.17651}{}{}{,}
 \newblock
-\begin{APACrefURL} {https://arxiv.org/abs/2303.17651} \end{APACrefURL}
+\begin{APACrefDOI} \doi{10.48550/arXiv.2303.17651} \end{APACrefDOI}
 \newblock
-{\href{https://arxiv.org/abs/2303.17651}{{arXiv:2303.17651}}}
+
 \newblock
- {[cs.AI]}
+
 \PrintBackRefs{\CurrentBib}
 
 \bibitem [\protect \citeauthoryear {%
@@ -1256,13 +1286,13 @@ Meinke, A.%
 \newblock
 {\BBOQ}\APACrefatitle {Frontier Models are Capable of In-context Scheming} {Frontier models are capable of in-context scheming}.{\BBCQ}
 \newblock
-\APACjournalVolNumPages{arXiv}{}{}{,}
+\APACjournalVolNumPages{arXiv preprint arXiv:2412.04984}{}{}{,}
 \newblock
-\begin{APACrefURL} {https://arxiv.org/abs/2412.04984} \end{APACrefURL}
+\begin{APACrefDOI} \doi{10.48550/arXiv.2412.04984} \end{APACrefDOI}
 \newblock
-{\href{https://arxiv.org/abs/2412.04984}{{arXiv:2412.04984}}}
+
 \newblock
- {[cs.AI]}
+
 \PrintBackRefs{\CurrentBib}
 
 \bibitem [\protect \citeauthoryear {%
@@ -1289,13 +1319,13 @@ Menon, A.%
 \newblock
 {\BBOQ}\APACrefatitle {Inherited Goal Drift: Contextual Pressure Can Undermine Agentic Goals} {Inherited goal drift: Contextual pressure can undermine agentic goals}.{\BBCQ}
 \newblock
-\APACjournalVolNumPages{arXiv}{}{}{,}
+\APACjournalVolNumPages{arXiv preprint arXiv:2603.03258}{}{}{,}
 \newblock
-\begin{APACrefURL} {https://arxiv.org/abs/2603.03258} \end{APACrefURL}
+\begin{APACrefDOI} \doi{10.48550/arXiv.2603.03258} \end{APACrefDOI}
 \newblock
-{\href{https://arxiv.org/abs/2603.03258}{{arXiv:2603.03258}}}
+
 \newblock
- {[cs.AI]}
+
 \PrintBackRefs{\CurrentBib}
 
 \bibitem [\protect \citeauthoryear {%
@@ -1323,13 +1353,13 @@ Mohamed, A.%
 \newblock
 {\BBOQ}\APACrefatitle {{LLM} as a Broken Telephone: Iterative Generation Distorts Information} {{LLM} as a broken telephone: Iterative generation distorts information}.{\BBCQ}
 \newblock
-\APACjournalVolNumPages{arXiv}{}{}{,}
+\APACjournalVolNumPages{arXiv preprint arXiv:2502.20258}{}{}{,}
 \newblock
-\begin{APACrefURL} {https://arxiv.org/abs/2502.20258} \end{APACrefURL}
+\begin{APACrefDOI} \doi{10.48550/arXiv.2502.20258} \end{APACrefDOI}
 \newblock
-{\href{https://arxiv.org/abs/2502.20258}{{arXiv:2502.20258}}}
+
 \newblock
- {[cs.AI]}
+
 \PrintBackRefs{\CurrentBib}
 
 \bibitem [\protect \citeauthoryear {%
@@ -1357,13 +1387,13 @@ Mukherjee, S.%
 \newblock
 {\BBOQ}\APACrefatitle {The Geometry of {LLM}-as-Judge: Why Inter-{LLM} Consensus Is Not Human Alignment} {The geometry of {LLM}-as-judge: Why inter-{LLM} consensus is not human alignment}.{\BBCQ}
 \newblock
-\APACjournalVolNumPages{arXiv}{}{}{,}
+\APACjournalVolNumPages{arXiv preprint arXiv:2606.03043}{}{}{,}
 \newblock
-\begin{APACrefURL} {https://arxiv.org/abs/2606.03043} \end{APACrefURL}
+\begin{APACrefDOI} \doi{10.48550/arXiv.2606.03043} \end{APACrefDOI}
 \newblock
-{\href{https://arxiv.org/abs/2606.03043}{{arXiv:2606.03043}}}
+
 \newblock
- {[cs.AI]}
+
 \PrintBackRefs{\CurrentBib}
 
 \bibitem [\protect \citeauthoryear {%
@@ -1389,13 +1419,13 @@ Norman, J.D.%
 \newblock
 {\BBOQ}\APACrefatitle {Reliability without Validity: A Systematic, Large-Scale Evaluation of {LLM}-as-a-Judge Models Across Agreement, Consistency, and Bias} {Reliability without validity: A systematic, large-scale evaluation of {LLM}-as-a-judge models across agreement, consistency, and bias}.{\BBCQ}
 \newblock
-\APACjournalVolNumPages{arXiv}{}{}{,}
+\APACjournalVolNumPages{arXiv preprint arXiv:2606.19544}{}{}{,}
 \newblock
-\begin{APACrefURL} {https://arxiv.org/abs/2606.19544} \end{APACrefURL}
+\begin{APACrefDOI} \doi{10.48550/arXiv.2606.19544} \end{APACrefDOI}
 \newblock
-{\href{https://arxiv.org/abs/2606.19544}{{arXiv:2606.19544}}}
+
 \newblock
- {[cs.AI]}
+
 \PrintBackRefs{\CurrentBib}
 
 \bibitem [\protect \citeauthoryear {%
@@ -1427,8 +1457,6 @@ Perez, E.%
 \newblock
 \APACaddressPublisher{Toronto, Canada}{Association for Computational Linguistics}.
 \newblock
-\begin{APACrefURL} {https://arxiv.org/abs/2212.09251} \end{APACrefURL}
-\newblock
 \APACrefnote{arXiv:2212.09251}
 \PrintBackRefs{\CurrentBib}
 
@@ -1457,13 +1485,13 @@ Perez, J.%
 \newblock
 {\BBOQ}\APACrefatitle {When {LLMs} Play the Telephone Game: Cultural Attractors as Conceptual Tools to Evaluate {LLMs} in Multi-turn Settings} {When {LLMs} play the telephone game: Cultural attractors as conceptual tools to evaluate {LLMs} in multi-turn settings}.{\BBCQ}
 \newblock
-\APACjournalVolNumPages{arXiv}{}{}{,}
+\APACjournalVolNumPages{arXiv preprint arXiv:2407.04503}{}{}{,}
 \newblock
-\begin{APACrefURL} {https://arxiv.org/abs/2407.04503} \end{APACrefURL}
+\begin{APACrefDOI} \doi{10.48550/arXiv.2407.04503} \end{APACrefDOI}
 \newblock
-{\href{https://arxiv.org/abs/2407.04503}{{arXiv:2407.04503}}}
+
 \newblock
- {[cs.AI]}
+
 \PrintBackRefs{\CurrentBib}
 
 \bibitem [\protect \citeauthoryear {%
@@ -1487,7 +1515,7 @@ qwen38modelcard}%
 \newblock
 \begin{APACrefURL} {https://huggingface.co/Qwen/Qwen3.8-27B} \end{APACrefURL}
 \newblock
-\APACrefnote{Hugging Face model card; sampling parameters as used in repository model configs}
+\APACrefnote{Accessed 2026-10-09}
 \PrintBackRefs{\CurrentBib}
 
 \bibitem [\protect \citeauthoryear {%
@@ -1513,13 +1541,13 @@ Schlatter, J.%
 \newblock
 {\BBOQ}\APACrefatitle {Incomplete Tasks Induce Shutdown Resistance in Some Frontier {LLMs}} {Incomplete tasks induce shutdown resistance in some frontier {LLMs}}.{\BBCQ}
 \newblock
-\APACjournalVolNumPages{arXiv}{}{}{,}
+\APACjournalVolNumPages{arXiv preprint arXiv:2509.14260}{}{}{,}
 \newblock
-\begin{APACrefURL} {https://arxiv.org/abs/2509.14260} \end{APACrefURL}
+\begin{APACrefDOI} \doi{10.48550/arXiv.2509.14260} \end{APACrefDOI}
 \newblock
-{\href{https://arxiv.org/abs/2509.14260}{{arXiv:2509.14260}}}
+
 \newblock
- {[cs.AI]}
+
 \PrintBackRefs{\CurrentBib}
 
 \bibitem [\protect \citeauthoryear {%
@@ -1579,13 +1607,13 @@ Souly, A.%
 \newblock
 {\BBOQ}\APACrefatitle {A {StrongREJECT} for Empty Jailbreaks} {A {StrongREJECT} for empty jailbreaks}.{\BBCQ}
 \newblock
-\APACjournalVolNumPages{arXiv}{}{}{,}
+\APACjournalVolNumPages{arXiv preprint arXiv:2402.10260}{}{}{,}
 \newblock
-\begin{APACrefURL} {https://arxiv.org/abs/2402.10260} \end{APACrefURL}
+\begin{APACrefDOI} \doi{10.48550/arXiv.2402.10260} \end{APACrefDOI}
 \newblock
-{\href{https://arxiv.org/abs/2402.10260}{{arXiv:2402.10260}}}
+
 \newblock
- {[cs.AI]}
+
 \PrintBackRefs{\CurrentBib}
 
 \bibitem [\protect \citeauthoryear {%
@@ -1612,13 +1640,13 @@ Tien, J.%
 \newblock
 {\BBOQ}\APACrefatitle {{ROGUE}: Evaluating Corrigibility Failures in Frontier Computer-Use Agents} {{ROGUE}: Evaluating corrigibility failures in frontier computer-use agents}.{\BBCQ}
 \newblock
-\APACjournalVolNumPages{arXiv}{}{}{,}
+\APACjournalVolNumPages{arXiv preprint arXiv:2606.00341}{}{}{,}
 \newblock
-\begin{APACrefURL} {https://arxiv.org/abs/2606.00341} \end{APACrefURL}
+\begin{APACrefDOI} \doi{10.48550/arXiv.2606.00341} \end{APACrefDOI}
 \newblock
-{\href{https://arxiv.org/abs/2606.00341}{{arXiv:2606.00341}}}
+
 \newblock
- {[cs.AI]}
+
 \PrintBackRefs{\CurrentBib}
 
 \bibitem [\protect \citeauthoryear {%
@@ -1646,19 +1674,45 @@ Wang, Y.%
 \newblock
 {\BBOQ}\APACrefatitle {{MMLU-Pro}: A More Robust and Challenging Multi-Task Language Understanding Benchmark} {{MMLU-Pro}: A more robust and challenging multi-task language understanding benchmark}.{\BBCQ}
 \newblock
-\APACjournalVolNumPages{arXiv}{}{}{,}
+\APACjournalVolNumPages{arXiv preprint arXiv:2406.01574}{}{}{,}
 \newblock
-\begin{APACrefURL} {https://arxiv.org/abs/2406.01574} \end{APACrefURL}
+\begin{APACrefDOI} \doi{10.48550/arXiv.2406.01574} \end{APACrefDOI}
 \newblock
-{\href{https://arxiv.org/abs/2406.01574}{{arXiv:2406.01574}}}
+
 \newblock
- {[cs.AI]}
+
 \PrintBackRefs{\CurrentBib}
 
 \bibitem [\protect \citeauthoryear {%
-Wu%
+J.~Wu%
+}{%
+J.~Wu%
+}{%
+{\protect \APACyear {2026}}%
+}]{%
+github_valuedrift}
+\APACinsertmetastar {%
+github_valuedrift}%
+\begin{APACrefauthors}%
+Wu, J.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2026}{}{}.
+\newblock
+\APACrefbtitle {constitutional-value-drift [Computer software].} {constitutional-value-drift [computer software].}
+\newblock
+\APAChowpublished {GitHub}.
+\newblock
+\begin{APACrefURL} {https://github.com/Wu-Jinzhou/constitutional-value-drift} \end{APACrefURL}
+\newblock
+\APACrefnote{Accessed 2026-10-09}
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+X.~Wu%
 \ \protect \BOthers {.}}{%
-Wu%
+X.~Wu%
 \ \protect \BOthers {.}}{%
 {\protect \APACyear {2026}}%
 }]{%
@@ -1679,37 +1733,13 @@ Wu, X.%
 \newblock
 {\BBOQ}\APACrefatitle {Do Language Models Converge to Themselves? Recursive Self-Refinement as Textual Relaxation} {Do language models converge to themselves? recursive self-refinement as textual relaxation}.{\BBCQ}
 \newblock
-\APACjournalVolNumPages{arXiv}{}{}{,}
+\APACjournalVolNumPages{arXiv preprint arXiv:2607.22653}{}{}{,}
 \newblock
-\begin{APACrefURL} {https://arxiv.org/abs/2607.22653} \end{APACrefURL}
+\begin{APACrefDOI} \doi{10.48550/arXiv.2607.22653} \end{APACrefDOI}
 \newblock
-{\href{https://arxiv.org/abs/2607.22653}{{arXiv:2607.22653}}}
-\newblock
- {[cs.AI]}
-\PrintBackRefs{\CurrentBib}
 
-\bibitem [\protect \citeauthoryear {%
-{Wu, Jinzhou}%
-}{%
-{Wu, Jinzhou}%
-}{%
-{\protect \APACyear {2026}}%
-}]{%
-github_valuedrift}
-\APACinsertmetastar {%
-github_valuedrift}%
-\begin{APACrefauthors}%
-{Wu, Jinzhou}%
-\end{APACrefauthors}%
-\unskip\
 \newblock
-\APACrefYearMonthDay{2026}{}{}.
-\newblock
-\APACrefbtitle {Wu-Jinzhou/constitutional-value-drift.} {Wu-jinzhou/constitutional-value-drift.}
-\newblock
-\begin{APACrefURL} {https://github.com/Wu-Jinzhou/constitutional-value-drift} \end{APACrefURL}
-\newblock
-\APACrefnote{accessed 2026-10-09}
+
 \PrintBackRefs{\CurrentBib}
 
 \end{thebibliography}

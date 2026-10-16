@@ -10,18 +10,52 @@
 \usepackage{amsthm}
 \usepackage[title]{appendix}
 \usepackage{xcolor}
-\usepackage{textcomp}
 \usepackage{booktabs}
+\usepackage{array}
 \usepackage{enumitem}
 \usepackage{url}
 \usepackage{placeins}
 
 \input{macros_numbers.tex}
 
+% Avoid Type-3 bitmap fonts from TS1 (textcomp \textbullet / \textdollar → pk).
+% Bullets: math glyphs via enumitem. Dollar: OT1 cmr (Type 1).
+\renewcommand{\textbullet}{\ensuremath{\bullet}}
+\DeclareRobustCommand{\textdollar}{\char`\$}
+\setlist[itemize,1]{label=\ensuremath{\bullet}}
+\setlist[itemize,2]{label=\ensuremath{\circ}}
+\setlist[itemize,3]{label=--}
+\renewcommand{\labelitemi}{\ensuremath{\bullet}}
+\renewcommand{\labelitemii}{\ensuremath{\circ}}
+\renewcommand{\labelitemiii}{--}
+
+% sn-apacite writes pages={,} when volume/number/pages are empty, which prints ", ,".
+% Treat a lone comma as empty so arXiv @article entries render cleanly.
 % sn-apacite writes raw URLs into APACrefURL; wrap with \url so underscores are safe.
+\makeatletter
 \AtBeginDocument{%
   \renewenvironment{APACrefURL}[1]{\url{#1}}{}%
+  \renewcommand{\textbullet}{\ensuremath{\bullet}}%
+  \setlist[itemize,1]{label=\ensuremath{\bullet}}%
+  \renewcommand{\labelitemi}{\ensuremath{\bullet}}%
+  \renewcommand{\APACjournalVolNumPages}[4]{%
+    \Bem{#1}%
+    \def\@mlj@tmp{#2}%
+    \ifx\@mlj@tmp\@empty\else\unskip, \Bem{#2}\fi
+    \def\@mlj@tmp{#3}%
+    \ifx\@mlj@tmp\@empty\else\unskip({#3})\fi
+    \def\@mlj@tmp{#4}%
+    \def\@mlj@comma{,}%
+    \ifx\@mlj@tmp\@empty
+    \else
+      \ifx\@mlj@tmp\@mlj@comma
+      \else
+        \unskip, {#4}%
+      \fi
+    \fi
+  }%
 }
+\makeatother
 
 \raggedbottom
 

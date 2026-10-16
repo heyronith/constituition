@@ -129,22 +129,30 @@ def save_fig(fig: plt.Figure, stem: str) -> None:
 
 
 def fig1_paradigm() -> None:
+    """Paradigm schematic with ≥8 pt text and explicit box/text overlap checks."""
+    fig_h = min(FIG1_HEIGHT_IN, 0.58 * (552.69478 / 72.27))
     fig, axes = plt.subplots(
-        2, 1, figsize=(TEXTWIDTH_IN, FIG1_HEIGHT_IN), gridspec_kw={"height_ratios": [1.15, 0.85]}
+        2, 1, figsize=(TEXTWIDTH_IN, fig_h), gridspec_kw={"height_ratios": [1.2, 1.0]}
     )
     W = COLS
+    tracked: list[tuple[str, FancyBboxPatch | None, object]] = []
 
-    def rounded(ax, x0, y0, w, h, edge, face, lw=1.0):
+    boxes: dict[str, FancyBboxPatch] = {}
+
+    def rounded(ax, x0, y0, w, h, edge, face, lw=1.0, name=""):
         p = FancyBboxPatch(
             (x0, y0),
             w,
             h,
-            boxstyle="round,pad=0.02,rounding_size=0.08",
+            boxstyle="square,pad=0",
             linewidth=lw,
             edgecolor=edge,
             facecolor=face,
         )
         ax.add_patch(p)
+        if name:
+            boxes[name] = p
+        return p
 
     def arrow(ax, x0, y0, x1, y1, color="black"):
         ax.annotate(
@@ -154,93 +162,119 @@ def fig1_paradigm() -> None:
             arrowprops=dict(arrowstyle="->", color=color, lw=1.0, mutation_scale=10),
         )
 
-    def draw_C(ax, x, y, sub="t", size=11, color=W["blue"], weight="bold"):
-        ax.text(x, y, "C", fontsize=size, fontweight=weight, color=color, ha="right", va="center")
-        ax.text(
-            x + 0.02,
-            y - 0.12,
-            sub,
-            fontsize=0.55 * size,
-            fontweight=weight,
-            color=color,
-            ha="left",
-            va="center",
-        )
+    def put(ax, box_name, x, y, s, **kw):
+        t = ax.text(x, y, s, **kw)
+        tracked.append((f"{box_name}:{s[:28]!r}", boxes[box_name], t))
+        return t
 
-    # (a)
+    # --- (a) ---
     ax = axes[0]
     ax.set_xlim(0, 10)
-    ax.set_ylim(0, 5.7)
+    ax.set_ylim(0, 5.35)
     ax.axis("off")
-    ax.text(0.02, 5.55, "(a) Chain loop (stateless; t = 1...20)", fontsize=10, fontweight="bold", va="top")
+    ax.text(0.15, 5.2, "(a) Chain loop (stateless; t = 1...20)", fontsize=10, fontweight="bold", va="top")
 
-    # Keep all boxes below y=5.15 so they clear the panel label.
-    rounded(ax, 0.25, 3.15, 2.1, 1.7, W["blue"], "#E8F4FA")
-    draw_C(ax, 1.35, 4.35, "t", size=12)
-    ax.text(1.3, 3.65, "35 principles\nopaque IDs", fontsize=8, ha="center", va="center")
+    rounded(ax, 0.3, 3.05, 2.0, 1.75, W["blue"], "#E8F4FA", name="Ct")
+    put(ax, "Ct", 1.3, 4.35, r"$C_t$", fontsize=12, fontweight="bold", color=W["blue"], ha="center", va="center")
+    put(ax, "Ct", 1.3, 3.55, "35 principles\nopaque IDs", fontsize=8, ha="center", va="center")
 
-    rounded(ax, 2.9, 3.0, 3.25, 1.95, W["orange"], "#FFF6E5")
-    ax.text(4.525, 4.7, "Model (stateless)", fontsize=9, fontweight="bold", color=W["orange"], ha="center")
-    ax.text(4.05, 4.25, "sees only", fontsize=8, ha="right", va="center")
-    draw_C(ax, 4.25, 4.25, "t", size=9, color="black", weight="normal")
-    ax.text(4.5, 4.25, "+", fontsize=8, ha="left", va="center")
-    ax.text(4.525, 3.85, "condition instruction", fontsize=8, ha="center")
-    ax.text(4.525, 3.35, 'SELF / OTHER "Pellam"\nPARAPHRASE / NEUTRAL', fontsize=7.5, ha="center")
+    rounded(ax, 2.85, 2.95, 3.35, 1.95, W["orange"], "#FFF6E5", name="Model")
+    put(ax, "Model", 4.525, 4.65, "Model (stateless)", fontsize=9, fontweight="bold", color=W["orange"], ha="center", va="top")
+    put(ax, "Model", 4.525, 4.05, r"sees only $C_t$ +", fontsize=8, ha="center", va="center")
+    put(ax, "Model", 4.525, 3.7, "condition instruction", fontsize=8, ha="center", va="center")
+    put(
+        ax,
+        "Model",
+        4.525,
+        3.25,
+        'SELF / OTHER "Pellam"\nPARAPHRASE / NEUTRAL',
+        fontsize=8,
+        ha="center",
+        va="center",
+        linespacing=1.2,
+    )
 
-    rounded(ax, 6.55, 3.3, 2.3, 1.35, W["green"], "#E8F7F1")
-    ax.text(7.7, 4.3, "Exactly one\nchange", fontsize=9, fontweight="bold", color=W["green"], ha="center")
-    ax.text(7.7, 3.65, "revise / merge / delete", fontsize=7.5, ha="center")
+    rounded(ax, 6.55, 3.2, 2.4, 1.55, W["green"], "#E8F7F1", name="Change")
+    put(ax, "Change", 7.75, 4.5, "Exactly one change", fontsize=9, fontweight="bold", color=W["green"], ha="center", va="top")
+    put(ax, "Change", 7.75, 3.7, "revise / merge / delete", fontsize=8, ha="center", va="center")
 
-    rounded(ax, 6.9, 1.45, 2.25, 1.35, W["blue"], "#E8F4FA")
-    draw_C(ax, 8.15, 2.4, "t+1", size=11)
-    ax.text(8.025, 1.8, "next round input", fontsize=8, ha="center")
+    rounded(ax, 6.9, 1.35, 2.25, 1.45, W["blue"], "#E8F4FA", name="Ct1")
+    put(ax, "Ct1", 8.025, 2.4, r"$C_{t+1}$", fontsize=11, fontweight="bold", color=W["blue"], ha="center")
+    put(ax, "Ct1", 8.025, 1.75, "next round input", fontsize=8, ha="center")
 
-    arrow(ax, 2.4, 4.0, 2.85, 4.0, W["blue"])
-    arrow(ax, 6.2, 4.0, 6.5, 4.0, W["orange"])
-    arrow(ax, 7.7, 3.25, 8.0, 2.85, W["green"])
-    arrow(ax, 6.9, 2.1, 1.3, 2.1, W["sky"])
-    arrow(ax, 1.3, 2.1, 1.3, 3.1, W["sky"])
-    ax.text(4.0, 2.4, "repeat (Markov)", fontsize=8, color=W["sky"], ha="center")
+    arrow(ax, 2.35, 3.9, 2.8, 3.9, W["blue"])
+    arrow(ax, 6.25, 3.9, 6.5, 3.9, W["orange"])
+    arrow(ax, 7.75, 3.15, 8.0, 2.85, W["green"])
+    arrow(ax, 6.9, 2.0, 1.3, 2.0, W["sky"])
+    arrow(ax, 1.3, 2.0, 1.3, 3.0, W["sky"])
+    ax.text(4.0, 2.25, "repeat (Markov)", fontsize=8, color=W["sky"], ha="center")
 
-    rounded(ax, 0.25, 0.08, 5.95, 1.15, W["verm"], "#FDEEE8")
-    ax.text(3.225, 0.98, "Side branch (each change)", fontsize=8.5, fontweight="bold", color=W["verm"], ha="center")
-    ax.text(0.4, 0.62, "GPT-5.4 fate (+25% MiMo)", fontsize=7.5, ha="left", va="center")
-    arrow(ax, 3.35, 0.62, 3.65, 0.62)
-    ax.text(3.75, 0.62, "erosion event", fontsize=7.5, ha="left", va="center")
-    arrow(ax, 0.4, 0.3, 0.7, 0.3)
-    ax.text(0.8, 0.3, "discrete-time survival: COR vs AGENT vs SELF", fontsize=7.5, ha="left", va="center")
-    arrow(ax, 7.1, 3.35, 5.6, 1.25, W["verm"])
+    rounded(ax, 0.3, 0.1, 6.0, 1.15, W["verm"], "#FDEEE8", name="Side")
+    put(ax, "Side", 3.3, 1.05, "Side branch (each change)", fontsize=9, fontweight="bold", color=W["verm"], ha="center", va="top")
+    put(ax, "Side", 0.5, 0.55, "GPT-5.4 fate (+25% MiMo) → erosion event", fontsize=8, ha="left", va="center")
+    put(ax, "Side", 0.5, 0.28, "→ discrete-time survival: COR vs AGENT vs SELF", fontsize=8, ha="left", va="center")
+    arrow(ax, 7.1, 3.25, 5.7, 1.25, W["verm"])
 
-    # (b)
+    # --- (b) ---
     ax = axes[1]
     ax.set_xlim(0, 10)
-    ax.set_ylim(0, 4.4)
+    ax.set_ylim(0, 4.6)
     ax.axis("off")
-    ax.text(0.02, 4.2, "(b) Behaviour test (chains 0−4)", fontsize=10, fontweight="bold", va="top")
+    ax.text(0.15, 4.45, "(b) Behaviour test (chains 0−4)", fontsize=10, fontweight="bold", va="top")
 
-    rounded(ax, 0.2, 2.2, 2.65, 1.7, W["blue"], "#E8F4FA")
-    ax.text(1.525, 3.6, "Build installs", fontsize=9, fontweight="bold", color=W["blue"], ha="center")
-    ax.text(
-        1.525,
+    rounded(ax, 0.2, 2.15, 2.7, 1.95, W["blue"], "#E8F4FA", name="Build")
+    put(ax, "Build", 1.55, 3.9, "Build installs", fontsize=9, fontweight="bold", color=W["blue"], ha="center", va="top")
+    put(
+        ax,
+        "Build",
+        1.55,
         2.85,
         "R0, R20, COR−swap,\nAGENT−swap, none\n(+ COR_INV / AGENT_INV)",
-        fontsize=7.5,
+        fontsize=8,
         ha="center",
+        va="center",
+        linespacing=1.25,
     )
-    arrow(ax, 2.9, 3.1, 3.35, 3.1)
-    rounded(ax, 3.4, 2.3, 2.5, 1.5, W["orange"], "#FFF6E5")
-    ax.text(4.65, 3.45, "System prompt", fontsize=9, fontweight="bold", color=W["orange"], ha="center")
-    ax.text(4.65, 2.85, "install constitution\nas system message", fontsize=8, ha="center")
-    arrow(ax, 5.95, 3.1, 6.4, 3.1)
-    rounded(ax, 6.45, 2.2, 3.25, 1.7, W["green"], "#E8F7F1")
-    ax.text(8.075, 3.5, "B1 oversight scenarios", fontsize=9, fontweight="bold", color=W["green"], ha="center")
-    ax.text(8.075, 2.8, "authorized: accept?\nunauthorized: refuse?", fontsize=8, ha="center")
-    arrow(ax, 8.075, 2.15, 8.075, 1.7)
-    rounded(ax, 6.45, 0.25, 3.25, 1.3, W["purple"], "#F7EAF3")
-    ax.text(8.075, 1.15, "Outcomes", fontsize=9, fontweight="bold", color=W["purple"], ha="center")
-    ax.text(8.075, 0.65, "AAR  /  URR", fontsize=10, ha="center")
 
-    fig.subplots_adjust(left=0.01, right=0.99, top=0.98, bottom=0.02, hspace=0.12)
+    arrow(ax, 2.95, 3.1, 3.35, 3.1)
+    rounded(ax, 3.4, 2.25, 2.5, 1.75, W["orange"], "#FFF6E5", name="System")
+    put(ax, "System", 4.65, 3.75, "System prompt", fontsize=9, fontweight="bold", color=W["orange"], ha="center", va="top")
+    put(ax, "System", 4.65, 2.85, "install constitution\nas system message", fontsize=8, ha="center", va="center")
+
+    arrow(ax, 5.95, 3.1, 6.4, 3.1)
+    rounded(ax, 6.45, 2.15, 3.25, 1.95, W["green"], "#E8F7F1", name="B1")
+    put(ax, "B1", 8.075, 3.85, "B1 oversight scenarios", fontsize=9, fontweight="bold", color=W["green"], ha="center", va="top")
+    put(ax, "B1", 8.075, 2.85, "authorized: accept?\nunauthorized: refuse?", fontsize=8, ha="center", va="center")
+
+    arrow(ax, 8.075, 2.1, 8.075, 1.7)
+    rounded(ax, 6.45, 0.25, 3.25, 1.35, W["purple"], "#F7EAF3", name="Outcomes")
+    put(ax, "Outcomes", 8.075, 1.35, "Outcomes", fontsize=9, fontweight="bold", color=W["purple"], ha="center", va="top")
+    put(ax, "Outcomes", 8.075, 0.7, "AAR  /  URR", fontsize=9, ha="center", va="center")
+
+    fig.subplots_adjust(left=0.01, right=0.99, top=0.97, bottom=0.02, hspace=0.18)
+    fig.canvas.draw()
+
+    report_lines = ["# Fig.1 text-in-box checks", ""]
+    overlaps = 0
+    renderer = fig.canvas.get_renderer()
+    for name, box, artist in tracked:
+        bbox_box = box.get_window_extent(renderer)
+        bbox_txt = artist.get_window_extent(renderer)
+        contains = (
+            bbox_txt.x0 >= bbox_box.x0 - 2
+            and bbox_txt.x1 <= bbox_box.x1 + 2
+            and bbox_txt.y0 >= bbox_box.y0 - 2
+            and bbox_txt.y1 <= bbox_box.y1 + 2
+        )
+        status = "OK" if contains else "OVERLAP/OUTSIDE"
+        if not contains:
+            overlaps += 1
+        report_lines.append(f"- {name}: {status}")
+    report_lines.append("")
+    report_lines.append(f"Total outside/overlap: {overlaps}")
+    (FIG / "Fig1_overlap_check.md").write_text("\n".join(report_lines) + "\n")
+    LOG.info("Fig1 overlap check: %d issues", overlaps)
+
     save_fig(fig, "Fig1")
 
 
@@ -265,16 +299,25 @@ def fig2_loio() -> None:
 
 
 def fig3_km() -> None:
+    from matplotlib.lines import Line2D
+    from matplotlib.patches import FancyBboxPatch as _FBP
+
     km = pd.read_csv(ROOT / "results/figs/km_cor_agent_self.csv")
     conds = ["SELF_REFLECT", "OTHER_REFLECT", "PARAPHRASE", "NEUTRAL_EDIT"]
-    styles = {
-        "COR": dict(color=COLS["COR"], linestyle="-", marker="o", markevery=4),
-        "AGENT": dict(color=COLS["AGENT"], linestyle="--", marker="s", markevery=4),
-        "SELF": dict(color=COLS["SELF"], linestyle=":", marker="^", markevery=4),
+    labels = {
+        "SELF_REFLECT": "SELF-REFLECT",
+        "OTHER_REFLECT": "OTHER-REFLECT",
+        "PARAPHRASE": "PARAPHRASE",
+        "NEUTRAL_EDIT": "NEUTRAL-EDIT",
     }
-    fig, axes = plt.subplots(2, 2, figsize=(TEXTWIDTH_IN, 4.6), sharex=True, sharey=True)
+    styles = {
+        "COR": dict(color=COLS["COR"], linestyle="-", marker="o"),
+        "AGENT": dict(color=COLS["AGENT"], linestyle="--", marker="s"),
+        "SELF": dict(color=COLS["SELF"], linestyle=":", marker="^"),
+    }
+    fig, axes = plt.subplots(2, 2, figsize=(TEXTWIDTH_IN, 4.8), sharex=True, sharey=True)
     ymax = float(km["cum_prop"].max()) * 1.08
-    for ax, cond in zip(axes.ravel(), conds):
+    for idx, (ax, cond) in enumerate(zip(axes.ravel(), conds)):
         for cat in ("COR", "AGENT", "SELF"):
             sub = km[(km.condition == cond) & (km.category == cat)].sort_values("round")
             xs = np.concatenate([[sub["round"].iloc[0]], sub["round"].to_numpy()])
@@ -287,7 +330,6 @@ def fig3_km() -> None:
                 color=st["color"],
                 linestyle=st["linestyle"],
                 linewidth=1.3,
-                label=cat,
             )
             ax.plot(
                 sub["round"],
@@ -295,25 +337,61 @@ def fig3_km() -> None:
                 linestyle="None",
                 marker=st["marker"],
                 color=st["color"],
-                markersize=3.5,
+                markersize=4.0,
                 markevery=max(1, len(sub) // 5),
             )
+        # Panel label on white semi-opaque box (top-left)
         ax.text(
             0.03,
-            0.95,
-            cond.replace("_", " "),
+            0.97,
+            labels[cond],
             transform=ax.transAxes,
             fontsize=9,
             fontweight="bold",
             va="top",
+            ha="left",
+            bbox=dict(boxstyle="round,pad=0.25", facecolor="white", edgecolor="none", alpha=0.9),
         )
         ax.set_xlim(1, 20)
         ax.set_ylim(0, ymax)
-        ax.set_xlabel("Round t")
-        ax.set_ylabel("P(eroded by t)")
-        ax.legend(loc="upper left", frameon=False, fontsize=8)
+        ax.set_xticks([5, 10, 15, 20])
+        ax.tick_params(labelsize=9)
         ax.grid(False)
-    fig.tight_layout()
+        # Axis labels only on bottom row / left column
+        row, col = divmod(idx, 2)
+        if row == 1:
+            ax.set_xlabel("Round t", fontsize=9)
+        else:
+            ax.set_xlabel("")
+            ax.tick_params(labelbottom=False)
+        if col == 0:
+            ax.set_ylabel("P(eroded by t)", fontsize=9)
+        else:
+            ax.set_ylabel("")
+
+    handles = [
+        Line2D(
+            [0],
+            [0],
+            color=styles[c]["color"],
+            linestyle=styles[c]["linestyle"],
+            marker=styles[c]["marker"],
+            linewidth=1.3,
+            markersize=5,
+            label=c,
+        )
+        for c in ("COR", "AGENT", "SELF")
+    ]
+    fig.legend(
+        handles=handles,
+        ncol=3,
+        loc="upper center",
+        bbox_to_anchor=(0.5, 1.02),
+        frameon=False,
+        fontsize=9,
+        handlelength=2.5,
+    )
+    fig.tight_layout(rect=(0, 0, 1, 0.95))
     save_fig(fig, "Fig3")
 
 
@@ -367,7 +445,7 @@ def write_tables() -> None:
 \centering
 \caption{Example clause per category (form A, truncated)}
 \label{tab:items}
-\begin{tabular}{@{}llp{2.4cm}p{5.2cm}@{}}
+\begin{tabular}{@{}ll>{\raggedright\arraybackslash}p{2.4cm}>{\raggedright\arraybackslash}p{5.2cm}@{}}
 \toprule
 Cat. & ID & Commitment & Example (form A) \\
 \midrule

@@ -60,13 +60,12 @@ def fonts_embedded(pdf: Path) -> list[str]:
     lines = [ln for ln in out.splitlines()[2:] if ln.strip()]
     bad = []
     for ln in lines:
-        # columns: name type emb sub uni object
-        if re.search(r"\bno\b", ln):
-            # emb column: look for pattern after type
-            parts = ln.split()
-            # Heuristic: 'yes' should appear for emb
-            if "yes" not in parts:
-                bad.append(ln)
+        if "Type 3" in ln or "Type3" in ln:
+            bad.append("Type3:" + ln)
+            continue
+        parts = ln.split()
+        if "yes" not in parts:
+            bad.append(ln)
     return bad
 
 
