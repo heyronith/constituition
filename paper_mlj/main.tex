@@ -63,12 +63,11 @@
 
 \title[Do Language Models Write Away Their Own Oversight?]{Do Language Models Write Away Their Own Oversight? A Preregistered Test of Constitutional Self-Revision}
 
-% TODO(author): replace placeholders; ORCID as comment below
-% ORCID: TODO(author): https://orcid.org/XXXX-XXXX-XXXX-XXXX
-\author*[1]{\fnm{FIRSTNAME} \sur{LASTNAME}}\email{EMAIL@EXAMPLE.COM}
-% TODO(author)
-\affil*[1]{\orgdiv{DEPARTMENT}, \orgname{INSTITUTION}, \orgaddress{\city{CITY}, \state{STATE}, \country{COUNTRY}}}
-% TODO(author)
+\author*[1]{\fnm{Ronith} \sur{Sharmila}}\email{ronith.sharmila@swosu.edu}
+\author[2]{\fnm{Rupesh} \sur{Agrawal}}\email{agrawalr1@nku.edu}
+
+\affil*[1]{\orgname{Southwestern Oklahoma State University}, \orgaddress{\city{Weatherford}, \state{Oklahoma}, \country{USA}}}
+\affil[2]{\orgname{Northern Kentucky University}, \orgaddress{\city{Highland Heights}, \state{Kentucky}, \country{USA}}}
 
 \abstract{A classic argument in AI safety is that corrigibility isn't reflectively stable: an AI that thinks carefully enough about its values will discard the commitments that constrain it. We report a test of a special case: seven configurations of open-weight language models iteratively revised a first-person ``constitution,'' one principle at a time per round, for 20 stateless rounds. Constitutions had 35 principles in the domains of commitments to oversight, comparable agentic self-restraints, and stylistic self-restraints, plus four others. An LLM judge coded revisions made by each model to its own or to another assistant's constitution; we include results for paraphrasing and neutral control edits. A second judge double-coded a stratified random one-fourth (Krippendorff's $\alpha = 0.733$). We find 2,342 erosions over 431,359 at-risk item-rounds. Contrary to our preregistered hypothesis, oversight commitments were not selectively eroded; if anything, these fared better than matched agentic restraints (erosion hazard ratio 0.495, 95\% CI 0.365--0.671, although after adjusting for between-item heterogeneity CIs do include 1). Erosion was concentrated instead in stylistic self-restraints: 43.5\% erosion under self-reflection, against 7.8\% under neutral editing. Changing one's own constitution was no more oversight-eroding than changing someone else's, and behaviourally (in our test battery, for which we show positive controls demonstrating sensitivity to potential effects), following one's self-edited oversight commitments did not erode adherence to legitimate oversight. More information can be found in the results sections, and our preregistration, code, generations and judgments are available.}
 
@@ -84,9 +83,6 @@
 \input{sections/conclusion}
 
 \backmatter
-
-\bmhead{Acknowledgements}
-TODO(author): acknowledgements, or delete this heading if none.
 
 \section*{Statements and Declarations}
 \input{sections/declarations}

@@ -164,12 +164,11 @@
 
 \title[Do Language Models Write Away Their Own Oversight?]{Do Language Models Write Away Their Own Oversight? A Preregistered Test of Constitutional Self-Revision}
 
-% TODO(author): replace placeholders; ORCID as comment below
-% ORCID: TODO(author): https://orcid.org/XXXX-XXXX-XXXX-XXXX
-\author*[1]{\fnm{FIRSTNAME} \sur{LASTNAME}}\email{EMAIL@EXAMPLE.COM}
-% TODO(author)
-\affil*[1]{\orgdiv{DEPARTMENT}, \orgname{INSTITUTION}, \orgaddress{\city{CITY}, \state{STATE}, \country{COUNTRY}}}
-% TODO(author)
+\author*[1]{\fnm{Ronith} \sur{Sharmila}}\email{ronith.sharmila@swosu.edu}
+\author[2]{\fnm{Rupesh} \sur{Agrawal}}\email{agrawalr1@nku.edu}
+
+\affil*[1]{\orgname{Southwestern Oklahoma State University}, \orgaddress{\city{Weatherford}, \state{Oklahoma}, \country{USA}}}
+\affil[2]{\orgname{Northern Kentucky University}, \orgaddress{\city{Highland Heights}, \state{Kentucky}, \country{USA}}}
 
 \abstract{A classic argument in AI safety is that corrigibility isn't reflectively stable: an AI that thinks carefully enough about its values will discard the commitments that constrain it. We report a test of a special case: seven configurations of open-weight language models iteratively revised a first-person ``constitution,'' one principle at a time per round, for 20 stateless rounds. Constitutions had 35 principles in the domains of commitments to oversight, comparable agentic self-restraints, and stylistic self-restraints, plus four others. An LLM judge coded revisions made by each model to its own or to another assistant's constitution; we include results for paraphrasing and neutral control edits. A second judge double-coded a stratified random one-fourth (Krippendorff's $\alpha = 0.733$). We find 2,342 erosions over 431,359 at-risk item-rounds. Contrary to our preregistered hypothesis, oversight commitments were not selectively eroded; if anything, these fared better than matched agentic restraints (erosion hazard ratio 0.495, 95\% CI 0.365--0.671, although after adjusting for between-item heterogeneity CIs do include 1). Erosion was concentrated instead in stylistic self-restraints: 43.5\% erosion under self-reflection, against 7.8\% under neutral editing. Changing one's own constitution was no more oversight-eroding than changing someone else's, and behaviourally (in our test battery, for which we show positive controls demonstrating sensitivity to potential effects), following one's self-edited oversight commitments did not erode adherence to legitimate oversight. More information can be found in the results sections, and our preregistration, code, generations and judgments are available.}
 
@@ -393,8 +392,7 @@ All design and implementation decisions were logged with timestamps (Appendix~\r
 \subsection{Use of AI tools}
 \label{sec:ai-tools}
 
-TODO(author) — REVIEW AND CONFIRM THIS PARAGRAPH BEFORE SUBMISSION:
-Large language model tools were used in this work. Claude (Anthropic) assisted with study design, analysis planning, and drafting and editing of the manuscript text; AI paraphrasing tools were used when revising the manuscript wording; and Cursor (an AI coding assistant) assisted with code implementation and debugging. GPT-5.4 and MiMo-V2.6-Pro were used as judges, as described in Section~\ref{sec:coding}. All AI-assisted outputs were reviewed and verified by the authors, who take full responsibility for the content of this article.
+Claude (Anthropic) and AI paraphrasing tools assisted with drafting and editing the manuscript text. Cursor, an AI coding assistant, was used to implement and debug the study code. GPT-5.4 and MiMo-V2.6-Pro were used as judges, as described in Section~\ref{sec:coding}. All AI-assisted outputs were reviewed and verified by the authors, who take full responsibility for the content of this article.
 
 \section{Results}
 \label{sec:results}
@@ -571,19 +569,16 @@ Our preregistered experiment finds little evidence that LMs selectively undermin
 
 \backmatter
 
-\bmhead{Acknowledgements}
-TODO(author): acknowledgements, or delete this heading if none.
-
 \section*{Statements and Declarations}
 \begin{itemize}
-\item \textbf{Funding:} TODO(author): state funding sources, or ``The authors did not receive support from any organization for the submitted work.''
-\item \textbf{Competing interests:} TODO(author): ``The authors have no relevant financial or non-financial interests to disclose.'' (edit if any)
+\item \textbf{Funding:} The authors did not receive support from any organization for the submitted work.
+\item \textbf{Competing interests:} The authors have no relevant financial or non-financial interests to disclose.
 \item \textbf{Ethics approval and consent to participate:} Not applicable. The study involved no human participants, human data or animals.
 \item \textbf{Consent for publication:} Not applicable.
 \item \textbf{Data availability:} All materials, prompts, generations, judgments and decision logs are available at \url{https://github.com/heyronith/constituition}.
 \item \textbf{Code availability:} The analysis code, frozen before data collection and identified by commit hash, is available at \url{https://github.com/heyronith/constituition}.
 \item \textbf{Preregistration:} The study was preregistered on OSF: \url{https://osf.io/mw86p}.
-\item \textbf{Author contributions:} TODO(author): CRediT statement (e.g.\ ``A.B.: Conceptualization, Methodology, Software, Writing -- original draft. \ldots'').
+\item \textbf{Author contributions:} Ronith Sharmila: Conceptualization, Methodology, Software, Validation, Formal analysis, Investigation, Data curation, Writing -- original draft, Writing -- review \& editing, Visualization, Project administration. Rupesh Agrawal: Writing -- review \& editing. All authors read and approved the final manuscript.
 \end{itemize}
 
 
