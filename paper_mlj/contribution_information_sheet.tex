@@ -13,18 +13,24 @@
 
 \textbf{1. What is the main claim of the paper? Why is this an important contribution to the machine learning literature?}
 
-A classical argument in AI safety holds that corrigibility is not reflectively stable: an agent that reflects on its values should come to discard commitments that let others correct, modify or shut it down. We provide the first preregistered, controlled test of this claim in language models. When seven open-weight model configurations iteratively revised a first-person constitution, oversight commitments were not selectively eroded relative to matched agentic self-restraints; erosion instead concentrated in stylistic self-restraints and was driven by reflection rather than by repeated editing. Self-revised oversight clauses did not change oversight-related behaviour in a battery validated with positive controls. The paradigm, dataset and frozen analysis pipeline give the field a reusable instrument for measuring value drift under self-revision.
+\textbf{Main claim.} In a preregistered experiment, iterated self-revision of a written constitution did not selectively erode language models' commitments to human oversight. Erosion concentrated instead in stylistic self-restraints and was driven by reflection rather than by repeated editing. This runs against a long-standing argument that corrigibility is not reflectively stable.
+
+\textbf{Why it matters for machine learning.} Models are increasingly trained and deployed with procedures that let them critique and revise their own principles: constitutional training, self-refinement and self-evolving agents. To our knowledge, this is the first controlled, preregistered measurement of what such revision does to different kinds of stated commitments. It also provides a reusable method for making such measurements: iterated transmission used as a measurement instrument, matched item categories with control conditions, discrete-time survival analysis, and a two-judge reliability check.
 
 \textbf{2. What is the evidence you provide to support your claim?}
 
-A preregistered experiment: 7 configurations $\times$ 4 conditions $\times$ 25 chains $\times$ 20 rounds (700 chains; 431,359 at-risk item-rounds; 2,342 erosion events). It includes matched control categories, paraphrase and neutral-edit control conditions, a discrete-time survival analysis with preregistered fallbacks, a second independent LLM judge on a stratified 25\% sample (Krippendorff's $\alpha = 0.733$), item-level robustness analyses (bootstrap, leave-one-item-out, permutation, random-effects models), and a behavioural battery whose sensitivity is confirmed by positive controls. Analysis code was frozen and validated on simulated data before data collection.
+\textbf{Design.} 7 open-weight model configurations $\times$ 4 conditions $\times$ 25 chains $\times$ 20 rounds (700 chains; 431,359 at-risk item-rounds; 2,342 erosion events), with paraphrase and neutral-edit control conditions and matched oversight and agentic items. Hypotheses, sample size and analysis code were preregistered and frozen, and the code was validated on simulated data before data collection. A second, independent LLM judge double-coded a stratified 25\% sample (Krippendorff's $\alpha = 0.733$).
+
+\textbf{Results.} The erosion hazard ratio for oversight vs.\ matched agentic items was 0.495 (95\% CI 0.365--0.671). We report its fragility openly: models that include between-item variation give intervals that include 1, and the result depends on particular items. Stylistic items eroded at 43.5\% under self-reflection, against 7.8\% under neutral editing. Revising one's own constitution did not differ from revising another assistant's. Installing self-revised oversight clauses had no behavioural effect (COR-swap minus AGENT-swap 0.26, 95\% CI $-$0.21 to 0.73), in a battery where positive controls lowered acceptance of legitimate oversight by up to 0.95.
 
 \textbf{3. What papers by other authors make the most closely related contributions, and how is your paper related to them?}
 \begin{itemize}[leftmargin=*]
-\item Soares et al.\ (2015) state the theoretical argument; we test it empirically.
-\item S.\ Das et al.\ (2026) and Han et al.\ (2025) show safety erosion in self-evolving agents under task or reward pressure; we remove pressure, reward and memory to isolate unpressured reflection, and test selectivity against matched categories.
-\item J.\ Perez et al.\ (2024) and Wu et al.\ (2026) use iterated transmission and self-refinement to reveal model attractors; we use this as a measurement instrument for values.
-\item Two concurrent exploratory projects (heyuday, 2026; Wu, 2026) iterate constitution editing but lack control categories, category-level analysis and behavioural follow-up.
+\item \textbf{Soares et al.\ (2015)} state the theoretical argument that corrigibility is not reflectively stable; we test it empirically.
+\item \textbf{Bai et al.\ (2022)} train models against human-written principles (Constitutional AI); we let models rewrite their own principles and measure what survives.
+\item \textbf{S.\ Das et al.\ (2026)} and \textbf{Han et al.\ (2025)} show that safety constraints erode in self-evolving agents under task or reward pressure; we remove pressure, reward and memory to isolate unpressured reflection, and we test selectivity against matched categories.
+\item \textbf{Greenblatt et al.\ (2024), Meinke et al.\ (2024)} and \textbf{Schlatter et al.\ (2025)} measure oversight-relevant behaviour under goal conflict; we study stated commitments under reflection and test whether changes to them carry over into behaviour.
+\item \textbf{J.\ Perez et al.\ (2024)} and \textbf{Wu et al.\ (2026)} use iterated transmission and self-refinement to reveal model attractors; we use this effect as a measurement instrument for values.
+\item Two concurrent exploratory projects (\textbf{heyuday, 2026; Wu, 2026}) iterate constitution editing but include no control categories, no category-level analysis and no behavioural follow-up.
 \end{itemize}
 
 \textbf{4. Have you published parts of this work elsewhere? If so, how does this paper differ?}

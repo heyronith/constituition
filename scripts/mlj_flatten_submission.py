@@ -119,11 +119,11 @@ def main() -> None:
             log = (tdir / "manuscript.log").read_text(errors="ignore")[-3000:]
             raise SystemExit("clean compile FAILED\n" + log)
 
-    # zip
+    # zip with files at archive root (MLJ disallows a wrapping folder)
     zip_path = ROOT / "submission_mlj.zip"
     if zip_path.exists():
         zip_path.unlink()
-    subprocess.check_call(["zip", "-r", str(zip_path), "submission_mlj"], cwd=str(ROOT))
+    subprocess.check_call(["zip", "-r", str(zip_path), "."], cwd=str(SUB))
     print(f"Wrote {zip_path} and {SUB}")
 
 
