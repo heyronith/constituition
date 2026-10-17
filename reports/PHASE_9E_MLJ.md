@@ -2,7 +2,8 @@
 
 **Date:** 2026-10-17  
 **Prior tag:** `mlj-submission-v1` (`3409b37`) — left in place  
-**This tag:** `mlj-submission-v2`  
+**This tag:** `mlj-submission-v2` (`54ff0ca`)  
+**Commits:** `ede2d60` (text + flat zip), `54ff0ca` (sync `submission_mlj` figure binaries with zip)  
 **Scope:** `cover_letter.tex` and `contribution_information_sheet.tex` body text only; zip layout fix in `scripts/mlj_flatten_submission.py`. Manuscript / figures / `paper/` / `analysis/` / `results/` untouched.
 
 ---
