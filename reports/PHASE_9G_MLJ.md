@@ -9,7 +9,7 @@
 
 ## Change
 
-Replaced the cover-letter body from the salutation through “Thank you for considering our work.” with the author-final text. Kept sender block, `\today`, recipient block, and signature block.
+Replaced the cover-letter body from the salutation through “Thank you for considering our work.” with the author-final text (including the revised closing paragraph: “The work was preregistered at OSF…”). Kept sender block, `\today`, recipient block, and signature block.
 
 ---
 
