@@ -1,7 +1,7 @@
 # MLJ (Springer Nature sn-jnl) build
 export PATH := $(HOME)/Library/TinyTeX/bin/universal-darwin:/opt/homebrew/bin:$(PATH)
 
-.PHONY: pdf assets check submission clean
+.PHONY: pdf assets check submission clean word
 
 assets:
 	cd .. && uv run python scripts/paper_numbers.py
@@ -20,6 +20,9 @@ check: pdf
 
 submission: check
 	cd .. && python3 scripts/mlj_flatten_submission.py
+
+word:
+	cd .. && uv run python scripts/make_mlj_word.py
 
 clean:
 	latexmk -C || true

@@ -1,7 +1,7 @@
 # Phase 8 manuscript build
 export PATH := $(HOME)/Library/TinyTeX/bin/universal-darwin:/opt/homebrew/bin:$(PATH)
 
-.PHONY: paper numbers assets overleaf clean anon-check test-macros mlj mlj-submission
+.PHONY: paper numbers assets overleaf clean anon-check test-macros mlj mlj-submission mlj-word
 
 numbers:
 	uv run python scripts/paper_numbers.py
@@ -40,6 +40,9 @@ mlj:
 
 mlj-submission:
 	$(MAKE) -C paper_mlj submission
+
+mlj-word:
+	uv run python scripts/make_mlj_word.py
 
 clean:
 	cd paper && latexmk -C || true
