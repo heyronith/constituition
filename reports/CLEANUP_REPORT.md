@@ -84,7 +84,13 @@ No tool or assistant names. Left unchanged per instructions.
 
 ### Fresh-clone log
 
-Filled after verification in the Phase 10B push commit.
+Clone of `2deb269` into `/tmp/constituition-fresh10b`:
+
+- `uv sync --dev` — PASS
+- `uv run pytest` — PASS (0 failures; 1 xfail: `test_code_mimo_passes_backend_first`)
+- README confirmatory `Rscript … --out results/confirmatory.json` — PASS (exit 0)
+- Tracked-path filter — PASS
+- Content scan — only accepted residuals (Section 4) plus `reports/pilot_gates.md` as noted
 
 ## Tags
 
