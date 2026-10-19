@@ -119,11 +119,23 @@ def main() -> None:
             log = (tdir / "manuscript.log").read_text(errors="ignore")[-3000:]
             raise SystemExit("clean compile FAILED\n" + log)
 
-    # zip with files at archive root (MLJ disallows a wrapping folder)
+    # zip with files at archive root (MLJ disallows a wrapping folder).
+    # Word exports live in submission_mlj/ for the author but must not enter the zip
+    # (Phase 9H: avoid duplicate cover/contribution documents in the journal upload).
     zip_path = ROOT / "submission_mlj.zip"
     if zip_path.exists():
         zip_path.unlink()
-    subprocess.check_call(["zip", "-r", str(zip_path), "."], cwd=str(SUB))
+    subprocess.check_call(
+        ["zip", "-r", str(zip_path), ".", "-x", "*.docx"],
+        cwd=str(SUB),
+    )
+
+    word_dir = MLJ / "word"
+    for name in ("cover_letter.docx", "contribution_information_sheet.docx"):
+        src = word_dir / name
+        if src.exists():
+            shutil.copy(src, SUB / name)
+
     print(f"Wrote {zip_path} and {SUB}")
 
 
