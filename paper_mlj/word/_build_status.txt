@@ -1,6 +1,0 @@
-date=October 17, 2026
-method=python-docx-from-tex
-reference=/Users/ronny/Desktop/Research/AI Alignment Projects_Claude/Constituition/paper_mlj/word/reference.docx
-libreoffice_cover_pages=None
-libreoffice_sheet_pages=None
-text_identity=PASS
