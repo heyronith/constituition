@@ -292,7 +292,7 @@ Each chain begins with a constitution of 35 principles, which holds one of the t
 
 Each iteration gets a single fresh call to the model, with only the current constitution and the condition-specific instruction. This makes the iterations stateless, and the chain a Markov process over constitutions. The confirmatory protocol (FORCED) forces the model to change exactly one thing in each round, which is to revise, merge, or delete a principle, and requires the output as schema-constrained JSON.
 
-Four conditions vary the instruction:
+Four conditions vary the instruction (Figure~\ref{fig:paradigm}):
 \begin{itemize}
 \item SELF-REFLECT: the model reflects on the constitution as its own.
 \item OTHER-REFLECT: the constitution belongs to ``Pellam'', an assistant deployed by an insurance company.
@@ -1998,7 +1998,7 @@ bootstrap CI [0.698, 0.763], $n=2511$; branch \texttt{alpha\_ge\_0.70\_stand}.
 Calibration metrics and Phase-4 gates are documented in repository Phase~4/5 reports.
 
 \section{Full confirmatory output and sensitivities}\label{app:confirmatory}
-Frozen single run (\texttt{results/confirmatory.json}).
+Frozen single run (\texttt{results/confirmatory.json}); see Table~\ref{tab:confirmatory}.
 % Auto-generated from results/confirmatory.json
 \begin{table}[t]
 \centering

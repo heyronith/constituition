@@ -17,9 +17,11 @@ check: pdf
 	cd .. && uv run python scripts/paper_number_audit.py --mlj
 	cd .. && uv run pytest tests/test_paper_numbers.py -q
 	cd .. && python3 scripts/mlj_checks.py
+	cd .. && python3 scripts/check_float_citations.py
 
 submission: check
 	cd .. && python3 scripts/mlj_flatten_submission.py
+	cd .. && python3 scripts/check_float_citations.py --submission
 
 word:
 	cd .. && uv run python scripts/make_mlj_word.py
