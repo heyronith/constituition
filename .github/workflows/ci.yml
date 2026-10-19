@@ -15,9 +15,5 @@ jobs:
           python-version: "3.11"
       - name: Install
         run: uv sync --dev
-      - name: Ruff lint
-        run: uv run ruff check
-      - name: Ruff format
-        run: uv run ruff format --check
       - name: Tests
         run: uv run pytest

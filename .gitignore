@@ -45,27 +45,3 @@ results/dryrun_permuted.full.json
 results/dryrun_permuted_table.md
 results/hazard_table_main_v1_permuted.csv
 results/battery_b1_main_v1_permuted.csv
-
-# Local-only: workflow, drafts, manuscript and submission files (not part of the public research record)
-.cursor/
-reports/PHASE_*.md
-paper_draft_v2.md
-paper_outline.md
-docs/related_work.md
-paper/
-paper_mlj/
-submission_mlj/
-submission_mlj.zip
-paper.mk
-scripts/mlj_checks.py
-scripts/mlj_flatten_submission.py
-scripts/check_float_citations.py
-scripts/make_mlj_word.py
-scripts/paper_anon_check.py
-scripts/paper_number_audit.py
-scripts/paper_assets.py
-scripts/paper_assets_mlj.py
-scripts/paper_numbers.py
-scripts/dryrun_report.py
-scripts/dryrun_report_2b.py
-tests/test_paper_numbers.py

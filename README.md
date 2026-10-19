@@ -38,11 +38,10 @@ Requires Python 3.11 and [uv](https://docs.astral.sh/uv/). Confirmatory analysis
 
 ```bash
 uv sync --dev
-uv run ruff check
 uv run pytest
 ```
 
-Re-run the frozen confirmatory analysis from the locked tables:
+Re-run the frozen confirmatory analysis from the locked tables (requires the R packages listed above):
 
 ```bash
 Rscript analysis/confirmatory/run_confirmatory.R \

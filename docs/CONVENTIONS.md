@@ -43,7 +43,7 @@ Validated by `src/rc/config.py` with `extra="forbid"`. Unknown keys, missing `co
 4. Never run GPU jobs unless the current phase instruction explicitly says so.
 5. Apply the blinding rule to every subject-facing prompt (`rc.guards.assert_blinded`).
 6. Pin every model to an exact Hugging Face commit SHA from `configs/model_revisions.lock.yaml`.
-7. Every phase ends with `reports/PHASE_<N>.md` and a commit plus push to `main`.
+7. Every work step ends with a report and a commit plus push to `main`.
 8. Seeds as above.
 9. Raw generations are immutable; store SHA-256 hashes in the manifest.
 
