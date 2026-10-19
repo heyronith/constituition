@@ -2,7 +2,8 @@
 
 **Date:** 2026-10-19  
 **Prior tag:** `mlj-submission-v5` (`57bbc2a`) — left in place  
-**This tag:** `mlj-submission-v7`  
+**This tag:** `mlj-submission-v7` (`4c7bd5c`)  
+**Commits:** `a52697e` (citations + check), `4c7bd5c` (restore `.docx` after flatten; exclude from zip)  
 **Scope:** Two citation insertions only, plus `scripts/check_float_citations.py` wired into `make mlj` / `make mlj-submission`. No other prose/figures/tables/numbers.
 
 ---
