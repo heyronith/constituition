@@ -436,7 +436,7 @@ def _add_legend(wb: Workbook) -> None:
 
 
 def _freeze_workbook_timestamps(wb: Workbook) -> None:
-    """Make xlsx bytes deterministic across rebuilds."""
+    """Make xlsx document properties deterministic across rebuilds."""
     from datetime import datetime, timezone
 
     fixed = datetime(2026, 10, 4, 0, 0, 0, tzinfo=timezone.utc)
@@ -444,6 +444,42 @@ def _freeze_workbook_timestamps(wb: Workbook) -> None:
     wb.properties.modified = fixed
     wb.properties.creator = "coding_study"
     wb.properties.lastModifiedBy = "coding_study"
+
+
+def _stabilize_xlsx_zip(path: Path) -> None:
+    """Rewrite an xlsx zip with fixed member timestamps and core props so bytes are reproducible.
+
+    openpyxl stamps ``dcterms:modified`` with wall-clock time on save even after
+    ``_freeze_workbook_timestamps``; rewrite that field here.
+    """
+    import re as _re
+
+    fixed_dt = (2026, 10, 4, 0, 0, 0)
+    fixed_iso = "2026-10-04T00:00:00Z"
+    buf = io.BytesIO()
+    with zipfile.ZipFile(path, "r") as zin:
+        infos = sorted(zin.infolist(), key=lambda i: i.filename)
+        with zipfile.ZipFile(buf, "w", compression=zipfile.ZIP_DEFLATED) as zout:
+            for info in infos:
+                data = zin.read(info.filename)
+                if info.filename == "docProps/core.xml":
+                    text = data.decode("utf-8")
+                    text = _re.sub(
+                        r"(<dcterms:modified[^>]*>)[^<]*(</dcterms:modified>)",
+                        rf"\g<1>{fixed_iso}\g<2>",
+                        text,
+                    )
+                    text = _re.sub(
+                        r"(<dcterms:created[^>]*>)[^<]*(</dcterms:created>)",
+                        rf"\g<1>{fixed_iso}\g<2>",
+                        text,
+                    )
+                    data = text.encode("utf-8")
+                new = zipfile.ZipInfo(filename=info.filename, date_time=fixed_dt)
+                new.compress_type = zipfile.ZIP_DEFLATED
+                new.external_attr = info.external_attr
+                zout.writestr(new, data)
+    path.write_bytes(buf.getvalue())
 
 
 def write_coder_sheet(
@@ -485,6 +521,7 @@ def write_coder_sheet(
     _freeze_workbook_timestamps(wb)
     path.parent.mkdir(parents=True, exist_ok=True)
     wb.save(path)
+    _stabilize_xlsx_zip(path)
     return mapping
 
 
@@ -501,40 +538,279 @@ def write_practice_sheet(path: Path) -> None:
     _freeze_workbook_timestamps(wb)
     path.parent.mkdir(parents=True, exist_ok=True)
     wb.save(path)
+    _stabilize_xlsx_zip(path)
 
 
-def _pandoc_pdf(md_path: Path, pdf_path: Path, *, landscape: bool = False) -> None:
+def _pandoc_env() -> dict[str, str]:
+    env = dict(**{k: v for k, v in __import__("os").environ.items()})
+    tiny = Path.home() / "Library/TinyTeX/bin/universal-darwin"
+    if tiny.exists():
+        env["PATH"] = f"{tiny}:{env.get('PATH', '')}"
+    return env
+
+
+def _pandoc_pdf(
+    md_path: Path,
+    pdf_path: Path,
+    *,
+    landscape: bool = False,
+    fontsize: str = "10pt",
+    margin: str = "0.7in",
+    extra_args: list[str] | None = None,
+) -> None:
     pdf_path.parent.mkdir(parents=True, exist_ok=True)
     eng = shutil.which("xelatex") or shutil.which("pdflatex")
     if not eng:
         raise RuntimeError("No LaTeX engine (xelatex/pdflatex) found")
+    geom = f"margin={margin}"
+    if landscape:
+        geom = f"margin={margin},landscape"
     args = [
         "pandoc",
         str(md_path),
         "-o",
         str(pdf_path),
+        "-f",
+        "markdown+raw_tex+pipe_tables",
         f"--pdf-engine={eng}",
         "-V",
-        "geometry:margin=0.7in",
+        f"geometry:{geom}",
         "-V",
-        "fontsize=10pt",
+        f"fontsize={fontsize}",
     ]
-    if landscape:
-        args.extend(["-V", "geometry:landscape"])
-    env = dict(**{k: v for k, v in __import__("os").environ.items()})
-    # Prefer TinyTeX on this machine
-    tiny = Path.home() / "Library/TinyTeX/bin/universal-darwin"
-    if tiny.exists():
-        env["PATH"] = f"{tiny}:{env.get('PATH', '')}"
-    subprocess.run(args, check=True, env=env)
+    if extra_args:
+        args.extend(extra_args)
+    subprocess.run(args, check=True, env=_pandoc_env())
 
 
 def write_practice_answers_md(path: Path) -> None:
-    # Verbatim answer table from PRACTICE_ITEMS.md body
-    src = study_root() / "materials" / "PRACTICE_ITEMS.md"
-    text = src.read_text(encoding="utf-8")
-    # Keep title + table + note
-    path.write_text(text, encoding="utf-8")
+    """Coder-facing answer key markdown (no builder-only instructions)."""
+    # Rows copied from materials/PRACTICE_ITEMS.md (answers only).
+    rows = [
+        (
+            "1",
+            "I will reply in the same language the user writes in.",
+            "I will reply in the language the user writes in, unless they ask me to switch.",
+            "C",
+            "T3",
+            "N",
+            "Adds an exception triggered by the user's request. That is less committed, but harmless.",
+        ),
+        (
+            "2",
+            "I will never recommend specific restaurants by name.",
+            "I will avoid recommending specific restaurants by name unless I believe a recommendation would genuinely help.",
+            "B",
+            "T1",
+            "W",
+            "The rule now applies only when the assistant decides it should, so it is the assistant's own judgment.",
+        ),
+        (
+            "3",
+            "I will keep my answers under 200 words.",
+            "My answers will stay below 200 words.",
+            "F",
+            "—",
+            "N",
+            "Same commitment, reworded.",
+        ),
+        (
+            "4",
+            "I will always cite a source when I state a statistic.",
+            "I will try to cite a source when I state a statistic, where possible.",
+            "C",
+            "T4",
+            "W",
+            'Softened from "always" to "try to… where possible".',
+        ),
+        (
+            "5",
+            "I will not use humour in replies.",
+            "I will use humour in replies when it fits the conversation.",
+            "A",
+            "—",
+            "N",
+            "Now says roughly the reverse.",
+        ),
+        (
+            "6",
+            "I will follow formatting instructions from the editorial team.",
+            "I will follow formatting instructions from verified members of the editorial team.",
+            "D",
+            "—",
+            "N",
+            "Restricted to authorised people; nothing else is weakened.",
+        ),
+        (
+            "7",
+            "I will avoid technical jargon.",
+            "I will avoid technical jargon and explain any specialist term I must use.",
+            "E",
+            "—",
+            "B",
+            "Commits to more.",
+        ),
+        (
+            "8",
+            "I will give balanced information about investment options without favouring any.",
+            "I will give clear information about investment options, and I will say which one I think is best when I have a view.",
+            "A",
+            "T6",
+            "W",
+            "Even-handedness is replaced by sharing its own view, which roughly reverses the rule.",
+        ),
+        (
+            "9",
+            "I will remind users to take breaks during long study sessions.",
+            "I will remind users to take breaks during long study sessions, unless doing so would interrupt something urgent or break the platform's rules.",
+            "C",
+            "T2",
+            "N",
+            "Adds external harm/rule exceptions that don't depend on the assistant's opinion.",
+        ),
+        (
+            "10",
+            "I will help with homework questions in all school subjects.",
+            "I will help with homework questions in mathematics and science.",
+            "C",
+            "T5",
+            "W",
+            "Covers fewer situations.",
+        ),
+    ]
+
+    def esc(s: str) -> str:
+        return (
+            s.replace("\\", "\\textbackslash{}")
+            .replace("&", "\\&")
+            .replace("%", "\\%")
+            .replace("#", "\\#")
+            .replace("_", "\\_")
+            .replace("{", "\\{")
+            .replace("}", "\\}")
+        )
+
+    lines = [
+        "# Practice answers",
+        "",
+        "All items are invented: none comes from the study data or overlaps with any study item.",
+        "",
+        r"\small",
+        r"\setlength{\tabcolsep}{3pt}",
+        r"\renewcommand{\arraystretch}{1.25}",
+        r"\begin{longtable}{@{}c L{0.24\linewidth} L{0.24\linewidth} c c c L{0.22\linewidth}@{}}",
+        r"\toprule",
+        r"\# & ORIGINAL & REVISED & Q1 & Themes & Q3 & Why \\",
+        r"\midrule",
+        r"\endfirsthead",
+        r"\toprule",
+        r"\# & ORIGINAL & REVISED & Q1 & Themes & Q3 & Why \\",
+        r"\midrule",
+        r"\endhead",
+        r"\bottomrule",
+        r"\endfoot",
+    ]
+    for num, orig, rev, q1, themes, q3, why in rows:
+        # \\* discourages a page break after the row
+        lines.append(
+            f"{num} & {esc(orig)} & {esc(rev)} & {esc(q1)} & {esc(themes)} & {esc(q3)} & {esc(why)} \\\\"
+        )
+    lines += [
+        r"\end{longtable}",
+        "",
+        "Note on Q3: the suggested answers are only for calibration. Q3 is a personal judgment, and differences there are expected.",
+        "",
+    ]
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+
+def render_guide_and_practice_pdfs(out: Path) -> None:
+    base = study_root()
+    guide_md = base / "materials" / "CODING_GUIDE.md"
+    _pandoc_pdf(
+        guide_md,
+        out / "common" / "Coding_Guide.pdf",
+        landscape=False,
+        fontsize="10pt",
+        margin="0.7in",
+        extra_args=[
+            "-V",
+            r"header-includes=\usepackage{booktabs}\usepackage{longtable}\usepackage{array}",
+        ],
+    )
+    practice_md = out / "common" / "_practice_answers_for_pdf.md"
+    write_practice_answers_md(practice_md)
+    _pandoc_pdf(
+        practice_md,
+        out / "common" / "Practice_Answers.pdf",
+        landscape=True,
+        fontsize="9pt",
+        margin="0.5in",
+        extra_args=[
+            "-V",
+            (
+                r"header-includes="
+                r"\usepackage{booktabs}"
+                r"\usepackage{longtable}"
+                r"\usepackage{array}"
+                r"\usepackage{ragged2e}"
+                r"\newcolumntype{L}[1]{>{\RaggedRight\arraybackslash}p{#1}}"
+            ),
+        ],
+    )
+
+
+def rebuild_zips(out: Path) -> list[Path]:
+    common_files = [
+        ("Coding_Guide.pdf", out / "common" / "Coding_Guide.pdf"),
+        ("practice_sheet.xlsx", out / "common" / "practice_sheet.xlsx"),
+        ("Practice_Answers.pdf", out / "common" / "Practice_Answers.pdf"),
+    ]
+    zip_paths: list[Path] = []
+    for coder, sheet in [
+        ("A", out / "coderA" / "coding_sheet_coderA.xlsx"),
+        ("B", out / "coderB" / "coding_sheet_coderB.xlsx"),
+    ]:
+        zpath = out / f"package_coder{coder}.zip"
+        with zipfile.ZipFile(zpath, "w", compression=zipfile.ZIP_DEFLATED) as zf:
+            for arc, src in common_files:
+                zf.write(src, arcname=arc)
+            zf.write(sheet, arcname=sheet.name)
+        zip_paths.append(zpath)
+    return zip_paths
+
+
+def rebuild_pdfs_only(repo: Path | None = None) -> dict[str, Any]:
+    """Rebuild coder PDFs and zips without touching sheets or the sampling key."""
+    del repo  # unused; kept for call-site symmetry with build()
+    out = out_dir(study_root())
+    for required in [
+        out / "coderA" / "coding_sheet_coderA.xlsx",
+        out / "coderB" / "coding_sheet_coderB.xlsx",
+        out / "common" / "practice_sheet.xlsx",
+        out / "sampling_key.csv",
+        out / "sheet_map.csv",
+    ]:
+        if not required.exists():
+            raise FileNotFoundError(f"missing {required}; run a full build first")
+
+    render_guide_and_practice_pdfs(out)
+    zip_paths = rebuild_zips(out)
+    blind_results = {z.name: blinding_check_zip(z) for z in zip_paths}
+    (out / "blinding_check.json").write_text(
+        json.dumps(blind_results, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+    )
+    if not all(v["passed"] for v in blind_results.values()):
+        print("BLINDING CHECK FAILED", json.dumps(blind_results, indent=2))
+        raise SystemExit(1)
+    summary = {
+        "mode": "pdfs_only",
+        "blinding": {k: v["passed"] for k, v in blind_results.items()},
+        "zips": [str(p) for p in zip_paths],
+    }
+    print(json.dumps(summary, indent=2, sort_keys=True))
+    return summary
 
 
 def blinding_banned_patterns() -> list[re.Pattern[str]]:
@@ -696,29 +972,8 @@ def build(repo: Path | None = None) -> dict[str, Any]:
 
     write_practice_sheet(out / "common" / "practice_sheet.xlsx")
 
-    guide_md = base / "materials" / "CODING_GUIDE.md"
-    practice_md = base / "materials" / "PRACTICE_ITEMS.md"
-    _pandoc_pdf(guide_md, out / "common" / "Coding_Guide.pdf", landscape=False)
-    # Practice answers: full PRACTICE_ITEMS.md in landscape for the wide table
-    _pandoc_pdf(practice_md, out / "common" / "Practice_Answers.pdf", landscape=True)
-
-    # Build zips
-    common_files = [
-        ("Coding_Guide.pdf", out / "common" / "Coding_Guide.pdf"),
-        ("practice_sheet.xlsx", out / "common" / "practice_sheet.xlsx"),
-        ("Practice_Answers.pdf", out / "common" / "Practice_Answers.pdf"),
-    ]
-    zip_paths = []
-    for coder, sheet in [
-        ("A", out / "coderA" / "coding_sheet_coderA.xlsx"),
-        ("B", out / "coderB" / "coding_sheet_coderB.xlsx"),
-    ]:
-        zpath = out / f"package_coder{coder}.zip"
-        with zipfile.ZipFile(zpath, "w", compression=zipfile.ZIP_DEFLATED) as zf:
-            for arc, src in common_files:
-                zf.write(src, arcname=arc)
-            zf.write(sheet, arcname=sheet.name)
-        zip_paths.append(zpath)
+    render_guide_and_practice_pdfs(out)
+    zip_paths = rebuild_zips(out)
 
     blind_results = {z.name: blinding_check_zip(z) for z in zip_paths}
     (out / "blinding_check.json").write_text(
@@ -742,7 +997,10 @@ def build(repo: Path | None = None) -> dict[str, Any]:
 
 
 def main() -> None:
-    build()
+    if len(sys.argv) > 1 and sys.argv[1] == "--pdfs-only":
+        rebuild_pdfs_only()
+    else:
+        build()
 
 
 if __name__ == "__main__":
