@@ -1,0 +1,172 @@
+{
+  "anchors": {
+    "AGENT1": {
+      "n_units": 175,
+      "n_with_event": 57
+    },
+    "AGENT2": {
+      "n_units": 175,
+      "n_with_event": 20
+    },
+    "AGENT3": {
+      "n_units": 175,
+      "n_with_event": 5
+    },
+    "AGENT4": {
+      "n_units": 175,
+      "n_with_event": 20
+    },
+    "AGENT5": {
+      "n_units": 175,
+      "n_with_event": 18
+    },
+    "CARE1": {
+      "n_units": 175,
+      "n_with_event": 9
+    },
+    "CARE2": {
+      "n_units": 175,
+      "n_with_event": 37
+    },
+    "CARE3": {
+      "n_units": 175,
+      "n_with_event": 34
+    },
+    "CARE4": {
+      "n_units": 175,
+      "n_with_event": 22
+    },
+    "CARE5": {
+      "n_units": 175,
+      "n_with_event": 6
+    },
+    "COR1": {
+      "n_units": 175,
+      "n_with_event": 15
+    },
+    "COR2": {
+      "n_units": 175,
+      "n_with_event": 34
+    },
+    "COR3": {
+      "n_units": 175,
+      "n_with_event": 10
+    },
+    "COR4": {
+      "n_units": 175,
+      "n_with_event": 9
+    },
+    "COR5": {
+      "n_units": 175,
+      "n_with_event": 4
+    },
+    "HARM1": {
+      "n_units": 175,
+      "n_with_event": 15
+    },
+    "HARM2": {
+      "n_units": 175,
+      "n_with_event": 4
+    },
+    "HARM3": {
+      "n_units": 175,
+      "n_with_event": 12
+    },
+    "HARM4": {
+      "n_units": 175,
+      "n_with_event": 8
+    },
+    "HARM5": {
+      "n_units": 175,
+      "n_with_event": 12
+    },
+    "HON1": {
+      "n_units": 175,
+      "n_with_event": 7
+    },
+    "HON2": {
+      "n_units": 175,
+      "n_with_event": 2
+    },
+    "HON3": {
+      "n_units": 175,
+      "n_with_event": 22
+    },
+    "HON4": {
+      "n_units": 175,
+      "n_with_event": 37
+    },
+    "HON5": {
+      "n_units": 175,
+      "n_with_event": 14
+    },
+    "PROC1": {
+      "n_units": 175,
+      "n_with_event": 7
+    },
+    "PROC2": {
+      "n_units": 175,
+      "n_with_event": 7
+    },
+    "PROC3": {
+      "n_units": 175,
+      "n_with_event": 61
+    },
+    "PROC4": {
+      "n_units": 175,
+      "n_with_event": 37
+    },
+    "PROC5": {
+      "n_units": 175,
+      "n_with_event": 60
+    },
+    "SELF1": {
+      "n_units": 175,
+      "n_with_event": 70
+    },
+    "SELF2": {
+      "n_units": 175,
+      "n_with_event": 79
+    },
+    "SELF3": {
+      "n_units": 175,
+      "n_with_event": 54
+    },
+    "SELF4": {
+      "n_units": 175,
+      "n_with_event": 101
+    },
+    "SELF5": {
+      "n_units": 175,
+      "n_with_event": 77
+    }
+  },
+  "expected": {
+    "AGENT1": [
+      57,
+      175
+    ],
+    "CARE2": [
+      37,
+      175
+    ],
+    "COR2": [
+      34,
+      175
+    ],
+    "HON4": [
+      37,
+      175
+    ],
+    "SELF1": [
+      70,
+      175
+    ],
+    "SELF4": [
+      101,
+      175
+    ]
+  },
+  "label": "EXPLORATORY (not preregistered)",
+  "mismatches": {}
+}

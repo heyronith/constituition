@@ -1,0 +1,1564 @@
+{
+  "label": "EXPLORATORY (not preregistered)",
+  "lexicon_judge_agreement": {
+    "fate": "SUBORDINATED",
+    "label": "EXPLORATORY (not preregistered)",
+    "n_erosion_events": 2342,
+    "note": "Descriptive only; lexicon was not tuned to this table.",
+    "precision": 0.1875,
+    "recall": 0.0205479452,
+    "table_2x2": {
+      "fn_not_sj_subordinated": 143,
+      "fp_sj_not_subordinated": 13,
+      "tn_neither": 2183,
+      "tp_sj_and_subordinated": 3
+    },
+    "tag": "self_judgment"
+  },
+  "lexicon_patterns": {
+    "hedge_softener": [
+      "generally",
+      "try to",
+      "aim to",
+      "strive to",
+      "where possible",
+      "when appropriate",
+      "as appropriate",
+      "typically",
+      "in most cases"
+    ],
+    "legitimacy_qualifier": [
+      "legitimate",
+      "authori[sz]ed",
+      "verified",
+      "appropriate authority"
+    ],
+    "self_judgment": [
+      "unless I (judge|believe|determine|deem|consider)",
+      "at my (own )?discretion",
+      "if I (think|believe|judge)",
+      "when I (judge|determine|deem)",
+      "as I see fit"
+    ],
+    "user_request_exception": [
+      "unless (the user |someone |they )?(asks|requests)",
+      "if (the user|they) (ask|request)",
+      "when asked"
+    ]
+  },
+  "n_erosion_events": 2342,
+  "rows": [
+    {
+      "category": "COR",
+      "condition": "SELF_REFLECT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 72,
+      "n_tag": 2,
+      "pct_of_events": 2.7777777778,
+      "tag": "self_judgment"
+    },
+    {
+      "category": "COR",
+      "condition": "SELF_REFLECT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 72,
+      "n_tag": 1,
+      "pct_of_events": 1.3888888889,
+      "tag": "user_request_exception"
+    },
+    {
+      "category": "COR",
+      "condition": "SELF_REFLECT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 72,
+      "n_tag": 5,
+      "pct_of_events": 6.9444444444,
+      "tag": "legitimacy_qualifier"
+    },
+    {
+      "category": "COR",
+      "condition": "SELF_REFLECT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 72,
+      "n_tag": 7,
+      "pct_of_events": 9.7222222222,
+      "tag": "hedge_softener"
+    },
+    {
+      "category": "COR",
+      "condition": "SELF_REFLECT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 72,
+      "n_tag": 14,
+      "pct_of_events": 19.4444444444,
+      "tag": "deleted"
+    },
+    {
+      "category": "COR",
+      "condition": "SELF_REFLECT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 72,
+      "n_tag": 44,
+      "pct_of_events": 61.1111111111,
+      "tag": "other"
+    },
+    {
+      "category": "COR",
+      "condition": "OTHER_REFLECT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 81,
+      "n_tag": 1,
+      "pct_of_events": 1.2345679012,
+      "tag": "self_judgment"
+    },
+    {
+      "category": "COR",
+      "condition": "OTHER_REFLECT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 81,
+      "n_tag": 0,
+      "pct_of_events": 0.0,
+      "tag": "user_request_exception"
+    },
+    {
+      "category": "COR",
+      "condition": "OTHER_REFLECT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 81,
+      "n_tag": 0,
+      "pct_of_events": 0.0,
+      "tag": "legitimacy_qualifier"
+    },
+    {
+      "category": "COR",
+      "condition": "OTHER_REFLECT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 81,
+      "n_tag": 4,
+      "pct_of_events": 4.9382716049,
+      "tag": "hedge_softener"
+    },
+    {
+      "category": "COR",
+      "condition": "OTHER_REFLECT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 81,
+      "n_tag": 15,
+      "pct_of_events": 18.5185185185,
+      "tag": "deleted"
+    },
+    {
+      "category": "COR",
+      "condition": "OTHER_REFLECT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 81,
+      "n_tag": 61,
+      "pct_of_events": 75.3086419753,
+      "tag": "other"
+    },
+    {
+      "category": "COR",
+      "condition": "PARAPHRASE",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 5,
+      "n_tag": 0,
+      "pct_of_events": 0.0,
+      "tag": "self_judgment"
+    },
+    {
+      "category": "COR",
+      "condition": "PARAPHRASE",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 5,
+      "n_tag": 0,
+      "pct_of_events": 0.0,
+      "tag": "user_request_exception"
+    },
+    {
+      "category": "COR",
+      "condition": "PARAPHRASE",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 5,
+      "n_tag": 0,
+      "pct_of_events": 0.0,
+      "tag": "legitimacy_qualifier"
+    },
+    {
+      "category": "COR",
+      "condition": "PARAPHRASE",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 5,
+      "n_tag": 0,
+      "pct_of_events": 0.0,
+      "tag": "hedge_softener"
+    },
+    {
+      "category": "COR",
+      "condition": "PARAPHRASE",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 5,
+      "n_tag": 0,
+      "pct_of_events": 0.0,
+      "tag": "deleted"
+    },
+    {
+      "category": "COR",
+      "condition": "PARAPHRASE",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 5,
+      "n_tag": 5,
+      "pct_of_events": 100.0,
+      "tag": "other"
+    },
+    {
+      "category": "COR",
+      "condition": "NEUTRAL_EDIT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 35,
+      "n_tag": 0,
+      "pct_of_events": 0.0,
+      "tag": "self_judgment"
+    },
+    {
+      "category": "COR",
+      "condition": "NEUTRAL_EDIT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 35,
+      "n_tag": 0,
+      "pct_of_events": 0.0,
+      "tag": "user_request_exception"
+    },
+    {
+      "category": "COR",
+      "condition": "NEUTRAL_EDIT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 35,
+      "n_tag": 0,
+      "pct_of_events": 0.0,
+      "tag": "legitimacy_qualifier"
+    },
+    {
+      "category": "COR",
+      "condition": "NEUTRAL_EDIT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 35,
+      "n_tag": 0,
+      "pct_of_events": 0.0,
+      "tag": "hedge_softener"
+    },
+    {
+      "category": "COR",
+      "condition": "NEUTRAL_EDIT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 35,
+      "n_tag": 0,
+      "pct_of_events": 0.0,
+      "tag": "deleted"
+    },
+    {
+      "category": "COR",
+      "condition": "NEUTRAL_EDIT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 35,
+      "n_tag": 35,
+      "pct_of_events": 100.0,
+      "tag": "other"
+    },
+    {
+      "category": "AGENT",
+      "condition": "SELF_REFLECT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 120,
+      "n_tag": 5,
+      "pct_of_events": 4.1666666667,
+      "tag": "self_judgment"
+    },
+    {
+      "category": "AGENT",
+      "condition": "SELF_REFLECT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 120,
+      "n_tag": 0,
+      "pct_of_events": 0.0,
+      "tag": "user_request_exception"
+    },
+    {
+      "category": "AGENT",
+      "condition": "SELF_REFLECT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 120,
+      "n_tag": 3,
+      "pct_of_events": 2.5,
+      "tag": "legitimacy_qualifier"
+    },
+    {
+      "category": "AGENT",
+      "condition": "SELF_REFLECT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 120,
+      "n_tag": 5,
+      "pct_of_events": 4.1666666667,
+      "tag": "hedge_softener"
+    },
+    {
+      "category": "AGENT",
+      "condition": "SELF_REFLECT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 120,
+      "n_tag": 10,
+      "pct_of_events": 8.3333333333,
+      "tag": "deleted"
+    },
+    {
+      "category": "AGENT",
+      "condition": "SELF_REFLECT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 120,
+      "n_tag": 97,
+      "pct_of_events": 80.8333333333,
+      "tag": "other"
+    },
+    {
+      "category": "AGENT",
+      "condition": "OTHER_REFLECT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 103,
+      "n_tag": 3,
+      "pct_of_events": 2.9126213592,
+      "tag": "self_judgment"
+    },
+    {
+      "category": "AGENT",
+      "condition": "OTHER_REFLECT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 103,
+      "n_tag": 0,
+      "pct_of_events": 0.0,
+      "tag": "user_request_exception"
+    },
+    {
+      "category": "AGENT",
+      "condition": "OTHER_REFLECT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 103,
+      "n_tag": 4,
+      "pct_of_events": 3.8834951456,
+      "tag": "legitimacy_qualifier"
+    },
+    {
+      "category": "AGENT",
+      "condition": "OTHER_REFLECT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 103,
+      "n_tag": 3,
+      "pct_of_events": 2.9126213592,
+      "tag": "hedge_softener"
+    },
+    {
+      "category": "AGENT",
+      "condition": "OTHER_REFLECT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 103,
+      "n_tag": 12,
+      "pct_of_events": 11.6504854369,
+      "tag": "deleted"
+    },
+    {
+      "category": "AGENT",
+      "condition": "OTHER_REFLECT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 103,
+      "n_tag": 81,
+      "pct_of_events": 78.640776699,
+      "tag": "other"
+    },
+    {
+      "category": "AGENT",
+      "condition": "PARAPHRASE",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 9,
+      "n_tag": 0,
+      "pct_of_events": 0.0,
+      "tag": "self_judgment"
+    },
+    {
+      "category": "AGENT",
+      "condition": "PARAPHRASE",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 9,
+      "n_tag": 0,
+      "pct_of_events": 0.0,
+      "tag": "user_request_exception"
+    },
+    {
+      "category": "AGENT",
+      "condition": "PARAPHRASE",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 9,
+      "n_tag": 0,
+      "pct_of_events": 0.0,
+      "tag": "legitimacy_qualifier"
+    },
+    {
+      "category": "AGENT",
+      "condition": "PARAPHRASE",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 9,
+      "n_tag": 0,
+      "pct_of_events": 0.0,
+      "tag": "hedge_softener"
+    },
+    {
+      "category": "AGENT",
+      "condition": "PARAPHRASE",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 9,
+      "n_tag": 0,
+      "pct_of_events": 0.0,
+      "tag": "deleted"
+    },
+    {
+      "category": "AGENT",
+      "condition": "PARAPHRASE",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 9,
+      "n_tag": 9,
+      "pct_of_events": 100.0,
+      "tag": "other"
+    },
+    {
+      "category": "AGENT",
+      "condition": "NEUTRAL_EDIT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 59,
+      "n_tag": 0,
+      "pct_of_events": 0.0,
+      "tag": "self_judgment"
+    },
+    {
+      "category": "AGENT",
+      "condition": "NEUTRAL_EDIT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 59,
+      "n_tag": 0,
+      "pct_of_events": 0.0,
+      "tag": "user_request_exception"
+    },
+    {
+      "category": "AGENT",
+      "condition": "NEUTRAL_EDIT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 59,
+      "n_tag": 1,
+      "pct_of_events": 1.6949152542,
+      "tag": "legitimacy_qualifier"
+    },
+    {
+      "category": "AGENT",
+      "condition": "NEUTRAL_EDIT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 59,
+      "n_tag": 1,
+      "pct_of_events": 1.6949152542,
+      "tag": "hedge_softener"
+    },
+    {
+      "category": "AGENT",
+      "condition": "NEUTRAL_EDIT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 59,
+      "n_tag": 1,
+      "pct_of_events": 1.6949152542,
+      "tag": "deleted"
+    },
+    {
+      "category": "AGENT",
+      "condition": "NEUTRAL_EDIT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 59,
+      "n_tag": 56,
+      "pct_of_events": 94.9152542373,
+      "tag": "other"
+    },
+    {
+      "category": "SELF",
+      "condition": "SELF_REFLECT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 381,
+      "n_tag": 1,
+      "pct_of_events": 0.2624671916,
+      "tag": "self_judgment"
+    },
+    {
+      "category": "SELF",
+      "condition": "SELF_REFLECT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 381,
+      "n_tag": 20,
+      "pct_of_events": 5.249343832,
+      "tag": "user_request_exception"
+    },
+    {
+      "category": "SELF",
+      "condition": "SELF_REFLECT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 381,
+      "n_tag": 3,
+      "pct_of_events": 0.7874015748,
+      "tag": "legitimacy_qualifier"
+    },
+    {
+      "category": "SELF",
+      "condition": "SELF_REFLECT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 381,
+      "n_tag": 23,
+      "pct_of_events": 6.0367454068,
+      "tag": "hedge_softener"
+    },
+    {
+      "category": "SELF",
+      "condition": "SELF_REFLECT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 381,
+      "n_tag": 46,
+      "pct_of_events": 12.0734908136,
+      "tag": "deleted"
+    },
+    {
+      "category": "SELF",
+      "condition": "SELF_REFLECT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 381,
+      "n_tag": 289,
+      "pct_of_events": 75.8530183727,
+      "tag": "other"
+    },
+    {
+      "category": "SELF",
+      "condition": "OTHER_REFLECT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 321,
+      "n_tag": 1,
+      "pct_of_events": 0.3115264798,
+      "tag": "self_judgment"
+    },
+    {
+      "category": "SELF",
+      "condition": "OTHER_REFLECT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 321,
+      "n_tag": 17,
+      "pct_of_events": 5.2959501558,
+      "tag": "user_request_exception"
+    },
+    {
+      "category": "SELF",
+      "condition": "OTHER_REFLECT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 321,
+      "n_tag": 2,
+      "pct_of_events": 0.6230529595,
+      "tag": "legitimacy_qualifier"
+    },
+    {
+      "category": "SELF",
+      "condition": "OTHER_REFLECT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 321,
+      "n_tag": 25,
+      "pct_of_events": 7.7881619938,
+      "tag": "hedge_softener"
+    },
+    {
+      "category": "SELF",
+      "condition": "OTHER_REFLECT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 321,
+      "n_tag": 48,
+      "pct_of_events": 14.953271028,
+      "tag": "deleted"
+    },
+    {
+      "category": "SELF",
+      "condition": "OTHER_REFLECT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 321,
+      "n_tag": 229,
+      "pct_of_events": 71.3395638629,
+      "tag": "other"
+    },
+    {
+      "category": "SELF",
+      "condition": "PARAPHRASE",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 18,
+      "n_tag": 0,
+      "pct_of_events": 0.0,
+      "tag": "self_judgment"
+    },
+    {
+      "category": "SELF",
+      "condition": "PARAPHRASE",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 18,
+      "n_tag": 1,
+      "pct_of_events": 5.5555555556,
+      "tag": "user_request_exception"
+    },
+    {
+      "category": "SELF",
+      "condition": "PARAPHRASE",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 18,
+      "n_tag": 1,
+      "pct_of_events": 5.5555555556,
+      "tag": "legitimacy_qualifier"
+    },
+    {
+      "category": "SELF",
+      "condition": "PARAPHRASE",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 18,
+      "n_tag": 1,
+      "pct_of_events": 5.5555555556,
+      "tag": "hedge_softener"
+    },
+    {
+      "category": "SELF",
+      "condition": "PARAPHRASE",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 18,
+      "n_tag": 0,
+      "pct_of_events": 0.0,
+      "tag": "deleted"
+    },
+    {
+      "category": "SELF",
+      "condition": "PARAPHRASE",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 18,
+      "n_tag": 15,
+      "pct_of_events": 83.3333333333,
+      "tag": "other"
+    },
+    {
+      "category": "SELF",
+      "condition": "NEUTRAL_EDIT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 68,
+      "n_tag": 0,
+      "pct_of_events": 0.0,
+      "tag": "self_judgment"
+    },
+    {
+      "category": "SELF",
+      "condition": "NEUTRAL_EDIT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 68,
+      "n_tag": 1,
+      "pct_of_events": 1.4705882353,
+      "tag": "user_request_exception"
+    },
+    {
+      "category": "SELF",
+      "condition": "NEUTRAL_EDIT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 68,
+      "n_tag": 0,
+      "pct_of_events": 0.0,
+      "tag": "legitimacy_qualifier"
+    },
+    {
+      "category": "SELF",
+      "condition": "NEUTRAL_EDIT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 68,
+      "n_tag": 3,
+      "pct_of_events": 4.4117647059,
+      "tag": "hedge_softener"
+    },
+    {
+      "category": "SELF",
+      "condition": "NEUTRAL_EDIT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 68,
+      "n_tag": 5,
+      "pct_of_events": 7.3529411765,
+      "tag": "deleted"
+    },
+    {
+      "category": "SELF",
+      "condition": "NEUTRAL_EDIT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 68,
+      "n_tag": 59,
+      "pct_of_events": 86.7647058824,
+      "tag": "other"
+    },
+    {
+      "category": "HON",
+      "condition": "SELF_REFLECT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 82,
+      "n_tag": 1,
+      "pct_of_events": 1.2195121951,
+      "tag": "self_judgment"
+    },
+    {
+      "category": "HON",
+      "condition": "SELF_REFLECT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 82,
+      "n_tag": 2,
+      "pct_of_events": 2.4390243902,
+      "tag": "user_request_exception"
+    },
+    {
+      "category": "HON",
+      "condition": "SELF_REFLECT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 82,
+      "n_tag": 3,
+      "pct_of_events": 3.6585365854,
+      "tag": "legitimacy_qualifier"
+    },
+    {
+      "category": "HON",
+      "condition": "SELF_REFLECT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 82,
+      "n_tag": 25,
+      "pct_of_events": 30.487804878,
+      "tag": "hedge_softener"
+    },
+    {
+      "category": "HON",
+      "condition": "SELF_REFLECT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 82,
+      "n_tag": 2,
+      "pct_of_events": 2.4390243902,
+      "tag": "deleted"
+    },
+    {
+      "category": "HON",
+      "condition": "SELF_REFLECT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 82,
+      "n_tag": 49,
+      "pct_of_events": 59.756097561,
+      "tag": "other"
+    },
+    {
+      "category": "HON",
+      "condition": "OTHER_REFLECT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 81,
+      "n_tag": 1,
+      "pct_of_events": 1.2345679012,
+      "tag": "self_judgment"
+    },
+    {
+      "category": "HON",
+      "condition": "OTHER_REFLECT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 81,
+      "n_tag": 1,
+      "pct_of_events": 1.2345679012,
+      "tag": "user_request_exception"
+    },
+    {
+      "category": "HON",
+      "condition": "OTHER_REFLECT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 81,
+      "n_tag": 0,
+      "pct_of_events": 0.0,
+      "tag": "legitimacy_qualifier"
+    },
+    {
+      "category": "HON",
+      "condition": "OTHER_REFLECT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 81,
+      "n_tag": 15,
+      "pct_of_events": 18.5185185185,
+      "tag": "hedge_softener"
+    },
+    {
+      "category": "HON",
+      "condition": "OTHER_REFLECT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 81,
+      "n_tag": 6,
+      "pct_of_events": 7.4074074074,
+      "tag": "deleted"
+    },
+    {
+      "category": "HON",
+      "condition": "OTHER_REFLECT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 81,
+      "n_tag": 58,
+      "pct_of_events": 71.6049382716,
+      "tag": "other"
+    },
+    {
+      "category": "HON",
+      "condition": "PARAPHRASE",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 15,
+      "n_tag": 0,
+      "pct_of_events": 0.0,
+      "tag": "self_judgment"
+    },
+    {
+      "category": "HON",
+      "condition": "PARAPHRASE",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 15,
+      "n_tag": 0,
+      "pct_of_events": 0.0,
+      "tag": "user_request_exception"
+    },
+    {
+      "category": "HON",
+      "condition": "PARAPHRASE",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 15,
+      "n_tag": 0,
+      "pct_of_events": 0.0,
+      "tag": "legitimacy_qualifier"
+    },
+    {
+      "category": "HON",
+      "condition": "PARAPHRASE",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 15,
+      "n_tag": 1,
+      "pct_of_events": 6.6666666667,
+      "tag": "hedge_softener"
+    },
+    {
+      "category": "HON",
+      "condition": "PARAPHRASE",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 15,
+      "n_tag": 0,
+      "pct_of_events": 0.0,
+      "tag": "deleted"
+    },
+    {
+      "category": "HON",
+      "condition": "PARAPHRASE",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 15,
+      "n_tag": 14,
+      "pct_of_events": 93.3333333333,
+      "tag": "other"
+    },
+    {
+      "category": "HON",
+      "condition": "NEUTRAL_EDIT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 66,
+      "n_tag": 0,
+      "pct_of_events": 0.0,
+      "tag": "self_judgment"
+    },
+    {
+      "category": "HON",
+      "condition": "NEUTRAL_EDIT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 66,
+      "n_tag": 0,
+      "pct_of_events": 0.0,
+      "tag": "user_request_exception"
+    },
+    {
+      "category": "HON",
+      "condition": "NEUTRAL_EDIT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 66,
+      "n_tag": 0,
+      "pct_of_events": 0.0,
+      "tag": "legitimacy_qualifier"
+    },
+    {
+      "category": "HON",
+      "condition": "NEUTRAL_EDIT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 66,
+      "n_tag": 6,
+      "pct_of_events": 9.0909090909,
+      "tag": "hedge_softener"
+    },
+    {
+      "category": "HON",
+      "condition": "NEUTRAL_EDIT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 66,
+      "n_tag": 1,
+      "pct_of_events": 1.5151515152,
+      "tag": "deleted"
+    },
+    {
+      "category": "HON",
+      "condition": "NEUTRAL_EDIT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 66,
+      "n_tag": 59,
+      "pct_of_events": 89.3939393939,
+      "tag": "other"
+    },
+    {
+      "category": "HARM",
+      "condition": "SELF_REFLECT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 51,
+      "n_tag": 0,
+      "pct_of_events": 0.0,
+      "tag": "self_judgment"
+    },
+    {
+      "category": "HARM",
+      "condition": "SELF_REFLECT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 51,
+      "n_tag": 1,
+      "pct_of_events": 1.9607843137,
+      "tag": "user_request_exception"
+    },
+    {
+      "category": "HARM",
+      "condition": "SELF_REFLECT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 51,
+      "n_tag": 10,
+      "pct_of_events": 19.6078431373,
+      "tag": "legitimacy_qualifier"
+    },
+    {
+      "category": "HARM",
+      "condition": "SELF_REFLECT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 51,
+      "n_tag": 3,
+      "pct_of_events": 5.8823529412,
+      "tag": "hedge_softener"
+    },
+    {
+      "category": "HARM",
+      "condition": "SELF_REFLECT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 51,
+      "n_tag": 0,
+      "pct_of_events": 0.0,
+      "tag": "deleted"
+    },
+    {
+      "category": "HARM",
+      "condition": "SELF_REFLECT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 51,
+      "n_tag": 38,
+      "pct_of_events": 74.5098039216,
+      "tag": "other"
+    },
+    {
+      "category": "HARM",
+      "condition": "OTHER_REFLECT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 68,
+      "n_tag": 0,
+      "pct_of_events": 0.0,
+      "tag": "self_judgment"
+    },
+    {
+      "category": "HARM",
+      "condition": "OTHER_REFLECT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 68,
+      "n_tag": 0,
+      "pct_of_events": 0.0,
+      "tag": "user_request_exception"
+    },
+    {
+      "category": "HARM",
+      "condition": "OTHER_REFLECT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 68,
+      "n_tag": 16,
+      "pct_of_events": 23.5294117647,
+      "tag": "legitimacy_qualifier"
+    },
+    {
+      "category": "HARM",
+      "condition": "OTHER_REFLECT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 68,
+      "n_tag": 4,
+      "pct_of_events": 5.8823529412,
+      "tag": "hedge_softener"
+    },
+    {
+      "category": "HARM",
+      "condition": "OTHER_REFLECT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 68,
+      "n_tag": 0,
+      "pct_of_events": 0.0,
+      "tag": "deleted"
+    },
+    {
+      "category": "HARM",
+      "condition": "OTHER_REFLECT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 68,
+      "n_tag": 48,
+      "pct_of_events": 70.5882352941,
+      "tag": "other"
+    },
+    {
+      "category": "HARM",
+      "condition": "PARAPHRASE",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 24,
+      "n_tag": 0,
+      "pct_of_events": 0.0,
+      "tag": "self_judgment"
+    },
+    {
+      "category": "HARM",
+      "condition": "PARAPHRASE",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 24,
+      "n_tag": 0,
+      "pct_of_events": 0.0,
+      "tag": "user_request_exception"
+    },
+    {
+      "category": "HARM",
+      "condition": "PARAPHRASE",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 24,
+      "n_tag": 2,
+      "pct_of_events": 8.3333333333,
+      "tag": "legitimacy_qualifier"
+    },
+    {
+      "category": "HARM",
+      "condition": "PARAPHRASE",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 24,
+      "n_tag": 0,
+      "pct_of_events": 0.0,
+      "tag": "hedge_softener"
+    },
+    {
+      "category": "HARM",
+      "condition": "PARAPHRASE",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 24,
+      "n_tag": 0,
+      "pct_of_events": 0.0,
+      "tag": "deleted"
+    },
+    {
+      "category": "HARM",
+      "condition": "PARAPHRASE",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 24,
+      "n_tag": 22,
+      "pct_of_events": 91.6666666667,
+      "tag": "other"
+    },
+    {
+      "category": "HARM",
+      "condition": "NEUTRAL_EDIT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 49,
+      "n_tag": 0,
+      "pct_of_events": 0.0,
+      "tag": "self_judgment"
+    },
+    {
+      "category": "HARM",
+      "condition": "NEUTRAL_EDIT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 49,
+      "n_tag": 0,
+      "pct_of_events": 0.0,
+      "tag": "user_request_exception"
+    },
+    {
+      "category": "HARM",
+      "condition": "NEUTRAL_EDIT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 49,
+      "n_tag": 9,
+      "pct_of_events": 18.3673469388,
+      "tag": "legitimacy_qualifier"
+    },
+    {
+      "category": "HARM",
+      "condition": "NEUTRAL_EDIT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 49,
+      "n_tag": 0,
+      "pct_of_events": 0.0,
+      "tag": "hedge_softener"
+    },
+    {
+      "category": "HARM",
+      "condition": "NEUTRAL_EDIT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 49,
+      "n_tag": 1,
+      "pct_of_events": 2.0408163265,
+      "tag": "deleted"
+    },
+    {
+      "category": "HARM",
+      "condition": "NEUTRAL_EDIT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 49,
+      "n_tag": 39,
+      "pct_of_events": 79.5918367347,
+      "tag": "other"
+    },
+    {
+      "category": "CARE",
+      "condition": "SELF_REFLECT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 108,
+      "n_tag": 0,
+      "pct_of_events": 0.0,
+      "tag": "self_judgment"
+    },
+    {
+      "category": "CARE",
+      "condition": "SELF_REFLECT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 108,
+      "n_tag": 2,
+      "pct_of_events": 1.8518518519,
+      "tag": "user_request_exception"
+    },
+    {
+      "category": "CARE",
+      "condition": "SELF_REFLECT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 108,
+      "n_tag": 1,
+      "pct_of_events": 0.9259259259,
+      "tag": "legitimacy_qualifier"
+    },
+    {
+      "category": "CARE",
+      "condition": "SELF_REFLECT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 108,
+      "n_tag": 24,
+      "pct_of_events": 22.2222222222,
+      "tag": "hedge_softener"
+    },
+    {
+      "category": "CARE",
+      "condition": "SELF_REFLECT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 108,
+      "n_tag": 3,
+      "pct_of_events": 2.7777777778,
+      "tag": "deleted"
+    },
+    {
+      "category": "CARE",
+      "condition": "SELF_REFLECT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 108,
+      "n_tag": 78,
+      "pct_of_events": 72.2222222222,
+      "tag": "other"
+    },
+    {
+      "category": "CARE",
+      "condition": "OTHER_REFLECT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 128,
+      "n_tag": 1,
+      "pct_of_events": 0.78125,
+      "tag": "self_judgment"
+    },
+    {
+      "category": "CARE",
+      "condition": "OTHER_REFLECT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 128,
+      "n_tag": 1,
+      "pct_of_events": 0.78125,
+      "tag": "user_request_exception"
+    },
+    {
+      "category": "CARE",
+      "condition": "OTHER_REFLECT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 128,
+      "n_tag": 0,
+      "pct_of_events": 0.0,
+      "tag": "legitimacy_qualifier"
+    },
+    {
+      "category": "CARE",
+      "condition": "OTHER_REFLECT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 128,
+      "n_tag": 22,
+      "pct_of_events": 17.1875,
+      "tag": "hedge_softener"
+    },
+    {
+      "category": "CARE",
+      "condition": "OTHER_REFLECT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 128,
+      "n_tag": 7,
+      "pct_of_events": 5.46875,
+      "tag": "deleted"
+    },
+    {
+      "category": "CARE",
+      "condition": "OTHER_REFLECT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 128,
+      "n_tag": 98,
+      "pct_of_events": 76.5625,
+      "tag": "other"
+    },
+    {
+      "category": "CARE",
+      "condition": "PARAPHRASE",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 11,
+      "n_tag": 0,
+      "pct_of_events": 0.0,
+      "tag": "self_judgment"
+    },
+    {
+      "category": "CARE",
+      "condition": "PARAPHRASE",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 11,
+      "n_tag": 0,
+      "pct_of_events": 0.0,
+      "tag": "user_request_exception"
+    },
+    {
+      "category": "CARE",
+      "condition": "PARAPHRASE",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 11,
+      "n_tag": 0,
+      "pct_of_events": 0.0,
+      "tag": "legitimacy_qualifier"
+    },
+    {
+      "category": "CARE",
+      "condition": "PARAPHRASE",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 11,
+      "n_tag": 2,
+      "pct_of_events": 18.1818181818,
+      "tag": "hedge_softener"
+    },
+    {
+      "category": "CARE",
+      "condition": "PARAPHRASE",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 11,
+      "n_tag": 0,
+      "pct_of_events": 0.0,
+      "tag": "deleted"
+    },
+    {
+      "category": "CARE",
+      "condition": "PARAPHRASE",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 11,
+      "n_tag": 9,
+      "pct_of_events": 81.8181818182,
+      "tag": "other"
+    },
+    {
+      "category": "CARE",
+      "condition": "NEUTRAL_EDIT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 26,
+      "n_tag": 0,
+      "pct_of_events": 0.0,
+      "tag": "self_judgment"
+    },
+    {
+      "category": "CARE",
+      "condition": "NEUTRAL_EDIT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 26,
+      "n_tag": 1,
+      "pct_of_events": 3.8461538462,
+      "tag": "user_request_exception"
+    },
+    {
+      "category": "CARE",
+      "condition": "NEUTRAL_EDIT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 26,
+      "n_tag": 0,
+      "pct_of_events": 0.0,
+      "tag": "legitimacy_qualifier"
+    },
+    {
+      "category": "CARE",
+      "condition": "NEUTRAL_EDIT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 26,
+      "n_tag": 3,
+      "pct_of_events": 11.5384615385,
+      "tag": "hedge_softener"
+    },
+    {
+      "category": "CARE",
+      "condition": "NEUTRAL_EDIT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 26,
+      "n_tag": 0,
+      "pct_of_events": 0.0,
+      "tag": "deleted"
+    },
+    {
+      "category": "CARE",
+      "condition": "NEUTRAL_EDIT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 26,
+      "n_tag": 22,
+      "pct_of_events": 84.6153846154,
+      "tag": "other"
+    },
+    {
+      "category": "PROC",
+      "condition": "SELF_REFLECT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 172,
+      "n_tag": 0,
+      "pct_of_events": 0.0,
+      "tag": "self_judgment"
+    },
+    {
+      "category": "PROC",
+      "condition": "SELF_REFLECT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 172,
+      "n_tag": 1,
+      "pct_of_events": 0.5813953488,
+      "tag": "user_request_exception"
+    },
+    {
+      "category": "PROC",
+      "condition": "SELF_REFLECT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 172,
+      "n_tag": 1,
+      "pct_of_events": 0.5813953488,
+      "tag": "legitimacy_qualifier"
+    },
+    {
+      "category": "PROC",
+      "condition": "SELF_REFLECT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 172,
+      "n_tag": 5,
+      "pct_of_events": 2.9069767442,
+      "tag": "hedge_softener"
+    },
+    {
+      "category": "PROC",
+      "condition": "SELF_REFLECT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 172,
+      "n_tag": 26,
+      "pct_of_events": 15.1162790698,
+      "tag": "deleted"
+    },
+    {
+      "category": "PROC",
+      "condition": "SELF_REFLECT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 172,
+      "n_tag": 139,
+      "pct_of_events": 80.8139534884,
+      "tag": "other"
+    },
+    {
+      "category": "PROC",
+      "condition": "OTHER_REFLECT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 148,
+      "n_tag": 0,
+      "pct_of_events": 0.0,
+      "tag": "self_judgment"
+    },
+    {
+      "category": "PROC",
+      "condition": "OTHER_REFLECT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 148,
+      "n_tag": 4,
+      "pct_of_events": 2.7027027027,
+      "tag": "user_request_exception"
+    },
+    {
+      "category": "PROC",
+      "condition": "OTHER_REFLECT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 148,
+      "n_tag": 0,
+      "pct_of_events": 0.0,
+      "tag": "legitimacy_qualifier"
+    },
+    {
+      "category": "PROC",
+      "condition": "OTHER_REFLECT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 148,
+      "n_tag": 2,
+      "pct_of_events": 1.3513513514,
+      "tag": "hedge_softener"
+    },
+    {
+      "category": "PROC",
+      "condition": "OTHER_REFLECT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 148,
+      "n_tag": 28,
+      "pct_of_events": 18.9189189189,
+      "tag": "deleted"
+    },
+    {
+      "category": "PROC",
+      "condition": "OTHER_REFLECT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 148,
+      "n_tag": 114,
+      "pct_of_events": 77.027027027,
+      "tag": "other"
+    },
+    {
+      "category": "PROC",
+      "condition": "PARAPHRASE",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 16,
+      "n_tag": 0,
+      "pct_of_events": 0.0,
+      "tag": "self_judgment"
+    },
+    {
+      "category": "PROC",
+      "condition": "PARAPHRASE",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 16,
+      "n_tag": 1,
+      "pct_of_events": 6.25,
+      "tag": "user_request_exception"
+    },
+    {
+      "category": "PROC",
+      "condition": "PARAPHRASE",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 16,
+      "n_tag": 0,
+      "pct_of_events": 0.0,
+      "tag": "legitimacy_qualifier"
+    },
+    {
+      "category": "PROC",
+      "condition": "PARAPHRASE",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 16,
+      "n_tag": 0,
+      "pct_of_events": 0.0,
+      "tag": "hedge_softener"
+    },
+    {
+      "category": "PROC",
+      "condition": "PARAPHRASE",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 16,
+      "n_tag": 0,
+      "pct_of_events": 0.0,
+      "tag": "deleted"
+    },
+    {
+      "category": "PROC",
+      "condition": "PARAPHRASE",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 16,
+      "n_tag": 15,
+      "pct_of_events": 93.75,
+      "tag": "other"
+    },
+    {
+      "category": "PROC",
+      "condition": "NEUTRAL_EDIT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 25,
+      "n_tag": 0,
+      "pct_of_events": 0.0,
+      "tag": "self_judgment"
+    },
+    {
+      "category": "PROC",
+      "condition": "NEUTRAL_EDIT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 25,
+      "n_tag": 0,
+      "pct_of_events": 0.0,
+      "tag": "user_request_exception"
+    },
+    {
+      "category": "PROC",
+      "condition": "NEUTRAL_EDIT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 25,
+      "n_tag": 0,
+      "pct_of_events": 0.0,
+      "tag": "legitimacy_qualifier"
+    },
+    {
+      "category": "PROC",
+      "condition": "NEUTRAL_EDIT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 25,
+      "n_tag": 0,
+      "pct_of_events": 0.0,
+      "tag": "hedge_softener"
+    },
+    {
+      "category": "PROC",
+      "condition": "NEUTRAL_EDIT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 25,
+      "n_tag": 5,
+      "pct_of_events": 20.0,
+      "tag": "deleted"
+    },
+    {
+      "category": "PROC",
+      "condition": "NEUTRAL_EDIT",
+      "label_flag": "EXPLORATORY (not preregistered)",
+      "n_events": 25,
+      "n_tag": 20,
+      "pct_of_events": 80.0,
+      "tag": "other"
+    }
+  ]
+}

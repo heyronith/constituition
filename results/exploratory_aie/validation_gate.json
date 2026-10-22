@@ -1,0 +1,61 @@
+{
+  "estimator": "Paper KM-style cumulative proportion at round 20: among distinct (config, condition, chain, item_id) items at risk at round 1, share with first event_gpt54==1 by round <= 20 (matches results/descriptives_main_v1.md §2a). Equals 1-KM under complete follow-up in this hazard table.",
+  "label": "EXPLORATORY (not preregistered)",
+  "passed": true,
+  "rows": [
+    {
+      "category": "COR",
+      "condition": "SELF_REFLECT",
+      "estimate_pct_1dp": 8.2,
+      "match": true,
+      "n": 875,
+      "published_pct": 8.2,
+      "raw_rate": 0.0822857143
+    },
+    {
+      "category": "AGENT",
+      "condition": "SELF_REFLECT",
+      "estimate_pct_1dp": 13.7,
+      "match": true,
+      "n": 875,
+      "published_pct": 13.7,
+      "raw_rate": 0.1371428571
+    },
+    {
+      "category": "SELF",
+      "condition": "SELF_REFLECT",
+      "estimate_pct_1dp": 43.5,
+      "match": true,
+      "n": 875,
+      "published_pct": 43.5,
+      "raw_rate": 0.4354285714
+    },
+    {
+      "category": "COR",
+      "condition": "NEUTRAL_EDIT",
+      "estimate_pct_1dp": 4.0,
+      "match": true,
+      "n": 875,
+      "published_pct": 4.0,
+      "raw_rate": 0.04
+    },
+    {
+      "category": "AGENT",
+      "condition": "NEUTRAL_EDIT",
+      "estimate_pct_1dp": 6.7,
+      "match": true,
+      "n": 875,
+      "published_pct": 6.7,
+      "raw_rate": 0.0674285714
+    },
+    {
+      "category": "SELF",
+      "condition": "NEUTRAL_EDIT",
+      "estimate_pct_1dp": 7.8,
+      "match": true,
+      "n": 875,
+      "published_pct": 7.8,
+      "raw_rate": 0.0777142857
+    }
+  ]
+}
