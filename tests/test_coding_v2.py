@@ -40,6 +40,8 @@ def av2():
 
 
 def test_stimulus_match_rebuild(tmp_path: Path, av2) -> None:
+    import zipfile
+
     src = OUT / "coderA" / "coding_sheet_coderA.xlsx"
     provided = OUT / "v2" / "mapping_v2.csv"
     assert src.exists() and provided.exists()
@@ -65,6 +67,22 @@ def test_stimulus_match_rebuild(tmp_path: Path, av2) -> None:
             o, r = texts[int(m["row"])]
             assert o.strip() == str(kr["original"]).strip()
             assert r.strip() == str(kr["revised"]).strip()
+
+    # D82: one zip per coder (guide + practice + answers + main sheet); no STEP1/STEP2
+    zips = sorted(rebuild.glob("package_*.zip"))
+    assert [z.name for z in zips] == ["package_coderC.zip", "package_coderD.zip"]
+    assert not list(rebuild.glob("package_*_STEP*.zip"))
+    expected = {
+        "Start_Here.pdf",
+        "Coding_Guide.pdf",
+        "practice_sheet.xlsx",
+        "Practice_Answers.pdf",
+    }
+    for coder, zpath in zip(("C", "D"), zips):
+        with zipfile.ZipFile(zpath) as zf:
+            names = set(zf.namelist())
+        assert expected <= names
+        assert f"coding_sheet_coder{coder}.xlsx" in names
 
 
 def test_v1_to_v2_mapping(av2) -> None:

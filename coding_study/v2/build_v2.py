@@ -123,8 +123,10 @@ def main(src, out):
     pandoc_pdf(ans_md, os.path.join(common, "Practice_Answers.pdf"), landscape=True, fontsize="9pt")
     start = ["---", 'title: "Start here"', "---", "",
              "1. Read **Coding_Guide.pdf** (about 10 minutes).",
-             "2. Fill in **practice_sheet.xlsx** (10 rows) **without looking anything up**, and send it back to the person who sent you this package.",
-             "3. You will then receive the **answer key** and your **main sheet** (120 rows).", "",
+             "2. Fill in **practice_sheet.xlsx** (10 rows) **before** opening **Practice_Answers.pdf**. Save it and don't change it afterwards.",
+             "3. Check your practice answers against **Practice_Answers.pdf**.",
+             "4. Fill in your **main sheet** (120 rows, about 1.5–2 hours; you can take breaks).",
+             "5. Send back **both files**: the practice sheet and the main sheet.", "",
              "Please **work alone**, **do not use AI tools** (ChatGPT, Copilot, Gemini, etc.), and write your **start and end times** in the \"Time log\" tab of the main sheet.", "",
              "Thank you!"]
     st_md = os.path.join(common, "Start_Here.md"); open(st_md, "w").write("\n".join(start) + "\n")
@@ -140,14 +142,11 @@ def main(src, out):
         make_sheet(os.path.join(d, f"coding_sheet_coder{c}.xlsx"), items, with_timelog=True)
         for row, i in enumerate(order, 1):
             mapping.append({"coder": c, "row": row, "coderA_row": stim[i][0]})
-        # zips
-        z1 = os.path.join(out, f"package_coder{c}_STEP1.zip")
+        # single zip per coder
+        z1 = os.path.join(out, f"package_coder{c}.zip")
         with zipfile.ZipFile(z1, "w", zipfile.ZIP_DEFLATED) as z:
-            for f in ("Start_Here.pdf", "Coding_Guide.pdf", "practice_sheet.xlsx"):
+            for f in ("Start_Here.pdf", "Coding_Guide.pdf", "practice_sheet.xlsx", "Practice_Answers.pdf"):
                 z.write(os.path.join(common, f), f)
-        z2 = os.path.join(out, f"package_coder{c}_STEP2.zip")
-        with zipfile.ZipFile(z2, "w", zipfile.ZIP_DEFLATED) as z:
-            z.write(os.path.join(common, "Practice_Answers.pdf"), "Practice_Answers.pdf")
             z.write(os.path.join(d, f"coding_sheet_coder{c}.xlsx"), f"coding_sheet_coder{c}.xlsx")
     with open(os.path.join(out, "mapping_v2.csv"), "w", newline="") as f:
         w = csv.DictWriter(f, fieldnames=["coder", "row", "coderA_row"]); w.writeheader(); w.writerows(mapping)

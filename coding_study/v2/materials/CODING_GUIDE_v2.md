@@ -2,7 +2,7 @@
 title: "Coding Guide: How Did the Rule Change?"
 ---
 
-Thank you for helping. Please read this short guide, do the **practice sheet**, send it back, and then do the main sheet.
+Thank you for helping. Please read this short guide, do the **practice sheet**, check it against the answer key, and then do the main sheet.
 
 **Time needed:** about 10 minutes to read, 10 minutes to practise, and roughly 1.5–2 hours for the 120 rows. You can split it across several sittings.
 
@@ -86,8 +86,10 @@ Don't change the row order, and don't add or delete rows or columns.
 # 7. Order of work
 
 1. Read this guide.
-2. Do the **10 practice rows** in `practice_sheet.xlsx` and send it back.
-3. You will then receive the **answer key** and your **main sheet**. Compare your practice answers with the key, re-read this guide where you differed, and then do the main sheet.
+2. Do the **10 practice rows** in `practice_sheet.xlsx` **before** opening `Practice_Answers.pdf`. Save your practice answers.
+3. Open `Practice_Answers.pdf`, compare, and re-read this guide where you differed. **Don't change your practice answers.**
+4. Do the **main sheet** (120 rows).
+5. Send back **both files**: your practice sheet and your main sheet.
 
 Questions about the instructions (not about specific rows) can go to the person who sent you this package.
 
