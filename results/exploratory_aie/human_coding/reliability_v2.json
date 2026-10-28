@@ -1,0 +1,9 @@
+{
+  "have_primary": false,
+  "label": "EXPLORATORY (not preregistered)",
+  "note": "Primary coders ('C', 'D') not both present; primary metrics deferred.",
+  "primary_coders": [
+    "C",
+    "D"
+  ]
+}

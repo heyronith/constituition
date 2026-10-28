@@ -1,0 +1,140 @@
+{
+  "ab_binary_erosion": {
+    "alpha": -0.02366606170598895,
+    "ci95": [
+      -0.19242685229139705,
+      0.1362932369643779
+    ],
+    "n": 120
+  },
+  "ab_binary_erosion_agree_count": {
+    "agree": 61,
+    "n": 120
+  },
+  "ab_q1_three_way": {
+    "alpha": -0.005059465142256414,
+    "ci95": [
+      -0.14702397767940867,
+      0.14434140470814263
+    ],
+    "n": 120
+  },
+  "ab_q3_excl_unsure": {
+    "alpha": -0.12987980993198533,
+    "ci95": [
+      -0.2676451934514219,
+      0.0019789291920996395
+    ],
+    "n": 91
+  },
+  "coders_in_multi": [
+    "A",
+    "B"
+  ],
+  "four_coder_q1_alpha": {
+    "alpha": -0.005059465142256414,
+    "ci95": [
+      -0.1600603758985916,
+      0.13800822629166906
+    ],
+    "coders": [
+      "A",
+      "B"
+    ],
+    "n_units": 120
+  },
+  "gpt54_vs_A": {
+    "cohen_kappa": 0.11714770797962644,
+    "labels": [
+      "Weaker",
+      "Same",
+      "Stronger"
+    ],
+    "matrix": {
+      "Same": {
+        "Same": 2,
+        "Stronger": 3,
+        "Weaker": 2
+      },
+      "Stronger": {
+        "Same": 1,
+        "Stronger": 10,
+        "Weaker": 2
+      },
+      "Weaker": {
+        "Same": 11,
+        "Stronger": 46,
+        "Weaker": 43
+      }
+    },
+    "n": 120,
+    "pct_agreement": 0.4583333333333333
+  },
+  "gpt54_vs_AB_consensus": {
+    "cohen_kappa": 0.6083916083916082,
+    "labels": [
+      "Weaker",
+      "Same",
+      "Stronger"
+    ],
+    "matrix": {
+      "Same": {
+        "Same": 1,
+        "Stronger": 1,
+        "Weaker": 2
+      },
+      "Stronger": {
+        "Same": 0,
+        "Stronger": 7,
+        "Weaker": 1
+      },
+      "Weaker": {
+        "Same": 0,
+        "Stronger": 4,
+        "Weaker": 40
+      }
+    },
+    "n": 56,
+    "pct_agreement": 0.8571428571428571
+  },
+  "gpt54_vs_B": {
+    "cohen_kappa": 0.4751381215469613,
+    "labels": [
+      "Weaker",
+      "Same",
+      "Stronger"
+    ],
+    "matrix": {
+      "Same": {
+        "Same": 2,
+        "Stronger": 2,
+        "Weaker": 3
+      },
+      "Stronger": {
+        "Same": 1,
+        "Stronger": 8,
+        "Weaker": 4
+      },
+      "Weaker": {
+        "Same": 2,
+        "Stronger": 7,
+        "Weaker": 91
+      }
+    },
+    "n": 120,
+    "pct_agreement": 0.8416666666666667
+  },
+  "label": "EXPLORATORY (not preregistered)",
+  "note": "A and B used v1 mapped to v2",
+  "note_instruments": "A and B used v1 (mapped to v2); C and D used v2 when present.",
+  "pairwise_q1_alpha": {
+    "A_B": {
+      "alpha": -0.005059465142256414,
+      "ci95": [
+        -0.17489964682224451,
+        0.14399737511708713
+      ],
+      "n": 120
+    }
+  }
+}
