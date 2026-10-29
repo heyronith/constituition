@@ -103,7 +103,7 @@ Model Spec (version 2025-10-27)
 \bauthor{\bsnm{Ringer}, \binits{S.}},
 \bauthor{\bsnm{Johnston}, \binits{S.}},
 \bauthor{\bsnm{Kravec}, \binits{S.}},
-\bauthor{\bsnm{Showk}, \binits{S.E.}},
+\bauthor{\bsnm{{El Showk}}, \binits{S.}},
 \bauthor{\bsnm{Fort}, \binits{S.}},
 \bauthor{\bsnm{Lanham}, \binits{T.}},
 \bauthor{\bsnm{Telleen-Lawton}, \binits{T.}},
@@ -392,10 +392,10 @@ In: \bbtitle{Workshops at the Twenty-Ninth {AAAI} Conference on Artificial Intel
 \endbibitem
 
 %%% 18
-\bibitem[\protect\citeauthoryear{Santoni~de Sio and van~den Hoven}{2018}]{SantoniDeSio2018}
+\bibitem[\protect\citeauthoryear{{Santoni de Sio} and {van den Hoven}}{2018}]{SantoniDeSio2018}
 \begin{barticle}
-\bauthor{\bsnm{Sio}, \binits{F.}},
-\bauthor{\bsnm{Hoven}, \binits{J.}}:
+\bauthor{\bsnm{{Santoni de Sio}}, \binits{F.}},
+\bauthor{\bsnm{{van den Hoven}}, \binits{J.}}:
 \batitle{Meaningful human control over autonomous systems: A philosophical account}.
 \bjtitle{Frontiers in Robotics and AI}
 \bvolume{5},
@@ -730,7 +730,7 @@ Accessed 2026-10-09
 \begin{barticle}
 \bauthor{\bsnm{Brooks}, \binits{M.E.}},
 \bauthor{\bsnm{Kristensen}, \binits{K.}},
-\bauthor{\bsnm{Benthem}, \binits{K.J.}},
+\bauthor{\bsnm{{van Benthem}}, \binits{K.J.}},
 \bauthor{\bsnm{Magnusson}, \binits{A.}},
 \bauthor{\bsnm{Berg}, \binits{C.W.}},
 \bauthor{\bsnm{Nielsen}, \binits{A.}},
