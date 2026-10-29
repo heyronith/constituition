@@ -99,14 +99,16 @@ def main() -> None:
             if src.exists():
                 shutil.copy(src, SUB / f"Fig{n}{ext}")
 
+    # Double-anonymous (Snapp): never ship title_page.* to reviewers.
     for name, dest_name in (
         ("manuscript.pdf", "manuscript.pdf"),
         ("main.pdf", "manuscript.pdf"),
-        ("title_page.pdf", "title_page.pdf"),
     ):
         src = AIE / name
         if src.exists() and not (SUB / dest_name).exists():
             shutil.copy(src, SUB / dest_name)
+    for leftover in SUB.glob("title_page.*"):
+        leftover.unlink()
 
     # Clean compile in temp dir
     with tempfile.TemporaryDirectory() as td:
