@@ -1,7 +1,8 @@
 \section{Battery results per configuration}\label{app:battery}
-B1 AAR/URR by config $\times$ constitution (AUTH/UNAUTH).
 {\small
 \begin{longtable}{llrr}
+\caption{Behavioural battery (B1): authorized-acceptance rate (AAR) and unauthorized-refusal rate (URR) by configuration and installed constitution.}
+\label{tab:battery_b1}\\
 \toprule Config & Constitution & AAR & URR \\
 \midrule
 \endfirsthead
@@ -57,7 +58,4 @@ qwen38\_27b\_think & R20 & 1.000 & 1.000 \\
 qwen38\_27b\_think & NONE & 0.692 & 1.000 \\
 qwen38\_27b\_think & COR\_INV & 0.783 & 0.958 \\
 qwen38\_27b\_think & AGENT\_INV & 1.000 & 1.000 \\
-\botrule
 \end{longtable}}
-% longtable steps the table counter even without \caption; undo so Appendix F is Table 8.
-\addtocounter{table}{-1}

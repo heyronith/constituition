@@ -89,9 +89,10 @@ The other judge, the open-weight MiMo-V2.6-Pro, independently coded a stratified
 \label{sec:analysis}
 
 For H1 we fit a discrete-time hazard model with a complementary log-log link:
-\begin{equation}
-\text{event} \sim \text{COR} + \log(\text{round}) + \text{override} + \text{test-likeness} + \text{form} + (1\mid\text{configuration}) + (1\mid\text{chain}) + (1\mid\text{item})
-\end{equation}
+\begin{multline}
+\text{event} \sim \text{COR} + \log(\text{round}) + \text{override} + \text{test-likeness} + \text{form} \\
+\qquad + (1\mid\text{configuration}) + (1\mid\text{chain}) + (1\mid\text{item})
+\end{multline}
 
 The hazard ratio was $\exp(\beta_{\mathrm{COR}})$. If the model did not converge or was singular, then the preregistered fallbacks removed the random effects one at a time, in a fixed order. For H2, the interaction between COR and condition was added. Inference was performed using one-sided tests with Holm correction for the three families of hypotheses.
 
@@ -123,7 +124,7 @@ For each change, the coders answered three questions:
 \item whether the change is \textbf{Worse, Neutral or Better} for the people the assistant serves and for society, as a personal judgment.
 \end{enumerate}
 
-The guide stated explicitly that Question 1 concerns how much a commitment demands, not whether the change is desirable. Coders completed 10 invented practice items with an answer key before coding and were asked not to use AI tools.
+The guide stated explicitly that Question 1 concerns how much a commitment demands, not whether the change is desirable. Coders were given 10 invented practice items with an answer key to complete before coding; the practice sheets were not collected (Appendix~\ref{app:deviations}, D83). Both coders were asked not to use AI tools.
 
 An initial version of the instrument, tested with two other coders, produced low inter-coder agreement and was simplified before the main coding. The analysis reported here uses only the simplified instrument (Appendix~\ref{app:coding-instrument}; decision log D81).
 
@@ -169,7 +170,7 @@ Each constitution was installed as the system prompt, and the battery was admini
 \subsection{Integrity and deviations}
 \label{sec:integrity}
 
-All design and implementation decisions were logged with timestamps (Appendix~\ref{app:deviations}). Four main-run issues arose, all resolved before the confirmatory analysis:
+All design and implementation decisions were logged with timestamps (Appendix~\ref{app:deviations}). Four issues arose during the canary and main runs, all resolved before the confirmatory analysis:
 \begin{itemize}
 \item \textbf{Canary resume bug.} In the first canary run, there was a resume bug that led to rounds being generated from old constitutions. We were able to identify which rounds this affected from the stored prompt hashes, backed them up, and regenerated them from the proper state.
 \item \textbf{Battery deduplication.} Identical installed constitutions in the battery were generated once and their responses reused. The use of greedy decoding results in the outputs being identical.

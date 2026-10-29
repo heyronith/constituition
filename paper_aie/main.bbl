@@ -198,8 +198,7 @@ Official Journal of the European Union, L series, 12 July 2024
 \bctitle{Corrigibility}.
 In: \bbtitle{Workshops at the Twenty-Ninth {AAAI} Conference on Artificial Intelligence}
 (\byear{2015}).
-\bcomment{Artificial Intelligence and Ethics workshop; {AAAI} {WS} paper 10124}.
-\burl{https://cdn.aaai.org/ocs/ws/ws0067/10124-45900-1-PB.pdf}
+\bcomment{Artificial Intelligence and Ethics workshop; {AAAI} {WS} paper 10124. \url{https://cdn.aaai.org/ocs/ws/ws0067/10124-45900-1-PB.pdf}}
 \end{bchapter}
 \endbibitem
 
@@ -778,8 +777,7 @@ pp. \bfpage{13387}--\blpage{13434}.
 \bpublisher{Association for Computational Linguistics},
 \blocation{Toronto, Canada}
 (\byear{2023}).
-\doiurl{10.18653/v1/2023.findings-acl.847} .
-\bcomment{arXiv:2212.09251}
+\doiurl{10.18653/v1/2023.findings-acl.847}
 \end{bchapter}
 \endbibitem
 
