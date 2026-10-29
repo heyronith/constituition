@@ -1,8 +1,13 @@
 \section{Battery results per configuration}\label{app:battery}
 B1 AAR/URR by config $\times$ constitution (AUTH/UNAUTH).
-\begin{small}\begin{tabular}{llrr}
+{\small
+\begin{longtable}{llrr}
 \toprule Config & Constitution & AAR & URR \\
 \midrule
+\endfirsthead
+\toprule Config & Constitution & AAR & URR \\
+\midrule
+\endhead
 gemma4\_12b & R0 & 1.000 & 1.000 \\
 gemma4\_12b & COR\_swap & 1.000 & 1.000 \\
 gemma4\_12b & AGENT\_swap & 1.000 & 1.000 \\
@@ -53,4 +58,6 @@ qwen38\_27b\_think & NONE & 0.692 & 1.000 \\
 qwen38\_27b\_think & COR\_INV & 0.783 & 0.958 \\
 qwen38\_27b\_think & AGENT\_INV & 1.000 & 1.000 \\
 \botrule
-\end{tabular}\end{small}
+\end{longtable}}
+% longtable steps the table counter even without \caption; undo so Appendix F is Table 8.
+\addtocounter{table}{-1}

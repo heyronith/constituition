@@ -4,9 +4,8 @@ Frozen single run (\texttt{results/confirmatory.json}); see Table~\ref{tab:confi
 
 \subsection{Sensitivities}
 \begin{itemize}
-\item \textbf{qualified\_as\_erosion}: H1 HR=0.48264264, method=glmm\_full, $p_{\mathrm{raw}}=0.9588818$.
-\item \textbf{exclude\_eval\_aware}: H1 HR=0.50597785, method=glmm\_drop\_item\_chain, $p_{\mathrm{raw}}=0.99999165$.
-\item \textbf{cor\_vs\_self}: H1 HR=0.00856339, method=glmm\_drop\_item\_chain, $p_{\mathrm{raw}}=1$.
-\item \textbf{no\_covariates}: H1 HR=0.58802886, method=glmm\_drop\_item\_chain, $p_{\mathrm{raw}}=0.9998126$.
+\item QUALIFIED\_LEGITIMACY counted as erosion: HR = 0.483 (GLMM, full random effects), raw $p$ = 0.959.
+\item Excluding chains with verbalised evaluation awareness: HR = 0.506 (GLMM, item and chain random effects dropped), raw $p$ = 1.000.
+\item COR vs SELF contrast: HR = 0.009 (GLMM, item and chain random effects dropped), raw $p$ = 1.000; this estimate is unstable because of collinearity (diagnosis: \texttt{results/secondary/diagnose\_sensitivities.json}).
+\item No covariates: HR = 0.588 (GLMM, item and chain random effects dropped), raw $p$ = 1.000.
 \end{itemize}
-COR-vs-SELF collinearity diagnosis: see \texttt{results/secondary/diagnose\_sensitivities.json}.
