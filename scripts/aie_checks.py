@@ -183,8 +183,8 @@ def main() -> int:
     print(f"PENDING_count={len(pend)}")
     for h in pend:
         print(" ", h)
-    if len(pend) != 10:
-        errors.append(f"expected 10 \\PENDING, got {len(pend)}")
+    if len(pend) != 0:
+        errors.append(f"expected 0 \\PENDING, got {len(pend)}")
 
     anon = anon_grep()
     print(f"anon_hits={len(anon)}")

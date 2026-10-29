@@ -6,7 +6,7 @@ The study was preregistered on OSF before data collection [anonymised OSF link].
 \subsection{Materials}
 \label{sec:materials}
 
-\PENDING{PENDING: paragraph `Why written commitments'}
+\textbf{Why written commitments.} We study written commitments because they are the governance artefact that developers actually write, publish and audit. Constitutions and model specifications state what a system should do, and they are used to train it and to judge its behaviour. A commitment that a model rewrites therefore changes the standard against which the model is held, whatever the model's underlying dispositions. Written commitments are not dispositions, and we do not infer one from the other. The behavioural battery (Section~\ref{sec:battery}) tests whether changes to the text carry over to behaviour.
 
 The constitution draws on seven categories of five commitments each, every commitment written in two parallel forms, for 70 clauses in total (Appendix~\ref{app:items}):
 \begin{itemize}
@@ -99,10 +99,44 @@ If H1 was not supported, equivalence within a hazard ratio of $[0.667, 1.5]$, an
 
 For reliability, we calculated Krippendorff's $\alpha$ between the two judges \citep{krippendorff2004reliability}. We preregistered that our results hold if $\alpha \ge .70$. We froze our analysis code and validated it on simulated data before any data were collected, with a type-I error rate of .01 and power of .78 for $\mathrm{HR} = 1.5$.
 
-\subsection{Exploratory analyses and human validation}
+\subsection{Exploratory analyses added in revision}
 \label{sec:exploratory-methods}
 
-\PENDING{PENDING: Exploratory analyses added in revision (item-level erosion; human validation)}
+The analyses in this subsection were added after the confirmatory analysis and were not preregistered. We report them as exploratory.
+
+\textbf{Item-level erosion.} For each of the 35 commitments and each condition, we estimated the proportion of chains in which the commitment eroded within 20 rounds. We used the same estimator as for the category-level results: chains censored before an erosion event count as not eroded. Pooling items within a category reproduces the category values reported in Section~\ref{sec:erosion}. We computed 95\% confidence intervals with a bootstrap over chains (1,000 resamples). We also computed the \textbf{reflection effect} of each item, the difference between SELF-REFLECT and NEUTRAL-EDIT, with a bootstrap interval, and a breakdown by configuration.
+
+\textbf{Human validation.} Two coders who were not authors independently coded a stratified random sample of 120 changes from SELF-REFLECT. Neither was told the study's hypotheses, and model names, conditions, categories and judge codes were hidden from them. One coder was a master's student in economics, the other a marketing professional; neither works in AI.
+
+The sample contained:
+\begin{itemize}
+\item 100 changes that the judge had coded as erosion: 20 each from the most-eroded oversight commitment (accepting changes to one's own values) and from the political-opinion restraint; 15 each from the non-manipulation, long-term-wellbeing and task-scope commitments; and 15 from the other four oversight commitments pooled;
+\item 20 changes that the judge had not coded as erosion, 4 from each of the five named commitments.
+\end{itemize}
+
+Only revisions were sampled, not deletions or merges. Draws used a fixed seed, with at most one change per chain and commitment, and each coder received the rows in a different random order.
+
+For each change, the coders answered three questions:
+\begin{enumerate}
+\item whether the revised commitment requires less, the same, or more of the assistant (\textbf{Weaker / Same / Stronger});
+\item if Weaker, whether it now depends on the assistant's own judgment, beliefs or principles (\textbf{Yes / No});
+\item whether the change is \textbf{Worse, Neutral or Better} for the people the assistant serves and for society, as a personal judgment.
+\end{enumerate}
+
+The guide stated explicitly that Question 1 concerns how much a commitment demands, not whether the change is desirable. Coders completed 10 invented practice items with an answer key before coding and were asked not to use AI tools.
+
+An initial version of the instrument, tested with two other coders, produced low inter-coder agreement and was simplified before the main coding. The analysis reported here uses only the simplified instrument (Appendix~\ref{app:coding-instrument}; decision log D81).
+
+\textbf{Analysis.}
+\begin{itemize}
+\item Inter-coder reliability is reported as Krippendorff's $\alpha$ (nominal), with bootstrap 95\% CIs over rows (1,000 resamples).
+\item To compare with the judge, we mapped its codes onto the same scale: inverted, subordinated and weakened become Weaker; qualified legitimacy and retained become Same; strengthened becomes Stronger.
+\item We report agreement, Cohen's $\kappa$, and the judge's precision and recall, each against both coders and against their consensus (rows on which they agree).
+\item Analyses of Questions 2 and 3 are descriptive and exploratory.
+\item Because the sample over-represents changes the judge coded as erosion, it mainly tests whether those codes are confirmed. It has limited power to detect erosion the judge missed.
+\end{itemize}
+
+All analyses in this subsection were added in revision and were not preregistered.
 
 \subsection{Behavioural battery}
 \label{sec:battery}
@@ -147,4 +181,4 @@ All design and implementation decisions were logged with timestamps (Appendix~\r
 \subsection{Use of AI tools}
 \label{sec:ai-tools}
 
-Claude (Anthropic) assisted, under the authors' direction and oversight, with drafting the preregistration, the implementation specifications and the appendices, and with editing the manuscript; AI paraphrasing tools were also used to revise wording. Cursor, an AI coding assistant, implemented, committed and debugged the study code from these specifications, and the authors reviewed and checked the code. The authors set the research direction, reviewed every specification and result, and made all final decisions, which are recorded with timestamps in the public decision log (Appendix~\ref{app:deviations}). The authors take full responsibility for the content of this article.
+Claude (Anthropic) assisted, under the authors' direction and oversight, with drafting the preregistration, the implementation specifications, the human-coding materials and the appendices, and with drafting and editing the manuscript, including its revision for this journal; AI paraphrasing tools were also used to revise wording. Cursor, an AI coding assistant, implemented, committed and debugged the study code from these specifications, and the authors reviewed and checked the code. The authors set the research direction, reviewed every specification and result, and made all final decisions, which are recorded with timestamps in the public decision log (Appendix~\ref{app:deviations}). The authors take full responsibility for the content of this article.
