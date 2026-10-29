@@ -1,0 +1,11 @@
+*.aux
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.synctex.gz
+_audit_main_snip.tex
+_tw.*
+template/sn-article-template/sn-article.pdf
+template/sn-article-template/user-manual.pdf

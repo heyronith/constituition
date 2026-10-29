@@ -1,0 +1,88 @@
+% AI and Ethics (Springer Nature, journal 43681) — Phase 15 scaffold
+% Template: Springer Nature LaTeX authoring template (sn-jnl)
+% Numbered references: sn-mathphys-num
+\documentclass[pdflatex,sn-mathphys-num]{sn-jnl}
+
+\usepackage{graphicx}
+\usepackage{multirow}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{amsthm}
+\usepackage[title]{appendix}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage{url}
+\usepackage{placeins}
+
+\input{macros_numbers.tex}
+
+% Avoid Type-3 bitmap fonts from TS1 (textcomp \textbullet / \textdollar → pk).
+\renewcommand{\textbullet}{\ensuremath{\bullet}}
+\DeclareRobustCommand{\textdollar}{\char`\$}
+\setlist[itemize,1]{label=\ensuremath{\bullet}}
+\setlist[itemize,2]{label=\ensuremath{\circ}}
+\setlist[itemize,3]{label=--}
+\renewcommand{\labelitemi}{\ensuremath{\bullet}}
+\renewcommand{\labelitemii}{\ensuremath{\circ}}
+\renewcommand{\labelitemiii}{--}
+
+% Visible placeholders for pending revision text (submission must refuse while any remain).
+\newcommand{\PENDING}[1]{%
+  \par\noindent
+  \fcolorbox{red}{yellow!15}{%
+    \parbox{0.96\linewidth}{\centering\color{red}\bfseries #1}%
+  }%
+  \par
+}
+
+\raggedbottom
+
+% Double-blind: empty PDF author metadata
+\hypersetup{pdfauthor={}, pdftitle={Do Language Models Write Away Their Own Oversight Commitments?}}
+
+\begin{document}
+
+\title[Do Language Models Write Away Their Own Oversight Commitments?]{Do Language Models Write Away Their Own Oversight Commitments? A Preregistered Study of Constitutional Self-Revision}
+
+% Double-blind: no author names or affiliations in the manuscript.
+% Author details: see title_page.tex / title_page.pdf
+
+\abstract{Written principles, such as model specs and constitutions, are increasingly used to guide the behaviour of language models, and models are increasingly asked to reflect on these principles and revise them. This raises a governance question: which principles survive such revision? In a preregistered study, we asked seven open-weight model configurations to repeatedly revise a 35-principle constitution (covering human oversight, restraints on the model's own agency, and five other categories) for 20 rounds. We compare reflecting on one's own versus another assistant's constitution, with paraphrase and neutral-edit controls. Using two LLM judges, validated on a stratified sample by two human coders, we find no evidence that oversight principles are especially susceptible to erosion: 8.2\% of oversight principles eroded within 20 rounds, versus 13.7\% of agentic restraints, although whether they are more stable depends on individual principles. The oversight principle most likely to be eroded (19.4\%, mostly in one configuration) is for the model to accept changes to its own values. Erosion is more pronounced for restraints on self-expression: a principle to keep the model's political opinions out of replies eroded in 40.0\% of reflection chains (versus 13.1\% under neutral editing), mostly in one model family. Reflecting on one's own constitution made little difference, and we find no evidence that installing self-revised oversight principles changes behaviour around human oversight. We study written commitments, not goal-directed agents. Such commitments vary in how well they resist erosion, which motivates human review, version control and auditing of AI-proposed revisions to them.}
+
+\keywords{AI ethics, AI governance, human oversight, constitutional AI, value drift, preregistration}
+
+\maketitle
+
+\input{sections/intro}
+\input{sections/related}
+\input{sections/methods}
+\input{sections/results}
+\input{sections/discussion}
+\input{sections/conclusion}
+
+\backmatter
+
+\section*{Statements and Declarations}
+\input{sections/declarations}
+
+\bibliography{refs}
+
+\begin{appendices}
+% Appendix floats continue main numbering (journal rule overrides template A1 reset).
+% Main text figures: Fig.1--4 (MLJ) + Fig.5 (per-item exploratory).
+\setcounter{figure}{5}
+\setcounter{table}{5}
+\renewcommand{\thefigure}{\arabic{figure}}
+\renewcommand{\thetable}{\arabic{table}}
+\input{appendix/A_deviations}
+\input{appendix/B_items_prompts}
+\input{appendix/C_rubric_reliability}
+\input{appendix/D_confirmatory}
+\input{appendix/E_battery}
+\input{appendix/F_study1}
+\input{appendix/G_fate_examples}
+\input{appendix/H_coding_instrument}
+\end{appendices}
+
+\end{document}

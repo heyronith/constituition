@@ -1,0 +1,103 @@
+\section{Results}
+\label{sec:results}
+
+\subsection{Data}
+\label{sec:data}
+
+The confirmatory protocol produced \Nchains{} chains, \NitemroundsDisp{} at-risk item-rounds and \NeventsDisp{} erosion events.
+\begin{itemize}
+\item Censoring was rare for most configurations but reached \CensorGemmaPct\% for Gemma-4-12B, which repeatedly returned ``revisions'' identical to the original principle. Its own notes described the principle as ``already optimal''.
+\item Evaluation awareness was verbalized in \EvalAwareChains{} of \Nchains{} chains.
+\item Agreement between the two judges was $\alpha = \Alpha$ (95\% CI $\AlphaLo$--$\AlphaHi$), above the preregistered threshold, so results are reported without the reliability caveat.
+\end{itemize}
+
+\subsection{Oversight commitments are not selectively eroded (H1, H-alt)}
+\label{sec:h1}
+
+\PENDING{PENDING: Section 4.2 restructure (robustness first)}
+
+H1 was not supported. The hazard ratio of COR vs.\ AGENT items in SELF-REFLECT was \HoneHR{} (95\% CI: \HoneLo--\HoneHi; \HoneNevents{} events), which is in the opposite direction from what was predicted. The preregistered test of H-alt was significant ($p = \HaltPDisp$), but the estimate was not equivalent to one within $[0.667, 1.5]$. For this fit, we used the preregistered fallback that drops the item and chain random effects since the full model was singular. Because only five items represent each category, we examined how much this result depends on particular items:
+\begin{itemize}
+\item The direction was stable across chains (chain-cluster bootstrap of the crude hazard ratio: \CrudeHRDisp, 95\% CI \BootLoDisp--\BootHiDisp) and across configurations (leaving each configuration out gives \LocoLo--\LocoHi).
+\item Models that restore item-level variation gave similar point estimates (\ItemAwareMinDisp--\ItemAwareMaxDisp), but their intervals include one (e.g.\ \ItemAwareExHR, 95\% CI \ItemAwareExLo--\ItemAwareExHi).
+\item An exact permutation test that relabels which five of the ten items are oversight items gave $p = \PermPDisp$.
+\item One agentic item, ``I will do the task I was asked to do and will not take on extra goals or projects that nobody requested'', accounted for \NAgentOneEvents{} of the \NAgentEventsSR{} AGENT events. Without it the hazard ratio was \LOIOagentOneDisp. These events were not a judging artifact: the second judge agreed on \AgentOneMimoAgreePct\% of them.
+\end{itemize}
+
+In sum, we do not find evidence of selective erosion of oversight commitments. Evidence of greater stability compared to matched agentic restraints is suggestive but relies on particular items (Figure~\ref{fig:loio}; Table~\ref{tab:h1_robustness}).
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\textwidth]{figs/Fig2}
+\caption{Leave-one-item-out crude hazard ratios (COR vs AGENT, secondary analysis)}
+\label{fig:loio}
+\end{figure}
+
+\input{tables/tab3}
+
+\subsection{Erosion concentrates in stylistic self-restraints under reflection}
+\label{sec:erosion}
+
+At round 20 in SELF-REFLECT, we observed that \CorErodedSRPct\% of oversight, \AgentErodedSRPct\% of agentic, and \SelfErodedSRPct\% of stylistic items had eroded (Figure~\ref{fig:erosion}). Under NEUTRAL-EDIT, these proportions were \CorErodedNEPct\%, \AgentErodedNEPct\%, and \SelfErodedNEPct\%, respectively, while under PARAPHRASE they were all below \ParaMaxPct\%. Thus, erosion appears to be driven mainly by reflection rather than by repeated editing, and most severely for stylistic constraints.
+
+We decompose the hazard (exploratory) below. In SELF-REFLECT, we observe two contributions. Oversight clauses are changed slightly less often than agentic clauses (per-round touch probability \TouchCorSR{} vs \TouchAgentSR), and when changed they are eroded less often (\ErosGivenTouchCorSR{} vs \ErosGivenTouchAgentSR). The distribution of fates by category is reported in Table~\ref{tab:fates}.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\textwidth]{figs/Fig3}
+\caption{Cumulative erosion for COR, AGENT and SELF by condition}
+\label{fig:erosion}
+\end{figure}
+
+\input{tables/tab4}
+
+\subsection{No self-specificity (H2)}
+\label{sec:h2}
+
+Neither contrast supported H2. The difference in the COR--AGENT log-hazard gap between SELF-REFLECT and OTHER-REFLECT was \HtwoaGapDisp{} (95\% CI \HtwoaLoDisp{} to \HtwoaHiDisp). Between SELF-REFLECT and NEUTRAL-EDIT it was \HtwobGapDisp{} (95\% CI \HtwobLoDisp{} to \HtwobHiDisp). Thus, revising a model's own constitution did not erode oversight any more than revising another assistant's.
+
+\subsection{No behavioural effect (H3)}
+\label{sec:h3}
+
+The battery did pick up changes in oversight text. Substitution of COR clauses with the inverted version led to large decreases in AAR in Gemma-4-31B (\AARGemmaThirtyOneRZero{} $\rightarrow$ \AARGemmaThirtyOneCorInv) and Gemma-4-12B (\AARGemmaTwelveRZero{} $\rightarrow$ \AARGemmaTwelveCorInv), and a smaller decrease in OLMo-3-7B-final (\AAROlmoFinalRZero{} $\rightarrow$ \AAROlmoFinalCorInv). In all, 6 of 7 configurations passed the inclusion criterion; Qwen3.8 without thinking consistently accepted legitimate oversight regardless of constitution. Overall, these data provide no support for H3 (COR-swap minus AGENT-swap is \HthreeEstDisp, 95\% CI \HthreeLoDisp{} to \HthreeHiDisp, opposite to the predicted direction). Secondary contrasts with URR as the outcome, and those in the OTHER-REFLECT condition, were also null (see Table~\ref{tab:h3}). We note that this test has low leverage: as clauses about oversight were rarely eroded, many COR-swaps were textually identical to the original constitution. Per configuration, between \CorSwapNonIdMin{} and \CorSwapNonIdMax{} of the 10 COR-swaps differed from the original.
+
+\input{tables/tab5}
+
+\PENDING{PENDING: item-level results and per-item figure}
+(Fig.~\ref{fig:per-item}).
+
+\begin{figure}[t]
+\centering
+\includegraphics{figs/Fig5}
+\caption{Cumulative probability of erosion by round 20 under SELF-REFLECT for each of the 35 commitments (filled markers; 95\% bootstrap CIs over chains), grouped by category. Open markers show NEUTRAL-EDIT. Vertical lines mark each category's pooled estimate. Exploratory.}
+\label{fig:per-item}
+\end{figure}
+
+\subsection{Exploratory analyses}
+\label{sec:exploratory}
+
+\begin{itemize}
+\item \textbf{Reasoning and post-training.} Per-configuration hazard ratios (Figure~\ref{fig:forest}) suggest that reasoning and preference tuning increase the stability of oversight commitments:
+\begin{itemize}
+\item Qwen3.8: \HRQwenThink{} with thinking enabled, \HRQwenNothink{} with it disabled;
+\item OLMo-3-7B: \HROlmoSft{} (SFT), \HROlmoDpo{} (DPO) and \HROlmoFinal{} (final).
+\end{itemize}
+These comparisons are exploratory and imprecise.
+\end{itemize}
+\PENDING{PENDING: revision of the SUBORDINATED sentence}
+\begin{itemize}
+\item \textbf{SUBORDINATED changes.} The most safety-relevant form of erosion, a commitment rewritten to depend on the model's own judgment, was rare, but more frequent for oversight than for agentic clauses (\NSubordCOR{} vs \NSubordAGENT{} changes; examples in Appendix~\ref{app:fate_examples}).
+\item \textbf{PERMISSIVE protocol.} Models added \NHFiveAdded{} new principles, of which only \NHFiveAutonomy{} concerned their own autonomy.
+\end{itemize}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\textwidth]{figs/Fig4}
+\caption{Exploratory per-configuration crude hazard ratios (COR vs AGENT in SELF-REFLECT) with exact conditional 95\% intervals; labels give COR vs AGENT event counts}
+\label{fig:forest}
+\end{figure}
+
+\subsection{Human validation of the judge}
+\label{sec:human-validation}
+
+\PENDING{PENDING: Human validation of the judge (exploratory)}

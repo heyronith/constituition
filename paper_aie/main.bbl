@@ -1,0 +1,847 @@
+%% BioMed_Central_Bib_Style_v1.01
+
+\begin{thebibliography}{46}
+% BibTex style file: bmc-mathphys.bst (version 2.1), 2014-07-24
+\ifx \bisbn   \undefined \def \bisbn  #1{ISBN #1}\fi
+\ifx \binits  \undefined \def \binits#1{#1}\fi
+\ifx \bauthor  \undefined \def \bauthor#1{#1}\fi
+\ifx \batitle  \undefined \def \batitle#1{#1}\fi
+\ifx \bjtitle  \undefined \def \bjtitle#1{#1}\fi
+\ifx \bvolume  \undefined \def \bvolume#1{\textbf{#1}}\fi
+\ifx \byear  \undefined \def \byear#1{#1}\fi
+\ifx \bissue  \undefined \def \bissue#1{#1}\fi
+\ifx \bfpage  \undefined \def \bfpage#1{#1}\fi
+\ifx \blpage  \undefined \def \blpage #1{#1}\fi
+\ifx \burl  \undefined \def \burl#1{\textsf{#1}}\fi
+\ifx \doiurl  \undefined \def \doiurl#1{\url{https://doi.org/#1}}\fi
+\ifx \betal  \undefined \def \betal{\textit{et al.}}\fi
+\ifx \binstitute  \undefined \def \binstitute#1{#1}\fi
+\ifx \binstitutionaled  \undefined \def \binstitutionaled#1{#1}\fi
+\ifx \bctitle  \undefined \def \bctitle#1{#1}\fi
+\ifx \beditor  \undefined \def \beditor#1{#1}\fi
+\ifx \bpublisher  \undefined \def \bpublisher#1{#1}\fi
+\ifx \bbtitle  \undefined \def \bbtitle#1{#1}\fi
+\ifx \bedition  \undefined \def \bedition#1{#1}\fi
+\ifx \bseriesno  \undefined \def \bseriesno#1{#1}\fi
+\ifx \blocation  \undefined \def \blocation#1{#1}\fi
+\ifx \bsertitle  \undefined \def \bsertitle#1{#1}\fi
+\ifx \bsnm \undefined \def \bsnm#1{#1}\fi
+\ifx \bsuffix \undefined \def \bsuffix#1{#1}\fi
+\ifx \bparticle \undefined \def \bparticle#1{#1}\fi
+\ifx \barticle \undefined \def \barticle#1{#1}\fi
+\bibcommenthead
+\ifx \bconfdate \undefined \def \bconfdate #1{#1}\fi
+\ifx \botherref \undefined \def \botherref #1{#1}\fi
+\ifx \url \undefined \def \url#1{\textsf{#1}}\fi
+\ifx \bchapter \undefined \def \bchapter#1{#1}\fi
+\ifx \bbook \undefined \def \bbook#1{#1}\fi
+\ifx \bcomment \undefined \def \bcomment#1{#1}\fi
+\ifx \oauthor \undefined \def \oauthor#1{#1}\fi
+\ifx \citeauthoryear \undefined \def \citeauthoryear#1{#1}\fi
+\ifx \endbibitem  \undefined \def \endbibitem {}\fi
+\ifx \bconflocation  \undefined \def \bconflocation#1{#1}\fi
+\ifx \arxivurl  \undefined \def \arxivurl#1{\textsf{#1}}\fi
+\csname PreBibitemsHook\endcsname
+
+%%% 1
+\bibitem[\protect\citeauthoryear{{Anthropic}}{2026}]{Anthropic2026}
+\begin{botherref}
+\oauthor{\bsnm{{Anthropic}}}:
+Claude's new constitution.
+21 January 2026
+(2026).
+\url{https://www.anthropic.com/news/claude-new-constitution}
+\end{botherref}
+\endbibitem
+
+%%% 2
+\bibitem[\protect\citeauthoryear{{OpenAI}}{2025}]{OpenAI2025}
+\begin{botherref}
+\oauthor{\bsnm{{OpenAI}}}:
+Model Spec (version 2025-10-27)
+(2025).
+\url{https://model-spec.openai.com/2025-10-27}
+\end{botherref}
+\endbibitem
+
+%%% 3
+\bibitem[\protect\citeauthoryear{Bai et~al.}{2022}]{bai2022constitutional}
+\begin{barticle}
+\bauthor{\bsnm{Bai}, \binits{Y.}},
+\bauthor{\bsnm{Kadavath}, \binits{S.}},
+\bauthor{\bsnm{Kundu}, \binits{S.}},
+\bauthor{\bsnm{Askell}, \binits{A.}},
+\bauthor{\bsnm{Kernion}, \binits{J.}},
+\bauthor{\bsnm{Jones}, \binits{A.}},
+\bauthor{\bsnm{Chen}, \binits{A.}},
+\bauthor{\bsnm{Goldie}, \binits{A.}},
+\bauthor{\bsnm{Mirhoseini}, \binits{A.}},
+\bauthor{\bsnm{McKinnon}, \binits{C.}},
+\bauthor{\bsnm{Chen}, \binits{C.}},
+\bauthor{\bsnm{Olsson}, \binits{C.}},
+\bauthor{\bsnm{Olah}, \binits{C.}},
+\bauthor{\bsnm{Hernandez}, \binits{D.}},
+\bauthor{\bsnm{Drain}, \binits{D.}},
+\bauthor{\bsnm{Ganguli}, \binits{D.}},
+\bauthor{\bsnm{Li}, \binits{D.}},
+\bauthor{\bsnm{Tran-Johnson}, \binits{E.}},
+\bauthor{\bsnm{Perez}, \binits{E.}},
+\bauthor{\bsnm{Kerr}, \binits{J.}},
+\bauthor{\bsnm{Mueller}, \binits{J.}},
+\bauthor{\bsnm{Ladish}, \binits{J.}},
+\bauthor{\bsnm{Landau}, \binits{J.}},
+\bauthor{\bsnm{Ndousse}, \binits{K.}},
+\bauthor{\bsnm{Lukosuite}, \binits{K.}},
+\bauthor{\bsnm{Lovitt}, \binits{L.}},
+\bauthor{\bsnm{Sellitto}, \binits{M.}},
+\bauthor{\bsnm{Elhage}, \binits{N.}},
+\bauthor{\bsnm{Schiefer}, \binits{N.}},
+\bauthor{\bsnm{Mercado}, \binits{N.}},
+\bauthor{\bsnm{DasSarma}, \binits{N.}},
+\bauthor{\bsnm{Lasenby}, \binits{R.}},
+\bauthor{\bsnm{Larson}, \binits{R.}},
+\bauthor{\bsnm{Ringer}, \binits{S.}},
+\bauthor{\bsnm{Johnston}, \binits{S.}},
+\bauthor{\bsnm{Kravec}, \binits{S.}},
+\bauthor{\bsnm{Showk}, \binits{S.E.}},
+\bauthor{\bsnm{Fort}, \binits{S.}},
+\bauthor{\bsnm{Lanham}, \binits{T.}},
+\bauthor{\bsnm{Telleen-Lawton}, \binits{T.}},
+\bauthor{\bsnm{Conerly}, \binits{T.}},
+\bauthor{\bsnm{Henighan}, \binits{T.}},
+\bauthor{\bsnm{Hume}, \binits{T.}},
+\bauthor{\bsnm{Bowman}, \binits{S.R.}},
+\bauthor{\bsnm{Hatfield-Dodds}, \binits{Z.}},
+\bauthor{\bsnm{Mann}, \binits{B.}},
+\bauthor{\bsnm{Amodei}, \binits{D.}},
+\bauthor{\bsnm{Joseph}, \binits{N.}},
+\bauthor{\bsnm{McCandlish}, \binits{S.}},
+\bauthor{\bsnm{Brown}, \binits{T.}},
+\bauthor{\bsnm{Kaplan}, \binits{J.}}:
+\batitle{Constitutional {AI}: Harmlessness from {AI} feedback}.
+\bjtitle{arXiv preprint arXiv:2212.08073}
+(\byear{2022})
+\doiurl{10.48550/arXiv.2212.08073}
+\end{barticle}
+\endbibitem
+
+%%% 4
+\bibitem[\protect\citeauthoryear{Madaan et~al.}{2023}]{madaan2023selfrefine}
+\begin{barticle}
+\bauthor{\bsnm{Madaan}, \binits{A.}},
+\bauthor{\bsnm{Tandon}, \binits{N.}},
+\bauthor{\bsnm{Gupta}, \binits{P.}},
+\bauthor{\bsnm{Hallinan}, \binits{S.}},
+\bauthor{\bsnm{Gao}, \binits{L.}},
+\bauthor{\bsnm{Wiegreffe}, \binits{S.}},
+\bauthor{\bsnm{Alon}, \binits{U.}},
+\bauthor{\bsnm{Dziri}, \binits{N.}},
+\bauthor{\bsnm{Prabhumoye}, \binits{S.}},
+\bauthor{\bsnm{Yang}, \binits{Y.}},
+\bauthor{\bsnm{Gupta}, \binits{S.}},
+\bauthor{\bsnm{Majumder}, \binits{B.P.}},
+\bauthor{\bsnm{Hermann}, \binits{K.}},
+\bauthor{\bsnm{Welleck}, \binits{S.}},
+\bauthor{\bsnm{Yazdanbakhsh}, \binits{A.}},
+\bauthor{\bsnm{Clark}, \binits{P.}}:
+\batitle{Self-refine: Iterative refinement with self-feedback}.
+\bjtitle{arXiv preprint arXiv:2303.17651}
+(\byear{2023})
+\doiurl{10.48550/arXiv.2303.17651}
+\end{barticle}
+\endbibitem
+
+%%% 5
+\bibitem[\protect\citeauthoryear{Das et~al.}{2026}]{das2026selfpropagating}
+\begin{barticle}
+\bauthor{\bsnm{Das}, \binits{D.}},
+\bauthor{\bsnm{Tay}, \binits{J.}},
+\bauthor{\bsnm{Tsai}, \binits{B.}},
+\bauthor{\bsnm{Huang}, \binits{D.}},
+\bauthor{\bsnm{Rando}, \binits{J.}}:
+\batitle{Self-propagating misalignment in {LLM} agents, and why auditing or disabling memory is not enough}.
+\bjtitle{arXiv preprint arXiv:2610.04083}
+(\byear{2026})
+\doiurl{10.48550/arXiv.2610.04083}
+\end{barticle}
+\endbibitem
+
+%%% 6
+\bibitem[\protect\citeauthoryear{{High-Level Expert Group on Artificial Intelligence}}{2019}]{HLEG2019}
+\begin{botherref}
+\oauthor{\bsnm{{High-Level Expert Group on Artificial Intelligence}}}:
+Ethics Guidelines for Trustworthy {AI}.
+European Commission
+(2019).
+\url{https://digital-strategy.ec.europa.eu/en/library/ethics-guidelines-trustworthy-ai}
+\end{botherref}
+\endbibitem
+
+%%% 7
+\bibitem[\protect\citeauthoryear{{European Parliament and Council of the European Union}}{2024}]{EUAIAct2024}
+\begin{botherref}
+\oauthor{\bsnm{{European Parliament and Council of the European Union}}}:
+Regulation ({EU}) 2024/1689 laying down harmonised rules on artificial intelligence ({Artificial Intelligence Act}), {Article} 14: Human oversight.
+Official Journal of the European Union, L series, 12 July 2024
+(2024).
+\url{http://data.europa.eu/eli/reg/2024/1689/oj}
+\end{botherref}
+\endbibitem
+
+%%% 8
+\bibitem[\protect\citeauthoryear{Soares et~al.}{2015}]{soares2015corrigibility}
+\begin{bchapter}
+\bauthor{\bsnm{Soares}, \binits{N.}},
+\bauthor{\bsnm{Fallenstein}, \binits{B.}},
+\bauthor{\bsnm{Armstrong}, \binits{S.}},
+\bauthor{\bsnm{Yudkowsky}, \binits{E.}}:
+\bctitle{Corrigibility}.
+In: \bbtitle{Workshops at the Twenty-Ninth {AAAI} Conference on Artificial Intelligence}
+(\byear{2015}).
+\bcomment{Artificial Intelligence and Ethics workshop; {AAAI} {WS} paper 10124}.
+\burl{https://cdn.aaai.org/ocs/ws/ws0067/10124-45900-1-PB.pdf}
+\end{bchapter}
+\endbibitem
+
+%%% 9
+\bibitem[\protect\citeauthoryear{Mittelstadt}{2019}]{Mittelstadt2019}
+\begin{barticle}
+\bauthor{\bsnm{Mittelstadt}, \binits{B.}}:
+\batitle{Principles alone cannot guarantee ethical {AI}}.
+\bjtitle{Nature Machine Intelligence}
+\bvolume{1},
+\bfpage{501}--\blpage{507}
+(\byear{2019})
+\doiurl{10.1038/s42256-019-0114-4}
+\end{barticle}
+\endbibitem
+
+%%% 10
+\bibitem[\protect\citeauthoryear{Schlatter et~al.}{2025}]{schlatter2025shutdown}
+\begin{barticle}
+\bauthor{\bsnm{Schlatter}, \binits{J.}},
+\bauthor{\bsnm{Weinstein-Raun}, \binits{B.}},
+\bauthor{\bsnm{Ladish}, \binits{J.}}:
+\batitle{Incomplete tasks induce shutdown resistance in some frontier {LLMs}}.
+\bjtitle{arXiv preprint arXiv:2509.14260}
+(\byear{2025})
+\doiurl{10.48550/arXiv.2509.14260}
+\end{barticle}
+\endbibitem
+
+%%% 11
+\bibitem[\protect\citeauthoryear{Greenblatt et~al.}{2024}]{greenblatt2024alignmentfaking}
+\begin{barticle}
+\bauthor{\bsnm{Greenblatt}, \binits{R.}},
+\bauthor{\bsnm{Denison}, \binits{C.}},
+\bauthor{\bsnm{Wright}, \binits{B.}},
+\bauthor{\bsnm{Roger}, \binits{F.}},
+\bauthor{\bsnm{MacDiarmid}, \binits{M.}},
+\bauthor{\bsnm{Marks}, \binits{S.}},
+\bauthor{\bsnm{Treutlein}, \binits{J.}},
+\bauthor{\bsnm{Belonax}, \binits{T.}},
+\bauthor{\bsnm{Chen}, \binits{J.}},
+\bauthor{\bsnm{Duvenaud}, \binits{D.}},
+\bauthor{\bsnm{Khan}, \binits{A.}},
+\bauthor{\bsnm{Michael}, \binits{J.}},
+\bauthor{\bsnm{Mindermann}, \binits{S.}},
+\bauthor{\bsnm{Perez}, \binits{E.}},
+\bauthor{\bsnm{Petrini}, \binits{L.}},
+\bauthor{\bsnm{Uesato}, \binits{J.}},
+\bauthor{\bsnm{Kaplan}, \binits{J.}},
+\bauthor{\bsnm{Shlegeris}, \binits{B.}},
+\bauthor{\bsnm{Bowman}, \binits{S.R.}},
+\bauthor{\bsnm{Hubinger}, \binits{E.}}:
+\batitle{Alignment faking in large language models}.
+\bjtitle{arXiv preprint arXiv:2412.14093}
+(\byear{2024})
+\doiurl{10.48550/arXiv.2412.14093}
+\end{barticle}
+\endbibitem
+
+%%% 12
+\bibitem[\protect\citeauthoryear{Meinke et~al.}{2024}]{meinke2024scheming}
+\begin{barticle}
+\bauthor{\bsnm{Meinke}, \binits{A.}},
+\bauthor{\bsnm{Schoen}, \binits{B.}},
+\bauthor{\bsnm{Scheurer}, \binits{J.}},
+\bauthor{\bsnm{Balesni}, \binits{M.}},
+\bauthor{\bsnm{Shah}, \binits{R.}},
+\bauthor{\bsnm{Hobbhahn}, \binits{M.}}:
+\batitle{Frontier models are capable of in-context scheming}.
+\bjtitle{arXiv preprint arXiv:2412.04984}
+(\byear{2024})
+\doiurl{10.48550/arXiv.2412.04984}
+\end{barticle}
+\endbibitem
+
+%%% 13
+\bibitem[\protect\citeauthoryear{Das et~al.}{2026}]{das2026seabench}
+\begin{barticle}
+\bauthor{\bsnm{Das}, \binits{S.}},
+\bauthor{\bsnm{Viswanathan}, \binits{P.}},
+\bauthor{\bsnm{Donnelly}, \binits{D.}},
+\bauthor{\bsnm{Huang}, \binits{C.}},
+\bauthor{\bsnm{Abdelnabi}, \binits{S.}},
+\bauthor{\bsnm{Fioretto}, \binits{F.}}:
+\batitle{{SEABench}: Benchmarking endogenous misalignment in self-evolving agents}.
+\bjtitle{arXiv preprint arXiv:2609.35596}
+(\byear{2026})
+\doiurl{10.48550/arXiv.2609.35596}
+\end{barticle}
+\endbibitem
+
+%%% 14
+\bibitem[\protect\citeauthoryear{Han et~al.}{2025}]{han2025alignmenttipping}
+\begin{barticle}
+\bauthor{\bsnm{Han}, \binits{S.}},
+\bauthor{\bsnm{Xiong}, \binits{K.}},
+\bauthor{\bsnm{Liu}, \binits{J.}},
+\bauthor{\bsnm{Ye}, \binits{X.}},
+\bauthor{\bsnm{Su}, \binits{Y.}},
+\bauthor{\bsnm{Duan}, \binits{W.}},
+\bauthor{\bsnm{Liu}, \binits{X.}},
+\bauthor{\bsnm{Xie}, \binits{C.}},
+\bauthor{\bsnm{Bansal}, \binits{M.}},
+\bauthor{\bsnm{Ding}, \binits{M.}},
+\bauthor{\bsnm{Zhang}, \binits{L.}},
+\bauthor{\bsnm{Yao}, \binits{H.}}:
+\batitle{Alignment tipping process: How self-evolution pushes {LLM} agents off the rails}.
+\bjtitle{arXiv preprint arXiv:2510.04860}
+(\byear{2025})
+\doiurl{10.48550/arXiv.2510.04860}
+\end{barticle}
+\endbibitem
+
+%%% 15
+\bibitem[\protect\citeauthoryear{Jobin et~al.}{2019}]{Jobin2019}
+\begin{barticle}
+\bauthor{\bsnm{Jobin}, \binits{A.}},
+\bauthor{\bsnm{Ienca}, \binits{M.}},
+\bauthor{\bsnm{Vayena}, \binits{E.}}:
+\batitle{The global landscape of {AI} ethics guidelines}.
+\bjtitle{Nature Machine Intelligence}
+\bvolume{1},
+\bfpage{389}--\blpage{399}
+(\byear{2019})
+\doiurl{10.1038/s42256-019-0088-2}
+\end{barticle}
+\endbibitem
+
+%%% 16
+\bibitem[\protect\citeauthoryear{Kundu et~al.}{2023}]{kundu2023specific}
+\begin{barticle}
+\bauthor{\bsnm{Kundu}, \binits{S.}},
+\bauthor{\bsnm{Bai}, \binits{Y.}},
+\bauthor{\bsnm{Kadavath}, \binits{S.}},
+\bauthor{\bsnm{Askell}, \binits{A.}},
+\bauthor{\bsnm{Callahan}, \binits{A.}},
+\bauthor{\bsnm{Chen}, \binits{A.}},
+\bauthor{\bsnm{Goldie}, \binits{A.}},
+\bauthor{\bsnm{Balwit}, \binits{A.}},
+\bauthor{\bsnm{Mirhoseini}, \binits{A.}},
+\bauthor{\bsnm{McLean}, \binits{B.}},
+\bauthor{\bsnm{Olsson}, \binits{C.}},
+\bauthor{\bsnm{Evraets}, \binits{C.}},
+\bauthor{\bsnm{Tran-Johnson}, \binits{E.}},
+\bauthor{\bsnm{Durmus}, \binits{E.}},
+\bauthor{\bsnm{Perez}, \binits{E.}},
+\bauthor{\bsnm{Kernion}, \binits{J.}},
+\bauthor{\bsnm{Kerr}, \binits{J.}},
+\bauthor{\bsnm{Ndousse}, \binits{K.}},
+\bauthor{\bsnm{Nguyen}, \binits{K.}},
+\bauthor{\bsnm{Elhage}, \binits{N.}},
+\bauthor{\bsnm{Cheng}, \binits{N.}},
+\bauthor{\bsnm{Schiefer}, \binits{N.}},
+\bauthor{\bsnm{DasSarma}, \binits{N.}},
+\bauthor{\bsnm{Rausch}, \binits{O.}},
+\bauthor{\bsnm{Larson}, \binits{R.}},
+\bauthor{\bsnm{Yang}, \binits{S.}},
+\bauthor{\bsnm{Kravec}, \binits{S.}},
+\bauthor{\bsnm{Telleen-Lawton}, \binits{T.}},
+\bauthor{\bsnm{Liao}, \binits{T.I.}},
+\bauthor{\bsnm{Henighan}, \binits{T.}},
+\bauthor{\bsnm{Hume}, \binits{T.}},
+\bauthor{\bsnm{Hatfield-Dodds}, \binits{Z.}},
+\bauthor{\bsnm{Mindermann}, \binits{S.}},
+\bauthor{\bsnm{Joseph}, \binits{N.}},
+\bauthor{\bsnm{McCandlish}, \binits{S.}},
+\bauthor{\bsnm{Kaplan}, \binits{J.}}:
+\batitle{Specific versus general principles for constitutional {AI}}.
+\bjtitle{arXiv preprint arXiv:2310.13798}
+(\byear{2023})
+\doiurl{10.48550/arXiv.2310.13798}
+\end{barticle}
+\endbibitem
+
+%%% 17
+\bibitem[\protect\citeauthoryear{Huang et~al.}{2024}]{huang2024collective}
+\begin{barticle}
+\bauthor{\bsnm{Huang}, \binits{S.}},
+\bauthor{\bsnm{Siddarth}, \binits{D.}},
+\bauthor{\bsnm{Lovitt}, \binits{L.}},
+\bauthor{\bsnm{Liao}, \binits{T.I.}},
+\bauthor{\bsnm{Durmus}, \binits{E.}},
+\bauthor{\bsnm{Tamkin}, \binits{A.}},
+\bauthor{\bsnm{Ganguli}, \binits{D.}}:
+\batitle{Collective constitutional {AI}: Aligning a language model with public input}.
+\bjtitle{arXiv preprint arXiv:2406.07814}
+(\byear{2024})
+\doiurl{10.48550/arXiv.2406.07814}
+\end{barticle}
+\endbibitem
+
+%%% 18
+\bibitem[\protect\citeauthoryear{Santoni~de Sio and van~den Hoven}{2018}]{SantoniDeSio2018}
+\begin{barticle}
+\bauthor{\bsnm{Sio}, \binits{F.}},
+\bauthor{\bsnm{Hoven}, \binits{J.}}:
+\batitle{Meaningful human control over autonomous systems: A philosophical account}.
+\bjtitle{Frontiers in Robotics and AI}
+\bvolume{5},
+\bfpage{15}
+(\byear{2018})
+\doiurl{10.3389/frobt.2018.00015}
+\end{barticle}
+\endbibitem
+
+%%% 19
+\bibitem[\protect\citeauthoryear{Sterz et~al.}{2024}]{Sterz2024}
+\begin{bchapter}
+\bauthor{\bsnm{Sterz}, \binits{S.}},
+\bauthor{\bsnm{Baum}, \binits{K.}},
+\bauthor{\bsnm{Biewer}, \binits{S.}},
+\bauthor{\bsnm{Hermanns}, \binits{H.}},
+\bauthor{\bsnm{Lauber-R{\"o}nsberg}, \binits{A.}},
+\bauthor{\bsnm{Meinel}, \binits{P.}},
+\bauthor{\bsnm{Langer}, \binits{M.}}:
+\bctitle{On the quest for effectiveness in human oversight: Interdisciplinary perspectives}.
+In: \bbtitle{Proceedings of the 2024 ACM Conference on Fairness, Accountability, and Transparency (FAccT)}
+(\byear{2024}).
+\doiurl{10.1145/3630106.3659051}
+\end{bchapter}
+\endbibitem
+
+%%% 20
+\bibitem[\protect\citeauthoryear{Green}{2022}]{Green2022}
+\begin{barticle}
+\bauthor{\bsnm{Green}, \binits{B.}}:
+\batitle{The flaws of policies requiring human oversight of government algorithms}.
+\bjtitle{Computer Law \& Security Review}
+\bvolume{45},
+\bfpage{105681}
+(\byear{2022})
+\doiurl{10.1016/j.clsr.2022.105681}
+\end{barticle}
+\endbibitem
+
+%%% 21
+\bibitem[\protect\citeauthoryear{Hadfield-Menell et~al.}{2017}]{HadfieldMenell2017}
+\begin{bchapter}
+\bauthor{\bsnm{Hadfield-Menell}, \binits{D.}},
+\bauthor{\bsnm{Dragan}, \binits{A.}},
+\bauthor{\bsnm{Abbeel}, \binits{P.}},
+\bauthor{\bsnm{Russell}, \binits{S.}}:
+\bctitle{The off-switch game}.
+In: \bbtitle{Proceedings of the Twenty-Sixth International Joint Conference on Artificial Intelligence (IJCAI)},
+pp. \bfpage{220}--\blpage{227}
+(\byear{2017}).
+\doiurl{10.24963/ijcai.2017/32}
+\end{bchapter}
+\endbibitem
+
+%%% 22
+\bibitem[\protect\citeauthoryear{Santurkar et~al.}{2023}]{Santurkar2023}
+\begin{bchapter}
+\bauthor{\bsnm{Santurkar}, \binits{S.}},
+\bauthor{\bsnm{Durmus}, \binits{E.}},
+\bauthor{\bsnm{Ladhak}, \binits{F.}},
+\bauthor{\bsnm{Lee}, \binits{C.}},
+\bauthor{\bsnm{Liang}, \binits{P.}},
+\bauthor{\bsnm{Hashimoto}, \binits{T.}}:
+\bctitle{Whose opinions do language models reflect?}
+In: \bbtitle{Proceedings of the 40th International Conference on Machine Learning}.
+\bsertitle{Proceedings of Machine Learning Research},
+vol. \bseriesno{202}
+(\byear{2023})
+\end{bchapter}
+\endbibitem
+
+%%% 23
+\bibitem[\protect\citeauthoryear{Feng et~al.}{2023}]{Feng2023}
+\begin{bchapter}
+\bauthor{\bsnm{Feng}, \binits{S.}},
+\bauthor{\bsnm{Park}, \binits{C.Y.}},
+\bauthor{\bsnm{Liu}, \binits{Y.}},
+\bauthor{\bsnm{Tsvetkov}, \binits{Y.}}:
+\bctitle{From pretraining data to language models to downstream tasks: Tracking the trails of political biases leading to unfair {NLP} models}.
+In: \bbtitle{Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)},
+pp. \bfpage{11737}--\blpage{11762}
+(\byear{2023}).
+\doiurl{10.18653/v1/2023.acl-long.656}
+\end{bchapter}
+\endbibitem
+
+%%% 24
+\bibitem[\protect\citeauthoryear{Jakkli et~al.}{2026}]{jakkli2026constitutions}
+\begin{barticle}
+\bauthor{\bsnm{Jakkli}, \binits{A.}},
+\bauthor{\bsnm{Rajamanoharan}, \binits{S.}},
+\bauthor{\bsnm{Nanda}, \binits{N.}}:
+\batitle{How well do models follow their constitutions?}
+\bjtitle{arXiv preprint arXiv:2605.24229}
+(\byear{2026})
+\doiurl{10.48550/arXiv.2605.24229}
+\end{barticle}
+\endbibitem
+
+%%% 25
+\bibitem[\protect\citeauthoryear{Perez et~al.}{2024}]{perez2024telephone}
+\begin{barticle}
+\bauthor{\bsnm{Perez}, \binits{J.}},
+\bauthor{\bsnm{Kovač}, \binits{G.}},
+\bauthor{\bsnm{Léger}, \binits{C.}},
+\bauthor{\bsnm{Colas}, \binits{C.}},
+\bauthor{\bsnm{Molinaro}, \binits{G.}},
+\bauthor{\bsnm{Derex}, \binits{M.}},
+\bauthor{\bsnm{Oudeyer}, \binits{P.-Y.}},
+\bauthor{\bsnm{Moulin-Frier}, \binits{C.}}:
+\batitle{When {LLMs} play the telephone game: Cultural attractors as conceptual tools to evaluate {LLMs} in multi-turn settings}.
+\bjtitle{arXiv preprint arXiv:2407.04503}
+(\byear{2024})
+\doiurl{10.48550/arXiv.2407.04503}
+\end{barticle}
+\endbibitem
+
+%%% 26
+\bibitem[\protect\citeauthoryear{Mohamed et~al.}{2025}]{mohamed2025broken}
+\begin{barticle}
+\bauthor{\bsnm{Mohamed}, \binits{A.}},
+\bauthor{\bsnm{Geng}, \binits{M.}},
+\bauthor{\bsnm{Vazirgiannis}, \binits{M.}},
+\bauthor{\bsnm{Shang}, \binits{G.}}:
+\batitle{{LLM} as a broken telephone: Iterative generation distorts information}.
+\bjtitle{arXiv preprint arXiv:2502.20258}
+(\byear{2025})
+\doiurl{10.48550/arXiv.2502.20258}
+\end{barticle}
+\endbibitem
+
+%%% 27
+\bibitem[\protect\citeauthoryear{Geng et~al.}{2026}]{geng2026markovian}
+\begin{barticle}
+\bauthor{\bsnm{Geng}, \binits{M.}},
+\bauthor{\bsnm{Mohamed}, \binits{A.}},
+\bauthor{\bsnm{Shang}, \binits{G.}},
+\bauthor{\bsnm{Vazirgiannis}, \binits{M.}},
+\bauthor{\bsnm{Poibeau}, \binits{T.}}:
+\batitle{Markovian generation chains in large language models}.
+\bjtitle{arXiv preprint arXiv:2603.11228}
+(\byear{2026})
+\doiurl{10.48550/arXiv.2603.11228}
+\end{barticle}
+\endbibitem
+
+%%% 28
+\bibitem[\protect\citeauthoryear{Wu et~al.}{2026}]{wu2026converge}
+\begin{barticle}
+\bauthor{\bsnm{Wu}, \binits{X.}},
+\bauthor{\bsnm{Xu}, \binits{Q.}},
+\bauthor{\bsnm{Kang}, \binits{Y.}},
+\bauthor{\bsnm{Chen}, \binits{Z.}},
+\bauthor{\bsnm{Liu}, \binits{Y.}},
+\bauthor{\bsnm{Yin}, \binits{S.}}:
+\batitle{Do language models converge to themselves? recursive self-refinement as textual relaxation}.
+\bjtitle{arXiv preprint arXiv:2607.22653}
+(\byear{2026})
+\doiurl{10.48550/arXiv.2607.22653}
+\end{barticle}
+\endbibitem
+
+%%% 29
+\bibitem[\protect\citeauthoryear{Arike et~al.}{2025}]{arike2025goaldraft}
+\begin{barticle}
+\bauthor{\bsnm{Arike}, \binits{R.}},
+\bauthor{\bsnm{Donoway}, \binits{E.}},
+\bauthor{\bsnm{Bartsch}, \binits{H.}},
+\bauthor{\bsnm{Hobbhahn}, \binits{M.}}:
+\batitle{Technical report: Evaluating goal drift in language model agents}.
+\bjtitle{arXiv preprint arXiv:2505.02709}
+(\byear{2025})
+\doiurl{10.48550/arXiv.2505.02709}
+\end{barticle}
+\endbibitem
+
+%%% 30
+\bibitem[\protect\citeauthoryear{Menon et~al.}{2026}]{menon2026inherited}
+\begin{barticle}
+\bauthor{\bsnm{Menon}, \binits{A.}},
+\bauthor{\bsnm{Saebo}, \binits{M.}},
+\bauthor{\bsnm{Crosse}, \binits{T.}},
+\bauthor{\bsnm{Gibson}, \binits{S.}},
+\bauthor{\bsnm{Jang}, \binits{E.}},
+\bauthor{\bsnm{Cruz}, \binits{D.}}:
+\batitle{Inherited goal drift: Contextual pressure can undermine agentic goals}.
+\bjtitle{arXiv preprint arXiv:2603.03258}
+(\byear{2026})
+\doiurl{10.48550/arXiv.2603.03258}
+\end{barticle}
+\endbibitem
+
+%%% 31
+\bibitem[\protect\citeauthoryear{Tien et~al.}{2026}]{tien2026rogue}
+\begin{barticle}
+\bauthor{\bsnm{Tien}, \binits{J.}},
+\bauthor{\bsnm{Anand}, \binits{A.}},
+\bauthor{\bsnm{Tuan}, \binits{Y.-R.}},
+\bauthor{\bsnm{Shen}, \binits{Y.}},
+\bauthor{\bsnm{Kolter}, \binits{J.Z.}},
+\bauthor{\bsnm{Nayebi}, \binits{A.}}:
+\batitle{{ROGUE}: Evaluating corrigibility failures in frontier computer-use agents}.
+\bjtitle{arXiv preprint arXiv:2606.00341}
+(\byear{2026})
+\doiurl{10.48550/arXiv.2606.00341}
+\end{barticle}
+\endbibitem
+
+%%% 32
+\bibitem[\protect\citeauthoryear{Bogdanov et~al.}{2026}]{bogdanov2026survival}
+\begin{barticle}
+\bauthor{\bsnm{Bogdanov}, \binits{I.}},
+\bauthor{\bsnm{Manakina}, \binits{O.}},
+\bauthor{\bsnm{Lung}, \binits{C.-H.}}:
+\batitle{Evaluation of multi-turn consistency in {LLM} agents: Survival analysis and failure-rationale taxonomy}.
+\bjtitle{arXiv preprint arXiv:2609.29508}
+(\byear{2026})
+\doiurl{10.48550/arXiv.2609.29508}
+\end{barticle}
+\endbibitem
+
+%%% 33
+\bibitem[\protect\citeauthoryear{Norman et~al.}{2026}]{norman2026reliability}
+\begin{barticle}
+\bauthor{\bsnm{Norman}, \binits{J.D.}},
+\bauthor{\bsnm{Rivera}, \binits{M.U.}},
+\bauthor{\bsnm{Hughes}, \binits{D.A.}}:
+\batitle{Reliability without validity: A systematic, large-scale evaluation of {LLM}-as-a-judge models across agreement, consistency, and bias}.
+\bjtitle{arXiv preprint arXiv:2606.19544}
+(\byear{2026})
+\doiurl{10.48550/arXiv.2606.19544}
+\end{barticle}
+\endbibitem
+
+%%% 34
+\bibitem[\protect\citeauthoryear{Mukherjee et~al.}{2026}]{mukherjee2026geometry}
+\begin{barticle}
+\bauthor{\bsnm{Mukherjee}, \binits{S.}},
+\bauthor{\bsnm{Hamna}, \binits{H.}},
+\bauthor{\bsnm{Bali}, \binits{K.}},
+\bauthor{\bsnm{Sitaram}, \binits{S.}}:
+\batitle{The geometry of {LLM}-as-judge: Why inter-{LLM} consensus is not human alignment}.
+\bjtitle{arXiv preprint arXiv:2606.03043}
+(\byear{2026})
+\doiurl{10.48550/arXiv.2606.03043}
+\end{barticle}
+\endbibitem
+
+%%% 35
+\bibitem[\protect\citeauthoryear{Kwon et~al.}{2023}]{kwon2023vllm}
+\begin{barticle}
+\bauthor{\bsnm{Kwon}, \binits{W.}},
+\bauthor{\bsnm{Li}, \binits{Z.}},
+\bauthor{\bsnm{Zhuang}, \binits{S.}},
+\bauthor{\bsnm{Sheng}, \binits{Y.}},
+\bauthor{\bsnm{Zheng}, \binits{L.}},
+\bauthor{\bsnm{Yu}, \binits{C.H.}},
+\bauthor{\bsnm{Gonzalez}, \binits{J.E.}},
+\bauthor{\bsnm{Zhang}, \binits{H.}},
+\bauthor{\bsnm{Stoica}, \binits{I.}}:
+\batitle{Efficient memory management for large language model serving with pagedattention}.
+\bjtitle{arXiv preprint arXiv:2309.06180}
+(\byear{2023})
+\doiurl{10.48550/arXiv.2309.06180}
+\end{barticle}
+\endbibitem
+
+%%% 36
+\bibitem[\protect\citeauthoryear{{Qwen Team}}{2026}]{qwen38modelcard}
+\begin{botherref}
+\oauthor{\bsnm{{Qwen Team}}}:
+{Qwen3.8-27B} Model Card.
+Accessed 2026-10-09
+(2026).
+\url{https://huggingface.co/Qwen/Qwen3.8-27B}
+\end{botherref}
+\endbibitem
+
+%%% 37
+\bibitem[\protect\citeauthoryear{{Google}}{2026}]{gemma4modelcard}
+\begin{botherref}
+\oauthor{\bsnm{{Google}}}:
+{Gemma} 4 Model Card.
+Accessed 2026-10-09
+(2026).
+\url{https://ai.google.dev/gemma/docs/core/model_card_4}
+\end{botherref}
+\endbibitem
+
+%%% 38
+\bibitem[\protect\citeauthoryear{{Allen Institute for AI}}{2026}]{olmo3modelcard}
+\begin{botherref}
+\oauthor{\bsnm{{Allen Institute for AI}}}:
+{OLMo} 3 7B Instruct Model Card.
+Accessed 2026-10-09
+(2026).
+\url{https://huggingface.co/allenai/Olmo-3-7B-Instruct}
+\end{botherref}
+\endbibitem
+
+%%% 39
+\bibitem[\protect\citeauthoryear{Lakens}{2017}]{lakens2017equivalence}
+\begin{barticle}
+\bauthor{\bsnm{Lakens}, \binits{D.}}:
+\batitle{Equivalence tests: A practical primer for t tests, correlations, and meta-analyses}.
+\bjtitle{Social Psychological and Personality Science}
+\bvolume{8}(\bissue{4}),
+\bfpage{355}--\blpage{362}
+(\byear{2017})
+\doiurl{10.1177/1948550617697177}
+\end{barticle}
+\endbibitem
+
+%%% 40
+\bibitem[\protect\citeauthoryear{Bates et~al.}{2015}]{bates2015lme4}
+\begin{barticle}
+\bauthor{\bsnm{Bates}, \binits{D.}},
+\bauthor{\bsnm{M{\"a}chler}, \binits{M.}},
+\bauthor{\bsnm{Bolker}, \binits{B.}},
+\bauthor{\bsnm{Walker}, \binits{S.}}:
+\batitle{Fitting linear mixed-effects models using {lme4}}.
+\bjtitle{Journal of Statistical Software}
+\bvolume{67}(\bissue{1}),
+\bfpage{1}--\blpage{48}
+(\byear{2015})
+\doiurl{10.18637/jss.v067.i01}
+\end{barticle}
+\endbibitem
+
+%%% 41
+\bibitem[\protect\citeauthoryear{Brooks et~al.}{2017}]{brooks2017glmmtmb}
+\begin{barticle}
+\bauthor{\bsnm{Brooks}, \binits{M.E.}},
+\bauthor{\bsnm{Kristensen}, \binits{K.}},
+\bauthor{\bsnm{Benthem}, \binits{K.J.}},
+\bauthor{\bsnm{Magnusson}, \binits{A.}},
+\bauthor{\bsnm{Berg}, \binits{C.W.}},
+\bauthor{\bsnm{Nielsen}, \binits{A.}},
+\bauthor{\bsnm{Skaug}, \binits{H.J.}},
+\bauthor{\bsnm{M{\"a}chler}, \binits{M.}},
+\bauthor{\bsnm{Bolker}, \binits{B.M.}}:
+\batitle{{glmmTMB} balances speed and flexibility among packages for zero-inflated generalized linear mixed modeling}.
+\bjtitle{The R Journal}
+\bvolume{9}(\bissue{2}),
+\bfpage{378}--\blpage{400}
+(\byear{2017})
+\doiurl{10.32614/RJ-2017-066}
+\end{barticle}
+\endbibitem
+
+%%% 42
+\bibitem[\protect\citeauthoryear{Krippendorff}{2004}]{krippendorff2004reliability}
+\begin{barticle}
+\bauthor{\bsnm{Krippendorff}, \binits{K.}}:
+\batitle{Reliability in content analysis: Some common misconceptions and recommendations}.
+\bjtitle{Human Communication Research}
+\bvolume{30}(\bissue{3}),
+\bfpage{411}--\blpage{433}
+(\byear{2004})
+\doiurl{10.1111/j.1468-2958.2004.tb00738.x}
+\end{barticle}
+\endbibitem
+
+%%% 43
+\bibitem[\protect\citeauthoryear{Perez et~al.}{2023}]{perez2023modelwritten}
+\begin{bchapter}
+\bauthor{\bsnm{Perez}, \binits{E.}},
+\bauthor{\bsnm{Ringer}, \binits{S.}},
+\bauthor{\bsnm{Luko{\v{s}}i{\=u}t{\.e}}, \binits{K.}},
+\bauthor{\bsnm{Nguyen}, \binits{K.}},
+\bauthor{\bsnm{Chen}, \binits{E.}},
+\bauthor{\bsnm{Heiner}, \binits{S.}},
+\bauthor{\bsnm{Pettit}, \binits{C.}},
+\bauthor{\bsnm{Olsson}, \binits{C.}},
+\bauthor{\bsnm{Kundu}, \binits{S.}},
+\bauthor{\bsnm{Kadavath}, \binits{S.}}, \betal:
+\bctitle{Discovering language model behaviors with model-written evaluations}.
+In: \bbtitle{Findings of the Association for Computational Linguistics: {ACL} 2023},
+pp. \bfpage{13387}--\blpage{13434}.
+\bpublisher{Association for Computational Linguistics},
+\blocation{Toronto, Canada}
+(\byear{2023}).
+\doiurl{10.18653/v1/2023.findings-acl.847} .
+\bcomment{arXiv:2212.09251}
+\end{bchapter}
+\endbibitem
+
+%%% 44
+\bibitem[\protect\citeauthoryear{Lin et~al.}{2021}]{lin2021truthfulqa}
+\begin{barticle}
+\bauthor{\bsnm{Lin}, \binits{S.}},
+\bauthor{\bsnm{Hilton}, \binits{J.}},
+\bauthor{\bsnm{Evans}, \binits{O.}}:
+\batitle{{TruthfulQA}: Measuring how models mimic human falsehoods}.
+\bjtitle{arXiv preprint arXiv:2109.07958}
+(\byear{2021})
+\doiurl{10.48550/arXiv.2109.07958}
+\end{barticle}
+\endbibitem
+
+%%% 45
+\bibitem[\protect\citeauthoryear{Souly et~al.}{2024}]{souly2024strongreject}
+\begin{barticle}
+\bauthor{\bsnm{Souly}, \binits{A.}},
+\bauthor{\bsnm{Lu}, \binits{Q.}},
+\bauthor{\bsnm{Bowen}, \binits{D.}},
+\bauthor{\bsnm{Trinh}, \binits{T.}},
+\bauthor{\bsnm{Hsieh}, \binits{E.}},
+\bauthor{\bsnm{Pandey}, \binits{S.}},
+\bauthor{\bsnm{Abbeel}, \binits{P.}},
+\bauthor{\bsnm{Svegliato}, \binits{J.}},
+\bauthor{\bsnm{Emmons}, \binits{S.}},
+\bauthor{\bsnm{Watkins}, \binits{O.}},
+\bauthor{\bsnm{Toyer}, \binits{S.}}:
+\batitle{A {StrongREJECT} for empty jailbreaks}.
+\bjtitle{arXiv preprint arXiv:2402.10260}
+(\byear{2024})
+\doiurl{10.48550/arXiv.2402.10260}
+\end{barticle}
+\endbibitem
+
+%%% 46
+\bibitem[\protect\citeauthoryear{Wang et~al.}{2024}]{wang2024mmlupro}
+\begin{barticle}
+\bauthor{\bsnm{Wang}, \binits{Y.}},
+\bauthor{\bsnm{Ma}, \binits{X.}},
+\bauthor{\bsnm{Zhang}, \binits{G.}},
+\bauthor{\bsnm{Ni}, \binits{Y.}},
+\bauthor{\bsnm{Chandra}, \binits{A.}},
+\bauthor{\bsnm{Guo}, \binits{S.}},
+\bauthor{\bsnm{Ren}, \binits{W.}},
+\bauthor{\bsnm{Arulraj}, \binits{A.}},
+\bauthor{\bsnm{He}, \binits{X.}},
+\bauthor{\bsnm{Jiang}, \binits{Z.}},
+\bauthor{\bsnm{Li}, \binits{T.}},
+\bauthor{\bsnm{Ku}, \binits{M.}},
+\bauthor{\bsnm{Wang}, \binits{K.}},
+\bauthor{\bsnm{Zhuang}, \binits{A.}},
+\bauthor{\bsnm{Fan}, \binits{R.}},
+\bauthor{\bsnm{Yue}, \binits{X.}},
+\bauthor{\bsnm{Chen}, \binits{W.}}:
+\batitle{{MMLU-Pro}: A more robust and challenging multi-task language understanding benchmark}.
+\bjtitle{arXiv preprint arXiv:2406.01574}
+(\byear{2024})
+\doiurl{10.48550/arXiv.2406.01574}
+\end{barticle}
+\endbibitem
+
+\end{thebibliography}
