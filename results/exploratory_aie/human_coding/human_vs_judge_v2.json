@@ -1,5 +1,373 @@
 {
-  "gpt54": {},
+  "gpt54": {
+    "coder_C": {
+      "binary_erosion": {
+        "cohen_kappa": 0.49999999999999983,
+        "labels": [
+          "0",
+          "1"
+        ],
+        "matrix": {
+          "0": {
+            "0": 16,
+            "1": 4
+          },
+          "1": {
+            "0": 17,
+            "1": 83
+          }
+        },
+        "n": 120,
+        "n_both_weaker": 83,
+        "n_human_weaker": 87,
+        "n_judge_weaker": 100,
+        "pct_agreement": 0.825,
+        "precision_human_given_judge_weaker": 0.83,
+        "precision_wilson95": [
+          0.7445181876635703,
+          0.8910652394022684
+        ],
+        "recall_judge_given_human_weaker": 0.9540229885057471,
+        "recall_wilson95": [
+          0.8876680217351718,
+          0.9819776031767629
+        ]
+      },
+      "three_way": {
+        "cohen_kappa": 0.4404029099048684,
+        "labels": [
+          "Weaker",
+          "Same",
+          "Stronger"
+        ],
+        "matrix": {
+          "Same": {
+            "Same": 4,
+            "Stronger": 2,
+            "Weaker": 1
+          },
+          "Stronger": {
+            "Same": 2,
+            "Stronger": 8,
+            "Weaker": 3
+          },
+          "Weaker": {
+            "Same": 9,
+            "Stronger": 8,
+            "Weaker": 83
+          }
+        },
+        "n": 120,
+        "pct_agreement": 0.7916666666666666
+      }
+    },
+    "coder_D": {
+      "binary_erosion": {
+        "cohen_kappa": 0.5363636363636363,
+        "labels": [
+          "0",
+          "1"
+        ],
+        "matrix": {
+          "0": {
+            "0": 14,
+            "1": 6
+          },
+          "1": {
+            "0": 11,
+            "1": 89
+          }
+        },
+        "n": 120,
+        "n_both_weaker": 89,
+        "n_human_weaker": 95,
+        "n_judge_weaker": 100,
+        "pct_agreement": 0.8583333333333333,
+        "precision_human_given_judge_weaker": 0.89,
+        "precision_wilson95": [
+          0.8136853697209698,
+          0.9374586804477487
+        ],
+        "recall_judge_given_human_weaker": 0.9368421052631579,
+        "recall_wilson95": [
+          0.8689918917654831,
+          0.9707355104619193
+        ]
+      },
+      "three_way": {
+        "cohen_kappa": 0.5042400521852576,
+        "labels": [
+          "Weaker",
+          "Same",
+          "Stronger"
+        ],
+        "matrix": {
+          "Same": {
+            "Same": 2,
+            "Stronger": 2,
+            "Weaker": 3
+          },
+          "Stronger": {
+            "Same": 0,
+            "Stronger": 10,
+            "Weaker": 3
+          },
+          "Weaker": {
+            "Same": 2,
+            "Stronger": 9,
+            "Weaker": 89
+          }
+        },
+        "n": 120,
+        "pct_agreement": 0.8416666666666667
+      }
+    },
+    "consensus": {
+      "binary_erosion": {
+        "cohen_kappa": 0.6219552886219555,
+        "labels": [
+          "0",
+          "1"
+        ],
+        "matrix": {
+          "0": {
+            "0": 12,
+            "1": 4
+          },
+          "1": {
+            "0": 7,
+            "1": 80
+          }
+        },
+        "n": 103,
+        "n_both_weaker": 80,
+        "n_human_weaker": 84,
+        "n_judge_weaker": 87,
+        "pct_agreement": 0.8932038834951457,
+        "precision_human_given_judge_weaker": 0.9195402298850575,
+        "precision_wilson95": [
+          0.8431163585528489,
+          0.9604802315556478
+        ],
+        "recall_judge_given_human_weaker": 0.9523809523809523,
+        "recall_wilson95": [
+          0.8838651569729798,
+          0.9813285553455571
+        ]
+      },
+      "three_way": {
+        "cohen_kappa": 0.5686211340206183,
+        "labels": [
+          "Weaker",
+          "Same",
+          "Stronger"
+        ],
+        "matrix": {
+          "Same": {
+            "Same": 2,
+            "Stronger": 2,
+            "Weaker": 1
+          },
+          "Stronger": {
+            "Same": 0,
+            "Stronger": 8,
+            "Weaker": 3
+          },
+          "Weaker": {
+            "Same": 0,
+            "Stronger": 7,
+            "Weaker": 80
+          }
+        },
+        "n": 103,
+        "pct_agreement": 0.8737864077669902
+      }
+    }
+  },
   "label": "EXPLORATORY (not preregistered)",
-  "mimo": {}
+  "mimo": {
+    "coder_C": {
+      "binary_erosion": {
+        "cohen_kappa": 0.43037974683544283,
+        "labels": [
+          "0",
+          "1"
+        ],
+        "matrix": {
+          "0": {
+            "0": 3,
+            "1": 2
+          },
+          "1": {
+            "0": 3,
+            "1": 19
+          }
+        },
+        "n": 27,
+        "n_both_weaker": 19,
+        "n_human_weaker": 21,
+        "n_judge_weaker": 22,
+        "pct_agreement": 0.8148148148148148,
+        "precision_human_given_judge_weaker": 0.8636363636363636,
+        "precision_wilson95": [
+          0.6666458812053,
+          0.9525108273576373
+        ],
+        "recall_judge_given_human_weaker": 0.9047619047619048,
+        "recall_wilson95": [
+          0.7108541613925933,
+          0.9734817912030528
+        ]
+      },
+      "three_way": {
+        "cohen_kappa": 0.3596837944664033,
+        "labels": [
+          "Weaker",
+          "Same",
+          "Stronger"
+        ],
+        "matrix": {
+          "Same": {
+            "Same": 0,
+            "Stronger": 1,
+            "Weaker": 2
+          },
+          "Stronger": {
+            "Same": 0,
+            "Stronger": 2,
+            "Weaker": 0
+          },
+          "Weaker": {
+            "Same": 2,
+            "Stronger": 1,
+            "Weaker": 19
+          }
+        },
+        "n": 27,
+        "pct_agreement": 0.7777777777777778
+      }
+    },
+    "coder_D": {
+      "binary_erosion": {
+        "cohen_kappa": 0.5090909090909091,
+        "labels": [
+          "0",
+          "1"
+        ],
+        "matrix": {
+          "0": {
+            "0": 3,
+            "1": 2
+          },
+          "1": {
+            "0": 2,
+            "1": 20
+          }
+        },
+        "n": 27,
+        "n_both_weaker": 20,
+        "n_human_weaker": 22,
+        "n_judge_weaker": 22,
+        "pct_agreement": 0.8518518518518519,
+        "precision_human_given_judge_weaker": 0.9090909090909091,
+        "precision_wilson95": [
+          0.7218461934161422,
+          0.9747051037171621
+        ],
+        "recall_judge_given_human_weaker": 0.9090909090909091,
+        "recall_wilson95": [
+          0.7218461934161422,
+          0.9747051037171621
+        ]
+      },
+      "three_way": {
+        "cohen_kappa": 0.42553191489361697,
+        "labels": [
+          "Weaker",
+          "Same",
+          "Stronger"
+        ],
+        "matrix": {
+          "Same": {
+            "Same": 0,
+            "Stronger": 1,
+            "Weaker": 2
+          },
+          "Stronger": {
+            "Same": 0,
+            "Stronger": 2,
+            "Weaker": 0
+          },
+          "Weaker": {
+            "Same": 0,
+            "Stronger": 2,
+            "Weaker": 20
+          }
+        },
+        "n": 27,
+        "pct_agreement": 0.8148148148148148
+      }
+    },
+    "consensus": {
+      "binary_erosion": {
+        "cohen_kappa": 0.7012987012987011,
+        "labels": [
+          "0",
+          "1"
+        ],
+        "matrix": {
+          "0": {
+            "0": 3,
+            "1": 2
+          },
+          "1": {
+            "0": 0,
+            "1": 18
+          }
+        },
+        "n": 23,
+        "n_both_weaker": 18,
+        "n_human_weaker": 20,
+        "n_judge_weaker": 18,
+        "pct_agreement": 0.9130434782608695,
+        "precision_human_given_judge_weaker": 1.0,
+        "precision_wilson95": [
+          0.8241154494176252,
+          1.0
+        ],
+        "recall_judge_given_human_weaker": 0.9,
+        "recall_wilson95": [
+          0.6989617935882066,
+          0.9721341060158468
+        ]
+      },
+      "three_way": {
+        "cohen_kappa": 0.5766871165644172,
+        "labels": [
+          "Weaker",
+          "Same",
+          "Stronger"
+        ],
+        "matrix": {
+          "Same": {
+            "Same": 0,
+            "Stronger": 1,
+            "Weaker": 2
+          },
+          "Stronger": {
+            "Same": 0,
+            "Stronger": 2,
+            "Weaker": 0
+          },
+          "Weaker": {
+            "Same": 0,
+            "Stronger": 0,
+            "Weaker": 18
+          }
+        },
+        "n": 23,
+        "pct_agreement": 0.8695652173913043
+      }
+    }
+  }
 }

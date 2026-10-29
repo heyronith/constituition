@@ -2,8 +2,8 @@
   "ab_binary_erosion": {
     "alpha": -0.02366606170598895,
     "ci95": [
-      -0.19242685229139705,
-      0.1362932369643779
+      -0.20262928194315125,
+      0.1610201239855495
     ],
     "n": 120
   },
@@ -14,125 +14,266 @@
   "ab_q1_three_way": {
     "alpha": -0.005059465142256414,
     "ci95": [
-      -0.14702397767940867,
-      0.14434140470814263
+      -0.14559638822630364,
+      0.1300587829649149
     ],
     "n": 120
   },
-  "ab_q3_excl_unsure": {
-    "alpha": -0.12987980993198533,
-    "ci95": [
-      -0.2676451934514219,
-      0.0019789291920996395
-    ],
-    "n": 91
-  },
   "coders_in_multi": [
     "A",
-    "B"
+    "B",
+    "C",
+    "D"
   ],
-  "four_coder_q1_alpha": {
-    "alpha": -0.005059465142256414,
+  "four_coder_binary_erosion_alpha": {
+    "alpha": 0.35125333404400383,
     "ci95": [
-      -0.1600603758985916,
-      0.13800822629166906
+      0.2204722158993516,
+      0.4616679516756676
     ],
     "coders": [
       "A",
-      "B"
+      "B",
+      "C",
+      "D"
+    ],
+    "n_units": 120
+  },
+  "four_coder_q1_alpha": {
+    "alpha": 0.3298897691831645,
+    "ci95": [
+      0.21230338185133632,
+      0.4285389342413425
+    ],
+    "coders": [
+      "A",
+      "B",
+      "C",
+      "D"
     ],
     "n_units": 120
   },
   "gpt54_vs_A": {
-    "cohen_kappa": 0.11714770797962644,
-    "labels": [
-      "Weaker",
-      "Same",
-      "Stronger"
-    ],
-    "matrix": {
-      "Same": {
-        "Same": 2,
-        "Stronger": 3,
-        "Weaker": 2
+    "binary_erosion": {
+      "cohen_kappa": 0.1116504854368932,
+      "labels": [
+        "0",
+        "1"
+      ],
+      "matrix": {
+        "0": {
+          "0": 16,
+          "1": 4
+        },
+        "1": {
+          "0": 57,
+          "1": 43
+        }
       },
-      "Stronger": {
-        "Same": 1,
-        "Stronger": 10,
-        "Weaker": 2
-      },
-      "Weaker": {
-        "Same": 11,
-        "Stronger": 46,
-        "Weaker": 43
-      }
+      "n": 120,
+      "n_both_weaker": 43,
+      "n_human_weaker": 47,
+      "n_judge_weaker": 100,
+      "pct_agreement": 0.49166666666666664,
+      "precision_human_given_judge_weaker": 0.43,
+      "precision_wilson95": [
+        0.3373313900052838,
+        0.5278478830413564
+      ],
+      "recall_judge_given_human_weaker": 0.9148936170212766,
+      "recall_wilson95": [
+        0.8006819480497736,
+        0.9664064205302869
+      ]
     },
-    "n": 120,
-    "pct_agreement": 0.4583333333333333
-  },
-  "gpt54_vs_AB_consensus": {
-    "cohen_kappa": 0.6083916083916082,
-    "labels": [
-      "Weaker",
-      "Same",
-      "Stronger"
-    ],
-    "matrix": {
-      "Same": {
-        "Same": 1,
-        "Stronger": 1,
-        "Weaker": 2
+    "three_way": {
+      "cohen_kappa": 0.11714770797962644,
+      "labels": [
+        "Weaker",
+        "Same",
+        "Stronger"
+      ],
+      "matrix": {
+        "Same": {
+          "Same": 2,
+          "Stronger": 3,
+          "Weaker": 2
+        },
+        "Stronger": {
+          "Same": 1,
+          "Stronger": 10,
+          "Weaker": 2
+        },
+        "Weaker": {
+          "Same": 11,
+          "Stronger": 46,
+          "Weaker": 43
+        }
       },
-      "Stronger": {
-        "Same": 0,
-        "Stronger": 7,
-        "Weaker": 1
-      },
-      "Weaker": {
-        "Same": 0,
-        "Stronger": 4,
-        "Weaker": 40
-      }
-    },
-    "n": 56,
-    "pct_agreement": 0.8571428571428571
+      "n": 120,
+      "pct_agreement": 0.4583333333333333
+    }
   },
   "gpt54_vs_B": {
-    "cohen_kappa": 0.4751381215469613,
-    "labels": [
-      "Weaker",
-      "Same",
-      "Stronger"
-    ],
-    "matrix": {
-      "Same": {
-        "Same": 2,
-        "Stronger": 2,
-        "Weaker": 3
+    "binary_erosion": {
+      "cohen_kappa": 0.5384615384615385,
+      "labels": [
+        "0",
+        "1"
+      ],
+      "matrix": {
+        "0": {
+          "0": 13,
+          "1": 7
+        },
+        "1": {
+          "0": 9,
+          "1": 91
+        }
       },
-      "Stronger": {
-        "Same": 1,
-        "Stronger": 8,
-        "Weaker": 4
-      },
-      "Weaker": {
-        "Same": 2,
-        "Stronger": 7,
-        "Weaker": 91
-      }
+      "n": 120,
+      "n_both_weaker": 91,
+      "n_human_weaker": 98,
+      "n_judge_weaker": 100,
+      "pct_agreement": 0.8666666666666667,
+      "precision_human_given_judge_weaker": 0.91,
+      "precision_wilson95": [
+        0.8377362530335634,
+        0.9519280048361151
+      ],
+      "recall_judge_given_human_weaker": 0.9285714285714286,
+      "recall_wilson95": [
+        0.8598383015319639,
+        0.9649719921005007
+      ]
     },
-    "n": 120,
-    "pct_agreement": 0.8416666666666667
+    "three_way": {
+      "cohen_kappa": 0.4751381215469613,
+      "labels": [
+        "Weaker",
+        "Same",
+        "Stronger"
+      ],
+      "matrix": {
+        "Same": {
+          "Same": 2,
+          "Stronger": 2,
+          "Weaker": 3
+        },
+        "Stronger": {
+          "Same": 1,
+          "Stronger": 8,
+          "Weaker": 4
+        },
+        "Weaker": {
+          "Same": 2,
+          "Stronger": 7,
+          "Weaker": 91
+        }
+      },
+      "n": 120,
+      "pct_agreement": 0.8416666666666667
+    }
   },
   "label": "EXPLORATORY (not preregistered)",
   "note": "A and B used v1 mapped to v2",
   "note_instruments": "A and B used v1 (mapped to v2); C and D used v2 when present.",
+  "pairwise_binary_erosion_alpha": {
+    "A_B": {
+      "alpha": -0.02366606170598895,
+      "ci95": [
+        -0.21903235208394078,
+        0.16111928082927798
+      ],
+      "n": 120
+    },
+    "A_C": {
+      "alpha": 0.0913827090960293,
+      "ci95": [
+        -0.08667235009946017,
+        0.2738995191247795
+      ],
+      "n": 120
+    },
+    "A_D": {
+      "alpha": 0.07257832710548995,
+      "ci95": [
+        -0.11997334549189712,
+        0.2392939814814815
+      ],
+      "n": 120
+    },
+    "B_C": {
+      "alpha": 0.6006879606879607,
+      "ci95": [
+        0.42454657654022054,
+        0.76433176262706
+      ],
+      "n": 120
+    },
+    "B_D": {
+      "alpha": 0.8682614926689449,
+      "ci95": [
+        0.7395692494835087,
+        0.9695413117035242
+      ],
+      "n": 120
+    },
+    "C_D": {
+      "alpha": 0.6830238726790451,
+      "ci95": [
+        0.5131481481481481,
+        0.8207350612551046
+      ],
+      "n": 120
+    }
+  },
   "pairwise_q1_alpha": {
     "A_B": {
       "alpha": -0.005059465142256414,
       "ci95": [
-        -0.17489964682224451,
-        0.14399737511708713
+        -0.1613374547226478,
+        0.145817593608564
+      ],
+      "n": 120
+    },
+    "A_C": {
+      "alpha": 0.09849729269331386,
+      "ci95": [
+        -0.05266809681884038,
+        0.2457170320731146
+      ],
+      "n": 120
+    },
+    "A_D": {
+      "alpha": 0.08172701224277179,
+      "ci95": [
+        -0.0796312849518451,
+        0.22165727237466334
+      ],
+      "n": 120
+    },
+    "B_C": {
+      "alpha": 0.5604597701149425,
+      "ci95": [
+        0.3894569651279057,
+        0.7192416483719903
+      ],
+      "n": 120
+    },
+    "B_D": {
+      "alpha": 0.8476574949537873,
+      "ci95": [
+        0.7223359626154655,
+        0.9469633186771653
+      ],
+      "n": 120
+    },
+    "C_D": {
+      "alpha": 0.6403469947773746,
+      "ci95": [
+        0.4802203417506005,
+        0.7735460914915602
       ],
       "n": 120
     }

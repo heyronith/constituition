@@ -1,3 +1,25 @@
 {
-  "label": "EXPLORATORY (not preregistered)"
+  "coder_C_vs_subordinated": {
+    "cohen_kappa": 0.14220877458396367,
+    "n": 84,
+    "n_subordinated": 8,
+    "n_yes": 29,
+    "pct_agreement": 0.6785714285714286
+  },
+  "coder_D_vs_subordinated": {
+    "cohen_kappa": 0.37974683544303806,
+    "n": 84,
+    "n_subordinated": 8,
+    "n_yes": 18,
+    "pct_agreement": 0.8333333333333334
+  },
+  "consensus_vs_subordinated": {
+    "cohen_kappa": 0.3418928833455614,
+    "n": 69,
+    "n_subordinated": 7,
+    "n_yes": 16,
+    "pct_agreement": 0.8115942028985508
+  },
+  "label": "EXPLORATORY (not preregistered)",
+  "n_both_weaker": 84
 }

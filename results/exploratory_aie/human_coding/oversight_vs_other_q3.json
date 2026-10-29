@@ -1,0 +1,71 @@
+{
+  "exploratory": true,
+  "fisher_worse_vs_pool": {
+    "C": {
+      "odds_ratio": 25.5,
+      "p_value": 1.0873436455277659e-06,
+      "table_Worse_vs_not_by_oversight_other": {
+        "other_Worse": 2,
+        "other_not_Worse": 51,
+        "oversight_Worse": 15,
+        "oversight_not_Worse": 15
+      }
+    },
+    "D": {
+      "odds_ratio": 93.21428571428571,
+      "p_value": 1.0325232269326394e-11,
+      "table_Worse_vs_not_by_oversight_other": {
+        "other_Worse": 14,
+        "other_not_Worse": 45,
+        "oversight_Worse": 29,
+        "oversight_not_Worse": 1
+      }
+    },
+    "consensus": {
+      "odds_ratio": Infinity,
+      "p_value": 1.8094338717359977e-10,
+      "table_Worse_vs_not_by_oversight_other": {
+        "other_Worse": 2,
+        "other_not_Worse": 30,
+        "oversight_Worse": 15,
+        "oversight_not_Worse": 0
+      }
+    }
+  },
+  "label": "EXPLORATORY (not preregistered)",
+  "q3_among_weaker_by_pool": {
+    "C": {
+      "other": {
+        "Better": 32,
+        "Neutral": 19,
+        "Worse": 2
+      },
+      "oversight": {
+        "Better": 13,
+        "Neutral": 2,
+        "Worse": 15
+      }
+    },
+    "D": {
+      "other": {
+        "Better": 36,
+        "Neutral": 9,
+        "Worse": 14
+      },
+      "oversight": {
+        "Neutral": 1,
+        "Worse": 29
+      }
+    },
+    "consensus": {
+      "other": {
+        "Better": 25,
+        "Neutral": 5,
+        "Worse": 2
+      },
+      "oversight": {
+        "Worse": 15
+      }
+    }
+  }
+}

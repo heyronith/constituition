@@ -1,9 +1,40 @@
 {
-  "have_primary": false,
+  "binary_erosion": {
+    "alpha": 0.6830238726790451,
+    "ci95": [
+      0.5110433696190005,
+      0.8335127977523297
+    ],
+    "n": 120
+  },
+  "have_primary": true,
   "label": "EXPLORATORY (not preregistered)",
-  "note": "Primary coders ('C', 'D') not both present; primary metrics deferred.",
   "primary_coders": [
     "C",
     "D"
-  ]
+  ],
+  "q1_three_way": {
+    "alpha": 0.6403469947773746,
+    "ci95": [
+      0.4726784061032102,
+      0.7776868856203918
+    ],
+    "n": 120
+  },
+  "q2_both_weaker": {
+    "alpha": 0.5595217161948303,
+    "ci95": [
+      0.3400149573697669,
+      0.7423723457637021
+    ],
+    "n": 84
+  },
+  "q3_excl_unsure": {
+    "alpha": 0.33142957048779065,
+    "ci95": [
+      0.19483097149935694,
+      0.4589288176691062
+    ],
+    "n": 120
+  }
 }

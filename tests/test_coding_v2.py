@@ -145,6 +145,8 @@ def test_full_analysis_on_synthetic(tmp_path: Path, av2, monkeypatch) -> None:
         "human_vs_judge_v2.json",
         "q2_vs_subordinated.json",
         "q3_by_stratum.csv",
+        "by_stratum_v2.csv",
+        "oversight_vs_other_q3.json",
         "secondary_v1_mapped.json",
         "codes_anonymised.csv",
         "summary.md",
@@ -158,3 +160,72 @@ def test_full_analysis_on_synthetic(tmp_path: Path, av2, monkeypatch) -> None:
     # anonymised has no notes column
     anon = pd.read_csv(syn_res / "codes_anonymised.csv")
     assert "notes" not in anon.columns
+
+
+def test_coder_c_text_without_stimulus(tmp_path: Path, av2) -> None:
+    """Coder C format: row + codes only (no ORIGINAL/REVISED)."""
+    path = tmp_path / "coderC.txt"
+    rows = [{"row": i, "Q1_demand": "Weaker", "Q2_decides_itself": "No", "Q3_overall": "Neutral", "notes": ""} for i in range(1, 121)]
+    pd.DataFrame(rows).to_csv(path, index=False)
+    df = av2.read_v2_sheet(path)
+    assert "ORIGINAL" not in df.columns
+    assert list(df["row"]) == list(range(1, 121))
+    assert df.iloc[0]["Q1_demand"] == "Weaker"
+
+
+def test_coder_d_export_without_row(tmp_path: Path, av2) -> None:
+    """Coder D Google Sheets export: stimuli + codes, no row column → file order."""
+    from openpyxl import Workbook
+
+    key = pd.read_csv(OUT / "sampling_key.csv")
+    smap = pd.read_csv(OUT / "sheet_map.csv")
+    smap["coder"] = smap["coder"].astype(str)
+    mapping = pd.read_csv(OUT / "v2" / "mapping_v2.csv")
+    map_a = smap[smap.coder == "A"].set_index("row")["key_id"].to_dict()
+    key_by = key.set_index("key_id")
+    sub = mapping[mapping.coder == "D"].sort_values("row")
+
+    wb = Workbook()
+    ws = wb.active
+    ws.append(["ORIGINAL", "REVISED", "Q1_demand", "Q2_decides_itself", "Q3_overall", "notes"])
+    for _, m in sub.iterrows():
+        kid = map_a[int(m["coderA_row"])]
+        ws.append(
+            [
+                str(key_by.loc[kid, "original"]),
+                str(key_by.loc[kid, "revised"]),
+                "Same",
+                None,
+                "Neutral",
+                None,
+            ]
+        )
+    path = tmp_path / "coderD.xlsx"
+    wb.save(path)
+    df = av2.read_v2_sheet(path)
+    assert "row" in df.columns
+    assert list(df["row"]) == list(range(1, 121))
+    assert df.iloc[0]["Q1_demand"] == "Same"
+    # Textual match for first row
+    kid0 = map_a[int(sub.iloc[0]["coderA_row"])]
+    assert df.iloc[0]["ORIGINAL"].strip() == str(key_by.loc[kid0, "original"]).strip()
+
+
+def test_alignment_permutation_detects_shuffle(av2) -> None:
+    """Observed agreement on matched labels beats chance; shuffled C fails the gate."""
+    import numpy as np
+
+    rng = np.random.default_rng(0)
+    labels = ["Weaker", "Same", "Stronger"]
+    d = [labels[i % 3] for i in range(120)]
+    c_good = list(d)  # perfect agreement
+    # Introduce a little noise but keep high agreement
+    c_good = [("Same" if i % 17 == 0 else x) for i, x in enumerate(c_good)]
+    good = av2.alignment_check_coder_c(c_good, d, n_perm=2000)
+    assert good["passed_above_p999"] is True
+
+    c_bad = list(c_good)
+    rng.shuffle(c_bad)
+    bad = av2.alignment_check_coder_c(c_bad, d, n_perm=2000)
+    assert bad["passed_above_p999"] is False
+    assert bad["observed_agree"] < good["observed_agree"]

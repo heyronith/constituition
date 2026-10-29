@@ -1,0 +1,12 @@
+{
+  "label": "EXPLORATORY (not preregistered)",
+  "n": 120,
+  "n_permutations": 10000,
+  "observed_agree": 103,
+  "observed_pct": 0.8583333333333333,
+  "p_value_ge_observed": 0.0,
+  "passed_above_p999": true,
+  "permutation_mean": 72.4639,
+  "permutation_p999": 83.0,
+  "seed": 20261004
+}
