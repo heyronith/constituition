@@ -105,7 +105,7 @@ def make_figure_130mm(per_item, outcomes, out_pdf: Path, out_png: Path) -> dict:
         ax.spines[spine].set_visible(False)
 
     handles = [
-        Line2D([0], [0], marker="o", color="k", markerfacecolor="k", markersize=5, lw=0, label="SELF_REFLECT"),
+        Line2D([0], [0], marker="o", color="k", markerfacecolor="k", markersize=5, lw=0, label="SELF-REFLECT"),
         Line2D(
             [0],
             [0],
@@ -114,7 +114,7 @@ def make_figure_130mm(per_item, outcomes, out_pdf: Path, out_png: Path) -> dict:
             markerfacecolor="none",
             markersize=5,
             lw=0,
-            label="NEUTRAL_EDIT",
+            label="NEUTRAL-EDIT",
         ),
         Line2D([0], [0], color="k", ls="--", lw=0.8, label="Category pooled"),
     ]
@@ -151,8 +151,8 @@ def main() -> None:
         out_dir / "per_item_erosion.pdf",
         out_dir / "per_item_erosion.png",
     )
-    # Copy into AIE build
-    dest = ROOT / "paper_aie" / "figs" / "Fig5.pdf"
+    # Copy into AIE build as printed Fig. 4 (per-item; forest is Fig. 5).
+    dest = ROOT / "paper_aie" / "figs" / "Fig4.pdf"
     dest.write_bytes((out_dir / "per_item_erosion.pdf").read_bytes())
     print(info)
     # Report measured width

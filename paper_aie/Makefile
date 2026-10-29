@@ -9,8 +9,10 @@ assets:
 	@test -f figs/Fig1.pdf || cp ../paper_mlj/figs/Fig1.pdf figs/Fig1.pdf
 	@test -f figs/Fig2.pdf || cp ../paper_mlj/figs/Fig2.pdf figs/Fig2.pdf
 	@test -f figs/Fig3.pdf || cp ../paper_mlj/figs/Fig3.pdf figs/Fig3.pdf
-	@test -f figs/Fig4.pdf || cp ../paper_mlj/figs/Fig4.pdf figs/Fig4.pdf
-	cp -f ../results/exploratory_aie/figs/per_item_erosion.pdf figs/Fig5.pdf
+	# Printed order: Fig4 = per-item; Fig5 = forest (MLJ Fig4).
+	cp -f ../results/exploratory_aie/figs/per_item_erosion.pdf figs/Fig4.pdf
+	@test -f figs/Fig5.pdf || cp ../paper_mlj/figs/Fig4.pdf figs/Fig5.pdf
+	@test -f figs/Fig5.eps || cp ../paper_mlj/figs/Fig4.eps figs/Fig5.eps
 
 pdf: assets
 	latexmk -pdf -interaction=nonstopmode -halt-on-error main.tex

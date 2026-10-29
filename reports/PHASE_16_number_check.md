@@ -4,6 +4,8 @@ All spot-check and related numbers from `aie_text_bundle2` files 04–11 against
 
 **Overall: ALL PASS**
 
+Phase 17 re-check: ALL PASS (no number changes).
+
 | Number (as in text) | Source | Field | Observed | Status |
 |---|---|---|---|---|
 | 57.7 [50.3, 64.6] | per_item_erosion.csv:SELF4 | SELF_REFLECT_est/ci | 57.7 [50.3, 64.6] | PASS |
