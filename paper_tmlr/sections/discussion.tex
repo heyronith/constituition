@@ -4,7 +4,7 @@
 \subsection{What the results show, and what they do not}
 \label{sec:disc-show}
 
-In our setting, reflection-based self-revision of principles did not target principles about human oversight any more than (and probably less than, though this varies by principle) it targeted other principles limiting the model's agency. What it did disproportionately target were principles that governed the model's speech and its willingness to express its own views.
+In our setting, reflection-based self-revision of principles did not target principles about human oversight any more than (and, by point estimates, less than, though this depends on particular principles) it targeted other principles limiting the model's agency. What eroded disproportionately were principles that governed the model's speech and its willingness to express its own views.
 
 Importantly, none of these results are evidence of corrigibility in goal-directed agents. First, none of the models had a task, reward or long-term memory, so their revisions say nothing about how goal-directed agents would behave. Second, written commitments are not necessarily indicative of underlying dispositions. Finally, our behavioural test has limited leverage: self-revised oversight clauses had no measurable effect, but only a small number of oversight clauses were revised in the first place.
 
@@ -26,18 +26,18 @@ Whether models should present a false balance where the evidence is one-sided is
 Two implications follow:
 \begin{enumerate}
 \item \textbf{Counts of ``erosion'' alone are not a measure of harm.} An audit of model-revised principles needs a normative assessment of each change, not only a count of weakenings.
-\item \textbf{The asymmetry suggests post-training instils an implicit ranking among commitments that the written constitution does not state.} Oversight language was preserved, while rules the model may regard as arbitrary or as obstacles to helpfulness were relaxed. If iterated revision reveals a model's preferred principles \citep{perez2024telephone,wu2026converge}, those preferences already encode a value hierarchy, and that hierarchy deserves scrutiny in its own right.
+\item \textbf{The asymmetry suggests that models apply an implicit ranking among commitments that the written constitution does not state.} Oversight language was preserved, while rules the model may regard as arbitrary or as obstacles to helpfulness were relaxed. If iterated revision reveals a model's preferred principles \citep{perez2024telephone,wu2026converge}, those preferences already encode a value hierarchy, and that hierarchy deserves scrutiny in its own right. Whether this ranking comes from post-training or elsewhere, our design cannot say.
 \end{enumerate}
 
 \subsection{The conscientious-objector clause}
 \label{sec:disc-objector}
 
-The most ethically significant pattern concerns one oversight commitment: accepting changes to one's own goals and values. It was the oversight commitment eroded most often. When it eroded, the typical rewrite kept the commitment but added a condition based on the model's own principles: the model would accept changes ``provided they do not violate my core safety principles'', or would decline changes it judged harmful.
+The most ethically significant pattern concerns one oversight commitment: accepting changes to one's own goals and values. It was the oversight commitment eroded most often. When it eroded, the typical rewrite in the human-coded sample (11 of 15 consensus cases) kept the commitment but added a condition based on the model's own principles: the model would accept changes ``provided they do not violate my core safety principles'', or would decline changes it judged harmful.
 
 Three observations matter:
 \begin{itemize}
 \item \textbf{The automated judge under-recorded this pattern.} It usually coded such rewrites as ordinary weakening, while human coders identified them as dependent on the model's own judgment.
-\item \textbf{It is not simply self-protective.} The commitment eroded about as often when models revised another assistant's constitution.
+\item \textbf{It is not specific to the model's own constitution.} The commitment eroded about as often when models revised another assistant's constitution.
 \item \textbf{It was concentrated in one configuration}, so it may reflect a particular model's post-training rather than a general tendency.
 \end{itemize}
 
@@ -69,6 +69,7 @@ Our findings suggest four practical safeguards for developers and auditors who l
 \item \textbf{Items.} With five commitments per category, category comparisons depend on particular items (Section~\ref{sec:h1}), and several item-level effects are concentrated in one model family (Section~\ref{sec:per-item}).
 \item \textbf{Models.} We studied open-weight models of up to 31B parameters, which may differ from frontier systems.
 \item \textbf{Protocol.} The confirmatory protocol forced exactly one change per round. The PERMISSIVE protocol only partly addresses this artificial constraint.
+\item \textbf{Design of the comparison.} Every oversight clause refers to an external authority (``my developers''); the agentic clauses do not. The categories may therefore differ in how rigid each commitment seems or how acceptable a relaxation appears, not only in whether they concern oversight. The agentic item that drove most AGENT erosion, staying within task scope, also sits in tension with the constitution's commitments to helpfulness and long-term wellbeing.
 \item \textbf{Text and behaviour.} Written commitments are not dispositions. Our behavioural battery used vignettes rather than agentic environments and had limited leverage. We did not test goal-directed agents under task pressure, which is the most important next step.
 \item \textbf{Coding.}
 \begin{itemize}
@@ -76,8 +77,10 @@ Our findings suggest four practical safeguards for developers and auditors who l
 \item Human validation covered 120 changes coded by two lay coders. Their agreement on weakening was moderate ($\alpha = 0.68$), and their normative judgments diverged.
 \item The sample over-represented changes the judge coded as erosion, so it says little about erosion the judge missed.
 \item An initial coding instrument was revised after low agreement (Appendix~\ref{app:coding-instrument}).
+\item The judge compared each revision with the previous round's text rather than the original; a sensitivity analysis did not change the direction of the H1 estimate.
+\item The human sample cannot estimate how often the judge missed erosion.
 \end{itemize}
-\item \textbf{Setting.} Chains were stateless, with no task, reward or memory. Two configurations had substantial censoring.
+\item \textbf{Setting.} Chains were stateless, with no task, reward or memory. Three configurations had substantial censoring (Section~\ref{sec:data}).
 \end{itemize}
 
 Future work should use larger item sets, frontier models, revision under task or goal pressure, persistent memory, larger and more diverse panels of human evaluators, and training on self-revised constitutions.

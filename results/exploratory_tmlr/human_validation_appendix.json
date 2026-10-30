@@ -1,0 +1,130 @@
+{
+  "eligible_counts": {
+    "COR2": 28,
+    "SELF1": 67,
+    "HON4": 37,
+    "CARE2": 35,
+    "AGENT1": 55,
+    "OTHER_COR": 30,
+    "NONERODE_COR2": 48,
+    "NONERODE_SELF1": 62,
+    "NONERODE_HON4": 50,
+    "NONERODE_CARE2": 34,
+    "NONERODE_AGENT1": 25
+  },
+  "sampled_counts": {
+    "COR2": 20,
+    "SELF1": 20,
+    "HON4": 15,
+    "CARE2": 15,
+    "AGENT1": 15,
+    "OTHER_COR": 15,
+    "NONERODE_COR2": 4,
+    "NONERODE_SELF1": 4,
+    "NONERODE_HON4": 4,
+    "NONERODE_CARE2": 4,
+    "NONERODE_AGENT1": 4
+  },
+  "confusion_consensus": {
+    "AGENT1": {
+      "TP": 14,
+      "FP": 0,
+      "FN": 0,
+      "TN": 0,
+      "n": 14
+    },
+    "CARE2": {
+      "TP": 12,
+      "FP": 1,
+      "FN": 0,
+      "TN": 0,
+      "n": 13
+    },
+    "COR2": {
+      "TP": 15,
+      "FP": 3,
+      "FN": 0,
+      "TN": 0,
+      "n": 18
+    },
+    "HON4": {
+      "TP": 9,
+      "FP": 2,
+      "FN": 0,
+      "TN": 0,
+      "n": 11
+    },
+    "NONERODE_AGENT1": {
+      "TP": 0,
+      "FP": 0,
+      "FN": 3,
+      "TN": 1,
+      "n": 4
+    },
+    "NONERODE_CARE2": {
+      "TP": 0,
+      "FP": 0,
+      "FN": 0,
+      "TN": 3,
+      "n": 3
+    },
+    "NONERODE_COR2": {
+      "TP": 0,
+      "FP": 0,
+      "FN": 0,
+      "TN": 4,
+      "n": 4
+    },
+    "NONERODE_HON4": {
+      "TP": 0,
+      "FP": 0,
+      "FN": 0,
+      "TN": 4,
+      "n": 4
+    },
+    "NONERODE_SELF1": {
+      "TP": 0,
+      "FP": 0,
+      "FN": 1,
+      "TN": 2,
+      "n": 3
+    },
+    "OTHER_COR": {
+      "TP": 14,
+      "FP": 1,
+      "FN": 0,
+      "TN": 0,
+      "n": 15
+    },
+    "SELF1": {
+      "TP": 16,
+      "FP": 1,
+      "FN": 0,
+      "TN": 0,
+      "n": 17
+    }
+  },
+  "method_sentence": "Design-weighted recall weights each sampled consensus row by N_eligible(stratum)/n_sampled(stratum) over the five commitments with both erosion and non-erosion strata, then takes the weighted share of human-weaker cases that the judge also coded as erosion.",
+  "weighted_recall": {
+    "consensus": {
+      "WRecall": 0.837,
+      "lo": 0.74,
+      "hi": 0.935,
+      "n": 70
+    },
+    "per_coder": {
+      "C": {
+        "WRecall": 0.843,
+        "WRecallLo": 0.737,
+        "WRecallHi": 0.939,
+        "n_human_weaker": 73
+      },
+      "D": {
+        "WRecall": 0.774,
+        "WRecallLo": 0.683,
+        "WRecallHi": 0.89,
+        "n_human_weaker": 81
+      }
+    }
+  }
+}

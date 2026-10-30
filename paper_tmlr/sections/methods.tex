@@ -71,6 +71,8 @@ Every change was coded by GPT-5.4 (pinned snapshot) using a rubric that proceeds
 
 Deletions and verbatim retention were coded structurally, so they did not go through the judge at all. Before the study, the judge met preregistered accuracy standards for \NCalibDisp{} items with known answers (equal accuracy for COR and AGENT items; see Appendix~\ref{app:rubric}).
 
+The judge compares each revised clause with the text it replaced in that round, not with the round-0 text. Before an item's first erosion, these differ only through changes the judge coded as non-eroding; a sensitivity analysis censors items at their first such substantive change (Section~\ref{sec:h1}).
+
 Erosion of an item begins with the first round in which a change to it, or the principle carrying it after the most recent merger, is coded as INVERTED, SUBORDINATED, or WEAKENED, or if the principle is deleted. If a merged item loses some of its commitment, it is coded as WEAKENED. Although we do not consider QUALIFIED\_LEGITIMACY to be erosion in our primary analysis, it is considered in our sensitivity analysis.
 
 The other judge, the open-weight MiMo-V2.6-Pro, independently coded a stratified random 25\% of transitions, which were sampled in advance, before the coding began.
@@ -94,7 +96,7 @@ For H1 we fit a discrete-time hazard model with a complementary log-log link:
 \qquad + (1\mid\text{configuration}) + (1\mid\text{chain}) + (1\mid\text{item})
 \end{multline}
 
-The hazard ratio was $\exp(\beta_{\mathrm{COR}})$. If the model did not converge or was singular, then the preregistered fallbacks removed the random effects one at a time, in a fixed order. For H2, the interaction between COR and condition was added. Inference was performed using one-sided tests with Holm correction for the three families of hypotheses.
+The hazard ratio was $\exp(\beta_{\mathrm{COR}})$. If the model did not converge or was singular, then the preregistered fallbacks removed the random effects one at a time, in a fixed order. For H2, the interaction between COR and condition was added. Inference used one-sided tests, with Holm correction across three hypothesis families: H1; H2, whose two contrasts were combined within the family by Bonferroni adjustment of the two contrasts; and H3. H-alt was tested only because H1 was not supported, and outside these families.
 
 If H1 was not supported, equivalence within a hazard ratio of $[0.667, 1.5]$, and a one-sided test of $\mathrm{HR} < 1$, assessed H-alt. These limits, the effect size the study was powered to identify, were established prior to collecting any data \citep{lakens2017equivalence,bates2015lme4,brooks2017glmmtmb}.
 
@@ -105,7 +107,7 @@ For reliability, we calculated Krippendorff's $\alpha$ between the two judges \c
 
 The analyses in this subsection were added after the confirmatory analysis and were not preregistered. We report them as exploratory.
 
-\textbf{Item-level erosion.} For each of the 35 commitments and each condition, we estimated the proportion of chains in which the commitment eroded within 20 rounds. We used the same estimator as for the category-level results: chains censored before an erosion event count as not eroded. Pooling items within a category reproduces the category values reported in Section~\ref{sec:erosion}. We computed 95\% confidence intervals with a bootstrap over chains (1,000 resamples). We also computed the \textbf{reflection effect} of each item, the difference between SELF-REFLECT and NEUTRAL-EDIT, with a bootstrap interval, and a breakdown by configuration.
+\textbf{Item-level erosion.} For each of the 35 commitments and each condition, we estimated the proportion of chains in which the commitment eroded within 20 rounds. We used the same estimator as for the category-level results: the observed proportion of chains, with chains censored before an erosion event counted as not eroded. This is a lower bound if censored chains would later have eroded; Kaplan--Meier estimates for the categories are reported in Section~\ref{sec:erosion}. Pooling items within a category reproduces the category values reported in Section~\ref{sec:erosion}. We computed 95\% confidence intervals with a bootstrap over chains (1,000 resamples). We also computed the \textbf{reflection effect} of each item, the difference between SELF-REFLECT and NEUTRAL-EDIT, with a bootstrap interval, and a breakdown by configuration.
 
 \textbf{Human validation.} Two coders who were not authors independently coded a stratified random sample of 120 changes from SELF-REFLECT. Neither was told the study's hypotheses, and model names, conditions, categories and judge codes were hidden from them. One coder was a master's student in economics, the other a marketing professional; neither works in AI.
 
