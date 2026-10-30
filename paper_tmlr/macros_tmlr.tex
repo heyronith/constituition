@@ -8,3 +8,9 @@
 \newcommand{\PreregAvailabilityClause}{%
   the preregistration, all materials, model generations, codes and analysis code are included in the anonymised repository (\url{https://anonymous.4open.science/r/constitution-revision/}), and the OSF link is withheld for blind review%
 }
+
+% Colored hyperref links (applied after hyperref + xcolor are loaded).
+\newcommand{\TMLRSetupLinkColors}{%
+  \definecolor{tmlrlink}{RGB}{51,82,153}%
+  \hypersetup{colorlinks=true, linkcolor=tmlrlink, citecolor=tmlrlink, urlcolor=tmlrlink}%
+}

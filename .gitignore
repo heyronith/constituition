@@ -41,6 +41,7 @@ htmlcov/
 paper_tmlr/preprint.pdf
 paper_tmlr/preprint.*
 paper_tmlr/preprint_identity.tex
+paper_tmlr/preprint_identity.local.json
 
 # LaTeX intermediates under paper_tmlr (keep main.pdf + sources tracked)
 paper_tmlr/*.aux

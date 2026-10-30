@@ -13,21 +13,54 @@ TMLR = ROOT / "paper_tmlr"
 MAIN_PDF = TMLR / "main.pdf"
 PREPRINT_PDF = TMLR / "preprint.pdf"
 
-ANON_FORBIDDEN = [
-    "heyronith",
-    "Ronith",
-    "Sharmila",
-    "Agrawal",
-    "Rupesh",
-    "SWOSU",
-    "Southwestern Oklahoma",
-    "Northern Kentucky",
-    "mw86p",
-    "osf.io",
-    "github.com/heyronith",
-    "swosu.edu",
-    "nku.edu",
+# Fragments that deanonymise the double-blind submission (case-insensitive).
+# Built at runtime so this file does not contain contiguous identifying literals.
+def _frag(*parts: str) -> str:
+    return "".join(parts)
+
+
+TRACKED_IDENTITY_FRAGMENTS = [
+    _frag("m", "w", "8", "6"),
+    _frag("o", "sf", r"\.io/", r"\S*"),
+    _frag("hey", "ronith"),
+    _frag("ron", "ith"),
+    _frag("shar", "mila"),
+    _frag("agra", "wal"),
+    _frag("ru", "pesh"),
+    _frag("swo", "su"),
+    _frag("kent", "ucky"),
 ]
+
+ANON_FORBIDDEN_PDF = [
+    _frag("hey", "ronith"),
+    _frag("Ron", "ith"),
+    _frag("Shar", "mila"),
+    _frag("Agra", "wal"),
+    _frag("Ru", "pesh"),
+    _frag("SWO", "SU"),
+    _frag("Southwestern ", "Oklahoma"),
+    _frag("Northern ", "Kentucky"),
+    _frag("m", "w", "8", "6", "p"),
+    _frag("o", "sf", ".io"),
+    _frag("github.com/", "hey", "ronith"),
+    _frag("swo", "su", ".edu"),
+    _frag("nku", ".edu"),
+]
+
+# Paths where a hit fails the check (paper package + preprint identity writers).
+FAIL_PATH_PREFIXES = (
+    "paper_tmlr/",
+    "scripts/write_tmlr_preprint_identity.py",
+    "scripts/init_tmlr_preprint_identity_local.py",
+)
+
+# Checker / anonymiser tooling may name the needles; skip self-matches.
+SKIP_SCAN_PREFIXES = (
+    "paper_mlj/",
+    "scripts/tmlr_checks.py",
+    "scripts/aie_checks.py",
+    "reports/anonymisation_terms.md",
+)
 
 
 def fonts_ok(pdf: Path) -> list[str]:
@@ -69,9 +102,9 @@ def overfull_gt(log: Path, limit_pt: float = 5.0) -> list[tuple[float, str]]:
     return hits
 
 
-def anon_hits_in_text(text: str, where: str) -> list[str]:
+def anon_hits_in_text(text: str, where: str, needles: list[str] | None = None) -> list[str]:
     hits = []
-    for needle in ANON_FORBIDDEN:
+    for needle in needles or ANON_FORBIDDEN_PDF:
         if re.search(re.escape(needle), text, flags=re.I):
             m = re.search(re.escape(needle), text, flags=re.I)
             ctx = text[max(0, m.start() - 30) : m.end() + 30].replace("\n", " ")
@@ -79,32 +112,81 @@ def anon_hits_in_text(text: str, where: str) -> list[str]:
     return hits
 
 
-def anon_tracked_sources() -> list[str]:
-    hits = []
-    for path in sorted(TMLR.rglob("*")):
+def tracked_identity_scan() -> tuple[list[str], list[str]]:
+    """Scan git-tracked files for identity fragments.
+
+    Returns (fail_hits, report_hits). Fail hits are in the paper package or
+    preprint identity writers. Report hits are every other match outside
+    paper_mlj/ (not silently fixed).
+    """
+    listed = subprocess.check_output(
+        ["git", "ls-files", "-z"], cwd=ROOT, text=True
+    ).split("\0")
+    fail_hits: list[str] = []
+    report_hits: list[str] = []
+    skip_ext = {
+        ".pdf",
+        ".eps",
+        ".png",
+        ".jpg",
+        ".jpeg",
+        ".gif",
+        ".zip",
+        ".gz",
+        ".tar",
+        ".xz",
+        ".whl",
+        ".so",
+        ".dylib",
+        ".pyc",
+        ".pkl",
+        ".joblib",
+        ".npy",
+        ".npz",
+        ".pt",
+        ".bin",
+        ".woff",
+        ".woff2",
+        ".ttf",
+        ".otf",
+    }
+    patterns = [(frag, re.compile(frag, flags=re.I)) for frag in TRACKED_IDENTITY_FRAGMENTS]
+    for rel in listed:
+        if not rel:
+            continue
+        if any(rel == p or rel.startswith(p) for p in SKIP_SCAN_PREFIXES):
+            continue
+        path = ROOT / rel
         if not path.is_file():
             continue
-        rel = path.relative_to(TMLR).as_posix()
-        if rel.startswith("preprint") or "preprint" in path.name:
+        if path.suffix.lower() in skip_ext:
             continue
-        if path.suffix.lower() in {".pdf", ".eps", ".png", ".aux", ".log", ".out", ".toc", ".fls", ".fdb_latexmk", ".bbl", ".blg", ".synctex.gz"}:
-            if path.name not in {"main.pdf"}:
-                continue
-        if path.suffix.lower() not in {".tex", ".bib", ".md", ".txt", ".sty", ".bst"} and path.name != "main.pdf":
+        try:
+            raw = path.read_bytes()
+        except OSError as e:
+            report_hits.append(f"{rel}: read failed: {e}")
             continue
-        if path.suffix.lower() == ".pdf" or path.name.endswith(".pdf"):
+        if b"\0" in raw[:4096]:
+            continue
+        try:
+            text = raw.decode("utf-8")
+        except UnicodeDecodeError:
             try:
-                text = pdf_text(path)
-            except Exception as e:
-                hits.append(f"{rel}: pdftotext failed: {e}")
+                text = raw.decode("latin-1")
+            except Exception:
                 continue
+        file_hits: list[str] = []
+        for frag, cre in patterns:
+            for m in cre.finditer(text):
+                ctx = text[max(0, m.start() - 40) : m.end() + 40].replace("\n", " ")
+                file_hits.append(f"{rel}: /{frag}/ :: ...{ctx}...")
+        if not file_hits:
+            continue
+        if any(rel == p or rel.startswith(p) for p in FAIL_PATH_PREFIXES):
+            fail_hits.extend(file_hits)
         else:
-            text = path.read_text(encoding="utf-8", errors="replace")
-            # Allow macros_tmlr.tex to define preprint-only URLs behind \ifTMLRpreprint
-            if path.name in {"preprint_identity.tex"}:
-                continue
-        hits.extend(anon_hits_in_text(text, rel))
-    return hits
+            report_hits.extend(file_hits)
+    return fail_hits, report_hits
 
 
 def main() -> int:
@@ -155,27 +237,39 @@ def main() -> int:
         print(" ", h)
         errors.append(h)
 
-    anon_src = anon_tracked_sources()
-    print(f"anon_hits_tracked_sources={len(anon_src)}")
-    for h in anon_src[:20]:
+    fail_hits, report_hits = tracked_identity_scan()
+    print(f"anon_hits_tracked_fail={len(fail_hits)}")
+    for h in fail_hits[:50]:
         print(" ", h)
         errors.append(h)
+    print(f"anon_hits_tracked_report={len(report_hits)}")
+    # Report other hits; do not silently fix. Summarise by path for the log.
+    from collections import Counter
 
-    # Preprint expectations (build may be optional for check target; warn if missing)
+    by_path = Counter(h.split(":", 1)[0] for h in report_hits)
+    for path, n in sorted(by_path.items(), key=lambda x: (-x[1], x[0]))[:40]:
+        print(f"  REPORT {n:3d}  {path}")
+    if len(by_path) > 40:
+        print(f"  REPORT ... and {len(by_path) - 40} more paths")
+    for h in report_hits[:15]:
+        print(f"  REPORT_CTX {h}")
+
     if PREPRINT_PDF.exists():
         pre_txt = pdf_text(PREPRINT_PDF)
-        need = ["Ronith", "Sharmila", "Agrawal", "github.com/heyronith", "osf.io/mw86p"]
-        missing = [n for n in need if n.lower() not in pre_txt.lower()]
+        need_any = [_frag("Ron", "ith"), _frag("Shar", "mila"), _frag("Agra", "wal")]
+        missing = [n for n in need_any if n.lower() not in pre_txt.lower()]
         print(f"preprint_required_present={not missing}")
         if missing:
             errors.append(f"preprint.pdf missing: {missing}")
-        # Must not be empty of Broader Impact
+        if _frag("o", "sf", ".io/") not in pre_txt.lower():
+            errors.append("preprint.pdf missing OSF URL")
+        if "github.com/" not in pre_txt.lower():
+            errors.append("preprint.pdf missing GitHub URL")
         if "Broader Impact" not in pre_txt:
             errors.append("preprint.pdf missing Broader Impact Statement")
     else:
         print("preprint.pdf: not built yet (run make tmlr-preprint)")
 
-    # Number audit reuse
     try:
         r = subprocess.run(
             [sys.executable, str(ROOT / "scripts" / "paper_number_audit.py"), "--tmlr"],
@@ -183,20 +277,11 @@ def main() -> int:
             capture_output=True,
             text=True,
         )
-        print(r.stdout[-500:] if r.stdout else "")
-        if r.returncode != 0:
-            # Fall back to AIE audit path if --tmlr unsupported
-            r2 = subprocess.run(
-                [sys.executable, str(ROOT / "scripts" / "paper_number_audit.py"), "--aie"],
-                cwd=str(ROOT),
-                capture_output=True,
-                text=True,
-            )
-            print("(fallback --aie)", (r2.stdout or "")[-300:])
-            if "PASS" not in (r2.stdout or "") and "PASS" not in (r.stdout or ""):
-                errors.append("number audit did not PASS")
-            else:
-                print("number audit: PASS (via available checker)")
+        print((r.stdout or "")[-500:])
+        if r.stderr:
+            print((r.stderr or "")[-300:])
+        if r.returncode != 0 or "PASS" not in (r.stdout or ""):
+            errors.append("number audit did not PASS (--tmlr)")
         else:
             print("number audit: OK")
     except FileNotFoundError:
