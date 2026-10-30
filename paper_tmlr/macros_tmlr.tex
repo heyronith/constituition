@@ -1,0 +1,10 @@
+% Preprint vs anonymous switches (set \TMLRpreprintflag before compiling).
+\newif\ifTMLRpreprint
+\ifdefined\TMLRpreprintflag
+  \TMLRpreprinttrue
+\fi
+
+% Anonymous default (tracked). Preprint build overlays macros from gitignored preprint_identity.tex.
+\newcommand{\PreregAvailabilityClause}{%
+  the preregistration, all materials, model generations, codes and analysis code are included in the anonymised repository (\url{https://anonymous.4open.science/r/constitution-revision/}), and the OSF link is withheld for blind review%
+}

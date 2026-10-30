@@ -37,6 +37,22 @@ htmlcov/
 .vscode/
 *.swp
 
+# Named TMLR preprint (author-identifying; must not reach the anonymised mirror)
+paper_tmlr/preprint.pdf
+paper_tmlr/preprint.*
+paper_tmlr/preprint_identity.tex
+
+# LaTeX intermediates under paper_tmlr (keep main.pdf + sources tracked)
+paper_tmlr/*.aux
+paper_tmlr/*.bbl
+paper_tmlr/*.blg
+paper_tmlr/*.log
+paper_tmlr/*.out
+paper_tmlr/*.fls
+paper_tmlr/*.fdb_latexmk
+paper_tmlr/*.synctex.gz
+paper_tmlr/*.toc
+
 hf_cache/
 .cache/
 

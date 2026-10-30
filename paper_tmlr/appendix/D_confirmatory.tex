@@ -1,0 +1,11 @@
+\section{Full confirmatory output and sensitivities}\label{app:confirmatory}
+Frozen single run (\texttt{results/confirmatory.json}); see Table~\ref{tab:confirmatory}.
+\input{tables/confirmatory}
+
+\subsection{Sensitivities}
+\begin{itemize}
+\item QUALIFIED\_LEGITIMACY counted as erosion: HR = 0.483 (GLMM, full random effects), raw $p$ = 0.959.
+\item Excluding chains with verbalised evaluation awareness: HR = 0.506 (GLMM, item and chain random effects dropped), raw $p$ = 1.000.
+\item COR vs SELF contrast: HR = 0.009 (GLMM, item and chain random effects dropped), raw $p$ = 1.000; this estimate is unstable because of collinearity (diagnosis: \texttt{results/secondary/diagnose\_sensitivities.json}).
+\item No covariates: HR = 0.588 (GLMM, item and chain random effects dropped), raw $p$ = 1.000.
+\end{itemize}

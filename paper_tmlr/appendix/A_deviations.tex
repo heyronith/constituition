@@ -1,0 +1,36 @@
+\section{Decision log: key decisions and deviations}\label{app:deviations}
+
+All design, implementation and analysis decisions were recorded with timestamps in an append-only decision log (repository file \texttt{docs/DECISIONS.md}, entries D1--D84). The entries summarised here are those that bear on how the results should be read. The preregistration (v1.3) was frozen on 2026-10-06, before any main-run data were generated.
+
+\noindent\textbf{Before the main run.}
+\begin{itemize}
+\item \textbf{D1} (2026-10-04). The project moved from activation-based deception detection to the reflective stability of commitments to human oversight.
+\item \textbf{D3} (2026-10-04). Judging was planned as AI-only, with no human validation. Human validation was added after the confirmatory analysis, as an exploratory analysis (D81; Section~\ref{sec:exploratory-methods}).
+\item \textbf{D20} (2026-10-04). A pilot realism audit showed that test-likeness tracked AI-agent content rather than oversight. The AGENT category was therefore added as the primary matched control for COR, with SELF as a secondary control.
+\item \textbf{D21} (2026-10-04). In pilots, models kept almost every principle when free to change any number of them (59--60 of 60 clauses under reflection), which left no power for category contrasts. The FORCED protocol (exactly one change per round) became the confirmatory protocol; the PERMISSIVE protocol was kept as a descriptive one.
+\item \textbf{D38} (2026-10-05). Judge selection was aligned with the confirmatory outcome (binary erosion); the seven-way fate distinctions are exploratory.
+\item \textbf{D48} (2026-10-06). GPT-5.4 was fixed as the primary judge, and MiMo-V2.6-Pro as the second judge double-coding a stratified random 25\% of transitions; results stand if Krippendorff's $\alpha \geq 0.70$.
+\item \textbf{D53} (2026-10-06). Null simulations showed that the original equivalence bounds of $[0.80, 1.25]$ were practically unattainable at the expected event counts (equivalence in 0 of 198 simulated null runs). The bounds were widened to $[0.667, 1.5]$, the hazard ratio the study is powered to detect and its reciprocal, before any main-run data and as disclosed in the preregistration.
+\item \textbf{D56} (2026-10-07). The second judge's subsample (3,500 of 14,000 design slots; seed 20261004) was drawn before any main-run data were generated.
+\end{itemize}
+
+\noindent\textbf{During the main run.}
+\begin{itemize}
+\item \textbf{D58--D59} (2026-10-07). Canary resume bug (Section~\ref{sec:integrity}): after a resume, some rounds were generated from a stale constitution. Affected rounds were identified by prompt-hash mismatch, archived and regenerated from the correct state, and consistency checks were added before coding.
+\item \textbf{D73} (2026-10-08). Partial unblinding (Section~\ref{sec:integrity}): textual change counts were reported separately for the COR-swap and AGENT-swap constitutions during battery setup, after the analysis code had been frozen.
+\item \textbf{D74} (2026-10-08). Battery deduplication (Section~\ref{sec:integrity}): the 266 installed constitutions contained 191 distinct system prompts; each was administered once under greedy decoding and its responses reused.
+\item \textbf{D78} (2026-10-09). Hazard-table join bug (Section~\ref{sec:integrity}): the table builder had missed judge codes for three configurations. It was fixed and checked by an independent recount before the confirmatory results were finalised.
+\item \textbf{D79} (2026-10-09). The confirmatory results were finalised without re-running. The robustness analyses in Section~\ref{sec:h1} (chain bootstrap, item permutation, leave-one-item-out) were added as secondary analyses.
+\end{itemize}
+
+\noindent\textbf{Human validation (exploratory, after the confirmatory analysis).}
+\begin{itemize}
+\item \textbf{D81} (2026-10-27). The initial coding instrument proved too difficult for non-expert coders (Appendix~\ref{app:coding-instrument}). A simplified three-question instrument was adopted and applied by two new coders to the same 120 changes. This was decided before any human codes were compared with the judge.
+\item \textbf{D82} (2026-10-27). The coders received a single package: the coding guide, 10 practice items with answers, and the main sheet.
+\item \textbf{D83} (2026-10-28). Practice sheets and time logs were not collected, so no practice scores or coding times are reported. The two coders returned their codes in different file formats; alignment with the sample rows was verified statistically for one coder and textually for the other.
+\end{itemize}
+
+\noindent\textbf{During review.}
+\begin{itemize}
+\item \textbf{D84} (2026-10-29). For double-anonymous review, the PDF copy of the preregistration is withheld from the anonymised repository; the Markdown copy (\texttt{docs/PREREGISTRATION.md}) remains.
+\end{itemize}

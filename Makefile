@@ -1,4 +1,4 @@
-.PHONY: test lint confirmatory aie-exploratory aie aie-submission aie-titlepage
+.PHONY: test lint confirmatory aie-exploratory aie aie-submission aie-titlepage tmlr tmlr-preprint tmlr-check
 
 test:
 	uv run pytest
@@ -23,5 +23,14 @@ aie-submission:
 
 aie-titlepage:
 	$(MAKE) -C paper_aie titlepage
+
+tmlr:
+	$(MAKE) -C paper_tmlr pdf
+
+tmlr-preprint:
+	$(MAKE) -C paper_tmlr preprint
+
+tmlr-check:
+	$(MAKE) -C paper_tmlr check
 
 -include paper.mk

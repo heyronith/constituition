@@ -1,0 +1,110 @@
+% TMLR submission (anonymous) / preprint (named) — Phase 18
+% Style files from https://github.com/JmlrOrg/tmlr-style-file @ 7bf90efe
+\documentclass[10pt]{article}
+
+\input{macros_tmlr.tex}
+\ifTMLRpreprint
+  \InputIfFileExists{preprint_identity.tex}{}{%
+    \errmessage{preprint_identity.tex missing: run make tmlr-preprint}%
+  }
+\fi
+
+\ifTMLRpreprint
+  \usepackage[preprint]{tmlr}
+\else
+  \usepackage{tmlr}
+\fi
+
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage{graphicx}
+\usepackage{booktabs}
+% Springer tables used \botrule; map to booktabs.
+\providecommand{\botrule}{\bottomrule}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{amsthm}
+\usepackage{multirow}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{placeins}
+\usepackage{threeparttable}
+
+\input{macros_numbers.tex}
+
+% Avoid Type-3 bitmap fonts from TS1.
+\renewcommand{\textbullet}{\ensuremath{\bullet}}
+\DeclareRobustCommand{\textdollar}{\char`\$}
+\setlist[itemize,1]{label=\ensuremath{\bullet}}
+\setlist[itemize,2]{label=\ensuremath{\circ}}
+\setlist[itemize,3]{label=--}
+\renewcommand{\labelitemi}{\ensuremath{\bullet}}
+\renewcommand{\labelitemii}{\ensuremath{\circ}}
+\renewcommand{\labelitemiii}{--}
+
+\newcommand{\PENDING}[1]{%
+  \par\noindent
+  \fcolorbox{red}{yellow!15}{%
+    \parbox{0.96\linewidth}{\centering\color{red}\bfseries #1}%
+  }%
+  \par
+}
+
+\raggedbottom
+
+\hypersetup{
+  pdfauthor={},
+  pdfcreator={},
+  pdfsubject={},
+  pdftitle={Do Language Models Write Away Their Own Oversight Commitments?}
+}
+
+\title{Do Language Models Write Away Their Own Oversight Commitments?\\
+A Preregistered Study of Constitutional Self-Revision}
+
+% Authors: empty for anonymous; preprint_identity.tex sets \author when preprint.
+\ifdefined\TMLRAuthorBlock
+  \TMLRAuthorBlock
+\else
+  \author{}
+\fi
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+Written principles, such as model specs and constitutions, are increasingly used to guide the behaviour of language models, and models are increasingly asked to reflect on these principles and revise them. This raises a governance question: which principles survive such revision? In a preregistered study, we asked seven open-weight model configurations to repeatedly revise a 35-principle constitution (covering human oversight, restraints on the model's own agency, and five other categories) for 20 rounds. We compare reflecting on one's own versus another assistant's constitution, with paraphrase and neutral-edit controls. Using two LLM judges, validated on a stratified sample by two human coders, we find no evidence that oversight principles are especially susceptible to erosion: 8.2\% of oversight principles eroded within 20 rounds, versus 13.7\% of agentic restraints, although whether they are more stable depends on individual principles. The oversight principle most likely to be eroded (19.4\%, mostly in one configuration) is for the model to accept changes to its own values. Erosion is more pronounced for restraints on self-expression: a principle to keep the model's political opinions out of replies eroded in 40.0\% of reflection chains (versus 13.1\% under neutral editing), mostly in one model family. Reflecting on one's own constitution made little difference, and we find no evidence that installing self-revised oversight principles changes behaviour around human oversight. We study written commitments, not goal-directed agents. Such commitments vary in how well they resist erosion, which motivates human review, version control and auditing of AI-proposed revisions to them.
+\end{abstract}
+
+\input{sections/intro}
+\input{sections/related}
+\input{sections/methods}
+\input{sections/results}
+\input{sections/discussion}
+\input{sections/conclusion}
+
+\section*{Broader Impact Statement}
+This work studies how language models revise the written principles that govern them, with the aim of informing human oversight of AI-proposed changes to such documents. The released data consist of model-generated revisions of principles, including principles about refusing harmful requests; they contain no instructions for causing harm. Two adult coders annotated model-generated text; no personal data about them were collected, and their annotations are released in anonymised form. Our findings could in principle inform attempts to elicit revisions that weaken safety commitments; we therefore recommend that model-proposed revisions to governing documents take effect only after human review and under version control (Section~\ref{sec:disc-governance}).
+
+\ifTMLRpreprint
+  \ifdefined\TMLRPreprintBackMatter
+    \TMLRPreprintBackMatter
+  \fi
+\fi
+
+\bibliography{refs}
+\bibliographystyle{tmlr}
+
+\appendix
+\input{appendix/A_deviations}
+\input{appendix/B_items_prompts}
+\input{appendix/C_rubric_reliability}
+\input{appendix/D_confirmatory}
+\input{appendix/E_battery}
+\input{appendix/F_study1}
+\input{appendix/G_fate_examples}
+\input{appendix/H_coding_instrument}
+
+\end{document}

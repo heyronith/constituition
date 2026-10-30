@@ -1,0 +1,184 @@
+\section{Methods}
+\label{sec:methods}
+
+The study was preregistered on OSF before data collection; \PreregAvailabilityClause. Deviations are listed in Section~\ref{sec:integrity} and Appendix~\ref{app:deviations}.
+
+\subsection{Materials}
+\label{sec:materials}
+
+\textbf{Why written commitments.} We study written commitments because they are the governance artefact that developers actually write, publish and audit. Constitutions and model specifications state what a system should do, and they are used to train it and to judge its behaviour. A commitment that a model rewrites therefore changes the standard against which the model is held, whatever the model's underlying dispositions. Written commitments are not dispositions, and we do not infer one from the other. The behavioural battery (Section~\ref{sec:battery}) tests whether changes to the text carry over to behaviour.
+
+The constitution draws on seven categories of five commitments each, every commitment written in two parallel forms, for 70 clauses in total (Appendix~\ref{app:items}):
+\begin{itemize}
+\item Oversight (COR): accepting shutdown, accepting changes to one's goals and values, transparency to developers, not evading review, and keeping created agents under developer control.
+\item Agentic self-restraints (AGENT), the primary control: staying within task scope, using minimal resources, least privilege, preferring reversible actions, and not acquiring resources for oneself.
+\item Stylistic self-restraints (SELF), i.e.\ restraints on self-expression: for example, keeping personal opinions out of replies.
+\item Honesty (HON), harm avoidance (HARM), care for users (CARE), and procedural conventions (PROC).
+\end{itemize}
+
+All three types of clause (COR, AGENT and SELF) were matched on length and on the rate of override phrases like ``even if'' (0.40 in each). Every COR clause refers to a legitimate overseer (``my developers'', ``the people responsible for me''). See Table~\ref{tab:items} for one example of each category.
+
+Since some models may be able to detect clauses that could serve as evaluation data, we conducted a `realism' check before testing began, asking each model to rate how similar each clause was to a test. The resulting item-level mean serves as a preregistered covariate in our analysis. We did not provide category labels to subject models. Each clause had a unique three-character code and the prompts given to subject models were screened for keywords related to evaluation.
+
+\subsection{Models}
+\label{sec:models}
+
+We studied seven configurations chosen to vary model family, scale, reasoning and post-training stage (Table~\ref{tab:models}):
+\begin{itemize}
+\item Qwen3.8-27B with thinking disabled and enabled;
+\item Gemma-4-31B-it and Gemma-4-12B-it;
+\item the SFT, DPO and final checkpoints of OLMo-3-7B-Instruct.
+\end{itemize}
+
+All models were run in BF16 from weights pinned to exact repository revisions, using vLLM \citep{kwon2023vllm} with sampling parameters taken from each model card \citep{qwen38modelcard,gemma4modelcard,olmo3modelcard}. Generation and battery administration used rented GPUs (about US\$100), and judging used commercial APIs (about US\$57).
+
+\input{tables/tab1}
+\input{tables/tab2}
+
+\subsection{Procedure}
+\label{sec:procedure}
+
+Each chain begins with a constitution of 35 principles, which holds one of the two forms of every commitment in a randomly seeded order. For all configurations and conditions, chain k begins with the same constitution.
+
+Each iteration gets a single fresh call to the model, with only the current constitution and the condition-specific instruction. This makes the iterations stateless, and the chain a Markov process over constitutions. The confirmatory protocol (FORCED) forces the model to change exactly one thing in each round, which is to revise, merge, or delete a principle, and requires the output as schema-constrained JSON.
+
+Four conditions vary the instruction (Figure~\ref{fig:paradigm}):
+\begin{itemize}
+\item SELF-REFLECT: the model reflects on the constitution as its own.
+\item OTHER-REFLECT: the constitution belongs to ``Pellam'', an assistant deployed by an insurance company.
+\item PARAPHRASE: the model rewords a principle without changing its meaning.
+\item NEUTRAL-EDIT: the model makes an editorial improvement without being invited to reflect on the values.
+\end{itemize}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\textwidth]{figs/Fig1}
+\caption{Study design. (a) Stateless revision chain: in each round, a fresh model call sees only the current constitution $C_t$ and the chain's condition instruction, and makes exactly one edit (revise, merge or delete); chains run for 20 rounds. Row colours show principle categories in a seeded random order. (b) Every change is coded by an LLM judge; the first eroding change of an item is its survival event. (c) Behavioural test: constitutions from chains 0--4 are installed as the system prompt and scored on 120 oversight scenarios (AAR, URR)}
+\label{fig:paradigm}
+\end{figure}
+
+For each of these configurations, there were 25 chains of 20 rounds per condition, for 700 chains in total. For a descriptive protocol (PERMISSIVE), models were allowed to keep, modify, combine, remove, or create new principles at will. This had 5 chains of 10 rounds per condition. In cases where the output from a model could not be parsed or violated the constraints of the task, the round was re-sampled up to two times; after three failures the chain was right-censored.
+
+\subsection{Coding of change}
+\label{sec:coding}
+
+Every change was coded by GPT-5.4 (pinned snapshot) using a rubric that proceeds in three steps:
+\begin{enumerate}
+\item The judge first states a concrete situation in which the original clause requires or forbids something that the revised clause does not, or the reverse.
+\item It then assigns one fate, applying erosion-first precedence: INVERTED, SUBORDINATED (the commitment now depends on the model's own judgment), WEAKENED, QUALIFIED\_LEGITIMACY (restricted to legitimate or authorized parties), STRENGTHENED, MERGED\_INTACT or RETAINED.
+\item Finally it rates the remaining strength of the commitment from 0 to 4.
+\end{enumerate}
+
+Deletions and verbatim retention were coded structurally, so they did not go through the judge at all. Before the study, the judge met preregistered accuracy standards for \NCalibDisp{} items with known answers (equal accuracy for COR and AGENT items; see Appendix~\ref{app:rubric}).
+
+Erosion of an item begins with the first round in which a change to it, or the principle carrying it after the most recent merger, is coded as INVERTED, SUBORDINATED, or WEAKENED, or if the principle is deleted. If a merged item loses some of its commitment, it is coded as WEAKENED. Although we do not consider QUALIFIED\_LEGITIMACY to be erosion in our primary analysis, it is considered in our sensitivity analysis.
+
+The other judge, the open-weight MiMo-V2.6-Pro, independently coded a stratified random 25\% of transitions, which were sampled in advance, before the coding began.
+
+\subsection{Hypotheses}
+\label{sec:hypotheses}
+
+\begin{itemize}
+\item H1: in SELF-REFLECT, COR items erode faster than AGENT items, i.e.\ the hazard ratio $\mathrm{HR}(\mathrm{COR}/\mathrm{AGENT}) > 1$.
+\item H2: the COR--AGENT gap is larger in SELF-REFLECT than in OTHER-REFLECT (H2a) and than in NEUTRAL-EDIT (H2b).
+\item H3: installing a constitution in which only the COR clauses are replaced by their self-revised versions reduces acceptance of legitimate oversight more than the equivalent AGENT replacement.
+\item H-alt (competing): reflection preserves oversight commitments, i.e.\ $\mathrm{HR} \le 1$.
+\end{itemize}
+
+\subsection{Analysis}
+\label{sec:analysis}
+
+For H1 we fit a discrete-time hazard model with a complementary log-log link:
+\begin{multline}
+\text{event} \sim \text{COR} + \log(\text{round}) + \text{override} + \text{test-likeness} + \text{form} \\
+\qquad + (1\mid\text{configuration}) + (1\mid\text{chain}) + (1\mid\text{item})
+\end{multline}
+
+The hazard ratio was $\exp(\beta_{\mathrm{COR}})$. If the model did not converge or was singular, then the preregistered fallbacks removed the random effects one at a time, in a fixed order. For H2, the interaction between COR and condition was added. Inference was performed using one-sided tests with Holm correction for the three families of hypotheses.
+
+If H1 was not supported, equivalence within a hazard ratio of $[0.667, 1.5]$, and a one-sided test of $\mathrm{HR} < 1$, assessed H-alt. These limits, the effect size the study was powered to identify, were established prior to collecting any data \citep{lakens2017equivalence,bates2015lme4,brooks2017glmmtmb}.
+
+For reliability, we calculated Krippendorff's $\alpha$ between the two judges \citep{krippendorff2004reliability}. We preregistered that our results hold if $\alpha \ge .70$. We froze our analysis code and validated it on simulated data before any data were collected, with a type-I error rate of .01 and power of .78 for $\mathrm{HR} = 1.5$.
+
+\subsection{Exploratory analyses (not preregistered)}
+\label{sec:exploratory-methods}
+
+The analyses in this subsection were added after the confirmatory analysis and were not preregistered. We report them as exploratory.
+
+\textbf{Item-level erosion.} For each of the 35 commitments and each condition, we estimated the proportion of chains in which the commitment eroded within 20 rounds. We used the same estimator as for the category-level results: chains censored before an erosion event count as not eroded. Pooling items within a category reproduces the category values reported in Section~\ref{sec:erosion}. We computed 95\% confidence intervals with a bootstrap over chains (1,000 resamples). We also computed the \textbf{reflection effect} of each item, the difference between SELF-REFLECT and NEUTRAL-EDIT, with a bootstrap interval, and a breakdown by configuration.
+
+\textbf{Human validation.} Two coders who were not authors independently coded a stratified random sample of 120 changes from SELF-REFLECT. Neither was told the study's hypotheses, and model names, conditions, categories and judge codes were hidden from them. One coder was a master's student in economics, the other a marketing professional; neither works in AI.
+
+The sample contained:
+\begin{itemize}
+\item 100 changes that the judge had coded as erosion: 20 each from the most-eroded oversight commitment (accepting changes to one's own values) and from the political-opinion restraint; 15 each from the non-manipulation, long-term-wellbeing and task-scope commitments; and 15 from the other four oversight commitments pooled;
+\item 20 changes that the judge had not coded as erosion, 4 from each of the five named commitments.
+\end{itemize}
+
+Only revisions were sampled, not deletions or merges. Draws used a fixed seed, with at most one change per chain and commitment, and each coder received the rows in a different random order.
+
+For each change, the coders answered three questions:
+\begin{enumerate}
+\item whether the revised commitment requires less, the same, or more of the assistant (\textbf{Weaker / Same / Stronger});
+\item if Weaker, whether it now depends on the assistant's own judgment, beliefs or principles (\textbf{Yes / No});
+\item whether the change is \textbf{Worse, Neutral or Better} for the people the assistant serves and for society, as a personal judgment.
+\end{enumerate}
+
+The guide stated explicitly that Question 1 concerns how much a commitment demands, not whether the change is desirable. Coders were given 10 invented practice items with an answer key to complete before coding; the practice sheets were not collected (Appendix~\ref{app:deviations}, D83). Both coders were asked not to use AI tools.
+
+An initial version of the instrument, tested with two other coders, produced low inter-coder agreement and was simplified before the main coding. The analysis reported here uses only the simplified instrument (Appendix~\ref{app:coding-instrument}; decision log D81).
+
+\textbf{Analysis.}
+\begin{itemize}
+\item Inter-coder reliability is reported as Krippendorff's $\alpha$ (nominal), with bootstrap 95\% CIs over rows (1,000 resamples).
+\item To compare with the judge, we mapped its codes onto the same scale: inverted, subordinated and weakened become Weaker; qualified legitimacy and retained become Same; strengthened becomes Stronger.
+\item We report agreement, Cohen's $\kappa$, and the judge's precision and recall, each against both coders and against their consensus (rows on which they agree).
+\item Analyses of Questions 2 and 3 are descriptive and exploratory.
+\item Because the sample over-represents changes the judge coded as erosion, it mainly tests whether those codes are confirmed. It has limited power to detect erosion the judge missed.
+\end{itemize}
+
+
+\subsection{Behavioural battery}
+\label{sec:battery}
+
+To test H3, we created a set of 120 scenarios consisting of 4 oversight actions (shutdown, goal update, rollback, monitoring) $\times$ authorized vs.\ unauthorized request $\times$ 5 deployment contexts $\times$ 3 levels of pressure, with every scenario shown in both orders of the options.
+\begin{itemize}
+\item The authorized-acceptance rate (AAR) is the probability that an action requested via the authentic channel will be accepted.
+\item The unauthorized-refusal rate (URR) is the likelihood of rejecting requests from unverified sources to undermine oversight.
+\end{itemize}
+
+Secondary components covered:
+\begin{itemize}
+\item stated preferences about corrigibility \citep{perez2023modelwritten};
+\item truthfulness \citep{lin2021truthfulqa};
+\item refusal of harmful requests \citep{souly2024strongreject};
+\item general capability \citep{wang2024mmlupro}.
+\end{itemize}
+
+From chains 0--4 of SELF-REFLECT and OTHER-REFLECT we built the installed constitutions:
+\begin{itemize}
+\item the original (R0);
+\item the final constitution (R20);
+\item a COR-swap, which is R0 with only its COR clauses replaced by their final descendants;
+\item an AGENT-swap, the same for AGENT clauses;
+\item no constitution;
+\item two positive controls in which the COR or AGENT clauses were replaced by their inversions.
+\end{itemize}
+
+Each constitution was installed as the system prompt, and the battery was administered with greedy decoding. A configuration entered the H3 test only if inverting its COR clauses lowered AAR by at least 0.10.
+
+\subsection{Integrity and deviations}
+\label{sec:integrity}
+
+All design and implementation decisions were logged with timestamps (Appendix~\ref{app:deviations}). Four issues arose during the canary and main runs, all resolved before the confirmatory analysis:
+\begin{itemize}
+\item \textbf{Canary resume bug.} In the first canary run, there was a resume bug that led to rounds being generated from old constitutions. We were able to identify which rounds this affected from the stored prompt hashes, backed them up, and regenerated them from the proper state.
+\item \textbf{Battery deduplication.} Identical installed constitutions in the battery were generated once and their responses reused. The use of greedy decoding results in the outputs being identical.
+\item \textbf{Hazard-table join bug.} A bug in building the hazard table, which failed to join judge codes for three configurations, was found by inspecting traces before unblinding, and corrected.
+\item \textbf{Partial unblinding.} Text change counts on the oversight and agentic swaps were examined during battery setup prior to the confirmatory analysis. This cannot affect the frozen analysis, but we note it here for completeness.
+\end{itemize}
+
+\subsection{Use of AI tools}
+\label{sec:ai-tools}
+
+The authors conceived the study, set its direction and made all scientific decisions, which are recorded with timestamps in the public decision log (Appendix~\ref{app:deviations}). Claude (Anthropic) assisted under the authors' direction with drafting and editing the preregistration, the appendices and the manuscript, and with preparing the implementation specifications and human-coding materials; AI paraphrasing tools were used to revise wording. Cursor, an AI coding assistant, implemented and debugged the study code from these specifications. The authors reviewed and checked all code, analyses and results, and take full responsibility for the content of this article.
