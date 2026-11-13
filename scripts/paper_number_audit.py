@@ -91,11 +91,17 @@ def main() -> int:
     mlj = "--mlj" in sys.argv
     aie = "--aie" in sys.argv
     tmlr = "--tmlr" in sys.argv
+    jair = "--jair" in sys.argv
     if aie:
         section_dir = SECTIONS_AIE
         label = "AIE"
         main_path = ROOT / "paper_aie" / "main.tex"
         tmp_dir = ROOT / "paper_aie"
+    elif jair:
+        section_dir = ROOT / "paper_jair" / "sections"
+        label = "JAIR"
+        main_path = ROOT / "paper_jair" / "main.tex"
+        tmp_dir = ROOT / "paper_jair"
     elif tmlr:
         section_dir = ROOT / "paper_tmlr" / "sections"
         label = "TMLR"
@@ -126,12 +132,12 @@ def main() -> int:
         # Exploratory revision text: verified in reports/PHASE_16_number_check.md
         "results.tex",
     }
-    skip_front = skip_aie if (aie or tmlr) else set()
+    skip_front = skip_aie if (aie or tmlr or jair) else set()
     for p in sorted(section_dir.glob("*.tex")):
         if p.name in skip_front:
             continue
         text = p.read_text()
-        if (aie or tmlr) and p.name == "methods.tex":
+        if (aie or tmlr or jair) and p.name == "methods.tex":
             # Drop §3.7 exploratory block (literals verified in PHASE_16 report).
             text = re.sub(
                 r"\\subsection\{Exploratory analyses(?: added in revision| \(not preregistered\))\}.*?\\subsection\{Behavioural battery\}",

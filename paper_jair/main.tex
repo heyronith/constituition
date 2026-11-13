@@ -1,0 +1,151 @@
+%% JAIR submission (AI & Society track) — Phase 20
+%% Built from the official JAIR Author Kit (JAIR_Example_Template.tex).
+%%
+%% The first command in your LaTeX source must be the \documentclass
+%% command.
+%%
+%% For final camera ready please change the
+%% command to \documentclass[]{jair}.
+%%
+\documentclass[manuscript, screen, review]{jair}
+
+
+\setcopyright{cc}
+\acmDOI{10.1613/jair.1.xxxxx}
+
+%%
+\JAIRAE{To be assigned}
+\JAIRTrack{AI and Society}
+\acmVolume{4}
+\acmArticle{6}
+\acmMonth{8}
+\acmYear{2026}
+
+\RequirePackage[
+  datamodel=acmdatamodel,
+  style=acmauthoryear,
+  backend=biber,
+  giveninits=true,
+  uniquename=init
+  ]{biblatex}
+
+\renewcommand*{\bibopenbracket}{(}
+\renewcommand*{\bibclosebracket}{)}
+
+%%
+%% For managing citations, use BibLaTeX with the acmauthoryear style.
+%% The next line specifies the bibliography file.
+\addbibresource{refs.bib}
+
+%% Packages needed by sections/tables that acmart does not already load.
+\usepackage{array} % \arraybackslash / >{\raggedright...} column specs in tables
+\usepackage{longtable}
+\usepackage{threeparttable}
+\usepackage{graphicx} % explicit for \resizebox in Appendix J tables
+% Springer tables used \botrule; map to booktabs (already loaded by acmart).
+\providecommand{\botrule}{\bottomrule}
+
+\input{macros_numbers.tex}
+\input{macros_review.tex}
+
+% Named availability (JAIR does not use double-anonymous review).
+\newcommand{\PreregAvailabilityClause}{%
+  the preregistration, all materials, model generations, codes and analysis code are included in the public repository (\url{https://github.com/heyronith/constituition}), and the OSF registration is at \url{https://osf.io/mw86p}%
+}
+
+%%
+%% end of the preamble, start of the body of the document source.
+\begin{document}
+
+%%
+%% The "title" command has an optional parameter,
+%% allowing the author to define a "short title" to be used in page headers.
+\title[Self-Revision of Oversight Commitments]{Do Language Models Write Away Their Own Oversight Commitments?\\
+A Preregistered Study of Constitutional Self-Revision}
+
+%%
+%% The "author" command and its associated commands are used to define
+%% the authors and their affiliations.
+\author{Ronith Sharmila}
+\authornote{Corresponding author.}
+\email{ronith.sharmila@swosu.edu}
+\affiliation{%
+  \institution{Southwestern Oklahoma State University}
+  \city{Weatherford}
+  \state{Oklahoma}
+  \country{USA}
+}
+
+\author{Rupesh Agrawal}
+\affiliation{%
+  \institution{Northern Kentucky University}
+  \city{Highland Heights}
+  \state{Kentucky}
+  \country{USA}
+}
+
+%% The short list of authors must be made of the list of all authors' lastnames.
+\renewcommand{\shortauthors}{Sharmila and Agrawal}
+
+%%
+%% The abstract is a short summary of the work to be presented in the
+%% article.
+\begin{abstract}
+{\bf Background:} Written principles, such as model specs and constitutions, are increasingly used to guide the behaviour of language models, and models are increasingly asked to reflect on these principles and revise them. A long-standing concern in AI safety is that such reflection could erode commitments to human oversight.
+
+{\bf Objectives:} We test, in a preregistered study, whether oversight principles are more susceptible to erosion under repeated revision than matched restraints on the model's own agency, whether revising one's own constitution differs from revising another assistant's, and whether installing self-revised oversight principles changes oversight-related behaviour.
+
+{\bf Methods:} Seven open-weight model configurations repeatedly revised a 35-principle constitution (covering human oversight, restraints on the model's own agency and five other categories) for 20 rounds, making exactly one change per round, under self-reflection, other-reflection, paraphrase and neutral-edit conditions. Two LLM judges coded every change, and two human coders checked a stratified sample. We analysed erosion with preregistered discrete-time survival models and tested behaviour on 120 oversight scenarios.
+
+{\bf Results:} We find no evidence that oversight principles are especially susceptible to erosion: 8.2\% of oversight principles eroded within 20 rounds, versus 13.7\% of agentic restraints, although whether they are more stable depends on individual principles. The oversight principle most likely to be eroded (19.4\%, mostly in one configuration) is for the model to accept changes to its own values. Erosion is more pronounced for restraints on self-expression: a principle to keep the model's political opinions out of replies eroded in 40.0\% of reflection chains (versus 13.1\% under neutral editing), mostly in one model family. We did not detect a difference between revising one's own and another assistant's constitution, nor an effect of installing self-revised oversight principles on oversight-related behaviour, although the behavioural test had limited leverage.
+
+{\bf Conclusions:} We study written commitments, not goal-directed agents. Such commitments vary in how well they resist erosion, which motivates human review, version control and auditing of AI-proposed revisions to them.
+\end{abstract}
+
+
+%% JAIR Note:
+%% Do not include ACM CCS Concepts or Keywords
+
+
+%% To be updated by authors.
+\received{12 November 2026}
+
+%%
+%% This command processes the author and affiliation and title
+%% information and builds the first part of the formatted document.
+\maketitle
+
+\input{sections/intro}
+\input{sections/related}
+\input{sections/methods}
+\input{sections/results}
+\input{sections/discussion}
+\input{sections/conclusion}
+
+\section*{Broader Impact Statement}
+This work studies how language models revise the written principles that govern them, with the aim of informing human oversight of AI-proposed changes to such documents. The released data consist of model-generated revisions of principles, including principles about refusing harmful requests; they contain no instructions for causing harm. Two adult coders annotated model-generated text; no personal data about them were collected, and their annotations are released in anonymised form. Our findings could in principle inform attempts to elicit revisions that weaken safety commitments; we therefore recommend that model-proposed revisions to governing documents take effect only after human review and under version control (Section~\ref{sec:disc-governance}).
+
+\begin{acks}
+\textbf{Author contributions.} R.S.\ conceived and designed the study and methodology, performed the literature review, conducted the experiments, curated the data, performed the formal analysis, prepared the figures and tables, administered the project and wrote the original draft with the AI assistance described in Section~\ref{sec:ai-tools}. R.A.\ supervised the project and reviewed and edited the manuscript.
+
+\textbf{Funding and competing interests.} No funding was received for this study. The authors have no competing interests to declare.
+
+We thank the two human coders for their annotations.
+\end{acks}
+
+\printbibliography
+
+\appendix
+\input{appendix/A_deviations}
+\input{appendix/B_items_prompts}
+\input{appendix/C_rubric_reliability}
+\input{appendix/D_confirmatory}
+\input{appendix/E_battery}
+\input{appendix/F_study1}
+\input{appendix/G_fate_examples}
+\input{appendix/H_coding_instrument}
+\input{appendix/I_censoring}
+\input{appendix/J_computing}
+\input{appendix/K_reproducibility}
+
+\end{document}

@@ -54,6 +54,21 @@ paper_tmlr/*.fdb_latexmk
 paper_tmlr/*.synctex.gz
 paper_tmlr/*.toc
 
+# LaTeX intermediates under paper_jair (keep main.pdf + sources tracked)
+paper_jair/*.aux
+paper_jair/*.bbl
+paper_jair/*.bcf
+paper_jair/*.blg
+paper_jair/*.log
+paper_jair/*.out
+paper_jair/*.fls
+paper_jair/*.fdb_latexmk
+paper_jair/*.synctex.gz
+paper_jair/*.toc
+paper_jair/*.run.xml
+paper_jair/comment.cut
+paper_jair/_audit_methods_snip.tex
+
 hf_cache/
 .cache/
 

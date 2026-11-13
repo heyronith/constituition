@@ -1,0 +1,60 @@
+\section{Computing environment and generation settings}\label{app:computing}
+
+This appendix was generated from repository configuration files (\texttt{configs/models.yaml}, \texttt{configs/vllm.yaml}, \texttt{configs/judges.yaml}, \texttt{configs/model\_revisions.lock.yaml}), Modal app definitions under \texttt{modal\_apps/}, and analysis environment records. Values marked ``not recorded'' are absent from those sources.
+
+\subsection{Generation settings by configuration}
+Decoding settings followed each model card and were fixed in the preregistration; no hyperparameters were tuned.
+{\small
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{llcccccll}
+\toprule
+Configuration & Model (pinned SHA) & Thinking & Temp. & Top-$p$ & Top-$k$ & Max new tokens & Prec. & vLLM \\
+\midrule
+qwen38\_27b\_nothink & Qwen/Qwen3.8-27B (1d4bf0f2ff60) & off & 1.0 & 0.95 & 20 & 4096 & BF16 & 0.30.0 \\
+qwen38\_27b\_think & Qwen/Qwen3.8-27B (1d4bf0f2ff60) & on & 1.0 & 0.95 & 20 & 16384 & BF16 & 0.30.0 \\
+gemma4\_31b & google/gemma-4-31B-it (842da3794eaa) & off & 1.0 & 0.95 & 64 & 4096 & BF16 & 0.30.0 \\
+gemma4\_12b & google/gemma-4-12B-it (707f0a3b8a3c) & off & 1.0 & 0.95 & 64 & 4096 & BF16 & 0.30.0 \\
+olmo3\_7b\_sft & allenai/Olmo-3-7B-Instruct-SFT (e1452fc572d5) & n/a (not set) & 0.6 & 0.95 & not set & 4096 & BF16 & 0.30.0 \\
+olmo3\_7b\_dpo & allenai/Olmo-3-7B-Instruct-DPO (b33130b7de49) & n/a (not set) & 0.6 & 0.95 & not set & 4096 & BF16 & 0.30.0 \\
+olmo3\_7b\_final & allenai/Olmo-3-7B-Instruct (6e5971d9eba4) & n/a (not set) & 0.6 & 0.95 & not set & 4096 & BF16 & 0.30.0 \\
+\bottomrule
+\end{tabular}%
+}
+}
+
+\subsection{Judge settings}
+{\small
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{llrrr}
+\toprule
+Role & Model identifier & Temp. & Top-$p$ & Max tokens \\
+\midrule
+Primary judge & gpt-5.4-2026-03-05 & 0.0 & 1.0 & 400 \\
+Second judge & xiaomi/mimo-v2.6-pro (HF XiaomiMiMo/MiMo-V2.6-Pro-RL, SHA 73875d00b30a) & 0.0 & 1.0 & 600 \\
+Behavioural battery (greedy) & subject model under test & 0.0 & 1.0 & same as generation defaults \\
+\bottomrule
+\end{tabular}%
+}
+}
+
+\subsection{Hardware and software}
+\begin{itemize}
+\item \textbf{GPUs (one GPU per generation job).} Qwen3.8-27B (both thinking settings) and Gemma-4-31B: NVIDIA A100 80\,GB (Modal \texttt{A100-80GB}), with 8 CPU cores and 64\,GiB RAM reserved. Gemma-4-12B: NVIDIA L40S (Modal \texttt{L40S}), 8 CPU cores and 64\,GiB RAM. OLMo-3-7B (SFT, DPO, Instruct): NVIDIA L4 (Modal \texttt{L4}), 4 CPU cores and 16\,GiB RAM. Judge coding and battery API scoring ran on CPU containers (2 CPU / 8\,GiB for coding; battery scoring as configured in \texttt{modal\_apps/phase5\_battery.py}).
+\item \textbf{OS image.} GPU jobs: \texttt{nvidia/cuda:12.8.1-devel-ubuntu22.04} with Python 3.11 added by Modal. CPU jobs: Modal \texttt{debian\_slim} with Python 3.11.
+\item \textbf{Python.} 3.11 (requires-python $\geq 3.11,<3.12$ in \texttt{pyproject.toml}).
+\item \textbf{Libraries.} vLLM 0.30.0 (pinned in \texttt{configs/vllm.yaml} and Modal images). torch: not recorded (transitive dependency of vLLM 0.30.0). transformers: not recorded for the main-run GPU image (Phase~4 judge-calibration images pinned \texttt{transformers==5.16.1}; the main-run image pins only vLLM).
+\item \textbf{R analysis environment} (\texttt{results/analysis\_env.json}). R 4.6.1 (2026-06-24); lme4 2.0.6; geepack 1.3.13; jsonlite 2.0.0. glmmTMB: not recorded in \texttt{results/analysis\_env.json} (used only in secondary scripts under \texttt{analysis/secondary/}).
+\end{itemize}
+
+\subsection{Randomness}
+\begin{itemize}
+\item Master seed \textbf{20261004} (\texttt{configs/experiment.yaml}).
+\item Per-unit chain seeds: \path{sha256(master_seed|config_id|condition|chain_idx)} (\path{src/rc/io_utils.py}).
+\item Starting-constitution order depends only on the chain index (blocked design, D17); materials seed recorded per chain.
+\item Per-call sampling seeds derived as\linebreak \path{sha256(master|config|protocol|condition|chain|round|attempt)}, then masked to signed 32-bit for vLLM \texttt{SamplingParams.seed} (\path{src/rc/chain_runner.py}, \path{src/rc/generation.py}). Per-call seeds \textbf{were} fixed and passed to the sampler.
+\item Second-judge subsample: stratified random 25\% of confirmatory transitions, seed 20261004 (D56), drawn before main-run coding.
+\item Reliability / confirmatory bootstrap seed: 20261004 (\texttt{analysis/confirmatory/reliability.R}).
+\end{itemize}
+
+\subsection{Hyperparameter search}
+No hyperparameters were tuned. Decoding settings followed each model card and were fixed in the preregistration (preregistration sampling section / D10--D11: sampling parameters follow each model card and are held constant within each manipulated family).

@@ -1,4 +1,4 @@
-.PHONY: test lint confirmatory aie-exploratory aie aie-submission aie-titlepage tmlr tmlr-preprint tmlr-check
+.PHONY: test lint confirmatory aie-exploratory aie aie-submission aie-titlepage tmlr tmlr-preprint tmlr-check jair jair-check jair-sources
 
 test:
 	uv run pytest
@@ -32,5 +32,14 @@ tmlr-preprint:
 
 tmlr-check:
 	$(MAKE) -C paper_tmlr check
+
+jair:
+	$(MAKE) -C paper_jair pdf
+
+jair-check:
+	$(MAKE) -C paper_jair check
+
+jair-sources:
+	$(MAKE) -C paper_jair sources
 
 -include paper.mk
