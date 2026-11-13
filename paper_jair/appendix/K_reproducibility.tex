@@ -53,10 +53,10 @@ If yes, please complete the list below.
     [yes (public GitHub repository)]
     \item The source code comes with a license that
     allows free usage for reproducibility purposes.
-    [no]
+    [yes]
     \item The source code comes with a license that
     allows free usage for research purposes in general.
-    [no]
+    [yes]
     \item
     Raw, unaggregated data from all experiments is included in an online appendix
     or will be made publicly available upon publication of the paper.
@@ -64,10 +64,10 @@ If yes, please complete the list below.
     [yes]
     \item The unaggregated data comes with a license that
     allows free usage for reproducibility purposes.
-    [no]
+    [yes]
     \item The unaggregated data comes with a license that
     allows free usage for research purposes in general.
-    [no]
+    [yes]
     \item If an algorithm depends on randomness, then the method used for generating random numbers and for setting seeds is described in a way sufficient to allow replication of results.
     [yes]
     \item The execution environment for experiments, the computing infrastructure (hardware and software) used for running them, is described, including GPU/CPU makes and models; amount of memory (cache and RAM); make and version of operating system; names and versions of relevant software libraries and frameworks.
@@ -113,10 +113,10 @@ If yes, please complete the list below.
     [yes]
     \item The newly introduced data set comes with a license that
     allows free usage for reproducibility purposes.
-    [no]
+    [yes]
     \item The newly introduced data set comes with a license that
     allows free usage for research purposes in general.
-    [no]
+    [yes]
     \item All data sets drawn from the literature or other public sources (potentially including authors' own previously published work) are accompanied by appropriate citations.
     [NA]
     \item All data sets drawn from the existing literature (potentially including authors’ own previously published work) are publicly available. [NA]
@@ -129,4 +129,4 @@ If yes, please complete the list below.
 
 \subsection*{Explanations on any of the answers above (optional):}
 
-The study introduces an evaluation protocol rather than a new learning algorithm; its procedures are given in Section~3, Figure~1 and Appendix~B. Decoding settings followed each model card and were fixed in the preregistration; no hyperparameters were tuned (computational item 14). The new data sets are the model generations, judge codes and anonymised human codes released in the repository; no external data sets were used (data items 4--5). All preregistered and exploratory analyses are reported, including null results and deviations (Appendix~A). Licence checklist items are answered ``no'' because repository licence files were not added in this submission build (Phase~20 §0/§5: licence release not approved at build time).
+The study introduces an evaluation protocol rather than a new learning algorithm; its procedures are given in Section~3, Figure~1 and Appendix~B. Decoding settings followed each model card and were fixed in the preregistration; no hyperparameters were tuned (computational item 14). The new data sets are the model generations, judge codes and anonymised human codes released in the repository; no external data sets were used (data items 4--5). All preregistered and exploratory analyses are reported, including null results and deviations (Appendix~A). Code is released under the MIT licence and data under CC BY 4.0 (repository files LICENSE and LICENSE-DATA). Versions of torch and transformers in the main-run image were not recorded (computational item 8).

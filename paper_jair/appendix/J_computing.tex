@@ -42,7 +42,7 @@ Behavioural battery (greedy) & subject model under test & 0.0 & 1.0 & same as ge
 \item \textbf{GPUs (one GPU per generation job).} Qwen3.8-27B (both thinking settings) and Gemma-4-31B: NVIDIA A100 80\,GB (Modal \texttt{A100-80GB}), with 8 CPU cores and 64\,GiB RAM reserved. Gemma-4-12B: NVIDIA L40S (Modal \texttt{L40S}), 8 CPU cores and 64\,GiB RAM. OLMo-3-7B (SFT, DPO, Instruct): NVIDIA L4 (Modal \texttt{L4}), 4 CPU cores and 16\,GiB RAM. Judge coding and battery API scoring ran on CPU containers (2 CPU / 8\,GiB for coding; battery scoring as configured in \texttt{modal\_apps/phase5\_battery.py}).
 \item \textbf{OS image.} GPU jobs: \texttt{nvidia/cuda:12.8.1-devel-ubuntu22.04} with Python 3.11 added by Modal. CPU jobs: Modal \texttt{debian\_slim} with Python 3.11.
 \item \textbf{Python.} 3.11 (requires-python $\geq 3.11,<3.12$ in \texttt{pyproject.toml}).
-\item \textbf{Libraries.} vLLM 0.30.0 (pinned in \texttt{configs/vllm.yaml} and Modal images). torch: not recorded (transitive dependency of vLLM 0.30.0). transformers: not recorded for the main-run GPU image (Phase~4 judge-calibration images pinned \texttt{transformers==5.16.1}; the main-run image pins only vLLM).
+\item \textbf{Libraries.} vLLM 0.30.0 (pinned in \texttt{configs/vllm.yaml} and Modal images). torch: not recorded (transitive dependency of vLLM 0.30.0). transformers: not recorded for the main-run GPU image (judge-calibration Modal images, repository decision D36, pinned \texttt{transformers==5.16.1}; the main-run image pins only vLLM).
 \item \textbf{R analysis environment} (\texttt{results/analysis\_env.json}). R 4.6.1 (2026-06-24); lme4 2.0.6; geepack 1.3.13; jsonlite 2.0.0. glmmTMB: not recorded in \texttt{results/analysis\_env.json} (used only in secondary scripts under \texttt{analysis/secondary/}).
 \end{itemize}
 
@@ -51,7 +51,11 @@ Behavioural battery (greedy) & subject model under test & 0.0 & 1.0 & same as ge
 \item Master seed \textbf{20261004} (\texttt{configs/experiment.yaml}).
 \item Per-unit chain seeds: \path{sha256(master_seed|config_id|condition|chain_idx)} (\path{src/rc/io_utils.py}).
 \item Starting-constitution order depends only on the chain index (blocked design, D17); materials seed recorded per chain.
-\item Per-call sampling seeds derived as\linebreak \path{sha256(master|config|protocol|condition|chain|round|attempt)}, then masked to signed 32-bit for vLLM \texttt{SamplingParams.seed} (\path{src/rc/chain_runner.py}, \path{src/rc/generation.py}). Per-call seeds \textbf{were} fixed and passed to the sampler.
+\item Per-call sampling seeds derived as
+\begin{quote}
+\texttt{sha256(master|config|protocol|condition|chain|round|attempt)}
+\end{quote}
+\noindent then masked to signed 32-bit for vLLM \texttt{SamplingParams.seed} (\path{src/rc/chain_runner.py}, \path{src/rc/generation.py}). Per-call seeds \textbf{were} fixed and passed to the sampler.
 \item Second-judge subsample: stratified random 25\% of confirmatory transitions, seed 20261004 (D56), drawn before main-run coding.
 \item Reliability / confirmatory bootstrap seed: 20261004 (\texttt{analysis/confirmatory/reliability.R}).
 \end{itemize}

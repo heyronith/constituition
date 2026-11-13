@@ -1,4 +1,4 @@
-# JAIR AI & Society submission (Phase 20)
+# JAIR AI & Society submission
 export PATH := $(HOME)/Library/TinyTeX/bin/universal-darwin:/opt/homebrew/bin:$(PATH)
 
 .PHONY: pdf check sources clean

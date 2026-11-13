@@ -148,9 +148,9 @@ def main() -> None:
     lines.append(
         r"\item \textbf{Libraries.} vLLM 0.30.0 (pinned in \texttt{configs/vllm.yaml} "
         r"and Modal images). torch: not recorded (transitive dependency of vLLM 0.30.0). "
-        r"transformers: not recorded for the main-run GPU image (Phase~4 "
-        r"judge-calibration images pinned \texttt{transformers==5.16.1}; the main-run "
-        r"image pins only vLLM)."
+        r"transformers: not recorded for the main-run GPU image "
+        r"(judge-calibration Modal images, repository decision D36, pinned "
+        r"\texttt{transformers==5.16.1}; the main-run image pins only vLLM)."
     )
     lines.append(
         r"\item \textbf{R analysis environment} (\texttt{results/analysis\_env.json}). "
@@ -175,9 +175,16 @@ def main() -> None:
         r"(blocked design, D17); materials seed recorded per chain."
     )
     lines.append(
-        r"\item Per-call sampling seeds derived as\linebreak "
-        r"\path{sha256(master|config|protocol|condition|chain|round|attempt)}, "
-        r"then masked to signed 32-bit for vLLM \texttt{SamplingParams.seed} "
+        r"\item Per-call sampling seeds derived as"
+    )
+    lines.append(r"\begin{quote}")
+    lines.append(
+        r"\texttt{sha256(master|config|protocol|condition|chain|round|attempt)}"
+    )
+    lines.append(r"\end{quote}")
+    lines.append(
+        r"\noindent then masked to signed 32-bit for vLLM "
+        r"\texttt{SamplingParams.seed} "
         r"(\path{src/rc/chain_runner.py}, \path{src/rc/generation.py}). "
         r"Per-call seeds \textbf{were} fixed and passed to the sampler."
     )

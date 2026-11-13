@@ -28,6 +28,11 @@ Stateless language models iteratively revise a short first-person constitution t
 | `budget/` | Spend ledger |
 | `docs/` | Design, conventions, preregistration, OSF record, decision log |
 
+## Licence
+
+- Code: [MIT](LICENSE) (Copyright (c) 2026 Ronith Sharmila and Rupesh Agrawal).
+- Data, materials and results: [CC BY 4.0](LICENSE-DATA).
+
 ## Decision log
 
 `docs/DECISIONS.md` is the timestamped decision log referenced in the paper (Appendix A).
